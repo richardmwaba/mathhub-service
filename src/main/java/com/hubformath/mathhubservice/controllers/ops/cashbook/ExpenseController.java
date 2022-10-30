@@ -77,10 +77,7 @@ public class ExpenseController {
                     expense.setApprovedBy(newExpense.getApprovedBy());
                     return repository.save(expense);
                 }) //
-                .orElseGet(() -> {
-                    newExpense.setId(id);
-                    return repository.save(newExpense);
-                });
+                .orElseThrow(() -> new ItemNotFoundException(id, "expense"));
 
         EntityModel<Expense> entityModel = assembler.toModel(updatedExpense);
 
