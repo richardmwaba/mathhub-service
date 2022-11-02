@@ -69,10 +69,7 @@ public class IncomeTypeController {
                     incomeType.setTypeDescription(newIncomeType.getTypeDescription());
                     return repository.save(incomeType);
                 }) //
-                .orElseGet(() -> {
-                    newIncomeType.setId(id);
-                    return repository.save(newIncomeType);
-                });
+                .orElseThrow(() -> new ItemNotFoundException(id, "income type"));
 
         EntityModel<IncomeType> entityModel = assembler.toModel(updatedIncomeType);
 

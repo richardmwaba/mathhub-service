@@ -6,12 +6,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
+import com.hubformath.mathhubservice.models.ops.cashbook.Expense;
 
 @Entity
 public class ExpenseType {
     private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long id;
+
     private String typeName;
+
     private String typeDescription;
+
+    @OneToOne(mappedBy = "expenseType")
+    private Expense expense;
 
     public ExpenseType() {}
 
@@ -23,11 +31,7 @@ public class ExpenseType {
     public Long getId() {
         return this.id;
     }
-    
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
+
     public String getTypeName() {
         return this.typeName;
     }
@@ -44,6 +48,14 @@ public class ExpenseType {
         this.typeDescription = typeDescription;
     }
 
+    public Expense getExpense() {
+        return expense;
+    }
+
+    public void setExpense(Expense expense) {
+        this.expense = expense;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -52,7 +64,8 @@ public class ExpenseType {
             return false;
         ExpenseType expenseType = (ExpenseType) o;
         return Objects.equals(this.id, expenseType.id) && Objects.equals(this.typeName, expenseType.typeName)
-            && Objects.equals(this.typeDescription, expenseType.typeDescription);
+            && Objects.equals(this.typeDescription, expenseType.typeDescription)
+            && Objects.equals(this.expense, expenseType.expense);
     }
 
     @Override
@@ -62,7 +75,8 @@ public class ExpenseType {
 
     @Override
     public String toString() {
-        return "UserType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + 
+        return "IncomeType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + 
             ", typeDescription='" + this.typeDescription + "'}";
     }
+
 }

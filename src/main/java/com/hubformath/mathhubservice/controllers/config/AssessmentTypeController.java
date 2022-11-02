@@ -69,10 +69,7 @@ public class AssessmentTypeController {
                     assessmentType.setTypeDescription(newAssessmentType.getTypeDescription());
                     return repository.save(assessmentType);
                 }) //
-                .orElseGet(() -> {
-                    newAssessmentType.setId(id);
-                    return repository.save(newAssessmentType);
-                });
+                .orElseThrow(() -> new ItemNotFoundException(id, "assessment type"));
 
         EntityModel<AssessmentType> entityModel = assembler.toModel(updatedAssessmentType);
 

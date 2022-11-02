@@ -9,20 +9,22 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import com.hubformath.mathhubservice.models.config.LiabilityType;
+import com.hubformath.mathhubservice.models.config.AssetType;
 import com.hubformath.mathhubservice.models.config.PaymentMethod;
 
 @Entity
-public class Liability {
+public class Asset {
     private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long id;
-
-    @OneToOne
-    @JoinColumn(name = "liability_type_id")
-    private LiabilityType liabilityType;
 
     @OneToOne
     @JoinColumn(name = "payment_method_id")
     private PaymentMethod paymentMethod;
+
+    private String narration;
+
+    @OneToOne
+    @JoinColumn(name = "asset_type_id")
+    private AssetType assetType;
 
     private Double amount;
 
@@ -30,24 +32,25 @@ public class Liability {
 
     private Long approvedBy;
 
-    public Liability(){}
+    public Asset (){}
 
-    public Liability(Double amount, Long createdBy, Long approvedBy) {
+    public Asset(String narration, Double amount, Long createdBy, Long approvedBy) {
+        this.narration = narration;
         this.amount = amount;
         this.createdBy = createdBy;
         this.approvedBy = approvedBy;
     }
-
+    
     public Long getId() {
         return id;
     }
 
-    public LiabilityType getLiabilityType() {
-        return liabilityType;
+    public AssetType getAssetType() {
+        return assetType;
     }
 
-    public void setLiabilityType(LiabilityType liabilityType) {
-        this.liabilityType = liabilityType;
+    public void setAssetType(AssetType assetType) {
+        this.assetType = assetType;
     }
 
     public PaymentMethod getPaymentMethod() {
@@ -56,6 +59,14 @@ public class Liability {
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public String getNarration() {
+        return narration;
+    }
+
+    public void setNarration(String narration) {
+        this.narration = narration;
     }
 
     public Double getAmount() {
@@ -86,26 +97,27 @@ public class Liability {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof Liability))
+        if (!(o instanceof Asset))
             return false;
-        Liability liability = (Liability) o;
-        return Objects.equals(this.id, liability.id) 
-            && Objects.equals(this.liabilityType, liability.liabilityType)
-            && Objects.equals(this.paymentMethod, liability.paymentMethod)
-            && Objects.equals(this.amount, liability.amount)
-            && Objects.equals(this.createdBy, liability.createdBy)
-            && Objects.equals(this.approvedBy, liability.approvedBy);
+        Asset asset = (Asset) o;
+        return Objects.equals(this.id, asset.id) && Objects.equals(this.assetType, asset.assetType)
+            && Objects.equals(this.paymentMethod, asset.paymentMethod)
+            && Objects.equals(this.narration, asset.narration)
+            && Objects.equals(this.amount, asset.amount)
+            && Objects.equals(this.createdBy, asset.createdBy)
+            && Objects.equals(this.approvedBy, asset.approvedBy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id);
+        return Objects.hash(this.id, this.assetType, this.paymentMethod, this.narration,
+                            this.amount, this.createdBy, this.approvedBy);
     }
 
     @Override
     public String toString() {
-        return "Liability [id=" + this.id + ", liabilityType=" + this.liabilityType 
-                + ", paymentMethod=" + this.paymentMethod + ", amount=" + this.amount 
-                + ", createdBy=" + this.createdBy + ", approvedBy=" + this.approvedBy + "]";
+        return "Asset [id=" + this.id + ", assetType=" + this.assetType + ", paymentMethod=" + this.paymentMethod
+                + ", narration=" + this.narration + ", amount=" + this.amount + ", createdBy=" 
+                + this.createdBy + ", approvedBy=" + this.approvedBy + "]";
     }
 }

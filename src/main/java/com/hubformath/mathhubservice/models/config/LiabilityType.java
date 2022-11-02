@@ -6,16 +6,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
+import com.hubformath.mathhubservice.models.ops.cashbook.Liability;
 
 @Entity
-public class UserType {
+public class LiabilityType {
     private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long id;
+
     private String typeName;
+
     private String typeDescription;
 
-    public UserType() {}
+    @OneToOne(mappedBy = "liabilityType")
+    private Liability liability;
 
-    public UserType(String typeName, String typeDescription) {
+    public LiabilityType() {}
+
+    public LiabilityType(String typeName, String typeDescription) {
         this.typeName = typeName;
         this.typeDescription = typeDescription;
     }
@@ -23,7 +31,7 @@ public class UserType {
     public Long getId() {
         return this.id;
     }
-
+    
     public String getTypeName() {
         return this.typeName;
     }
@@ -40,15 +48,24 @@ public class UserType {
         this.typeDescription = typeDescription;
     }
 
+    public Liability getLiability() {
+        return liability;
+    }
+
+    public void setLiability(Liability liability) {
+        this.liability = liability;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof UserType))
+        if (!(o instanceof LiabilityType))
             return false;
-        UserType userType = (UserType) o;
-        return Objects.equals(this.id, userType.id) && Objects.equals(this.typeName, userType.typeName)
-            && Objects.equals(this.typeDescription, userType.typeDescription);
+        LiabilityType liabilityType = (LiabilityType) o;
+        return Objects.equals(this.id, liabilityType.id) && Objects.equals(this.typeName, liabilityType.typeName)
+            && Objects.equals(this.typeDescription, liabilityType.typeDescription)
+            && Objects.equals(this.liability, liabilityType.liability);
     }
 
     @Override

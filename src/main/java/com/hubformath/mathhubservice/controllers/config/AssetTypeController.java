@@ -71,10 +71,7 @@ public class AssetTypeController {
                     assetType.setTypeDescription(newAssetType.getTypeDescription());
                     return repository.save(assetType);
                 }) //
-                .orElseGet(() -> {
-                    newAssetType.setId(id);
-                    return repository.save(newAssetType);
-                });
+                .orElseThrow(() -> new ItemNotFoundException(id, "asset type"));
 
         EntityModel<AssetType> entityModel = assembler.toModel(updatedAssetType);
 
