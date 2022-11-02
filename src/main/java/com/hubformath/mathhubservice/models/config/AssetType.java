@@ -6,12 +6,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
+import com.hubformath.mathhubservice.models.ops.cashbook.Asset;
 
 @Entity
 public class AssetType {
     private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long id;
+    
     private String typeName;
+
     private String typeDescription;
+
+    @OneToOne(mappedBy = "assetType")
+    private Asset asset;
 
     public AssetType() {}
 
@@ -24,10 +32,14 @@ public class AssetType {
         return this.id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Asset getAsset() {
+        return asset;
     }
-    
+
+    public void setAsset(Asset asset) {
+        this.asset = asset;
+    }
+
     public String getTypeName() {
         return this.typeName;
     }
@@ -52,7 +64,8 @@ public class AssetType {
             return false;
         AssetType assetType = (AssetType) o;
         return Objects.equals(this.id, assetType.id) && Objects.equals(this.typeName, assetType.typeName)
-            && Objects.equals(this.typeDescription, assetType.typeDescription);
+            && Objects.equals(this.typeDescription, assetType.typeDescription)
+            && Objects.equals(this.asset, assetType.asset);
     }
 
     @Override
@@ -63,6 +76,6 @@ public class AssetType {
     @Override
     public String toString() {
         return "UserType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + 
-            ", typeDescription='" + this.typeDescription + "'}";
+            ", typeDescription='" + this.typeDescription + ", asset='" + this.asset + "'}";
     }
 }

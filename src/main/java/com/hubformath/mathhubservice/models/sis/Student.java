@@ -1,37 +1,51 @@
 package com.hubformath.mathhubservice.models.sis;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Student {
     private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long id;
+
     private String firstName;
+
     private String middleName;
+
     private String lastName;
-    private String parent;
+
+    @OneToMany
+    @JoinColumn(name = "parent_id")
+    private Parent parent;
+
     private String guardian;
+
     private String email;
-    // ToDO: Add these to DTO
-    // private List<Address> addresses;
-    // private List<PhoneNumber> phoneNumbers;
+    
+    @OneToMany
+    @JoinColumn(name = "address_id")
+    private List<Address> addresses;
+    
+    @OneToMany
+    @JoinColumn(name = "phone_number_id")
+    private List<PhoneNumber> phoneNumbers;
+
     private Date dateOfBirth;
     
     public Student() {
     }
 
-    public Student(String firstName, String middleName, String lastName, String parent, String guardian,
-            String email, Date dateOfBirth) {
+    public Student(String firstName, String middleName, String lastName, String email, Date dateOfBirth) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
-        this.parent = parent;
-        this.guardian = guardian;
         this.email = email;
         this.dateOfBirth = dateOfBirth;
     }
@@ -64,22 +78,29 @@ public class Student {
         this.lastName = lastName;
     }
 
-    public String getParent() {
+    public Parent getParent() {
         return parent;
     }
 
-    public void setParent(String parent) {
+    public void setParent(Parent parent) {
         this.parent = parent;
     }
 
-    public String getGuardian() {
-        return guardian;
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+    
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
     }
 
-    public void setGuardian(String guardian) {
-        this.guardian = guardian;
+    public List<PhoneNumber> getPhoneNumbers() {
+        return phoneNumbers;
     }
-
+    
+    public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
+    }
     public String getEmail() {
         return email;
     }
@@ -107,7 +128,8 @@ public class Student {
             && Objects.equals(this.middleName, student.middleName)
             && Objects.equals(this.lastName, student.lastName)
             && Objects.equals(this.parent, student.parent)
-            && Objects.equals(this.guardian, student.guardian)
+            && Objects.equals(this.addresses, student.addresses)
+            && Objects.equals(this.phoneNumbers, student.phoneNumbers)
             && Objects.equals(this.email, student.email)
             && Objects.equals(this.dateOfBirth, student.dateOfBirth);
     }
@@ -121,7 +143,7 @@ public class Student {
     @Override
     public String toString() {
         return "Student {id=" + this.id + ", firstName=" + this.firstName + ", middleName=" + this.middleName + ", LastName="
-                + this.lastName + ", parent=" + this.parent + ", guardian=" + this.guardian + ", email=" + this.email 
-                + ", dateOfBirth=" + this.dateOfBirth + "}";
+                + this.lastName + ", parent=" + this.parent + ", addresses=" + this.addresses + ", phoneNumbers=" 
+                + this.phoneNumbers + ", email=" + this.email + ", dateOfBirth=" + this.dateOfBirth + "}";
     } 
 }

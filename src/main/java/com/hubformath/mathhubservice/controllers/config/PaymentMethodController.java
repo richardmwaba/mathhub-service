@@ -69,10 +69,7 @@ public class PaymentMethodController {
                     paymentMethod.setTypeDescription(newPaymentMethod.getTypeDescription());
                     return repository.save(paymentMethod);
                 }) //
-                .orElseGet(() -> {
-                    newPaymentMethod.setId(id);
-                    return repository.save(newPaymentMethod);
-                });
+                .orElseThrow(() -> new ItemNotFoundException(id, "payment method"));
 
         EntityModel<PaymentMethod> entityModel = assembler.toModel(updatedPaymentMethod);
 

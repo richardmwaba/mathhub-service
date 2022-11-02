@@ -77,10 +77,7 @@ public class TransactionController {
                     transaction.setTransactedBy(newTransaction.getTransactedBy());
                     return repository.save(transaction);
                 }) //
-                .orElseGet(() -> {
-                    newTransaction.setId(id);
-                    return repository.save(newTransaction);
-                });
+                .orElseThrow(() -> new ItemNotFoundException(id, "transaction"));
 
         EntityModel<Transaction> entityModel = assembler.toModel(updatedTransaction);
 

@@ -69,10 +69,7 @@ public class ExpenseTypeController {
                     expenseType.setTypeDescription(newExpenseType.getTypeDescription());
                     return repository.save(expenseType);
                 }) //
-                .orElseGet(() -> {
-                    newExpenseType.setId(id);
-                    return repository.save(newExpenseType);
-                });
+                .orElseThrow(() -> new ItemNotFoundException(id, "expense type"));
 
         EntityModel<ExpenseType> entityModel = assembler.toModel(updatedExpenseType);
 

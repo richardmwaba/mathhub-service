@@ -69,10 +69,7 @@ public class SessionTypeController {
                     sessionType.setTypeDescription(newSessionType.getTypeDescription());
                     return repository.save(sessionType);
                 }) //
-                .orElseGet(() -> {
-                    newSessionType.setId(id);
-                    return repository.save(newSessionType);
-                });
+                .orElseThrow(() -> new ItemNotFoundException(id, "session type"));
 
         EntityModel<SessionType> entityModel = assembler.toModel(updatedSessionType);
 

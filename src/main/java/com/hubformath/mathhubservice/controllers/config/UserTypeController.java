@@ -69,10 +69,7 @@ public class UserTypeController {
                     userType.setTypeDescription(newUserType.getTypeDescription());
                     return repository.save(userType);
                 }) //
-                .orElseGet(() -> {
-                    newUserType.setId(id);
-                    return repository.save(newUserType);
-                });
+                .orElseThrow(() -> new ItemNotFoundException(id, "user type"));
 
         EntityModel<UserType> entityModel = assembler.toModel(updatedUserType);
 

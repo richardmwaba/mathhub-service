@@ -6,24 +6,37 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+import com.hubformath.mathhubservice.models.config.ExpenseType;
+import com.hubformath.mathhubservice.models.config.PaymentMethod;
 
 @Entity
 public class Expense {
     private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long id;
-    private Long expenseType;
-    private Long paymentMethod;
+
+    @OneToOne
+    @JoinColumn(name = "payment_method_id")
+    private PaymentMethod paymentMethod;
+
     private String narration;
+
     private ExpenseStatus status;
+    
+    @OneToOne
+    @JoinColumn(name = "expense_type_id")
+    private ExpenseType expenseType;
+
     private Double amount;
+
     private Long createdBy;
+
     private Long approvedBy;
 
     public Expense (){}
 
-    public Expense(Long expenseType, Long paymentMethod, String narration, ExpenseStatus status, Double amount,
-            Long createdBy, Long approvedBy) {
-        this.expenseType = expenseType;
-        this.paymentMethod = paymentMethod;
+    public Expense(String narration, ExpenseStatus status, Double amount, Long createdBy, Long approvedBy) {
         this.narration = narration;
         this.status = status;
         this.amount = amount;
@@ -36,19 +49,19 @@ public class Expense {
         return id;
     }
 
-    public Long getExpenseType() {
+    public ExpenseType getExpenseType() {
         return expenseType;
     }
 
-    public void setExpenseType(Long expenseType) {
+    public void setExpenseType(ExpenseType expenseType) {
         this.expenseType = expenseType;
     }
 
-    public Long getPaymentMethod() {
+    public PaymentMethod getPaymentMethod() {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(Long paymentMethod) {
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
