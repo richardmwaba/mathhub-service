@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.models.config;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -8,15 +9,26 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.hubformath.mathhubservice.models.ops.cashbook.Liability;
 
 @Entity
 public class LiabilityType {
-    private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long id;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
 
     private String typeName;
 
     private String typeDescription;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @OneToOne(mappedBy = "liabilityType")
     private Liability liability;
@@ -56,6 +68,22 @@ public class LiabilityType {
         this.liability = liability;
     }
     
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -65,17 +93,20 @@ public class LiabilityType {
         LiabilityType liabilityType = (LiabilityType) o;
         return Objects.equals(this.id, liabilityType.id) && Objects.equals(this.typeName, liabilityType.typeName)
             && Objects.equals(this.typeDescription, liabilityType.typeDescription)
-            && Objects.equals(this.liability, liabilityType.liability);
+            && Objects.equals(this.liability, liabilityType.liability)
+            && Objects.equals(this.createdAt, liabilityType.createdAt)
+            && Objects.equals(this.updatedAt, liabilityType.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription);
+        return Objects.hash(this.id, this.typeName, this.typeDescription, this.liability, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
-        return "UserType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + 
-            ", typeDescription='" + this.typeDescription + "'}";
+        return "LiabilityType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + ", typeDescription='" 
+                + this.typeDescription + ", liability='" + this.liability + ", createdAt='" + this.createdAt 
+                + ", updatedAt='" + this.updatedAt + "'}";
     }
 }

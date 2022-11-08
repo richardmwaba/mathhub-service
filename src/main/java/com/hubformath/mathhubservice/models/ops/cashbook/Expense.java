@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.models.ops.cashbook;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -9,12 +10,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.hubformath.mathhubservice.models.config.ExpenseType;
 import com.hubformath.mathhubservice.models.config.PaymentMethod;
 
 @Entity
 public class Expense {
-    private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long id;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "payment_method_id")
@@ -34,6 +40,12 @@ public class Expense {
 
     private Long approvedBy;
 
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
     public Expense (){}
 
     public Expense(String narration, ExpenseStatus status, Double amount, Long createdBy, Long approvedBy) {
@@ -43,8 +55,7 @@ public class Expense {
         this.createdBy = createdBy;
         this.approvedBy = approvedBy;
     }
-
-    
+  
     public Long getId() {
         return id;
     }
@@ -104,6 +115,22 @@ public class Expense {
     public void setApprovedBy(Long approvedBy) {
         this.approvedBy = approvedBy;
     }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -118,19 +145,22 @@ public class Expense {
             && Objects.equals(this.status, expense.status)
             && Objects.equals(this.amount, expense.amount)
             && Objects.equals(this.createdBy, expense.createdBy)
-            && Objects.equals(this.approvedBy, expense.approvedBy);
+            && Objects.equals(this.approvedBy, expense.approvedBy)
+            && Objects.equals(this.createdAt, expense.createdAt)
+            && Objects.equals(this.updatedAt, expense.updatedAt);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(this.id, this.expenseType, this.paymentMethod, this.narration,
-                            this.status, this.amount, this.createdBy, this.approvedBy);
+                            this.status, this.amount, this.createdBy, this.approvedBy, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
-        return "Expense [id=" + this.id + ", expenseType=" + this.expenseType + ", paymentMethod=" + this.paymentMethod
+        return "Expense{id=" + this.id + ", expenseType=" + this.expenseType + ", paymentMethod=" + this.paymentMethod
                 + ", narration=" + this.narration + ", status=" + this.status + ", amount=" + this.amount + ", createdBy=" 
-                + this.createdBy + ", approvedBy=" + this.approvedBy + "]";
+                + this.createdBy + ", approvedBy=" + this.approvedBy + ", createdAt=" + this.createdAt 
+                + ", updatedAt=" + this.updatedAt + "}";
     } 
 }

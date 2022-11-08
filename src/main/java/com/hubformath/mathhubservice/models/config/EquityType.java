@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.models.config;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -8,15 +9,26 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.hubformath.mathhubservice.models.ops.cashbook.Equity;;
 
 @Entity
 public class EquityType {
-    private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long id;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
 
     private String typeName;
 
     private String typeDescription;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @OneToOne(mappedBy = "equityType")
     private Equity equity;
@@ -55,6 +67,22 @@ public class EquityType {
     public void setEquity(Equity equity) {
         this.equity = equity;
     }    
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -65,18 +93,21 @@ public class EquityType {
         EquityType equityType = (EquityType) o;
         return Objects.equals(this.id, equityType.id) && Objects.equals(this.typeName, equityType.typeName)
             && Objects.equals(this.typeDescription, equityType.typeDescription)
-            && Objects.equals(this.equity, equityType.equity);
+            && Objects.equals(this.equity, equityType.equity)
+            && Objects.equals(this.createdAt, equityType.createdAt)
+            && Objects.equals(this.updatedAt, equityType.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription, this.equity);
+        return Objects.hash(this.id, this.typeName, this.typeDescription, this.equity, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
-        return "EquityType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + 
-            ", typeDescription='" + this.typeDescription + ", equity='" + this.equity + "'}";
+        return "EquityType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + ", typeDescription='" 
+                + this.typeDescription + ", equity='" + this.equity + ", createdAt='" + this.createdAt 
+                + ", updatedAt='" + this.updatedAt + "'}";
     }
 
 }

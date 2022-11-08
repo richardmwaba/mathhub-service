@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.models.ops.cashbook;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -9,12 +10,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.hubformath.mathhubservice.models.config.EquityType;
 import com.hubformath.mathhubservice.models.config.PaymentMethod;
 
 @Entity
 public class Equity {
-    private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long id;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "payment_method_id")
@@ -31,6 +37,12 @@ public class Equity {
     private Long createdBy;
 
     private Long approvedBy;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public Equity (){}
 
@@ -112,13 +124,14 @@ public class Equity {
     @Override
     public int hashCode() {
         return Objects.hash(this.id, this.equityType, this.paymentMethod, this.narration,
-                            this.amount, this.createdBy, this.approvedBy);
+                            this.amount, this.createdBy, this.approvedBy, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
         return "Equity{id=" + this.id + ", equityType=" + this.equityType + ", paymentMethod=" + this.paymentMethod
                 + ", narration=" + this.narration + ", amount=" + this.amount + ", createdBy=" 
-                + this.createdBy + ", approvedBy=" + this.approvedBy + "}";
+                + this.createdBy + ", approvedBy=" + this.approvedBy + ", createdAt=" + this.createdAt 
+                + ", updatedAt=" + this.updatedAt +"}";
     }
 }

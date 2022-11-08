@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.models.config;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -7,11 +8,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 @Entity
 public class AssessmentType {
-    private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long id;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO) 
+    private Long id;
+
     private String typeName;
+    
     private String typeDescription;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public AssessmentType() {}
 
@@ -39,6 +53,22 @@ public class AssessmentType {
     public void setTypeDescription(String typeDescription) {
         this.typeDescription = typeDescription;
     }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -48,17 +78,19 @@ public class AssessmentType {
             return false;
         AssessmentType assessmentType = (AssessmentType) o;
         return Objects.equals(this.id, assessmentType.id) && Objects.equals(this.typeName, assessmentType.typeName)
-            && Objects.equals(this.typeDescription, assessmentType.typeDescription);
+            && Objects.equals(this.typeDescription, assessmentType.typeDescription)
+            && Objects.equals(this.createdAt, assessmentType.createdAt)
+            && Objects.equals(this.updatedAt, assessmentType.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription);
+        return Objects.hash(this.id, this.typeName, this.typeDescription, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
-        return "UserType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + 
-            ", typeDescription='" + this.typeDescription + "'}";
+        return "AsssessmentType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + ", typeDescription='" 
+                + this.typeDescription + ", createdAt='" + this.createdAt + ", updatedAt='" + this.updatedAt +"'}";
     }
 }
