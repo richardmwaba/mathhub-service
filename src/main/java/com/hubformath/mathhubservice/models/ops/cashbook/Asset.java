@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.models.ops.cashbook;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -9,12 +10,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.hubformath.mathhubservice.models.config.AssetType;
 import com.hubformath.mathhubservice.models.config.PaymentMethod;
 
 @Entity
 public class Asset {
-    private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long id;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "payment_method_id")
@@ -31,6 +37,12 @@ public class Asset {
     private Long createdBy;
 
     private Long approvedBy;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public Asset (){}
 
@@ -92,6 +104,22 @@ public class Asset {
     public void setApprovedBy(Long approvedBy) {
         this.approvedBy = approvedBy;
     }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -105,19 +133,22 @@ public class Asset {
             && Objects.equals(this.narration, asset.narration)
             && Objects.equals(this.amount, asset.amount)
             && Objects.equals(this.createdBy, asset.createdBy)
-            && Objects.equals(this.approvedBy, asset.approvedBy);
+            && Objects.equals(this.approvedBy, asset.approvedBy)
+            && Objects.equals(this.createdAt, asset.createdAt)
+            && Objects.equals(this.updatedAt, asset.updatedAt);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(this.id, this.assetType, this.paymentMethod, this.narration,
-                            this.amount, this.createdBy, this.approvedBy);
+                            this.amount, this.createdBy, this.approvedBy, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
-        return "Asset [id=" + this.id + ", assetType=" + this.assetType + ", paymentMethod=" + this.paymentMethod
+        return "Asset{id=" + this.id + ", assetType=" + this.assetType + ", paymentMethod=" + this.paymentMethod
                 + ", narration=" + this.narration + ", amount=" + this.amount + ", createdBy=" 
-                + this.createdBy + ", approvedBy=" + this.approvedBy + "]";
+                + this.createdBy + ", approvedBy=" + this.approvedBy + ", createdAt=" + this.createdBy 
+                + ", updatedAt=" + this.updatedAt +"}";
     }
 }

@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.models.config;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -8,15 +9,26 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.hubformath.mathhubservice.models.ops.cashbook.Asset;
 
 @Entity
 public class AssetType {
-    private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long id;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
     
     private String typeName;
 
     private String typeDescription;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @OneToOne(mappedBy = "assetType")
     private Asset asset;
@@ -55,6 +67,22 @@ public class AssetType {
     public void setTypeDescription(String typeDescription) {
         this.typeDescription = typeDescription;
     }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -65,17 +93,20 @@ public class AssetType {
         AssetType assetType = (AssetType) o;
         return Objects.equals(this.id, assetType.id) && Objects.equals(this.typeName, assetType.typeName)
             && Objects.equals(this.typeDescription, assetType.typeDescription)
-            && Objects.equals(this.asset, assetType.asset);
+            && Objects.equals(this.asset, assetType.asset)
+            && Objects.equals(this.createdAt, assetType.createdAt)
+            && Objects.equals(this.updatedAt, assetType.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription);
+        return Objects.hash(this.id, this.typeName, this.typeDescription, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
-        return "UserType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + 
-            ", typeDescription='" + this.typeDescription + ", asset='" + this.asset + "'}";
+        return "AssetType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + ", typeDescription='" 
+                + this.typeDescription + ", asset='" + this.asset + ", createdAt='" + this.createdAt 
+                + ", updatedAt='" + this.updatedAt + "'}";
     }
 }

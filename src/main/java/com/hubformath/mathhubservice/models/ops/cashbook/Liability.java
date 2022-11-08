@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.models.ops.cashbook;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -8,6 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.hubformath.mathhubservice.models.config.LiabilityType;
 import com.hubformath.mathhubservice.models.config.PaymentMethod;
@@ -29,6 +33,12 @@ public class Liability {
     private Long createdBy;
 
     private Long approvedBy;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public Liability(){}
 
@@ -81,6 +91,22 @@ public class Liability {
     public void setApprovedBy(Long approvedBy) {
         this.approvedBy = approvedBy;
     }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -94,7 +120,9 @@ public class Liability {
             && Objects.equals(this.paymentMethod, liability.paymentMethod)
             && Objects.equals(this.amount, liability.amount)
             && Objects.equals(this.createdBy, liability.createdBy)
-            && Objects.equals(this.approvedBy, liability.approvedBy);
+            && Objects.equals(this.approvedBy, liability.approvedBy)
+            && Objects.equals(this.createdAt, liability.createdAt)
+            && Objects.equals(this.updatedAt, liability.updatedAt);
     }
 
     @Override
@@ -104,8 +132,9 @@ public class Liability {
 
     @Override
     public String toString() {
-        return "Liability [id=" + this.id + ", liabilityType=" + this.liabilityType 
-                + ", paymentMethod=" + this.paymentMethod + ", amount=" + this.amount 
-                + ", createdBy=" + this.createdBy + ", approvedBy=" + this.approvedBy + "]";
+        return "Liability{id=" + this.id + ", liabilityType=" + this.liabilityType + ", paymentMethod=" 
+                + this.paymentMethod + ", amount=" + this.amount + ", createdBy=" + this.createdBy 
+                + ", approvedBy=" + this.approvedBy + ", createdAt=" + this.createdAt + ", updatedAt=" 
+                + this.updatedAt +"}";
     }
 }

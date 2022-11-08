@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.models.sis;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -8,12 +9,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 public class Student {
-    private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long id;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
 
     private String firstName;
 
@@ -21,23 +26,26 @@ public class Student {
 
     private String lastName;
 
-    @OneToMany
-    @JoinColumn(name = "parent_id")
-    private Parent parent;
+    @OneToMany(mappedBy = "student")
+    private List<Parent> parents;
 
     private String guardian;
 
     private String email;
     
-    @OneToMany
-    @JoinColumn(name = "address_id")
+    @OneToMany(mappedBy = "student")
     private List<Address> addresses;
     
-    @OneToMany
-    @JoinColumn(name = "phone_number_id")
+    @OneToMany(mappedBy = "student")
     private List<PhoneNumber> phoneNumbers;
 
     private Date dateOfBirth;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
     
     public Student() {
     }
@@ -78,12 +86,12 @@ public class Student {
         this.lastName = lastName;
     }
 
-    public Parent getParent() {
-        return parent;
+    public List<Parent> getParents() {
+        return parents;
     }
 
-    public void setParent(Parent parent) {
-        this.parent = parent;
+    public void setParents(List<Parent> parents) {
+        this.parents = parents;
     }
 
     public List<Address> getAddresses() {
@@ -116,6 +124,22 @@ public class Student {
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -127,23 +151,26 @@ public class Student {
         return Objects.equals(this.id, student.id) && Objects.equals(this.firstName, student.firstName)
             && Objects.equals(this.middleName, student.middleName)
             && Objects.equals(this.lastName, student.lastName)
-            && Objects.equals(this.parent, student.parent)
+            && Objects.equals(this.parents, student.parents)
             && Objects.equals(this.addresses, student.addresses)
             && Objects.equals(this.phoneNumbers, student.phoneNumbers)
             && Objects.equals(this.email, student.email)
-            && Objects.equals(this.dateOfBirth, student.dateOfBirth);
+            && Objects.equals(this.dateOfBirth, student.dateOfBirth)
+            && Objects.equals(this.createdAt, student.createdAt)
+            && Objects.equals(this.updatedAt, student.updatedAt);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(this.id, this.firstName, this.middleName, this.lastName,
-                            this.parent, this.guardian, this.email, this.dateOfBirth);
+                            this.parents, this.guardian, this.email, this.dateOfBirth, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
         return "Student {id=" + this.id + ", firstName=" + this.firstName + ", middleName=" + this.middleName + ", LastName="
-                + this.lastName + ", parent=" + this.parent + ", addresses=" + this.addresses + ", phoneNumbers=" 
-                + this.phoneNumbers + ", email=" + this.email + ", dateOfBirth=" + this.dateOfBirth + "}";
+                + this.lastName + ", parents=" + this.parents + ", addresses=" + this.addresses + ", phoneNumbers=" 
+                + this.phoneNumbers + ", email=" + this.email + ", dateOfBirth=" + this.dateOfBirth 
+                + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
     } 
 }
