@@ -18,7 +18,9 @@ import com.hubformath.mathhubservice.models.config.PaymentMethod;
 
 @Entity
 public class Liability {
-    private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long id;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO) 
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "liability_type_id")

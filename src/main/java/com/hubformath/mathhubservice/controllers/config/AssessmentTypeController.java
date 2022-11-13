@@ -24,7 +24,7 @@ import com.hubformath.mathhubservice.repositories.config.AssessmentTypeRepositor
 import com.hubformath.mathhubservice.utils.exceptions.ItemNotFoundException;
 
 @RestController
-@RequestMapping(path="/v1/api/sis")
+@RequestMapping(path="/api/v1/sis")
 public class AssessmentTypeController {
     private final AssessmentTypeRepository repository;
     private final AssessmentTypeModelAssembler assembler;
