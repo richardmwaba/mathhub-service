@@ -24,7 +24,7 @@ import com.hubformath.mathhubservice.repositories.config.ExpenseTypeRepository;
 import com.hubformath.mathhubservice.utils.exceptions.ItemNotFoundException;
 
 @RestController
-@RequestMapping(path="/v1/api/ops")
+@RequestMapping(path="/api/v1/ops")
 public class ExpenseTypeController {
     private final ExpenseTypeRepository repository;
     private final ExpenseTypeModelAssembler assembler;

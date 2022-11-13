@@ -25,7 +25,7 @@ import com.hubformath.mathhubservice.repositories.config.AssetTypeRepository;
 import com.hubformath.mathhubservice.utils.exceptions.ItemNotFoundException;
 
 @RestController
-@RequestMapping(path="/v1/api/ops")
+@RequestMapping(path="/api/v1/ops")
 public class AssetTypeController {
     @Autowired
     private final AssetTypeRepository repository;

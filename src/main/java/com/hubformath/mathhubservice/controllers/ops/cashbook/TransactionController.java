@@ -26,7 +26,7 @@ import com.hubformath.mathhubservice.utils.exceptions.ItemNotFoundException;
 
 
 @RestController
-@RequestMapping(path="/v1/api/ops/transactions")
+@RequestMapping(path="/api/v1/ops/transactions")
 public class TransactionController {
     @Autowired
     private final TransactionRepository repository;

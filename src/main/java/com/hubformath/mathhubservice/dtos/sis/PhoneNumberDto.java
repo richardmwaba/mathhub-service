@@ -1,0 +1,65 @@
+package com.hubformath.mathhubservice.dtos.sis;
+
+import com.hubformath.mathhubservice.models.sis.PhoneNumberType;
+
+public class PhoneNumberDto {
+    private Long id;
+
+    private PhoneNumberType type;
+
+    private String countryCode;
+
+    private String number;
+
+    private StudentDto student;
+
+    private ParentDto parent;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public PhoneNumberType getType() {
+        return type;
+    }
+
+    public void setType(PhoneNumberType type) {
+        this.type = type;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public StudentDto getStudent() {
+        return student;
+    }
+
+    public void setStudent(StudentDto student) {
+        this.student = student;
+    }
+
+    public ParentDto getParent() {
+        return parent;
+    }
+
+    public void setParent(ParentDto parent) {
+        this.parent = parent;
+    }
+}

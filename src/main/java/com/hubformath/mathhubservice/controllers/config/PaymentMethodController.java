@@ -24,7 +24,7 @@ import com.hubformath.mathhubservice.repositories.config.PaymentMethodRepository
 import com.hubformath.mathhubservice.utils.exceptions.ItemNotFoundException;
 
 @RestController
-@RequestMapping(path="/v1/api/ops")
+@RequestMapping(path="/api/v1/ops")
 public class PaymentMethodController {
     private final PaymentMethodRepository repository;
     private final PaymentMethodModelAssembler assembler;
