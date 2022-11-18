@@ -3,11 +3,9 @@ package com.hubformath.mathhubservice.controllers.config;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.IanaLinkRelations;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,69 +16,64 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.assemblers.config.AssessmentTypeModelAssembler;
+import com.hubformath.mathhubservice.dtos.config.AssessmentTypeDto;
 import com.hubformath.mathhubservice.models.config.AssessmentType;
-import com.hubformath.mathhubservice.repositories.config.AssessmentTypeRepository;
-import com.hubformath.mathhubservice.utils.exceptions.ItemNotFoundException;
+import com.hubformath.mathhubservice.services.config.IAssessmentTypeService;
 
 @RestController
 @RequestMapping(path="/api/v1/sis")
 public class AssessmentTypeController {
-    private final AssessmentTypeRepository repository;
-    private final AssessmentTypeModelAssembler assembler;
+    @Autowired
+    private ModelMapper modelMapper;
 
-    public AssessmentTypeController(AssessmentTypeRepository repository, AssessmentTypeModelAssembler assembler) {
-        this.repository = repository;
-        this.assembler = assembler;
+    @Autowired
+    private IAssessmentTypeService assessmentTypeService;
+
+    public AssessmentTypeController() {
+        super();
     }
 
     @GetMapping("/assessmentTypes")
-    public CollectionModel<EntityModel<AssessmentType>> all() {
-        List<EntityModel<AssessmentType>> assessmentTypes = repository.findAll().stream()
-                .map(assembler::toModel)
+    public List<AssessmentTypeDto> all() {
+        return assessmentTypeService.getAllAssessmentTypes().stream()
+                .map(assessmentType -> modelMapper.map(assessmentType, AssessmentTypeDto.class))
                 .collect(Collectors.toList());
-
-        return CollectionModel.of(assessmentTypes, linkTo(methodOn(AssessmentTypeController.class).all()).withSelfRel());
     }
 
     @PostMapping("/assessmentTypes")
-    public ResponseEntity<EntityModel<AssessmentType>> newAssessmentType(@RequestBody AssessmentType newAssessmentType) {
-        EntityModel<AssessmentType> entityModel = assembler.toModel(repository.save(newAssessmentType));
+    public ResponseEntity<AssessmentTypeDto> newAssessmentType(@RequestBody AssessmentTypeDto assessmentTypeDto) {
+        AssessmentType assessmentTypeRequest = modelMapper.map(assessmentTypeDto, AssessmentType.class);
+        AssessmentType newAssessmentType = assessmentTypeService.createAssessmentType(assessmentTypeRequest);
 
-        return ResponseEntity //
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-                .body(entityModel);
+        AssessmentTypeDto assessmentTypeResponse = modelMapper.map(newAssessmentType, AssessmentTypeDto.class);
+
+        return new ResponseEntity<>(assessmentTypeResponse, HttpStatus.CREATED);
     }
 
     @GetMapping("/assessmentTypes/{id}")
-    public EntityModel<AssessmentType> one(@PathVariable Long id) {
-        AssessmentType assessmentType = repository.findById(id) //
-                .orElseThrow(() -> new ItemNotFoundException(id, "assessmentType"));
+    public ResponseEntity<AssessmentTypeDto> one(@PathVariable Long id) {
+        AssessmentType assessmentType = assessmentTypeService.getAssessmentTypeById(id);
 
-        return assembler.toModel(assessmentType);
+        AssessmentTypeDto assessmentTypeResponse = modelMapper.map(assessmentType, AssessmentTypeDto.class);
+                
+        return ResponseEntity.ok().body(assessmentTypeResponse);
     }
 
     @PutMapping("/assessmentTypes/{id}")
-    public ResponseEntity<EntityModel<AssessmentType>> replaceAssessmentType(@RequestBody AssessmentType newAssessmentType,
+    public ResponseEntity<AssessmentTypeDto> replaceAssessmentType(@RequestBody AssessmentTypeDto assessmentTypeDto,
             @PathVariable Long id) {
-        AssessmentType updatedAssessmentType = repository.findById(id) //
-                .map(assessmentType -> {
-                    assessmentType.setTypeName(newAssessmentType.getTypeName());
-                    assessmentType.setTypeDescription(newAssessmentType.getTypeDescription());
-                    return repository.save(assessmentType);
-                }) //
-                .orElseThrow(() -> new ItemNotFoundException(id, "assessment type"));
+        AssessmentType assessmentTypeRequest = modelMapper.map(assessmentTypeDto, AssessmentType.class);
+        AssessmentType updatedAssessmentType = assessmentTypeService.updateAssessmentType(id, assessmentTypeRequest);
 
-        EntityModel<AssessmentType> entityModel = assembler.toModel(updatedAssessmentType);
+        AssessmentTypeDto assessmentTypeResponse = modelMapper.map(updatedAssessmentType, AssessmentTypeDto.class);
 
-        return ResponseEntity //
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-                .body(entityModel);
+        return ResponseEntity.ok().body(assessmentTypeResponse);
+        
     }
 
     @DeleteMapping("/assessmentTypes/{id}")
     public ResponseEntity<?> deleteAssessmentType(@PathVariable Long id) {
-        repository.deleteById(id);
+        assessmentTypeService.deleteAssessmentType(id);
 
         return ResponseEntity.noContent().build();
     }
