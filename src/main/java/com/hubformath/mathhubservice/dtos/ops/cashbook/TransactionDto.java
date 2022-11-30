@@ -17,7 +17,7 @@ public class TransactionDto {
 
     private PaymentMethodDto paymentMethod;
 
-    private TransactionType type;
+    private TransactionType transactionType;
 
     private String narration;
 
@@ -50,11 +50,11 @@ public class TransactionDto {
     }
 
     public TransactionType getType() {
-        return type;
+        return transactionType;
     }
 
-    public void setType(TransactionType type) {
-        this.type = type;
+    public void setType(TransactionType transactionType) {
+        this.transactionType = transactionType;
     }
 
     public String getNarration() {

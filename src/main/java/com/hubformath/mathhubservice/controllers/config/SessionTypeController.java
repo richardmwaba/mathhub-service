@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -19,69 +21,81 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hubformath.mathhubservice.assemblers.config.SessionTypeModelAssembler;
+import com.hubformath.mathhubservice.dtos.config.SessionTypeDto;
 import com.hubformath.mathhubservice.models.config.SessionType;
 import com.hubformath.mathhubservice.repositories.config.SessionTypeRepository;
+import com.hubformath.mathhubservice.services.config.ISessionTypeService;
 import com.hubformath.mathhubservice.utils.exceptions.ItemNotFoundException;
 
 @RestController
 @RequestMapping(path="/v1/sis/ops")
 public class SessionTypeController {
-    private final SessionTypeRepository repository;
-    private final SessionTypeModelAssembler assembler;
+    @Autowired
+    private ModelMapper modelMapper;
 
-    public SessionTypeController(SessionTypeRepository repository, SessionTypeModelAssembler assembler) {
-        this.repository = repository;
-        this.assembler = assembler;
+    @Autowired
+    private ISessionTypeService sessionTypeService;
+
+    @Autowired
+    private SessionTypeModelAssembler sessionTypeModelAssembler;
+
+    public SessionTypeController() {
+        super();
     }
 
     @GetMapping("/sessionTypes")
-    public CollectionModel<EntityModel<SessionType>> all() {
-        List<EntityModel<SessionType>> sessionTypes = repository.findAll().stream()
-                .map(assembler::toModel)
+    public ResponseEntity<CollectionModel<EntityModel<SessionTypeDto>>> getAllSessionTypes() {
+        List<SessionTypeDto> sessionTypes = sessionTypeService.getAllSessionTypes().stream()
+                .map(sessionType -> modelMapper.map(sessionType, SessionTypeDto.class))
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(sessionTypes, linkTo(methodOn(SessionTypeController.class).all()).withSelfRel());
+        CollectionModel<EntityModel<SessionTypeDto>> sessionTypeCollectionModel = sessionTypeModelAssembler
+                .toCollectionModel(sessionTypes);
+
+        return ResponseEntity.ok().body(sessionTypeCollectionModel);
     }
 
     @PostMapping("/sessionTypes")
-    public ResponseEntity<EntityModel<SessionType>> newSessionType(@RequestBody SessionType newSessionType) {
-        EntityModel<SessionType> entityModel = assembler.toModel(repository.save(newSessionType));
+    public ResponseEntity<EntityModel<SessionTypeDto>> newSessionType(
+            @RequestBody SessionTypeDto sessionTypeDto) {
+        SessionType sessionTypeRequest = modelMapper.map(sessionTypeDto, SessionType.class);
+        SessionType newSessionType = sessionTypeService.createSessionType(sessionTypeRequest);
 
-        return ResponseEntity //
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-                .body(entityModel);
+        EntityModel<SessionTypeDto> sessionTypeEntityModel = sessionTypeModelAssembler
+                .toModel(modelMapper.map(newSessionType, SessionTypeDto.class));
+
+        return ResponseEntity.created(sessionTypeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(sessionTypeEntityModel);
     }
 
     @GetMapping("/sessionTypes/{id}")
-    public EntityModel<SessionType> one(@PathVariable Long id) {
-        SessionType sessionType = repository.findById(id) //
-                .orElseThrow(() -> new ItemNotFoundException(id, "sessionType"));
+    public ResponseEntity<EntityModel<SessionTypeDto>> getSessionTypeById(@PathVariable Long id) {
+        SessionType sessionType = sessionTypeService.getSessionTypeById(id);
 
-        return assembler.toModel(sessionType);
+        EntityModel<SessionTypeDto> sessionTypeEntityModel = sessionTypeModelAssembler
+                .toModel(modelMapper.map(sessionType, SessionTypeDto.class));
+
+        return ResponseEntity.ok().body(sessionTypeEntityModel);
     }
 
     @PutMapping("/sessionTypes/{id}")
-    public ResponseEntity<EntityModel<SessionType>> replaceSessionType(@RequestBody SessionType newSessionType,
+    public ResponseEntity<EntityModel<SessionTypeDto>> replaceSessionType(
+            @RequestBody SessionTypeDto sessionTypeDto,
             @PathVariable Long id) {
-        SessionType updatedSessionType = repository.findById(id) //
-                .map(sessionType -> {
-                    sessionType.setTypeName(newSessionType.getTypeName());
-                    sessionType.setTypeDescription(newSessionType.getTypeDescription());
-                    return repository.save(sessionType);
-                }) //
-                .orElseThrow(() -> new ItemNotFoundException(id, "session type"));
+        SessionType sessionTypeRequest = modelMapper.map(sessionTypeDto, SessionType.class);
+        SessionType updatedSessionType = sessionTypeService.updateSessionType(id, sessionTypeRequest);
 
-        EntityModel<SessionType> entityModel = assembler.toModel(updatedSessionType);
+        EntityModel<SessionTypeDto> sessionTypeEntityModel = sessionTypeModelAssembler
+                .toModel(modelMapper.map(updatedSessionType, SessionTypeDto.class));
 
-        return ResponseEntity //
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-                .body(entityModel);
+        return ResponseEntity.ok().body(sessionTypeEntityModel);
+
     }
 
     @DeleteMapping("/sessionTypes/{id}")
-    public ResponseEntity<?> deleteSessionType(@PathVariable Long id) {
-        repository.deleteById(id);
+    public ResponseEntity<String> deleteSessionType(@PathVariable Long id) {
+        sessionTypeService.deleteSessionType(id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("Session type deleted succefully");
     }
 }

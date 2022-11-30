@@ -5,7 +5,7 @@ import com.hubformath.mathhubservice.models.sis.AddressType;
 public class AddressDto {
     private Long id;
     
-    private AddressType type;
+    private AddressType addressType;
 
     private String addressLine1;
 
@@ -31,12 +31,12 @@ public class AddressDto {
         this.id = id;
     }
 
-    public AddressType getType() {
-        return type;
+    public AddressType getAddressType() {
+        return addressType;
     }
 
-    public void setType(AddressType type) {
-        this.type = type;
+    public void setAddressType(AddressType addressType) {
+        this.addressType = addressType;
     }
 
     public String getAddressLine1() {

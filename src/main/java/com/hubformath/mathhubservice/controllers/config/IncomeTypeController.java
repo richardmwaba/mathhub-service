@@ -3,8 +3,8 @@ package com.hubformath.mathhubservice.controllers.config;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -19,69 +19,79 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hubformath.mathhubservice.assemblers.config.IncomeTypeModelAssembler;
+import com.hubformath.mathhubservice.dtos.config.IncomeTypeDto;
 import com.hubformath.mathhubservice.models.config.IncomeType;
-import com.hubformath.mathhubservice.repositories.config.IncomeTypeRepository;
-import com.hubformath.mathhubservice.utils.exceptions.ItemNotFoundException;
+import com.hubformath.mathhubservice.services.config.IIncomeTypeService;
 
 @RestController
 @RequestMapping(path="/api/v1/ops")
 public class IncomeTypeController {
-    private final IncomeTypeRepository repository;
-    private final IncomeTypeModelAssembler assembler;
+    @Autowired
+    private ModelMapper modelMapper;
 
-    public IncomeTypeController(IncomeTypeRepository repository, IncomeTypeModelAssembler assembler) {
-        this.repository = repository;
-        this.assembler = assembler;
+    @Autowired
+    private IIncomeTypeService incomeTypeService;
+
+    @Autowired
+    private IncomeTypeModelAssembler incomeTypeModelAssembler;
+
+    public IncomeTypeController() {
+        super();
     }
 
     @GetMapping("/incomeTypes")
-    public CollectionModel<EntityModel<IncomeType>> all() {
-        List<EntityModel<IncomeType>> incomeTypes = repository.findAll().stream()
-                .map(assembler::toModel)
+    public ResponseEntity<CollectionModel<EntityModel<IncomeTypeDto>>> getAllIncomeTypes() {
+        List<IncomeTypeDto> incomeTypes = incomeTypeService.getAllIncomeTypes().stream()
+                .map(incomeType -> modelMapper.map(incomeType, IncomeTypeDto.class))
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(incomeTypes, linkTo(methodOn(IncomeTypeController.class).all()).withSelfRel());
+        CollectionModel<EntityModel<IncomeTypeDto>> incomeTypeCollectionModel = incomeTypeModelAssembler
+                .toCollectionModel(incomeTypes);
+
+        return ResponseEntity.ok().body(incomeTypeCollectionModel);
     }
 
     @PostMapping("/incomeTypes")
-    public ResponseEntity<EntityModel<IncomeType>> newIncomeType(@RequestBody IncomeType newIncomeType) {
-        EntityModel<IncomeType> entityModel = assembler.toModel(repository.save(newIncomeType));
+    public ResponseEntity<EntityModel<IncomeTypeDto>> newIncomeType(
+            @RequestBody IncomeTypeDto incomeTypeDto) {
+        IncomeType incomeTypeRequest = modelMapper.map(incomeTypeDto, IncomeType.class);
+        IncomeType newIncomeType = incomeTypeService.createIncomeType(incomeTypeRequest);
 
-        return ResponseEntity //
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-                .body(entityModel);
+        EntityModel<IncomeTypeDto> incomeTypeEntityModel = incomeTypeModelAssembler
+                .toModel(modelMapper.map(newIncomeType, IncomeTypeDto.class));
+
+        return ResponseEntity.created(incomeTypeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(incomeTypeEntityModel);
     }
 
     @GetMapping("/incomeTypes/{id}")
-    public EntityModel<IncomeType> one(@PathVariable Long id) {
-        IncomeType incomeType = repository.findById(id) //
-                .orElseThrow(() -> new ItemNotFoundException(id, "incomeType"));
+    public ResponseEntity<EntityModel<IncomeTypeDto>> getIncomeTypeById(@PathVariable Long id) {
+        IncomeType incomeType = incomeTypeService.getIncomeTypeById(id);
 
-        return assembler.toModel(incomeType);
+        EntityModel<IncomeTypeDto> incomeTypeEntityModel = incomeTypeModelAssembler
+                .toModel(modelMapper.map(incomeType, IncomeTypeDto.class));
+
+        return ResponseEntity.ok().body(incomeTypeEntityModel);
     }
 
     @PutMapping("/incomeTypes/{id}")
-    public ResponseEntity<EntityModel<IncomeType>> replaceIncomeType(@RequestBody IncomeType newIncomeType,
+    public ResponseEntity<EntityModel<IncomeTypeDto>> replaceIncomeType(
+            @RequestBody IncomeTypeDto incomeTypeDto,
             @PathVariable Long id) {
-        IncomeType updatedIncomeType = repository.findById(id) //
-                .map(incomeType -> {
-                    incomeType.setTypeName(newIncomeType.getTypeName());
-                    incomeType.setTypeDescription(newIncomeType.getTypeDescription());
-                    return repository.save(incomeType);
-                }) //
-                .orElseThrow(() -> new ItemNotFoundException(id, "income type"));
+        IncomeType incomeTypeRequest = modelMapper.map(incomeTypeDto, IncomeType.class);
+        IncomeType updatedIncomeType = incomeTypeService.updateIncomeType(id, incomeTypeRequest);
 
-        EntityModel<IncomeType> entityModel = assembler.toModel(updatedIncomeType);
+        EntityModel<IncomeTypeDto> incomeTypeEntityModel = incomeTypeModelAssembler
+                .toModel(modelMapper.map(updatedIncomeType, IncomeTypeDto.class));
 
-        return ResponseEntity //
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-                .body(entityModel);
+        return ResponseEntity.ok().body(incomeTypeEntityModel);
+
     }
 
     @DeleteMapping("/incomeTypes/{id}")
-    public ResponseEntity<?> deleteIncomeType(@PathVariable Long id) {
-        repository.deleteById(id);
+    public ResponseEntity<String> deleteIncomeType(@PathVariable Long id) {
+        incomeTypeService.deleteIncomeType(id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("Income type deleted succefully");
     }
 }

@@ -6,7 +6,7 @@ import com.hubformath.mathhubservice.dtos.config.PaymentMethodDto;
 public class LiabilityDto {
     private Long id;
 
-    private LiabilityTypeDto type;
+    private LiabilityTypeDto liabilityType;
 
     private PaymentMethodDto paymentMethod;
 
@@ -21,11 +21,11 @@ public class LiabilityDto {
     }
 
     public LiabilityTypeDto getType() {
-        return type;
+        return liabilityType;
     }
 
-    public void setType(LiabilityTypeDto type) {
-        this.type = type;
+    public void setType(LiabilityTypeDto liabilityType) {
+        this.liabilityType = liabilityType;
     }
 
     public PaymentMethodDto getPaymentMethod() {
