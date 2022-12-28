@@ -20,7 +20,7 @@ public class AssessmentTypeModelAssembler
     @Override
     public EntityModel<AssessmentTypeDto> toModel(AssessmentTypeDto assessmentType) {
 
-        return EntityModel.of(assessmentType, //
+        return EntityModel.of(assessmentType,
             linkTo(methodOn(AssessmentTypeController.class).getAssessmentTypeById(assessmentType.getId())).withSelfRel(),
             linkTo(methodOn(AssessmentTypeController.class).getAllAssessmentTypes()).withRel("assessmentTypes"));
     }

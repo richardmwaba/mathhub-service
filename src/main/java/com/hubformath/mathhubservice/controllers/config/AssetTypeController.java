@@ -3,8 +3,7 @@ package com.hubformath.mathhubservice.controllers.config;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -20,70 +19,79 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hubformath.mathhubservice.assemblers.config.AssetTypeModelAssembler;
+import com.hubformath.mathhubservice.dtos.config.AssetTypeDto;
 import com.hubformath.mathhubservice.models.config.AssetType;
-import com.hubformath.mathhubservice.repositories.config.AssetTypeRepository;
-import com.hubformath.mathhubservice.utils.exceptions.ItemNotFoundException;
+import com.hubformath.mathhubservice.services.config.IAssetTypeService;
 
 @RestController
 @RequestMapping(path="/api/v1/ops")
 public class AssetTypeController {
     @Autowired
-    private final AssetTypeRepository repository;
-    private final AssetTypeModelAssembler assembler;
+    private ModelMapper modelMapper;
 
-    public AssetTypeController(AssetTypeRepository repository, AssetTypeModelAssembler assembler) {
-        this.repository = repository;
-        this.assembler = assembler;
+    @Autowired
+    private IAssetTypeService assetTypeService;
+
+    @Autowired
+    private AssetTypeModelAssembler assetTypeModelAssembler;
+
+    public AssetTypeController() {
+        super();
     }
 
     @GetMapping("/assetTypes")
-    public CollectionModel<EntityModel<AssetType>> all() {
-        List<EntityModel<AssetType>> assetTypes = repository.findAll().stream()
-                .map(assembler::toModel)
+    public ResponseEntity<CollectionModel<EntityModel<AssetTypeDto>>> getAllAssetTypes() {
+        List<AssetTypeDto> assetTypes = assetTypeService.getAllAssetTypes().stream()
+                .map(assetType -> modelMapper.map(assetType, AssetTypeDto.class))
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(assetTypes, linkTo(methodOn(AssetTypeController.class).all()).withSelfRel());
+        CollectionModel<EntityModel<AssetTypeDto>> assetTypeCollectionModel = assetTypeModelAssembler
+                .toCollectionModel(assetTypes);
+
+        return ResponseEntity.ok().body(assetTypeCollectionModel);
     }
 
     @PostMapping("/assetTypes")
-    public ResponseEntity<EntityModel<AssetType>> newAssetType(@RequestBody AssetType newAssetType) {
-        EntityModel<AssetType> entityModel = assembler.toModel(repository.save(newAssetType));
+    public ResponseEntity<EntityModel<AssetTypeDto>> newAssetType(
+            @RequestBody AssetTypeDto assetTypeDto) {
+        AssetType assetTypeRequest = modelMapper.map(assetTypeDto, AssetType.class);
+        AssetType newAssetType = assetTypeService.createAssetType(assetTypeRequest);
 
-        return ResponseEntity //
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-                .body(entityModel);
+        EntityModel<AssetTypeDto> assetTypeEntityModel = assetTypeModelAssembler
+                .toModel(modelMapper.map(newAssetType, AssetTypeDto.class));
+
+        return ResponseEntity.created(assetTypeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(assetTypeEntityModel);
     }
 
     @GetMapping("/assetTypes/{id}")
-    public EntityModel<AssetType> one(@PathVariable Long id) {
-        AssetType assetType = repository.findById(id) //
-                .orElseThrow(() -> new ItemNotFoundException(id, "assetType"));
+    public ResponseEntity<EntityModel<AssetTypeDto>> getAssetTypeById(@PathVariable Long id) {
+        AssetType assetType = assetTypeService.getAssetTypeById(id);
 
-        return assembler.toModel(assetType);
+        EntityModel<AssetTypeDto> assetTypeEntityModel = assetTypeModelAssembler
+                .toModel(modelMapper.map(assetType, AssetTypeDto.class));
+
+        return ResponseEntity.ok().body(assetTypeEntityModel);
     }
 
     @PutMapping("/assetTypes/{id}")
-    public ResponseEntity<EntityModel<AssetType>> replaceAssetType(@RequestBody AssetType newAssetType,
+    public ResponseEntity<EntityModel<AssetTypeDto>> replaceAssetType(
+            @RequestBody AssetTypeDto assetTypeDto,
             @PathVariable Long id) {
-        AssetType updatedAssetType = repository.findById(id) //
-                .map(assetType -> {
-                    assetType.setTypeName(newAssetType.getTypeName());
-                    assetType.setTypeDescription(newAssetType.getTypeDescription());
-                    return repository.save(assetType);
-                }) //
-                .orElseThrow(() -> new ItemNotFoundException(id, "asset type"));
+        AssetType assetTypeRequest = modelMapper.map(assetTypeDto, AssetType.class);
+        AssetType updatedAssetType = assetTypeService.updateAssetType(id, assetTypeRequest);
 
-        EntityModel<AssetType> entityModel = assembler.toModel(updatedAssetType);
+        EntityModel<AssetTypeDto> assetTypeEntityModel = assetTypeModelAssembler
+                .toModel(modelMapper.map(updatedAssetType, AssetTypeDto.class));
 
-        return ResponseEntity //
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-                .body(entityModel);
+        return ResponseEntity.ok().body(assetTypeEntityModel);
+
     }
 
     @DeleteMapping("/assetTypes/{id}")
-    public ResponseEntity<?> deleteAssetType(@PathVariable Long id) {
-        repository.deleteById(id);
+    public ResponseEntity<String> deleteAssetType(@PathVariable Long id) {
+        assetTypeService.deleteAssetType(id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("Assessment type deleted succefully");
     }
 }

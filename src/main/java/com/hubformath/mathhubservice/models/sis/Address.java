@@ -19,7 +19,7 @@ public class Address {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     
-    private AddressType type;
+    private AddressType addressType;
 
     private String addressLine1;
 
@@ -50,9 +50,9 @@ public class Address {
     public Address() {
     }
 
-    public Address(AddressType type, String addressLine1, String addressLine2, String addressLine3, String city,
+    public Address(AddressType addressType, String addressLine1, String addressLine2, String addressLine3, String city,
             String province, String zipCode) {
-        this.type = type;
+        this.addressType = addressType;
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
         this.addressLine3 = addressLine3;
@@ -65,12 +65,12 @@ public class Address {
         return id;
     }
 
-    public AddressType getType() {
-        return type;
+    public AddressType getAddressType() {
+        return addressType;
     }
 
-    public void setType(AddressType type) {
-        this.type = type;
+    public void setAddressType(AddressType addressType) {
+        this.addressType = addressType;
     }
 
     public String getAddresLine1() {
@@ -160,7 +160,7 @@ public class Address {
         if (!(o instanceof Address))
             return false;
         Address address = (Address) o;
-        return Objects.equals(this.id, address.id) && Objects.equals(this.type, address.type)
+        return Objects.equals(this.id, address.id) && Objects.equals(this.addressType, address.addressType)
             && Objects.equals(this.addressLine1, address.addressLine1)
             && Objects.equals(this.addressLine2, address.addressLine2)
             && Objects.equals(this.addressLine3, address.addressLine3)
@@ -175,13 +175,13 @@ public class Address {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.type, this.addressLine1, this.addressLine2, this.addressLine3,
+        return Objects.hash(this.id, this.addressType, this.addressLine1, this.addressLine2, this.addressLine3,
                             this.city, this.province, this.zipCode, this.student, this.parent);
     }
 
     @Override
     public String toString() {
-        return "Address{id=" + this.id + ", type=" + this.type + ", addressLine1=" + this.addressLine1 
+        return "Address{id=" + this.id + ", addressType=" + this.addressType + ", addressLine1=" + this.addressLine1 
                 + ", addressLine2=" + this.addressLine2 + ", addressLine3=" + this.addressLine3 
                 + ", city=" + this.city + ", province=" + this.province + ", zipCode=" + this.zipCode 
                 + ", student=" + this.student + ", parent=" + this.parent + ", createdAt=" + this.createdAt 

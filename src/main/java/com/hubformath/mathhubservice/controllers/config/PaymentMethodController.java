@@ -3,8 +3,8 @@ package com.hubformath.mathhubservice.controllers.config;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -19,69 +19,79 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hubformath.mathhubservice.assemblers.config.PaymentMethodModelAssembler;
+import com.hubformath.mathhubservice.dtos.config.PaymentMethodDto;
 import com.hubformath.mathhubservice.models.config.PaymentMethod;
-import com.hubformath.mathhubservice.repositories.config.PaymentMethodRepository;
-import com.hubformath.mathhubservice.utils.exceptions.ItemNotFoundException;
+import com.hubformath.mathhubservice.services.config.IPaymentMethodService;
 
 @RestController
 @RequestMapping(path="/api/v1/ops")
 public class PaymentMethodController {
-    private final PaymentMethodRepository repository;
-    private final PaymentMethodModelAssembler assembler;
+    @Autowired
+    private ModelMapper modelMapper;
 
-    public PaymentMethodController(PaymentMethodRepository repository, PaymentMethodModelAssembler assembler) {
-        this.repository = repository;
-        this.assembler = assembler;
+    @Autowired
+    private IPaymentMethodService paymentMethodService;
+
+    @Autowired
+    private PaymentMethodModelAssembler paymentMethodModelAssembler;
+
+    public PaymentMethodController() {
+        super();
     }
 
     @GetMapping("/paymentMethods")
-    public CollectionModel<EntityModel<PaymentMethod>> all() {
-        List<EntityModel<PaymentMethod>> paymentMethods = repository.findAll().stream()
-                .map(assembler::toModel)
+    public ResponseEntity<CollectionModel<EntityModel<PaymentMethodDto>>> getAllPaymentMethods() {
+        List<PaymentMethodDto> paymentMethods = paymentMethodService.getAllPaymentMethods().stream()
+                .map(paymentMethod -> modelMapper.map(paymentMethod, PaymentMethodDto.class))
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(paymentMethods, linkTo(methodOn(PaymentMethodController.class).all()).withSelfRel());
+        CollectionModel<EntityModel<PaymentMethodDto>> paymentMethodCollectionModel = paymentMethodModelAssembler
+                .toCollectionModel(paymentMethods);
+
+        return ResponseEntity.ok().body(paymentMethodCollectionModel);
     }
 
     @PostMapping("/paymentMethods")
-    public ResponseEntity<EntityModel<PaymentMethod>> newPaymentMethod(@RequestBody PaymentMethod newPaymentMethod) {
-        EntityModel<PaymentMethod> entityModel = assembler.toModel(repository.save(newPaymentMethod));
+    public ResponseEntity<EntityModel<PaymentMethodDto>> newPaymentMethod(
+            @RequestBody PaymentMethodDto paymentMethodDto) {
+        PaymentMethod paymentMethodRequest = modelMapper.map(paymentMethodDto, PaymentMethod.class);
+        PaymentMethod newPaymentMethod = paymentMethodService.createPaymentMethod(paymentMethodRequest);
 
-        return ResponseEntity //
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-                .body(entityModel);
+        EntityModel<PaymentMethodDto> paymentMethodEntityModel = paymentMethodModelAssembler
+                .toModel(modelMapper.map(newPaymentMethod, PaymentMethodDto.class));
+
+        return ResponseEntity.created(paymentMethodEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(paymentMethodEntityModel);
     }
 
     @GetMapping("/paymentMethods/{id}")
-    public EntityModel<PaymentMethod> one(@PathVariable Long id) {
-        PaymentMethod paymentMethod = repository.findById(id) //
-                .orElseThrow(() -> new ItemNotFoundException(id, "paymentMethod"));
+    public ResponseEntity<EntityModel<PaymentMethodDto>> getPaymentMethodById(@PathVariable Long id) {
+        PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(id);
 
-        return assembler.toModel(paymentMethod);
+        EntityModel<PaymentMethodDto> paymentMethodEntityModel = paymentMethodModelAssembler
+                .toModel(modelMapper.map(paymentMethod, PaymentMethodDto.class));
+
+        return ResponseEntity.ok().body(paymentMethodEntityModel);
     }
 
     @PutMapping("/paymentMethods/{id}")
-    public ResponseEntity<EntityModel<PaymentMethod>> replacePaymentMethod(@RequestBody PaymentMethod newPaymentMethod,
+    public ResponseEntity<EntityModel<PaymentMethodDto>> replacePaymentMethod(
+            @RequestBody PaymentMethodDto paymentMethodDto,
             @PathVariable Long id) {
-        PaymentMethod updatedPaymentMethod = repository.findById(id) //
-                .map(paymentMethod -> {
-                    paymentMethod.setTypeName(newPaymentMethod.getTypeName());
-                    paymentMethod.setTypeDescription(newPaymentMethod.getTypeDescription());
-                    return repository.save(paymentMethod);
-                }) //
-                .orElseThrow(() -> new ItemNotFoundException(id, "payment method"));
+        PaymentMethod paymentMethodRequest = modelMapper.map(paymentMethodDto, PaymentMethod.class);
+        PaymentMethod updatedPaymentMethod = paymentMethodService.updatePaymentMethod(id, paymentMethodRequest);
 
-        EntityModel<PaymentMethod> entityModel = assembler.toModel(updatedPaymentMethod);
+        EntityModel<PaymentMethodDto> paymentMethodEntityModel = paymentMethodModelAssembler
+                .toModel(modelMapper.map(updatedPaymentMethod, PaymentMethodDto.class));
 
-        return ResponseEntity //
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-                .body(entityModel);
+        return ResponseEntity.ok().body(paymentMethodEntityModel);
+
     }
 
     @DeleteMapping("/paymentMethods/{id}")
-    public ResponseEntity<?> deletePaymentMethod(@PathVariable Long id) {
-        repository.deleteById(id);
+    public ResponseEntity<String> deletePaymentMethod(@PathVariable Long id) {
+        paymentMethodService.deletePaymentMethod(id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("Assessment type deleted succefully");
     }
 }

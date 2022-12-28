@@ -5,9 +5,9 @@ import com.hubformath.mathhubservice.dtos.ops.cashbook.AssetDto;
 public class AssetTypeDto {
     private Long id;
 
-    private String name;
+    private String typeName;
 
-    private String description;
+    private String typeDescription;
 
     private AssetDto asset;
 
@@ -15,24 +15,20 @@ public class AssetTypeDto {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getTypeName() {
-        return name;
+        return typeName;
     }
 
-    public void setTypeName(String name) {
-        this.name = name;
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public String getTypeDescription() {
-        return description;
+        return typeDescription;
     }
 
-    public void setTypeDescription(String description) {
-        this.description = description;
+    public void setTypeDescription(String typeDescription) {
+        this.typeDescription = typeDescription;
     }
 
     public AssetDto getAsset() {

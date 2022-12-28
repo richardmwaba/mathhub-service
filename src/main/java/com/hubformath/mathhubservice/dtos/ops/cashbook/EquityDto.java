@@ -10,7 +10,7 @@ public class EquityDto {
 
     private String narration;
 
-    private EquityTypeDto type;
+    private EquityTypeDto equityType;
 
     private Double amount;
 
@@ -39,11 +39,11 @@ public class EquityDto {
     }
 
     public EquityTypeDto getType() {
-        return type;
+        return equityType;
     }
 
-    public void setType(EquityTypeDto type) {
-        this.type = type;
+    public void setType(EquityTypeDto equityType) {
+        this.equityType = equityType;
     }
 
     public Double getAmount() {

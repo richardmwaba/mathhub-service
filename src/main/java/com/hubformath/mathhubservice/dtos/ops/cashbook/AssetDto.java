@@ -10,16 +10,12 @@ public class AssetDto {
 
     private String narration;
 
-    private AssetTypeDto type;
+    private AssetTypeDto assetType;
 
     private Double amount;
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public PaymentMethodDto getPaymentMethod() {
@@ -39,11 +35,11 @@ public class AssetDto {
     }
 
     public AssetTypeDto getType() {
-        return type;
+        return assetType;
     }
 
-    public void setType(AssetTypeDto type) {
-        this.type = type;
+    public void setType(AssetTypeDto assetType) {
+        this.assetType = assetType;
     }
 
     public Double getAmount() {

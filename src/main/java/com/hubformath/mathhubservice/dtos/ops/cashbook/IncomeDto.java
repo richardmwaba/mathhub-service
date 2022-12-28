@@ -10,7 +10,7 @@ public class IncomeDto {
 
     private String narration;
 
-    private IncomeTypeDto type;
+    private IncomeTypeDto incomeType;
 
     private Double amount;
 
@@ -39,11 +39,11 @@ public class IncomeDto {
     }
 
     public IncomeTypeDto getType() {
-        return type;
+        return incomeType;
     }
 
-    public void setType(IncomeTypeDto type) {
-        this.type = type;
+    public void setType(IncomeTypeDto incomeType) {
+        this.incomeType = incomeType;
     }
 
     public Double getAmount() {
