@@ -18,7 +18,7 @@ public class IncomeTypeServiceImpl implements IIncomeTypeService{
     public IncomeTypeServiceImpl(IncomeTypeRepository incomeTypeRepository) {
         super();
         this.incomeTypeRepository = incomeTypeRepository;
-        this.notFoundItemName = "income type";
+        this.notFoundItemName = "income type item";
     }
 
     @Override
