@@ -3,11 +3,14 @@ package com.hubformath.mathhubservice.services.config.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import com.hubformath.mathhubservice.models.config.LiabilityType;
 import com.hubformath.mathhubservice.repositories.config.LiabilityTypeRepository;
 import com.hubformath.mathhubservice.services.config.ILiabilityTypeService;
 import com.hubformath.mathhubservice.utils.exceptions.ItemNotFoundException;
 
+@Service
 public class LiabilityTypeServiceImpl implements ILiabilityTypeService{
     private final LiabilityTypeRepository liabilityTypeRepository;
     private final String notFoundItemName;
