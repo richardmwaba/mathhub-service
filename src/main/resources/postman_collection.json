@@ -345,6 +345,65 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Asset",
+			"item": [
+				{
+					"name": "getAllAssets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/assets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createNewAsset",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"paymentMethod\": {\r\n\r\n    },\r\n    \"narration\": \"New fixed assets\",\r\n    \"assetType\": {\r\n        \"typeName\": \"Fixed asset\",\r\n        \"typeDescription\": \"Fixed assets\"\r\n    },\r\n    \"amount\": \"5000.00\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/assets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"assets"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

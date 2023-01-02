@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import com.hubformath.mathhubservice.controllers.config.IncomeTypeController;
 import com.hubformath.mathhubservice.dtos.config.IncomeTypeDto;
-import com.hubformath.mathhubservice.models.config.IncomeType;
 
 @Component
 public class IncomeTypeModelAssembler implements RepresentationModelAssembler<IncomeTypeDto, EntityModel<IncomeTypeDto>> {
