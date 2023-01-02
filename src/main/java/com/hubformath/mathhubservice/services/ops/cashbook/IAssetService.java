@@ -4,13 +4,13 @@ import java.util.List;
 import com.hubformath.mathhubservice.models.ops.cashbook.Asset;
 
 public interface IAssetService {
-    public List<Asset> getAllAssets();
+    List<Asset> getAllAssets();
 
-    public Asset createAsset(Asset assetType);
+    Asset createAsset(Asset asset);
 
-    public Asset getAssetById(Long id);
+    Asset getAssetById(Long id);
 
-    public Asset updateAsset(Long id, Asset assetType);
+    Asset updateAsset(Long id, Asset asset);
 
-    public void deleteAsset(Long id);
+    void deleteAsset(Long id);
 }
