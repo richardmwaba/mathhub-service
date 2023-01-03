@@ -92,6 +92,6 @@ public class IncomeTypeController {
     public ResponseEntity<String> deleteIncomeType(@PathVariable Long id) {
         incomeTypeService.deleteIncomeType(id);
 
-        return ResponseEntity.ok().body("Income type deleted succefully");
+        return ResponseEntity.ok().body("Income type deleted successfully");
     }
 }
