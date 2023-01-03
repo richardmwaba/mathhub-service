@@ -15,24 +15,27 @@ import com.hubformath.mathhubservice.controllers.config.LiabilityTypeController;
 import com.hubformath.mathhubservice.dtos.config.LiabilityTypeDto;
 
 @Component
-public class LiabilityTypeModelAssembler implements RepresentationModelAssembler<LiabilityTypeDto, EntityModel<LiabilityTypeDto>> {
+public class LiabilityTypeModelAssembler
+        implements RepresentationModelAssembler<LiabilityTypeDto, EntityModel<LiabilityTypeDto>> {
     @Override
     public EntityModel<LiabilityTypeDto> toModel(LiabilityTypeDto assessmentType) {
 
         return EntityModel.of(assessmentType,
-            linkTo(methodOn(LiabilityTypeController.class).getLiabilityTypeById(assessmentType.getId())).withSelfRel(),
-            linkTo(methodOn(LiabilityTypeController.class).getAllLiabilityTypes()).withRel("liabilityTypes"));
+                linkTo(methodOn(LiabilityTypeController.class).getLiabilityTypeById(assessmentType.getId()))
+                        .withSelfRel(),
+                linkTo(methodOn(LiabilityTypeController.class).getAllLiabilityTypes()).withRel("liabilityTypes"));
     }
 
     @Override
     public CollectionModel<EntityModel<LiabilityTypeDto>> toCollectionModel(
-        Iterable<? extends LiabilityTypeDto> assessmentTypes) {
-        List<EntityModel<LiabilityTypeDto>> assessmentTypeList = StreamSupport.stream(assessmentTypes.spliterator(), false)
-            .map(this::toModel)
-            .collect(Collectors.toList());
+            Iterable<? extends LiabilityTypeDto> assessmentTypes) {
+        List<EntityModel<LiabilityTypeDto>> assessmentTypeList = StreamSupport
+                .stream(assessmentTypes.spliterator(), false)
+                .map(this::toModel)
+                .collect(Collectors.toList());
 
         return CollectionModel.of(assessmentTypeList, linkTo(methodOn(LiabilityTypeController.class)
-              .getAllLiabilityTypes())
-              .withSelfRel());
+                .getAllLiabilityTypes())
+                .withSelfRel());
     }
 }
