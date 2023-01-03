@@ -73,11 +73,11 @@ public class Address {
         this.addressType = addressType;
     }
 
-    public String getAddresLine1() {
+    public String getAddressLine1() {
         return addressLine1;
     }
 
-    public void setAddresLine1(String addressLine1) {
+    public void setAddressLine1(String addressLine1) {
         this.addressLine1 = addressLine1;
     }
 
