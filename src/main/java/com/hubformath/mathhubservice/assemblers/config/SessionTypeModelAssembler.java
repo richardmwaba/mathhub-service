@@ -15,24 +15,25 @@ import com.hubformath.mathhubservice.controllers.config.SessionTypeController;
 import com.hubformath.mathhubservice.dtos.config.SessionTypeDto;
 
 @Component
-public class SessionTypeModelAssembler implements RepresentationModelAssembler<SessionTypeDto, EntityModel<SessionTypeDto>> {
+public class SessionTypeModelAssembler
+        implements RepresentationModelAssembler<SessionTypeDto, EntityModel<SessionTypeDto>> {
     @Override
     public EntityModel<SessionTypeDto> toModel(SessionTypeDto sessionType) {
 
         return EntityModel.of(sessionType,
-            linkTo(methodOn(SessionTypeController.class).getSessionTypeById(sessionType.getId())).withSelfRel(),
-            linkTo(methodOn(SessionTypeController.class).getAllSessionTypes()).withRel("sessionTypes"));
+                linkTo(methodOn(SessionTypeController.class).getSessionTypeById(sessionType.getId())).withSelfRel(),
+                linkTo(methodOn(SessionTypeController.class).getAllSessionTypes()).withRel("sessionTypes"));
     }
 
     @Override
     public CollectionModel<EntityModel<SessionTypeDto>> toCollectionModel(
-        Iterable<? extends SessionTypeDto> sessionTypes) {
+            Iterable<? extends SessionTypeDto> sessionTypes) {
         List<EntityModel<SessionTypeDto>> sessionTypeList = StreamSupport.stream(sessionTypes.spliterator(), false)
-            .map(this::toModel)
-            .collect(Collectors.toList());
+                .map(this::toModel)
+                .collect(Collectors.toList());
 
         return CollectionModel.of(sessionTypeList, linkTo(methodOn(SessionTypeController.class)
-              .getAllSessionTypes())
-              .withSelfRel());
+                .getAllSessionTypes())
+                .withSelfRel());
     }
 }

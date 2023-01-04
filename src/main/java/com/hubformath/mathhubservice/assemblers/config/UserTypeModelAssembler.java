@@ -11,8 +11,8 @@ import com.hubformath.mathhubservice.models.config.UserType;
 
 @Component
 public class UserTypeModelAssembler implements RepresentationModelAssembler<UserType, EntityModel<UserType>> {
-    @Override
-    public EntityModel<UserType> toModel(UserType userType) {
+  @Override
+  public EntityModel<UserType> toModel(UserType userType) {
 
     return EntityModel.of(userType, //
         linkTo(methodOn(UserTypeController.class).one(userType.getId())).withSelfRel(),

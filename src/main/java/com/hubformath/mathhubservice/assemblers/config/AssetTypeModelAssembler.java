@@ -15,25 +15,25 @@ import com.hubformath.mathhubservice.controllers.config.AssetTypeController;
 import com.hubformath.mathhubservice.dtos.config.AssetTypeDto;
 
 @Component
-public class AssetTypeModelAssembler 
-    implements RepresentationModelAssembler<AssetTypeDto, EntityModel<AssetTypeDto>> {
+public class AssetTypeModelAssembler
+        implements RepresentationModelAssembler<AssetTypeDto, EntityModel<AssetTypeDto>> {
     @Override
     public EntityModel<AssetTypeDto> toModel(AssetTypeDto assetType) {
 
         return EntityModel.of(assetType,
-            linkTo(methodOn(AssetTypeController.class).getAssetTypeById(assetType.getId())).withSelfRel(),
-            linkTo(methodOn(AssetTypeController.class).getAllAssetTypes()).withRel("assetTypes"));
+                linkTo(methodOn(AssetTypeController.class).getAssetTypeById(assetType.getId())).withSelfRel(),
+                linkTo(methodOn(AssetTypeController.class).getAllAssetTypes()).withRel("assetTypes"));
     }
 
     @Override
     public CollectionModel<EntityModel<AssetTypeDto>> toCollectionModel(
-        Iterable<? extends AssetTypeDto> assetTypes) {
+            Iterable<? extends AssetTypeDto> assetTypes) {
         List<EntityModel<AssetTypeDto>> assetTypeList = StreamSupport.stream(assetTypes.spliterator(), false)
-            .map(this::toModel)
-            .collect(Collectors.toList());
+                .map(this::toModel)
+                .collect(Collectors.toList());
 
         return CollectionModel.of(assetTypeList, linkTo(methodOn(AssetTypeController.class)
-              .getAllAssetTypes())
-              .withSelfRel());
+                .getAllAssetTypes())
+                .withSelfRel());
     }
 }

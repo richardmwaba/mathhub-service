@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.models.sis;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,7 +39,7 @@ public class Student {
     @OneToMany(mappedBy = "student")
     private List<PhoneNumber> phoneNumbers;
 
-    private Date dateOfBirth;
+    private Instant dateOfBirth;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -50,7 +50,7 @@ public class Student {
     public Student() {
     }
 
-    public Student(String firstName, String middleName, String lastName, String email, Date dateOfBirth) {
+    public Student(String firstName, String middleName, String lastName, String email, Instant dateOfBirth) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -117,11 +117,11 @@ public class Student {
         this.email = email;
     }
 
-    public Date getDateOfBirth() {
+    public Instant getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(Instant dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
     

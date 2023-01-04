@@ -19,10 +19,6 @@ public class AddressDto {
 
     private String zipCode;
 
-    private StudentDto student;
-
-    private ParentDto parent;
-
     public Long getId() {
         return id;
     }
@@ -85,21 +81,5 @@ public class AddressDto {
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
-    }
-
-    public StudentDto getStudent() {
-        return student;
-    }
-
-    public void setStudent(StudentDto student) {
-        this.student = student;
-    }
-
-    public ParentDto getParent() {
-        return parent;
-    }
-
-    public void setParent(ParentDto parent) {
-        this.parent = parent;
     }
 }

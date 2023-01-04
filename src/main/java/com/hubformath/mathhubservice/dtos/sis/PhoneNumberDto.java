@@ -11,10 +11,6 @@ public class PhoneNumberDto {
 
     private String number;
 
-    private StudentDto student;
-
-    private ParentDto parent;
-
     public Long getId() {
         return id;
     }
@@ -45,21 +41,5 @@ public class PhoneNumberDto {
 
     public void setNumber(String number) {
         this.number = number;
-    }
-
-    public StudentDto getStudent() {
-        return student;
-    }
-
-    public void setStudent(StudentDto student) {
-        this.student = student;
-    }
-
-    public ParentDto getParent() {
-        return parent;
-    }
-
-    public void setParent(ParentDto parent) {
-        this.parent = parent;
     }
 }
