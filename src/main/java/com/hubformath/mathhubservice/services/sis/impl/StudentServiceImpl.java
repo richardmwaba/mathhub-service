@@ -50,7 +50,7 @@ public class StudentServiceImpl implements IStudentService {
                     student.setMiddleName(studentRequest.getMiddleName());
                     student.setLastName(studentRequest.getLastName());
                     student.setEmail(studentRequest.getEmail());
-                    student.setParents(studentRequest.getParents());
+                    student.setParent(studentRequest.getParent());
                     student.setAddresses(studentRequest.getAddresses());
                     student.setPhoneNumbers(studentRequest.getPhoneNumbers());
                     student.setDateOfBirth(studentRequest.getDateOfBirth());
