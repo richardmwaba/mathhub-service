@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +21,7 @@ public class Address {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     
+    @Enumerated(EnumType.STRING)
     private AddressType addressType;
 
     private String addressLine1;

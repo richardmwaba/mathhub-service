@@ -50,7 +50,7 @@ public class ParentServiceImpl implements IParentService {
                     parent.setMiddleName(parentRequest.getMiddleName());
                     parent.setLastName(parentRequest.getLastName());
                     parent.setEmail(parentRequest.getEmail());
-                    parent.setStudent(parentRequest.getStudent());
+                    parent.setStudents(parentRequest.getStudents());
                     parent.setAddresses(parentRequest.getAddresses());
                     parent.setPhoneNumbers(parentRequest.getPhoneNumbers());
                     return parentRepository.save(parent);

@@ -17,11 +17,9 @@ public class StudentDto {
 
     private String lastName;
 
-    private String guardian;
-    
     private String email;
 
-    private List<ParentDto> parents;
+    private ParentDto parent;
 
     private List<AddressDto> addresses;
 
@@ -61,14 +59,6 @@ public class StudentDto {
         this.lastName = lastName;
     }
 
-    public String getGuardian() {
-        return guardian;
-    }
-
-    public void setGuardian(String guardian) {
-        this.guardian = guardian;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -77,12 +67,12 @@ public class StudentDto {
         this.email = email;
     }
 
-    public List<ParentDto> getParents() {
-        return parents;
+    public ParentDto getParent() {
+        return parent;
     }
 
-    public void setParents(List<ParentDto> parents) {
-        this.parents = parents;
+    public void setParent(ParentDto parent) {
+        this.parent = parent;
     }
 
     public List<AddressDto> getAddresses() {
