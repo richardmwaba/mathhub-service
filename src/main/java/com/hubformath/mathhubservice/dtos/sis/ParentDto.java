@@ -2,8 +2,6 @@ package com.hubformath.mathhubservice.dtos.sis;
 
 import java.util.List;
 
-import com.hubformath.mathhubservice.models.sis.Student;
-
 public class ParentDto {
     private Long id;
 
@@ -14,8 +12,6 @@ public class ParentDto {
     private String lastName;
 
     private String email;
-
-    private List<Student> students;
 
     private List<AddressDto> addresses;
 
@@ -75,13 +71,5 @@ public class ParentDto {
 
     public void setPhoneNumbers(List<PhoneNumberDto> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
-    }
-
-    public List<Student> getStudents() {
-        return students;
-    }
-
-    public void setStudents(List<Student> students) {
-        this.students = students;
     }
 }

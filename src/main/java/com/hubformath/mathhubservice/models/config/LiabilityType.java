@@ -17,7 +17,7 @@ import com.hubformath.mathhubservice.models.ops.cashbook.Liability;
 @Entity
 public class LiabilityType {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Long id;
 
     private String typeName;

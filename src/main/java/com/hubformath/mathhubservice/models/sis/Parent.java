@@ -17,7 +17,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 public class Parent {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Long id;
 
     private String firstName;
@@ -31,10 +31,10 @@ public class Parent {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     private List<Student> students;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Address> addresses;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<PhoneNumber> phoneNumbers;
 
     @CreationTimestamp
