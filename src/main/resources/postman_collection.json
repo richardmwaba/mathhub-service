@@ -113,19 +113,9 @@
 					"name": "updateExpense",
 					"request": {
 						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"typeName\": \"Homework\",\r\n    \"typeDescription\": \"Homework stuff\"\r\n}"
-						},
+						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/v1/ops/assetTypes/7",
+							"raw": "http://localhost:8080/api/v1/ops/expenses/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -135,8 +125,8 @@
 								"api",
 								"v1",
 								"ops",
-								"assetTypes",
-								"7"
+								"expenses",
+								"1"
 							]
 						}
 					},
@@ -586,7 +576,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Andrew\",\r\n    \"middleName\": \"Chola\",\r\n    \"lastName\": \"Bwalya\",\r\n    \"guardian\": \"\",\r\n    \"email\": \"andrew.bwalya@email.com\",\r\n    \"parent\": {\r\n        \"firstName\": \"Godfrey\",\r\n        \"middleName\": \"Mwewa\",\r\n        \"lastName\": \"Bwalya\",\r\n        \"email\": \"godfrey.bwalya@email.com\",\r\n        \"addresses\": [\r\n            {\r\n                \"addressType\": \"HOME\",\r\n                \"addressLine1\": \"Olympia\",\r\n                \"addressLine2\": \"\",\r\n                \"addressLine3\": \"Lusaka\",\r\n                \"city\": \"city\",\r\n                \"province\": \"Lusaka\",\r\n                \"zipCode\": \"\"\r\n            }\r\n        ],\r\n        \"phoneNumbers\": [\r\n            {\r\n                \"type\": \"MOBILE\",\r\n                \"countryCode\": \"+260\",\r\n                \"number\": \"971121314\"\r\n            }\r\n        ]\r\n    },\r\n    \"addresses\": [\r\n        {\r\n            \"addressType\": \"HOME\",\r\n            \"addressLine1\": \"Olympia\",\r\n            \"addressLine2\": \"\",\r\n            \"addressLine3\": \"Lusaka\",\r\n            \"city\": \"city\",\r\n            \"province\": \"Lusaka\",\r\n            \"zipCode\": \"\"\r\n        }\r\n    ],\r\n    \"phoneNumbers\": [\r\n        {\r\n            \"type\": \"MOBILE\",\r\n            \"countryCode\": \"+260\",\r\n            \"number\": \"971222324\"\r\n        }\r\n    ],\r\n    \"dateOfBirth\": \"2005-01-25\"\r\n}"
+							"raw": "{\r\n    \"firstName\": \"Pentagon\",\r\n    \"middleName\": \"Chola\",\r\n    \"lastName\": \"Bwalya\",\r\n    \"guardian\": \"\",\r\n    \"email\": \"pentagon.bwalya@email.com\",\r\n    \"parent\": {\r\n        \"firstName\": \"Samson\",\r\n        \"middleName\": \"Mwewa\",\r\n        \"lastName\": \"Chibwe\",\r\n        \"email\": \"samson.chibwe@email.com\",\r\n        \"addresses\": [\r\n            {\r\n                \"addressType\": \"HOME\",\r\n                \"addressLine1\": \"Olympia\",\r\n                \"addressLine2\": \"\",\r\n                \"addressLine3\": \"Lusaka\",\r\n                \"city\": \"city\",\r\n                \"province\": \"Lusaka\",\r\n                \"zipCode\": \"\"\r\n            }\r\n        ],\r\n        \"phoneNumbers\": [\r\n            {\r\n                \"type\": \"MOBILE\",\r\n                \"countryCode\": \"+260\",\r\n                \"number\": \"971144222\"\r\n            }\r\n        ]\r\n    },\r\n    \"addresses\": [\r\n        {\r\n            \"addressType\": \"HOME\",\r\n            \"addressLine1\": \"Olympia\",\r\n            \"addressLine2\": \"\",\r\n            \"addressLine3\": \"Lusaka\",\r\n            \"city\": \"city\",\r\n            \"province\": \"Lusaka\",\r\n            \"zipCode\": \"\"\r\n        }\r\n    ],\r\n    \"phoneNumbers\": [\r\n        {\r\n            \"type\": \"MOBILE\",\r\n            \"countryCode\": \"+260\",\r\n            \"number\": \"971987643\"\r\n        }\r\n    ],\r\n    \"dateOfBirth\": \"2005-01-25\"\r\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8080/api/v1/sis/students",
@@ -655,7 +645,17 @@
 					"name": "updateStudent",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Pentagon\",\r\n    \"middleName\": \"Chola\",\r\n    \"lastName\": \"Bwalya\",\r\n    \"guardian\": \"\",\r\n    \"email\": \"pentagon.bwalya@email.com\",\r\n    \"parent\": {\r\n        \"firstName\": \"Samson\",\r\n        \"middleName\": \"Mwewa\",\r\n        \"lastName\": \"Chibwe\",\r\n        \"email\": \"samson.chibwe@email.com\",\r\n        \"addresses\": [\r\n            {\r\n                \"addressType\": \"HOME\",\r\n                \"addressLine1\": \"Olympia\",\r\n                \"addressLine2\": \"\",\r\n                \"addressLine3\": \"Lusaka\",\r\n                \"city\": \"city\",\r\n                \"province\": \"Lusaka\",\r\n                \"zipCode\": \"\"\r\n            }\r\n        ],\r\n        \"phoneNumbers\": [\r\n            {\r\n                \"type\": \"MOBILE\",\r\n                \"countryCode\": \"+260\",\r\n                \"number\": \"971144222\"\r\n            }\r\n        ]\r\n    },\r\n    \"addresses\": [\r\n        {\r\n            \"addressType\": \"HOME\",\r\n            \"addressLine1\": \"Olympia\",\r\n            \"addressLine2\": \"\",\r\n            \"addressLine3\": \"Lusaka\",\r\n            \"city\": \"city\",\r\n            \"province\": \"Lusaka\",\r\n            \"zipCode\": \"\"\r\n        }\r\n    ],\r\n    \"phoneNumbers\": [\r\n        {\r\n            \"type\": \"MOBILE\",\r\n            \"countryCode\": \"+260\",\r\n            \"number\": \"971987643\"\r\n        }\r\n    ],\r\n    \"dateOfBirth\": \"2005-01-25\"\r\n}"
+						},
 						"url": {
 							"raw": "http://localhost:8080/api/v1/sis/students/1",
 							"protocol": "http",
