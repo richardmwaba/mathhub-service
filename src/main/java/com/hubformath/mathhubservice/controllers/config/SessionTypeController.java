@@ -3,8 +3,6 @@ package com.hubformath.mathhubservice.controllers.config;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -23,9 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hubformath.mathhubservice.assemblers.config.SessionTypeModelAssembler;
 import com.hubformath.mathhubservice.dtos.config.SessionTypeDto;
 import com.hubformath.mathhubservice.models.config.SessionType;
-import com.hubformath.mathhubservice.repositories.config.SessionTypeRepository;
 import com.hubformath.mathhubservice.services.config.ISessionTypeService;
-import com.hubformath.mathhubservice.utils.exceptions.ItemNotFoundException;
 
 @RestController
 @RequestMapping(path="/v1/sis/ops")

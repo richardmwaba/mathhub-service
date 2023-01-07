@@ -1,6 +1,6 @@
 package com.hubformath.mathhubservice.models.sis;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -20,7 +20,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     private String firstName;
@@ -35,13 +35,13 @@ public class Student {
 
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Address> addresses;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<PhoneNumber> phoneNumbers;
 
-    private Instant dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -52,7 +52,7 @@ public class Student {
     public Student() {
     }
 
-    public Student(String firstName, String middleName, String lastName, String email, Instant dateOfBirth) {
+    public Student(String firstName, String middleName, String lastName, String email, LocalDate dateOfBirth) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -120,11 +120,11 @@ public class Student {
         this.email = email;
     }
 
-    public Instant getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Instant dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -165,8 +165,8 @@ public class Student {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.firstName, this.middleName, this.lastName,
-                this.parent, this.email, this.dateOfBirth, this.createdAt, this.updatedAt);
+        return Objects.hash(this.id, this.firstName, this.middleName, this.lastName, this.addresses,
+                this.parent, this.phoneNumbers, this.email, this.dateOfBirth, this.createdAt, this.updatedAt);
     }
 
     @Override
