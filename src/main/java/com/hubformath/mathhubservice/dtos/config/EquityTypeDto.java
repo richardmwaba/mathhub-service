@@ -9,10 +9,13 @@ public class EquityTypeDto {
 
     private String typeDescription;
 
-    private EquityDto equity;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTypeName() {
@@ -31,11 +34,4 @@ public class EquityTypeDto {
         this.typeDescription = typeDescription;
     }
 
-    public EquityDto getEquity() {
-        return equity;
-    }
-
-    public void setEquity(EquityDto equity) {
-        this.equity = equity;
-    }
 }

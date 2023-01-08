@@ -9,10 +9,13 @@ public class ExpenseTypeDto {
 
     private String typeDescription;
 
-    private ExpenseDto expense;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTypeName() {
@@ -31,11 +34,4 @@ public class ExpenseTypeDto {
         this.typeDescription = typeDescription;
     }
 
-    public ExpenseDto getExpense() {
-        return expense;
-    }
-
-    public void setExpense(ExpenseDto expense) {
-        this.expense = expense;
-    }
 }

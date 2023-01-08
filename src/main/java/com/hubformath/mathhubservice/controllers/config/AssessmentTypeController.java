@@ -92,6 +92,6 @@ public class AssessmentTypeController {
     public ResponseEntity<String> deleteAssessmentType(@PathVariable Long id) {
         assessmentTypeService.deleteAssessmentType(id);
 
-        return ResponseEntity.ok().body("Assessment type deleted succefully");
+        return ResponseEntity.ok().body("Assessment type deleted successfully");
     }
 }

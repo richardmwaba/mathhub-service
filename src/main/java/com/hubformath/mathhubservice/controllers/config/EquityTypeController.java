@@ -92,6 +92,6 @@ public class EquityTypeController {
     public ResponseEntity<String> deleteEquityType(@PathVariable Long id) {
         equityTypeService.deleteEquityType(id);
 
-        return ResponseEntity.ok().body("Equity type deleted succefully");
+        return ResponseEntity.ok().body("Equity type deleted successfully");
     }
 }

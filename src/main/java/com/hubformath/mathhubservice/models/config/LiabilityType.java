@@ -30,8 +30,6 @@ public class LiabilityType {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "liabilityType")
-    private Liability liability;
 
     public LiabilityType() {}
 
@@ -59,14 +57,6 @@ public class LiabilityType {
     public void setTypeDescription(String typeDescription) {
         this.typeDescription = typeDescription;
     }
-
-    public Liability getLiability() {
-        return liability;
-    }
-
-    public void setLiability(Liability liability) {
-        this.liability = liability;
-    }
     
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -93,20 +83,19 @@ public class LiabilityType {
         LiabilityType liabilityType = (LiabilityType) o;
         return Objects.equals(this.id, liabilityType.id) && Objects.equals(this.typeName, liabilityType.typeName)
             && Objects.equals(this.typeDescription, liabilityType.typeDescription)
-            && Objects.equals(this.liability, liabilityType.liability)
             && Objects.equals(this.createdAt, liabilityType.createdAt)
             && Objects.equals(this.updatedAt, liabilityType.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription, this.liability, this.createdAt, this.updatedAt);
+        return Objects.hash(this.id, this.typeName, this.typeDescription, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
         return "LiabilityType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + ", typeDescription='" 
-                + this.typeDescription + ", liability='" + this.liability + ", createdAt='" + this.createdAt 
+                + this.typeDescription + ", liability='" + ", createdAt='" + this.createdAt
                 + ", updatedAt='" + this.updatedAt + "'}";
     }
 }

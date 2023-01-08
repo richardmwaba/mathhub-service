@@ -30,8 +30,6 @@ public class EquityType {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "equityType")
-    private Equity equity;
 
     public EquityType() {}
 
@@ -43,6 +41,7 @@ public class EquityType {
     public Long getId() {
         return this.id;
     }
+
     
     public String getTypeName() {
         return this.typeName;
@@ -60,13 +59,6 @@ public class EquityType {
         this.typeDescription = typeDescription;
     }
 
-    public Equity getEquity() {
-        return equity;
-    }
-
-    public void setEquity(Equity equity) {
-        this.equity = equity;
-    }    
     
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -93,20 +85,19 @@ public class EquityType {
         EquityType equityType = (EquityType) o;
         return Objects.equals(this.id, equityType.id) && Objects.equals(this.typeName, equityType.typeName)
             && Objects.equals(this.typeDescription, equityType.typeDescription)
-            && Objects.equals(this.equity, equityType.equity)
             && Objects.equals(this.createdAt, equityType.createdAt)
             && Objects.equals(this.updatedAt, equityType.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription, this.equity, this.createdAt, this.updatedAt);
+        return Objects.hash(this.id, this.typeName, this.typeDescription, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
         return "EquityType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + ", typeDescription='" 
-                + this.typeDescription + ", equity='" + this.equity + ", createdAt='" + this.createdAt 
+                + this.typeDescription + ", equity='" + ", createdAt='" + this.createdAt
                 + ", updatedAt='" + this.updatedAt + "'}";
     }
 
