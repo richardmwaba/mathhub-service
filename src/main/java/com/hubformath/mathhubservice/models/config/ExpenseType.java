@@ -30,8 +30,6 @@ public class ExpenseType {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "expenseType")
-    private Expense expense;
 
     public ExpenseType() {}
 
@@ -60,14 +58,7 @@ public class ExpenseType {
         this.typeDescription = typeDescription;
     }
 
-    public Expense getExpense() {
-        return expense;
-    }
 
-    public void setExpense(Expense expense) {
-        this.expense = expense;
-    }
-    
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -93,20 +84,19 @@ public class ExpenseType {
         ExpenseType expenseType = (ExpenseType) o;
         return Objects.equals(this.id, expenseType.id) && Objects.equals(this.typeName, expenseType.typeName)
             && Objects.equals(this.typeDescription, expenseType.typeDescription)
-            && Objects.equals(this.expense, expenseType.expense)
             && Objects.equals(this.createdAt, expenseType.createdAt)
             && Objects.equals(this.updatedAt, expenseType.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription, this.expense, this.createdAt, this.updatedAt);
+        return Objects.hash(this.id, this.typeName, this.typeDescription, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
         return "ExpenseType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + ", typeDescription='" 
-                + this.typeDescription + ", expense='" + this.expense + ", createdAt='" + this.createdAt 
+                + this.typeDescription + ", expense='" + ", createdAt='" + this.createdAt
                 + ", updatedAt='" + this.updatedAt + "'}";
     }
 

@@ -92,6 +92,6 @@ public class PaymentMethodController {
     public ResponseEntity<String> deletePaymentMethod(@PathVariable Long id) {
         paymentMethodService.deletePaymentMethod(id);
 
-        return ResponseEntity.ok().body("Assessment type deleted succefully");
+        return ResponseEntity.ok().body("Payment method deleted successfully");
     }
 }

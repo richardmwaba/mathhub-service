@@ -92,6 +92,6 @@ public class ExpenseTypeController {
     public ResponseEntity<String> deleteExpenseType(@PathVariable Long id) {
         expenseTypeService.deleteExpenseType(id);
 
-        return ResponseEntity.ok().body("Expense type deleted succefully");
+        return ResponseEntity.ok().body("Expense type deleted successfully");
     }
 }

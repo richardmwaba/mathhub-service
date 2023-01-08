@@ -30,8 +30,6 @@ public class IncomeType {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "incomeType")
-    private Income income;
 
     public IncomeType() {}
 
@@ -60,13 +58,6 @@ public class IncomeType {
         this.typeDescription = typeDescription;
     }
 
-    public Income getIncome() {
-        return income;
-    }
-
-    public void setIncome(Income income) {
-        this.income = income;
-    }    
     
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -93,20 +84,19 @@ public class IncomeType {
         IncomeType incomeType = (IncomeType) o;
         return Objects.equals(this.id, incomeType.id) && Objects.equals(this.typeName, incomeType.typeName)
             && Objects.equals(this.typeDescription, incomeType.typeDescription)
-            && Objects.equals(this.income, incomeType.income)
             && Objects.equals(this.createdAt, incomeType.createdAt)
             && Objects.equals(this.updatedAt, incomeType.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription, this.income, this.createdAt, updatedAt);
+        return Objects.hash(this.id, this.typeName, this.typeDescription, this.createdAt, updatedAt);
     }
 
     @Override
     public String toString() {
         return "IncomeType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" +  ", typeDescription='" 
-                + this.typeDescription + ", income='" + this.income + ", createdAt='" + this.createdAt
+                + this.typeDescription + ", income='" + ", createdAt='" + this.createdAt
                 + ", updatedAt='" + this.updatedAt +"'}";
     }
 }

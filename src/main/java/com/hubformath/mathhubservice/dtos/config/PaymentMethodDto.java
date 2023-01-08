@@ -14,20 +14,13 @@ public class PaymentMethodDto {
 
     private String typeDescription;
 
-    private TransactionDto transaction;
-
-    private LiabilityDto liability;
-
-    private IncomeDto income;
-
-    private ExpenseDto expense;
-
-    private EquityDto equity;
-
-    private AssetDto asset;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTypeName() {
@@ -46,51 +39,5 @@ public class PaymentMethodDto {
         this.typeDescription = typeDescription;
     }
 
-    public TransactionDto getTransaction() {
-        return transaction;
-    }
 
-    public void setTransaction(TransactionDto transaction) {
-        this.transaction = transaction;
-    }
-
-    public LiabilityDto getLiability() {
-        return liability;
-    }
-
-    public void setLiability(LiabilityDto liability) {
-        this.liability = liability;
-    }
-
-    public IncomeDto getIncome() {
-        return income;
-    }
-
-    public void setIncome(IncomeDto income) {
-        this.income = income;
-    }
-
-    public ExpenseDto getExpense() {
-        return expense;
-    }
-
-    public void setExpense(ExpenseDto expense) {
-        this.expense = expense;
-    }
-
-    public EquityDto getEquity() {
-        return equity;
-    }
-
-    public void setEquity(EquityDto equity) {
-        this.equity = equity;
-    }
-
-    public AssetDto getAsset() {
-        return asset;
-    }
-
-    public void setAsset(AssetDto asset) {
-        this.asset = asset;
-    }
 }

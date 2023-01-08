@@ -3,7 +3,7 @@
 		"_postman_id": "5d602b42-b041-410f-a3ff-92d6129f90d2",
 		"name": "Math Hub API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "2911589"
+		"_exporter_id": "25228849"
 	},
 	"item": [
 		{
@@ -576,7 +576,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Andrew\",\r\n    \"middleName\": \"Chola\",\r\n    \"lastName\": \"Bwalya\",\r\n    \"guardian\": \"\",\r\n    \"email\": \"andrew.bwalya@email.com\",\r\n    \"parents\": [\r\n        {\r\n            \"firstName\": \"Godfrey\",\r\n            \"middleName\": \"Mwewa\",\r\n            \"lastName\": \"Bwalya\",\r\n            \"email\": \"godfrey.bwalya@email.com\",\r\n            \"addresses\": [\r\n                {\r\n                    \"addressType\": \"HOME\",\r\n                    \"addressLine1\": \"Olympia\",\r\n                    \"addressLine2\": \"\",\r\n                    \"addressLine3\": \"Lusaka\",\r\n                    \"city\": \"city\",\r\n                    \"province\": \"Lusaka\",\r\n                    \"zipCode\": \"\"\r\n                }\r\n            ],\r\n            \"phoneNumbers\": [\r\n                {\r\n                    \"type\": \"MOBILE\",\r\n                    \"countryCode\": \"+260\",\r\n                    \"number\": \"971121314\"\r\n                }\r\n            ]\r\n        }\r\n    ],\r\n    \"addresses\": [\r\n        {\r\n            \"addressType\": \"HOME\",\r\n            \"addressLine1\": \"Olympia\",\r\n            \"addressLine2\": \"\",\r\n            \"addressLine3\": \"Lusaka\",\r\n            \"city\": \"city\",\r\n            \"province\": \"Lusaka\",\r\n            \"zipCode\": \"\"\r\n        }\r\n    ],\r\n    \"phoneNumbers\": [\r\n        {\r\n            \"type\": \"MOBILE\",\r\n            \"countryCode\": \"+260\",\r\n            \"number\": \"971222324\"\r\n        }\r\n    ],\r\n    \"dateOfBirth\": \"23-01-2005\"\r\n}"
+							"raw": "{\r\n    \"firstName\": \"Pentagon\",\r\n    \"middleName\": \"Chola\",\r\n    \"lastName\": \"Bwalya\",\r\n    \"guardian\": \"\",\r\n    \"email\": \"pentagon.bwalya@email.com\",\r\n    \"parent\": {\r\n        \"firstName\": \"Samson\",\r\n        \"middleName\": \"Mwewa\",\r\n        \"lastName\": \"Chibwe\",\r\n        \"email\": \"samson.chibwe@email.com\",\r\n        \"addresses\": [\r\n            {\r\n                \"addressType\": \"HOME\",\r\n                \"addressLine1\": \"Olympia\",\r\n                \"addressLine2\": \"\",\r\n                \"addressLine3\": \"Lusaka\",\r\n                \"city\": \"city\",\r\n                \"province\": \"Lusaka\",\r\n                \"zipCode\": \"\"\r\n            }\r\n        ],\r\n        \"phoneNumbers\": [\r\n            {\r\n                \"type\": \"MOBILE\",\r\n                \"countryCode\": \"+260\",\r\n                \"number\": \"971144222\"\r\n            }\r\n        ]\r\n    },\r\n    \"addresses\": [\r\n        {\r\n            \"addressType\": \"HOME\",\r\n            \"addressLine1\": \"Olympia\",\r\n            \"addressLine2\": \"\",\r\n            \"addressLine3\": \"Lusaka\",\r\n            \"city\": \"city\",\r\n            \"province\": \"Lusaka\",\r\n            \"zipCode\": \"\"\r\n        }\r\n    ],\r\n    \"phoneNumbers\": [\r\n        {\r\n            \"type\": \"MOBILE\",\r\n            \"countryCode\": \"+260\",\r\n            \"number\": \"971987643\"\r\n        }\r\n    ],\r\n    \"dateOfBirth\": \"2005-01-25\"\r\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8080/api/v1/sis/students",
@@ -669,6 +669,742 @@
 								"sis",
 								"students",
 								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SessionType",
+			"item": [
+				{
+					"name": "getSessionType",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/sessionTypes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"sessionTypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createSessionType",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeName\": \"Fixed asset\",\r\n    \"typeDescription\": \"Fixed assets\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/sis/ops/sessionTypes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"sis",
+								"ops",
+								"sessionTypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteSessionType",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/sis/sessionTypes/37",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"sis",
+								"sessionTypes",
+								"37"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateSessionType",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/sis/ops/sessionTypes/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"sis",
+								"ops",
+								"sessionTypes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getSessionTypeById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/sis/ops/sessionTypes/40",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"sis",
+								"ops",
+								"sessionTypes",
+								"40"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PaymentMethod",
+			"item": [
+				{
+					"name": "createPaymentTTypes",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeName\": \"Cash\",\r\n    \"typeDescription\": \"Cash\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/paymentMethods",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"paymentMethods"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPaymentMethods",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/paymentMethods",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"paymentMethods"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePaymentMethods",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/paymentMethods/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"paymentMethods",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePaymentMethod",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/paymentMethods/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"paymentMethods",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPaymentMethodById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/paymentMethods/42",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"paymentMethods",
+								"42"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "LiabilityType",
+			"item": [
+				{
+					"name": "createLiabilityType",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeName\": \"Long term\",\r\n    \"typeDescription\": \"long term\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/liabilityTypes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"liabilityTypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getLiabilityTypes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/liabilityTypes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"liabilityTypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getLiabilityTypeById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/liabilityTypes/44",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"liabilityTypes",
+								"44"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateLiabilityType",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeName\": \"Short term\",\r\n    \"typeDescription\": \"a liability for a short time\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/liabilityTypes/44",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"liabilityTypes",
+								"44"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteLiabilityType",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/liabilityTypes/44",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"liabilityTypes",
+								"44"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "IncomeType",
+			"item": [
+				{
+					"name": "createIncomeType",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeName\": \"Tuition fee\",\r\n    \"typeDescription\": \"Tuition fees\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/incomeTypes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"incomeTypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getIncomeTypes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/incomeTypes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"incomeTypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getIncomeTypeById",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "updateincomeType",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/incomeTypes/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"incomeTypes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteIncomeType",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/incomeTypes/48",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"incomeTypes",
+								"48"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EquityType",
+			"item": [
+				{
+					"name": "createEquityType",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeName\": \"Treasury Stock\",\r\n    \"typeDescription\": \"Treasury Stock\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/equityTypes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"equityTypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getEquityTypes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/equityTypes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"equityTypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getEquityTypeById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/equityTypes/46",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"equityTypes",
+								"46"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateEquityType",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeName\": \"Treasury Stock\",\r\n    \"typeDescription\": \"Treasury and Refferencial\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/equityTypes/46",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"equityTypes",
+								"46"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteEquityType",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ExpenseType",
+			"item": [
+				{
+					"name": "createExpenseType",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeName\": \"Rent\",\r\n    \"typeDescription\": \"Monthly rentals\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/expenseTypes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"expenseTypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getExpenseTypes",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "getExpenseTypeById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/expenseTypes/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"expenseTypes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateExpenseType",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/expenseTypes/50",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"expenseTypes",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteExpenseType",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/expenseTypes/50",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"expenseTypes",
+								"50"
 							]
 						}
 					},

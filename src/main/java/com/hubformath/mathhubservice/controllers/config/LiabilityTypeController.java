@@ -92,6 +92,6 @@ public class LiabilityTypeController {
     public ResponseEntity<String> deleteLiabilityType(@PathVariable Long id) {
         liabilityTypeService.deleteLiabilityType(id);
 
-        return ResponseEntity.ok().body("Liability type deleted succefully");
+        return ResponseEntity.ok().body("Liability type deleted successfully");
     }
 }
