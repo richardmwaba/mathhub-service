@@ -9,10 +9,13 @@ public class AssetTypeDto {
 
     private String typeDescription;
 
-    private AssetDto asset;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTypeName() {
@@ -29,13 +32,5 @@ public class AssetTypeDto {
 
     public void setTypeDescription(String typeDescription) {
         this.typeDescription = typeDescription;
-    }
-
-    public AssetDto getAsset() {
-        return asset;
-    }
-
-    public void setAsset(AssetDto asset) {
-        this.asset = asset;
     }
 }

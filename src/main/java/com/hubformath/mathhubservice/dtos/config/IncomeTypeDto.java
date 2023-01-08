@@ -15,6 +15,10 @@ public class IncomeTypeDto {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getTypeName() {
         return typeName;
     }

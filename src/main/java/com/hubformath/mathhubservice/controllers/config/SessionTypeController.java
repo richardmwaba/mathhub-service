@@ -96,6 +96,6 @@ public class SessionTypeController {
     public ResponseEntity<String> deleteSessionType(@PathVariable Long id) {
         sessionTypeService.deleteSessionType(id);
 
-        return ResponseEntity.ok().body("Session type deleted succefully");
+        return ResponseEntity.ok().body("Session type deleted successfully");
     }
 }

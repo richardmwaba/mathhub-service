@@ -30,9 +30,6 @@ public class AssetType {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "assetType")
-    private Asset asset;
-
     public AssetType() {}
 
     public AssetType(String typeName, String typeDescription) {
@@ -44,13 +41,6 @@ public class AssetType {
         return this.id;
     }
 
-    public Asset getAsset() {
-        return asset;
-    }
-
-    public void setAsset(Asset asset) {
-        this.asset = asset;
-    }
 
     public String getTypeName() {
         return this.typeName;
@@ -93,7 +83,6 @@ public class AssetType {
         AssetType assetType = (AssetType) o;
         return Objects.equals(this.id, assetType.id) && Objects.equals(this.typeName, assetType.typeName)
             && Objects.equals(this.typeDescription, assetType.typeDescription)
-            && Objects.equals(this.asset, assetType.asset)
             && Objects.equals(this.createdAt, assetType.createdAt)
             && Objects.equals(this.updatedAt, assetType.updatedAt);
     }
@@ -106,7 +95,7 @@ public class AssetType {
     @Override
     public String toString() {
         return "AssetType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + ", typeDescription='" 
-                + this.typeDescription + ", asset='" + this.asset + ", createdAt='" + this.createdAt 
+                + this.typeDescription + ", asset='" + ", createdAt='" + this.createdAt
                 + ", updatedAt='" + this.updatedAt + "'}";
     }
 }

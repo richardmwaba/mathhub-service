@@ -18,6 +18,10 @@ public class AssetDto {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public PaymentMethodDto getPaymentMethod() {
         return paymentMethod;
     }

@@ -9,10 +9,13 @@ public class LiabilityTypeDto {
 
     private String typeDescription;
 
-    private LiabilityDto liability;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTypeName() {
@@ -31,11 +34,4 @@ public class LiabilityTypeDto {
         this.typeDescription = typeDescription;
     }
 
-    public LiabilityDto getLiability() {
-        return liability;
-    }
-
-    public void setLiability(LiabilityDto liability) {
-        this.liability = liability;
-    }
 }
