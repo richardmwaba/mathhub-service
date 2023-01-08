@@ -4,12 +4,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,7 +17,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 public class Parent {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Long id;
 
     private String firstName;
@@ -29,14 +28,13 @@ public class Parent {
 
     private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "student_id")
-    private Student student;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
+    private List<Student> students;
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Address> addresses;
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<PhoneNumber> phoneNumbers;
 
     @CreationTimestamp
@@ -91,12 +89,12 @@ public class Parent {
         this.email = email;
     }
 
-    public Student getStudent() {
-        return student;
+    public List<Student> getStudents() {
+        return students;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 
     public List<Address> getAddresses() {
@@ -142,7 +140,7 @@ public class Parent {
             && Objects.equals(this.middleName, parent.middleName)
             && Objects.equals(this.lastName, parent.lastName)
             && Objects.equals(this.email, parent.email)
-            && Objects.equals(this.student, parent.student)
+            && Objects.equals(this.students, parent.students)
             && Objects.equals(this.addresses, parent.addresses)
             && Objects.equals(this.phoneNumbers, parent.phoneNumbers)
             && Objects.equals(this.createdAt, parent.createdAt)
@@ -151,14 +149,14 @@ public class Parent {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.firstName, this.middleName, this.lastName, this.email, this.student,
+        return Objects.hash(this.id, this.firstName, this.middleName, this.lastName, this.email, this.students,
                             this.addresses, this.phoneNumbers, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
         return "Parent {id=" + this.id + ", firstName=" + this.firstName + ", middleName=" + this.middleName + ", LastName="
-                + this.lastName + ", email=" + this.email + ", addresses=" + this.addresses + ", student=" + this.student 
+                + this.lastName + ", email=" + this.email + ", addresses=" + this.addresses + ", student=" + this.students 
                 + ", phoneNumbers=" + this.phoneNumbers + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
     }
 }

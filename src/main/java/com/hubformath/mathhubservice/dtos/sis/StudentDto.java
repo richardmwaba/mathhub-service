@@ -1,15 +1,13 @@
 package com.hubformath.mathhubservice.dtos.sis;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.TimeZone;
 
 public class StudentDto {
     private Long id;
 
-    private  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private  DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private String firstName;
 
@@ -17,17 +15,15 @@ public class StudentDto {
 
     private String lastName;
 
-    private String guardian;
-    
     private String email;
 
-    private List<ParentDto> parents;
+    private ParentDto parent;
 
     private List<AddressDto> addresses;
 
     private List<PhoneNumberDto> phoneNumbers;
 
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
 
     public Long getId() {
         return id;
@@ -61,14 +57,6 @@ public class StudentDto {
         this.lastName = lastName;
     }
 
-    public String getGuardian() {
-        return guardian;
-    }
-
-    public void setGuardian(String guardian) {
-        this.guardian = guardian;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -77,12 +65,12 @@ public class StudentDto {
         this.email = email;
     }
 
-    public List<ParentDto> getParents() {
-        return parents;
+    public ParentDto getParent() {
+        return parent;
     }
 
-    public void setParents(List<ParentDto> parents) {
-        this.parents = parents;
+    public void setParent(ParentDto parent) {
+        this.parent = parent;
     }
 
     public List<AddressDto> getAddresses() {
@@ -101,13 +89,11 @@ public class StudentDto {
         this.phoneNumbers = phoneNumbers;
     }
 
-    public Date getSubmissionDateConverted(String timezone) throws ParseException {
-        dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
-        return dateFormat.parse(this.dateOfBirth);
+    public LocalDate getDateOfBirth() {
+        return this.dateOfBirth;
     }
 
-    public void setSubmissionDate(Date dateofBirth, String timezone) {
-        dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
-        this.dateOfBirth = dateFormat.format(dateofBirth);
+    public void setDateOfBirth(String dateofBirth) {
+        this.dateOfBirth = LocalDate.parse(dateofBirth, dateFormatter);
     }
 }

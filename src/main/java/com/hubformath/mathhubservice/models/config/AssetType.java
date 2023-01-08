@@ -17,7 +17,7 @@ import com.hubformath.mathhubservice.models.ops.cashbook.Asset;
 @Entity
 public class AssetType {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Long id;
     
     private String typeName;

@@ -13,8 +13,6 @@ public class ParentDto {
 
     private String email;
 
-    private StudentDto student;
-
     private List<AddressDto> addresses;
 
     private List<PhoneNumberDto> phoneNumbers;
@@ -57,14 +55,6 @@ public class ParentDto {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public StudentDto getStudent() {
-        return student;
-    }
-
-    public void setStudent(StudentDto student) {
-        this.student = student;
     }
 
     public List<AddressDto> getAddresses() {

@@ -16,25 +16,27 @@ import com.hubformath.mathhubservice.dtos.config.AssessmentTypeDto;
 
 @Component
 public class AssessmentTypeModelAssembler
-    implements RepresentationModelAssembler<AssessmentTypeDto, EntityModel<AssessmentTypeDto>> {
+        implements RepresentationModelAssembler<AssessmentTypeDto, EntityModel<AssessmentTypeDto>> {
     @Override
     public EntityModel<AssessmentTypeDto> toModel(AssessmentTypeDto assessmentType) {
 
         return EntityModel.of(assessmentType,
-            linkTo(methodOn(AssessmentTypeController.class).getAssessmentTypeById(assessmentType.getId())).withSelfRel(),
-            linkTo(methodOn(AssessmentTypeController.class).getAllAssessmentTypes()).withRel("assessmentTypes"));
+                linkTo(methodOn(AssessmentTypeController.class).getAssessmentTypeById(assessmentType.getId()))
+                        .withSelfRel(),
+                linkTo(methodOn(AssessmentTypeController.class).getAllAssessmentTypes()).withRel("assessmentTypes"));
     }
 
     @Override
     public CollectionModel<EntityModel<AssessmentTypeDto>> toCollectionModel(
-        Iterable<? extends AssessmentTypeDto> assessmentTypes) {
-        List<EntityModel<AssessmentTypeDto>> assessmentTypeList = StreamSupport.stream(assessmentTypes.spliterator(), false)
-            .map(this::toModel)
-            .collect(Collectors.toList());
+            Iterable<? extends AssessmentTypeDto> assessmentTypes) {
+        List<EntityModel<AssessmentTypeDto>> assessmentTypeList = StreamSupport
+                .stream(assessmentTypes.spliterator(), false)
+                .map(this::toModel)
+                .collect(Collectors.toList());
 
         return CollectionModel.of(assessmentTypeList, linkTo(methodOn(AssessmentTypeController.class)
-              .getAllAssessmentTypes())
-              .withSelfRel());
+                .getAllAssessmentTypes())
+                .withSelfRel());
     }
 
 }

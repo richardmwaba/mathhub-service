@@ -15,24 +15,25 @@ import com.hubformath.mathhubservice.controllers.config.EquityTypeController;
 import com.hubformath.mathhubservice.dtos.config.EquityTypeDto;
 
 @Component
-public class EquityTypeModelAssembler implements RepresentationModelAssembler<EquityTypeDto, EntityModel<EquityTypeDto>> {
+public class EquityTypeModelAssembler
+        implements RepresentationModelAssembler<EquityTypeDto, EntityModel<EquityTypeDto>> {
     @Override
     public EntityModel<EquityTypeDto> toModel(EquityTypeDto assessmentType) {
 
         return EntityModel.of(assessmentType,
-            linkTo(methodOn(EquityTypeController.class).getEquityTypeById(assessmentType.getId())).withSelfRel(),
-            linkTo(methodOn(EquityTypeController.class).getAllEquityTypes()).withRel("equityTypes"));
+                linkTo(methodOn(EquityTypeController.class).getEquityTypeById(assessmentType.getId())).withSelfRel(),
+                linkTo(methodOn(EquityTypeController.class).getAllEquityTypes()).withRel("equityTypes"));
     }
 
     @Override
     public CollectionModel<EntityModel<EquityTypeDto>> toCollectionModel(
-        Iterable<? extends EquityTypeDto> assessmentTypes) {
+            Iterable<? extends EquityTypeDto> assessmentTypes) {
         List<EntityModel<EquityTypeDto>> assessmentTypeList = StreamSupport.stream(assessmentTypes.spliterator(), false)
-            .map(this::toModel)
-            .collect(Collectors.toList());
+                .map(this::toModel)
+                .collect(Collectors.toList());
 
         return CollectionModel.of(assessmentTypeList, linkTo(methodOn(EquityTypeController.class)
-              .getAllEquityTypes())
-              .withSelfRel());
+                .getAllEquityTypes())
+                .withSelfRel());
     }
 }

@@ -1,14 +1,11 @@
 package com.hubformath.mathhubservice.dtos.config;
 
-import com.hubformath.mathhubservice.dtos.ops.cashbook.AssetDto;
-
 public class AssetTypeDto {
     private Long id;
 
     private String typeName;
 
     private String typeDescription;
-
 
     public Long getId() {
         return id;

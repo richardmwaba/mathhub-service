@@ -13,27 +13,29 @@ import org.springframework.stereotype.Component;
 
 import com.hubformath.mathhubservice.controllers.config.PaymentMethodController;
 import com.hubformath.mathhubservice.dtos.config.PaymentMethodDto;
-import com.hubformath.mathhubservice.models.config.PaymentMethod;
 
 @Component
-public class PaymentMethodModelAssembler implements RepresentationModelAssembler<PaymentMethodDto, EntityModel<PaymentMethodDto>> {
+public class PaymentMethodModelAssembler
+        implements RepresentationModelAssembler<PaymentMethodDto, EntityModel<PaymentMethodDto>> {
     @Override
     public EntityModel<PaymentMethodDto> toModel(PaymentMethodDto paymentMethod) {
 
         return EntityModel.of(paymentMethod,
-            linkTo(methodOn(PaymentMethodController.class).getPaymentMethodById(paymentMethod.getId())).withSelfRel(),
-            linkTo(methodOn(PaymentMethodController.class).getAllPaymentMethods()).withRel("paymentMethods"));
+                linkTo(methodOn(PaymentMethodController.class).getPaymentMethodById(paymentMethod.getId()))
+                        .withSelfRel(),
+                linkTo(methodOn(PaymentMethodController.class).getAllPaymentMethods()).withRel("paymentMethods"));
     }
 
     @Override
     public CollectionModel<EntityModel<PaymentMethodDto>> toCollectionModel(
-        Iterable<? extends PaymentMethodDto> paymentMethods) {
-        List<EntityModel<PaymentMethodDto>> paymentMethodList = StreamSupport.stream(paymentMethods.spliterator(), false)
-            .map(this::toModel)
-            .collect(Collectors.toList());
+            Iterable<? extends PaymentMethodDto> paymentMethods) {
+        List<EntityModel<PaymentMethodDto>> paymentMethodList = StreamSupport
+                .stream(paymentMethods.spliterator(), false)
+                .map(this::toModel)
+                .collect(Collectors.toList());
 
         return CollectionModel.of(paymentMethodList, linkTo(methodOn(PaymentMethodController.class)
-              .getAllPaymentMethods())
-              .withSelfRel());
+                .getAllPaymentMethods())
+                .withSelfRel());
     }
 }

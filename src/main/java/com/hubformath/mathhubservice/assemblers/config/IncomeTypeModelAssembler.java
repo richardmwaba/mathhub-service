@@ -15,24 +15,25 @@ import com.hubformath.mathhubservice.controllers.config.IncomeTypeController;
 import com.hubformath.mathhubservice.dtos.config.IncomeTypeDto;
 
 @Component
-public class IncomeTypeModelAssembler implements RepresentationModelAssembler<IncomeTypeDto, EntityModel<IncomeTypeDto>> {
+public class IncomeTypeModelAssembler
+        implements RepresentationModelAssembler<IncomeTypeDto, EntityModel<IncomeTypeDto>> {
     @Override
     public EntityModel<IncomeTypeDto> toModel(IncomeTypeDto incomeType) {
 
         return EntityModel.of(incomeType,
-            linkTo(methodOn(IncomeTypeController.class).getIncomeTypeById(incomeType.getId())).withSelfRel(),
-            linkTo(methodOn(IncomeTypeController.class).getAllIncomeTypes()).withRel("incomeTypes"));
+                linkTo(methodOn(IncomeTypeController.class).getIncomeTypeById(incomeType.getId())).withSelfRel(),
+                linkTo(methodOn(IncomeTypeController.class).getAllIncomeTypes()).withRel("incomeTypes"));
     }
 
     @Override
     public CollectionModel<EntityModel<IncomeTypeDto>> toCollectionModel(
-        Iterable<? extends IncomeTypeDto> incomeTypes) {
+            Iterable<? extends IncomeTypeDto> incomeTypes) {
         List<EntityModel<IncomeTypeDto>> incomeTypeList = StreamSupport.stream(incomeTypes.spliterator(), false)
-            .map(this::toModel)
-            .collect(Collectors.toList());
+                .map(this::toModel)
+                .collect(Collectors.toList());
 
         return CollectionModel.of(incomeTypeList, linkTo(methodOn(IncomeTypeController.class)
-              .getAllIncomeTypes())
-              .withSelfRel());
+                .getAllIncomeTypes())
+                .withSelfRel());
     }
 }

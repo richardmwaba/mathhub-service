@@ -7,37 +7,10 @@
 	},
 	"item": [
 		{
-			"name": "AssetTypes",
-			"item": [
-				{
-					"name": "getAssetTypes",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/v1/ops/assetTypes",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"ops",
-								"assetTypes"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "Expenses",
 			"item": [
 				{
-					"name": "New Request",
+					"name": "createExpense",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -63,6 +36,97 @@
 								"v1",
 								"ops",
 								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteExpense",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/expenses/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"expenses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllExpenses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/expenses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getExpenseById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/expenses/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"expenses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateExpense",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/expenses/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"expenses",
+								"1"
 							]
 						}
 					},
@@ -209,7 +273,7 @@
 			]
 		},
 		{
-			"name": "AssetType",
+			"name": "AssetTypes",
 			"item": [
 				{
 					"name": "createAssetType",
@@ -398,6 +462,213 @@
 								"v1",
 								"ops",
 								"assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAsset",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/assets/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"assets",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAssetById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/assets/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"assets",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateAsset",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ops/assets/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ops",
+								"assets",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Students",
+			"item": [
+				{
+					"name": "getAllStudents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/sis/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"sis",
+								"students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createStudent",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Andrew\",\r\n    \"middleName\": \"Chola\",\r\n    \"lastName\": \"Bwalya\",\r\n    \"guardian\": \"\",\r\n    \"email\": \"andrew.bwalya@email.com\",\r\n    \"parents\": [\r\n        {\r\n            \"firstName\": \"Godfrey\",\r\n            \"middleName\": \"Mwewa\",\r\n            \"lastName\": \"Bwalya\",\r\n            \"email\": \"godfrey.bwalya@email.com\",\r\n            \"addresses\": [\r\n                {\r\n                    \"addressType\": \"HOME\",\r\n                    \"addressLine1\": \"Olympia\",\r\n                    \"addressLine2\": \"\",\r\n                    \"addressLine3\": \"Lusaka\",\r\n                    \"city\": \"city\",\r\n                    \"province\": \"Lusaka\",\r\n                    \"zipCode\": \"\"\r\n                }\r\n            ],\r\n            \"phoneNumbers\": [\r\n                {\r\n                    \"type\": \"MOBILE\",\r\n                    \"countryCode\": \"+260\",\r\n                    \"number\": \"971121314\"\r\n                }\r\n            ]\r\n        }\r\n    ],\r\n    \"addresses\": [\r\n        {\r\n            \"addressType\": \"HOME\",\r\n            \"addressLine1\": \"Olympia\",\r\n            \"addressLine2\": \"\",\r\n            \"addressLine3\": \"Lusaka\",\r\n            \"city\": \"city\",\r\n            \"province\": \"Lusaka\",\r\n            \"zipCode\": \"\"\r\n        }\r\n    ],\r\n    \"phoneNumbers\": [\r\n        {\r\n            \"type\": \"MOBILE\",\r\n            \"countryCode\": \"+260\",\r\n            \"number\": \"971222324\"\r\n        }\r\n    ],\r\n    \"dateOfBirth\": \"23-01-2005\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/sis/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"sis",
+								"students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteStudent",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/sis/students/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"sis",
+								"students",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getStudentById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/sis/students/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"sis",
+								"students",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateStudent",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Pentagon\",\r\n    \"middleName\": \"Chola\",\r\n    \"lastName\": \"Bwalya\",\r\n    \"guardian\": \"\",\r\n    \"email\": \"pentagon.bwalya@email.com\",\r\n    \"parent\": {\r\n        \"firstName\": \"Samson\",\r\n        \"middleName\": \"Mwewa\",\r\n        \"lastName\": \"Chibwe\",\r\n        \"email\": \"samson.chibwe@email.com\",\r\n        \"addresses\": [\r\n            {\r\n                \"addressType\": \"HOME\",\r\n                \"addressLine1\": \"Olympia\",\r\n                \"addressLine2\": \"\",\r\n                \"addressLine3\": \"Lusaka\",\r\n                \"city\": \"city\",\r\n                \"province\": \"Lusaka\",\r\n                \"zipCode\": \"\"\r\n            }\r\n        ],\r\n        \"phoneNumbers\": [\r\n            {\r\n                \"type\": \"MOBILE\",\r\n                \"countryCode\": \"+260\",\r\n                \"number\": \"971144222\"\r\n            }\r\n        ]\r\n    },\r\n    \"addresses\": [\r\n        {\r\n            \"addressType\": \"HOME\",\r\n            \"addressLine1\": \"Olympia\",\r\n            \"addressLine2\": \"\",\r\n            \"addressLine3\": \"Lusaka\",\r\n            \"city\": \"city\",\r\n            \"province\": \"Lusaka\",\r\n            \"zipCode\": \"\"\r\n        }\r\n    ],\r\n    \"phoneNumbers\": [\r\n        {\r\n            \"type\": \"MOBILE\",\r\n            \"countryCode\": \"+260\",\r\n            \"number\": \"971987643\"\r\n        }\r\n    ],\r\n    \"dateOfBirth\": \"2005-01-25\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/sis/students/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"sis",
+								"students",
+								"1"
 							]
 						}
 					},

@@ -22,7 +22,7 @@ import com.hubformath.mathhubservice.models.ops.cashbook.Transaction;
 @Entity
 public class PaymentMethod {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Long id;
 
     private String typeName;

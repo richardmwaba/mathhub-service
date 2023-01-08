@@ -17,7 +17,7 @@ import com.hubformath.mathhubservice.models.ops.cashbook.Equity;;
 @Entity
 public class EquityType {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Long id;
 
     private String typeName;
