@@ -92,6 +92,6 @@ public class StudentController {
     public ResponseEntity<String> deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
 
-        return ResponseEntity.ok().body("Student deleted succefully");
+        return ResponseEntity.ok().body("Student deleted sucessfully");
     }
 }

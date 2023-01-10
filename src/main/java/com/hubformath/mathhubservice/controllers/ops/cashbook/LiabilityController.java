@@ -92,7 +92,7 @@ public class LiabilityController {
     public ResponseEntity<String> deleteLiability(@PathVariable Long id) {
         liabilityService.deleteLiability(id);
 
-        return ResponseEntity.ok().body("Liability deleted succefully");
+        return ResponseEntity.ok().body("Liability deleted sucessfully");
     }
 }
 

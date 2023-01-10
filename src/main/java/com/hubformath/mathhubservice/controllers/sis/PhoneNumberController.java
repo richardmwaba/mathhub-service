@@ -92,6 +92,6 @@ public class PhoneNumberController {
     public ResponseEntity<String> deletePhoneNumber(@PathVariable Long id) {
         phoneNumberService.deletePhoneNumber(id);
 
-        return ResponseEntity.ok().body("PhoneNumber deleted succefully");
+        return ResponseEntity.ok().body("PhoneNumber deleted sucessfully");
     }
 }

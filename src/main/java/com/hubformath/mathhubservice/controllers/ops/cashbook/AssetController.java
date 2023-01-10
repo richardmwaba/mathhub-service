@@ -92,6 +92,6 @@ public class AssetController {
     public ResponseEntity<String> deleteAsset(@PathVariable Long id) {
         assetService.deleteAsset(id);
 
-        return ResponseEntity.ok().body("Asset deleted succefully");
+        return ResponseEntity.ok().body("Asset deleted sucessfully");
     }
 }
