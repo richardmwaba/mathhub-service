@@ -3,8 +3,6 @@ package com.hubformath.mathhubservice.controllers.ops.cashbook;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -23,28 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hubformath.mathhubservice.assemblers.ops.cashbook.ExpenseModelAssembler;
 import com.hubformath.mathhubservice.dtos.ops.cashbook.ExpenseDto;
 import com.hubformath.mathhubservice.dtos.ops.cashbook.ExpenseRequestDto;
-import com.hubformath.mathhubservice.models.config.ExpenseType;
-import com.hubformath.mathhubservice.models.config.PaymentMethod;
 import com.hubformath.mathhubservice.models.ops.cashbook.Expense;
-import com.hubformath.mathhubservice.models.ops.cashbook.ExpenseStatus;
-import com.hubformath.mathhubservice.repositories.ops.cashbook.ExpenseRepository;
-import com.hubformath.mathhubservice.services.config.IExpenseTypeService;
-import com.hubformath.mathhubservice.services.config.IPaymentMethodService;
 import com.hubformath.mathhubservice.services.ops.cashbook.IExpenseService;
-import com.hubformath.mathhubservice.utils.exceptions.ItemNotFoundException;
 
 
 @RestController
 @RequestMapping(path="/api/v1/ops")
 public class ExpenseController {
-    @Autowired
-    private ExpenseRepository repository;
 
     @Autowired
     private IExpenseService expenseService;
-
-    @Autowired
-    private IPaymentMethodService paymentMethodService;
     
     @Autowired
     private ExpenseModelAssembler expenseModelAssembler;
