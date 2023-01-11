@@ -3,11 +3,9 @@ package com.hubformath.mathhubservice.models.config;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -18,6 +16,10 @@ public class Grade {
     private Long id;
 
     private String gradeName;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subjectGrade")
+    private List<Subject> subjects;
+
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -40,6 +42,12 @@ public class Grade {
 
     public void setGradeName(String gradeName) {
         this.gradeName = gradeName;
+    }
+
+    public List<Subject> getSubjects() {return subjects; }
+
+    public void setSubjects(List<Subject> subjects) {
+        this.subjects = subjects;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -67,18 +75,21 @@ public class Grade {
         Grade grade = (Grade) o;
         return Objects.equals(this.id, grade.id)
                 && Objects.equals(this.gradeName, grade.gradeName)
+                && Objects.equals(this.subjects, grade.subjects)
                 && Objects.equals(this.createdAt, grade.createdAt)
                 && Objects.equals(this.updatedAt, grade.updatedAt);
     }
 
     @Override
     public int hashCode(){
-        return Objects.hash(this.id, this.gradeName, this.createdAt, this.updatedAt);
+        return Objects.hash(this.id, this.gradeName, this.subjects, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString(){
-        return "Grade{" + "id=" + this.id + ", gradeName=" + this.gradeName + "'" + ", createdAt='"
-                + this.createdAt + ", updatedAt='" + this.updatedAt + "}";
+        return "Grade{" + "id=" + this.id + ", gradeName=" + this.gradeName + "subject=" + this.subjects + ", createdAt="
+                + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
     }
+
+
 }
