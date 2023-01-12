@@ -92,6 +92,6 @@ public class ParentController {
     public ResponseEntity<String> deleteParent(@PathVariable Long id) {
         parentService.deleteParent(id);
 
-        return ResponseEntity.ok().body("Parent deleted succefully");
+        return ResponseEntity.ok().body("Parent deleted sucessfully");
     }
 }

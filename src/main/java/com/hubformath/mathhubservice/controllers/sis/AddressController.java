@@ -92,6 +92,6 @@ public class AddressController {
     public ResponseEntity<String> deleteAddress(@PathVariable Long id) {
         addressService.deleteAddress(id);
 
-        return ResponseEntity.ok().body("Address deleted succefully");
+        return ResponseEntity.ok().body("Address deleted sucessfully");
     }
 }
