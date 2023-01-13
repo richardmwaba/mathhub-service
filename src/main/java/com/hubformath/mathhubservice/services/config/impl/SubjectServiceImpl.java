@@ -1,9 +1,13 @@
 package com.hubformath.mathhubservice.services.config.impl;
 
+import com.hubformath.mathhubservice.dtos.config.SubjectRequestDto;
+import com.hubformath.mathhubservice.models.config.Grade;
 import com.hubformath.mathhubservice.models.config.Subject;
 import com.hubformath.mathhubservice.repositories.config.SubjectRepository;
+import com.hubformath.mathhubservice.services.config.IGradeService;
 import com.hubformath.mathhubservice.services.config.ISubjectService;
 import com.hubformath.mathhubservice.utils.exceptions.ItemNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +15,9 @@ import java.util.Optional;
 
 @Service
 public class SubjectServiceImpl implements ISubjectService {
+
+    @Autowired
+    IGradeService gradeService;
 
     private final SubjectRepository subjectRepository;
 
@@ -37,8 +44,16 @@ public class SubjectServiceImpl implements ISubjectService {
     }
 
     @Override
-    public Subject createSubject(Subject subjectRequest){
-        return subjectRepository.save(subjectRequest);
+    public Subject createSubject(SubjectRequestDto subjectRequest){
+        final long subjectGradeId = subjectRequest.getSubjectGradeId();
+        final String subjectName = subjectRequest.getSubjectName();
+        final Grade grade = gradeService.getGradeById(subjectGradeId);
+
+        final Subject newSubject = new Subject(subjectName);
+        newSubject.setSubjectGrade(grade);
+
+
+        return subjectRepository.save(newSubject);
     }
 
     @Override

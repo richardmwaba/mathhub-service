@@ -14,9 +14,8 @@ import java.util.stream.StreamSupport;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-
 @Component
-public class SubjectModelAssembler 
+public class SubjectModelAssembler
         implements RepresentationModelAssembler<SubjectDto, EntityModel<SubjectDto>> {
 
     @Override

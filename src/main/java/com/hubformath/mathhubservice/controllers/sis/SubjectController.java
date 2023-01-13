@@ -2,6 +2,7 @@ package com.hubformath.mathhubservice.controllers.sis;
 
 import com.hubformath.mathhubservice.assemblers.config.SubjectModelAssembler;
 import com.hubformath.mathhubservice.dtos.config.SubjectDto;
+import com.hubformath.mathhubservice.dtos.config.SubjectRequestDto;
 import com.hubformath.mathhubservice.models.config.Subject;
 import com.hubformath.mathhubservice.services.config.ISubjectService;
 import org.modelmapper.ModelMapper;
@@ -10,7 +11,14 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,17 +26,17 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(path = "/api/v1/sis")
 public class SubjectController {
-    
+
     @Autowired
     private ModelMapper modelMapper;
-    
+
     @Autowired
     private ISubjectService subjectService;
-    
+
     @Autowired
     private SubjectModelAssembler subjectModelAssembler;
-    
-    public SubjectController(){super();}
+
+    public SubjectController(){ super(); }
 
     @GetMapping("/subjects")
     public ResponseEntity<CollectionModel<EntityModel<SubjectDto>>> getAllSubjects() {
@@ -44,9 +52,8 @@ public class SubjectController {
 
     @PostMapping("/subjects")
     public ResponseEntity<EntityModel<SubjectDto>> newSubject(
-            @RequestBody SubjectDto subjectDto) {
-        Subject subjectRequest = modelMapper.map(subjectDto, Subject.class);
-        Subject newSubject = subjectService.createSubject(subjectRequest);
+            @RequestBody SubjectRequestDto subjectRequestDto) {
+        Subject newSubject = subjectService.createSubject(subjectRequestDto);
 
         EntityModel<SubjectDto> subjectDtoEntityModel = subjectModelAssembler.
                 toModel(modelMapper.map(newSubject, SubjectDto.class));

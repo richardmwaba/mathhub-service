@@ -1,6 +1,5 @@
 package com.hubformath.mathhubservice.assemblers.config;
 
-
 import com.hubformath.mathhubservice.controllers.sis.GradeController;
 import com.hubformath.mathhubservice.dtos.config.GradeDto;
 import org.springframework.hateoas.CollectionModel;
@@ -14,6 +13,7 @@ import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @Component
 public class GradeModelAssembler
         implements RepresentationModelAssembler<GradeDto, EntityModel<GradeDto>> {

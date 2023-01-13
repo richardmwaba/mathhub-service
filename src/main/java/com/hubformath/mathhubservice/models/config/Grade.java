@@ -3,7 +3,12 @@ package com.hubformath.mathhubservice.models.config;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -19,7 +24,6 @@ public class Grade {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subjectGrade")
     private List<Subject> subjects;
-
 
     @CreationTimestamp
     private LocalDateTime createdAt;

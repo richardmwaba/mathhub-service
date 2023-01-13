@@ -6,7 +6,7 @@ public class SubjectDto {
 
     private String subjectName;
 
-    private String subjectGrade;
+    private GradeDto subjectGrade;
 
 
     public Long getId() {return id; }
@@ -19,7 +19,7 @@ public class SubjectDto {
     public void setSubjectName(String subjectName) {this.subjectName = subjectName;}
 
 
-    public String getSubjectGrade() {return subjectGrade;}
+    public GradeDto getSubjectGrade() {return subjectGrade;}
 
-    public void setSubjectGrade(String subjectGrade) {this.subjectGrade = subjectGrade;}
+    public void setSubjectGrade(GradeDto subjectGrade) {this.subjectGrade = subjectGrade;}
 }
