@@ -3,16 +3,30 @@ package com.hubformath.mathhubservice.services.ops.cashbook.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hubformath.mathhubservice.dtos.ops.cashbook.IncomeRequestDto;
+import com.hubformath.mathhubservice.models.config.IncomeType;
+import com.hubformath.mathhubservice.models.config.PaymentMethod;
 import com.hubformath.mathhubservice.models.ops.cashbook.Income;
 import com.hubformath.mathhubservice.repositories.ops.cashbook.IncomeRepository;
+import com.hubformath.mathhubservice.services.config.IPaymentMethodService;
 import com.hubformath.mathhubservice.services.ops.cashbook.IIncomeService;
+import com.hubformath.mathhubservice.services.config.IIncomeTypeService;
 import com.hubformath.mathhubservice.utils.exceptions.ItemNotFoundException;
 
 @Service
 public class IncomeServiceImpl implements IIncomeService{
+
+    @Autowired
+    private IPaymentMethodService paymentMethodService;
+
+    @Autowired
+    private IIncomeTypeService incomeTypeService;
+
     private final IncomeRepository incomeRepository;
+
     private final String notFoundItemName;
 
     public IncomeServiceImpl(IncomeRepository incomeRepository) {
@@ -38,14 +52,28 @@ public class IncomeServiceImpl implements IIncomeService{
     }
 
     @Override
-    public Income createIncome(Income incomeRequest) {
-        return incomeRepository.save(incomeRequest);
+    public Income createIncome(IncomeRequestDto incomeRequest) {
+        final Long paymentMethodId = incomeRequest.getPaymentMethodId();
+        final Long incomeTypeId = incomeRequest.getIncomeTypeId();
+        final String narration = incomeRequest.getNarration();
+        final Double amount = incomeRequest.getAmount();
+
+        final PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(paymentMethodId);
+        final IncomeType incomeType = incomeTypeService.getIncomeTypeById(incomeTypeId);
+
+        // To do: Replace null created by with actual logged in user
+        final Income newIncome = new Income(narration, amount, null, null);
+        newIncome.setIncomeType(incomeType);
+        newIncome.setPaymentMethod(paymentMethod);
+
+        return incomeRepository.save(newIncome);
     }
 
     @Override
     public Income updateIncome(Long id, Income incomeRequest) {
         return incomeRepository.findById(id)
                 .map(income -> {
+                    income.setNarration(incomeRequest.getNarration());
                     income.setPaymentMethod(incomeRequest.getPaymentMethod());
                     income.setIncomeType(incomeRequest.getIncomeType());
                     income.setAmount(incomeRequest.getAmount());

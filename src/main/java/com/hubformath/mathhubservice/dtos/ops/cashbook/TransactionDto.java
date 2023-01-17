@@ -1,17 +1,11 @@
 package com.hubformath.mathhubservice.dtos.ops.cashbook;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
+import java.time.LocalDateTime;
 import com.hubformath.mathhubservice.dtos.config.PaymentMethodDto;
 import com.hubformath.mathhubservice.models.ops.cashbook.TransactionType;
 
 public class TransactionDto {
     private Long id;
-
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     private String transactionNumber;
 
@@ -23,7 +17,7 @@ public class TransactionDto {
 
     private Double amount;
 
-    private String transactionDate;
+    private LocalDateTime transactionDateTime;
 
     public Long getId() {
         return id;
@@ -49,14 +43,6 @@ public class TransactionDto {
         this.paymentMethod = paymentMethod;
     }
 
-    public TransactionType getType() {
-        return transactionType;
-    }
-
-    public void setType(TransactionType transactionType) {
-        this.transactionType = transactionType;
-    }
-
     public String getNarration() {
         return narration;
     }
@@ -73,13 +59,20 @@ public class TransactionDto {
         this.amount = amount;
     }
 
-    public Date getTransactionDateConverted(String timezone) throws ParseException {
-        dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
-        return dateFormat.parse(this.transactionDate);
+    public TransactionType getTransactionType() {
+        return transactionType;
     }
 
-    public void setTransactionDate(Date transactionDate, String timezone) {
-        dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
-        this.transactionDate = dateFormat.format(transactionDate);
+    public void setTransactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
     }
+
+    public LocalDateTime getTransactionDateTime() {
+        return transactionDateTime;
+    }
+
+    public void setTransactionDate(LocalDateTime transactionDateTime) {
+        this.transactionDateTime = transactionDateTime;
+    }
+
 }

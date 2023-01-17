@@ -1,7 +1,5 @@
 package com.hubformath.mathhubservice.dtos.config;
 
-import com.hubformath.mathhubservice.dtos.ops.cashbook.EquityDto;
-
 public class EquityTypeDto {
     private Long id;
 
