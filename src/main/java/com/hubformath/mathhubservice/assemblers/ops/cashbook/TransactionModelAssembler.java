@@ -1,6 +1,6 @@
 package com.hubformath.mathhubservice.assemblers.ops.cashbook;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,10 +18,9 @@ import com.hubformath.mathhubservice.dtos.ops.cashbook.TransactionDto;
 public class TransactionModelAssembler implements RepresentationModelAssembler<TransactionDto, EntityModel<TransactionDto>> {
     @Override
     public EntityModel<TransactionDto> toModel(TransactionDto transaction) {
-
-    return EntityModel.of(transaction, //
-        linkTo(methodOn(TransactionController.class).getTransactionById(transaction.getId())).withSelfRel(),
-        linkTo(methodOn(TransactionController.class).getAllTransactions()).withRel("transactions"));
+        return EntityModel.of(transaction, //
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TransactionController.class).getTransactionById(transaction.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TransactionController.class).getAllTransactions()).withRel("transactions"));
     }
 
     @Override
@@ -31,7 +30,7 @@ public class TransactionModelAssembler implements RepresentationModelAssembler<T
                 .map(this::toModel)
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(transactionList, linkTo(methodOn(TransactionController.class)
+        return CollectionModel.of(transactionList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TransactionController.class)
                 .getAllTransactions())
                 .withSelfRel());
     }

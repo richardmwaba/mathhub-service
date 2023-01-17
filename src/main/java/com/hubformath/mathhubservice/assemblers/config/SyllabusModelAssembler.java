@@ -5,23 +5,20 @@ import com.hubformath.mathhubservice.dtos.config.SyllabusDto;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 @Component
 public class SyllabusModelAssembler implements RepresentationModelAssembler<SyllabusDto, EntityModel<SyllabusDto>> {
     @Override
     public EntityModel<SyllabusDto> toModel(SyllabusDto syllabus) {
-
         return EntityModel.of(syllabus,
-                linkTo(methodOn(SyllabusController.class).getSyllabusById(syllabus.getId())).withSelfRel(),
-                linkTo(methodOn(SyllabusController.class).getAllSyllabi()).withRel("syllabus"));
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SyllabusController.class).getSyllabusById(syllabus.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SyllabusController.class).getAllSyllabi()).withRel("syllabus"));
     }
 
     @Override
@@ -31,7 +28,7 @@ public class SyllabusModelAssembler implements RepresentationModelAssembler<Syll
                 .map(this::toModel)
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(syllabusList, linkTo(methodOn(SyllabusController.class)
+        return CollectionModel.of(syllabusList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SyllabusController.class)
                 .getAllSyllabi())
                 .withSelfRel());
     }
