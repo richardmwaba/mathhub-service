@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hubformath.mathhubservice.assemblers.ops.cashbook.IncomeModelAssembler;
 import com.hubformath.mathhubservice.dtos.ops.cashbook.IncomeDto;
+import com.hubformath.mathhubservice.dtos.ops.cashbook.IncomeRequestDto;
 import com.hubformath.mathhubservice.models.ops.cashbook.Income;
 import com.hubformath.mathhubservice.services.ops.cashbook.IIncomeService;
 
@@ -53,9 +54,8 @@ public class IncomeController {
 
     @PostMapping("/incomes")
     public ResponseEntity<EntityModel<IncomeDto>> newIncome(
-            @RequestBody IncomeDto incomeDto) {
-        Income incomeRequest = modelMapper.map(incomeDto, Income.class);
-        Income newIncome = incomeService.createIncome(incomeRequest);
+            @RequestBody IncomeRequestDto incomeRequestDto) {
+        Income newIncome = incomeService.createIncome(incomeRequestDto);
 
         EntityModel<IncomeDto> incomeEntityModel = incomeModelAssembler
                 .toModel(modelMapper.map(newIncome, IncomeDto.class));

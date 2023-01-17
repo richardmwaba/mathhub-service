@@ -1,12 +1,5 @@
 package com.hubformath.mathhubservice.dtos.config;
 
-import com.hubformath.mathhubservice.dtos.ops.cashbook.AssetDto;
-import com.hubformath.mathhubservice.dtos.ops.cashbook.EquityDto;
-import com.hubformath.mathhubservice.dtos.ops.cashbook.ExpenseDto;
-import com.hubformath.mathhubservice.dtos.ops.cashbook.IncomeDto;
-import com.hubformath.mathhubservice.dtos.ops.cashbook.LiabilityDto;
-import com.hubformath.mathhubservice.dtos.ops.cashbook.TransactionDto;
-
 public class PaymentMethodDto {
     private Long id;
 

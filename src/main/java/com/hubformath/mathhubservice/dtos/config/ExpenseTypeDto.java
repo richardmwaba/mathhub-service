@@ -1,7 +1,5 @@
 package com.hubformath.mathhubservice.dtos.config;
 
-import com.hubformath.mathhubservice.dtos.ops.cashbook.ExpenseDto;
-
 public class ExpenseTypeDto {
     private Long id;
 
