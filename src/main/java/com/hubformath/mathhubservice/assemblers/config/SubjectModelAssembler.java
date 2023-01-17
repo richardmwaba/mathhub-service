@@ -5,14 +5,12 @@ import com.hubformath.mathhubservice.dtos.config.SubjectDto;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class SubjectModelAssembler
@@ -22,8 +20,8 @@ public class SubjectModelAssembler
     public  EntityModel<SubjectDto> toModel(SubjectDto subject){
 
         return EntityModel.of(subject,
-                linkTo(methodOn(SubjectController.class).getSubjectById(subject.getId())).withSelfRel(),
-                linkTo(methodOn(SubjectController.class).getAllSubjects()).withRel("subjects"));
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SubjectController.class).getSubjectById(subject.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SubjectController.class).getAllSubjects()).withRel("subjects"));
     }
 
     @Override
@@ -33,7 +31,7 @@ public class SubjectModelAssembler
                 .map(this::toModel)
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(subjectList, linkTo(methodOn(SubjectController.class)
+        return CollectionModel.of(subjectList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SubjectController.class)
                 .getAllSubjects())
                 .withSelfRel());
     }

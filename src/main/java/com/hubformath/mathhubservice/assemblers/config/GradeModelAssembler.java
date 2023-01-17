@@ -5,25 +5,21 @@ import com.hubformath.mathhubservice.dtos.config.GradeDto;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 @Component
-public class GradeModelAssembler
-        implements RepresentationModelAssembler<GradeDto, EntityModel<GradeDto>> {
+public class GradeModelAssembler implements RepresentationModelAssembler<GradeDto, EntityModel<GradeDto>> {
 
     @Override
     public  EntityModel<GradeDto> toModel(GradeDto grade){
-
         return EntityModel.of(grade,
-                linkTo(methodOn(GradeController.class).getGradeById(grade.getId())).withSelfRel(),
-                linkTo(methodOn(GradeController.class).getAllGrades()).withRel("grades"));
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(GradeController.class).getGradeById(grade.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(GradeController.class).getAllGrades()).withRel("grades"));
     }
 
     @Override
@@ -33,7 +29,7 @@ public class GradeModelAssembler
                 .map(this::toModel)
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(gradeList, linkTo(methodOn(GradeController.class)
+        return CollectionModel.of(gradeList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(GradeController.class)
                 .getAllGrades())
                 .withSelfRel());
     }
