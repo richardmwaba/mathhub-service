@@ -1,5 +1,7 @@
 package com.hubformath.mathhubservice.dtos.sis;
 
+import com.hubformath.mathhubservice.dtos.config.GradeDto;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -7,13 +9,15 @@ import java.util.List;
 public class StudentDto {
     private Long id;
 
-    private  DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private String firstName;
 
     private String middleName;
 
     private String lastName;
+
+    private GradeDto grade;
 
     private String email;
 
@@ -64,6 +68,10 @@ public class StudentDto {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public GradeDto getGrade() { return grade; }
+
+    public void setGrade(GradeDto grade) { this.grade = grade; }
 
     public ParentDto getParent() {
         return parent;

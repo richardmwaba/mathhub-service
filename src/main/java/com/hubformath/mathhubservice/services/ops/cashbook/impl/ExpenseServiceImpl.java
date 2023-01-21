@@ -57,6 +57,7 @@ public class ExpenseServiceImpl implements IExpenseService{
         final Double amount = expenseRequest.getAmount();
         final String narration = expenseRequest.getNarration();
         final ExpenseStatus expenseStatus = expenseRequest.getStatus();
+
         final ExpenseType expenseType = expenseTypeService.getExpenseTypeById(expenseTypeId);
         final PaymentMethod paymentMethod =  paymentMethodService.getPaymentMethodById(paymentMethodId);
 

@@ -1,14 +1,15 @@
 package com.hubformath.mathhubservice.models.config;
 
 
+import com.hubformath.mathhubservice.models.sis.Student;
 import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.CascadeType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +25,9 @@ public class Grade {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subjectGrade")
     private List<Subject> subjects;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "grade")
+    private List<Student> students;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -47,6 +51,10 @@ public class Grade {
     public void setGradeName(String gradeName) {
         this.gradeName = gradeName;
     }
+
+    public List<Student> getStudents() {return students;}
+
+    public void setStudents(List<Student> students) {this.students = students;}
 
     public List<Subject> getSubjects() {return subjects; }
 
@@ -79,6 +87,7 @@ public class Grade {
         Grade grade = (Grade) o;
         return Objects.equals(this.id, grade.id)
                 && Objects.equals(this.gradeName, grade.gradeName)
+                && Objects.equals(this.students, grade.students)
                 && Objects.equals(this.subjects, grade.subjects)
                 && Objects.equals(this.createdAt, grade.createdAt)
                 && Objects.equals(this.updatedAt, grade.updatedAt);
@@ -86,14 +95,15 @@ public class Grade {
 
     @Override
     public int hashCode(){
-        return Objects.hash(this.id, this.gradeName, this.subjects, this.createdAt, this.updatedAt);
+        return Objects.hash(this.id, this.gradeName, this.students, this.subjects, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString(){
-        return "Grade{" + "id=" + this.id + ", gradeName=" + this.gradeName + "subject=" + this.subjects + ", createdAt="
+        return "Grade{" + "id=" + this.id + ", gradeName=" + this.gradeName + "students=" + this.students + ", subject=" + this.subjects + ", createdAt="
                 + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
     }
+
 
 
 }

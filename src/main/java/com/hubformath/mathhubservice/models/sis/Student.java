@@ -5,15 +5,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.CascadeType;
 import javax.persistence.OneToMany;
 
+import com.hubformath.mathhubservice.models.config.Grade;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -32,6 +33,10 @@ public class Student {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent_id")
     private Parent parent;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "grade_id")
+    private Grade grade;
 
     private String email;
 
@@ -87,6 +92,10 @@ public class Student {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+   public Grade getGrade() { return grade; }
+
+   public void setGrade(Grade grade) { this.grade = grade; }
 
     public Parent getParent() {
         return parent;
@@ -154,6 +163,7 @@ public class Student {
         return Objects.equals(this.id, student.id) && Objects.equals(this.firstName, student.firstName)
                 && Objects.equals(this.middleName, student.middleName)
                 && Objects.equals(this.lastName, student.lastName)
+                && Objects.equals(this.grade, student.grade)
                 && Objects.equals(this.parent, student.parent)
                 && Objects.equals(this.addresses, student.addresses)
                 && Objects.equals(this.phoneNumbers, student.phoneNumbers)
@@ -165,7 +175,7 @@ public class Student {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.firstName, this.middleName, this.lastName, this.addresses,
+        return Objects.hash(this.id, this.firstName, this.middleName, this.lastName, this.addresses, this.grade,
                 this.parent, this.phoneNumbers, this.email, this.dateOfBirth, this.createdAt, this.updatedAt);
     }
 
@@ -173,7 +183,7 @@ public class Student {
     public String toString() {
         return "Student {id=" + this.id + ", firstName=" + this.firstName + ", middleName=" + this.middleName
                 + ", LastName="
-                + this.lastName + ", parents=" + this.parent + ", addresses=" + this.addresses + ", phoneNumbers="
+                + this.lastName + "grade=" + this.grade + ", parents=" + this.parent + ", addresses=" + this.addresses + ", phoneNumbers="
                 + this.phoneNumbers + ", email=" + this.email + ", dateOfBirth=" + this.dateOfBirth
                 + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
     }
