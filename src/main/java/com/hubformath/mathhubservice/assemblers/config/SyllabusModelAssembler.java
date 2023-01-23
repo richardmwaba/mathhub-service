@@ -21,7 +21,7 @@ public class SyllabusModelAssembler implements RepresentationModelAssembler<Syll
 
         return EntityModel.of(syllabus,
                 linkTo(methodOn(SyllabusController.class).getSyllabusById(syllabus.getId())).withSelfRel(),
-                linkTo(methodOn(SyllabusController.class).getAllSyllabi()).withRel("syllabus"));
+                linkTo(methodOn(SyllabusController.class).getAllSyllabus()).withRel("syllabus"));
     }
 
     @Override
@@ -32,7 +32,7 @@ public class SyllabusModelAssembler implements RepresentationModelAssembler<Syll
                 .collect(Collectors.toList());
 
         return CollectionModel.of(syllabusList, linkTo(methodOn(SyllabusController.class)
-                .getAllSyllabi())
+                .getAllSyllabus())
                 .withSelfRel());
     }
 }

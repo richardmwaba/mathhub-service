@@ -1,8 +1,15 @@
 package com.hubformath.mathhubservice.dtos.sis;
 
+import com.hubformath.mathhubservice.models.sis.Address;
+import com.hubformath.mathhubservice.models.sis.Parent;
+import com.hubformath.mathhubservice.models.sis.PhoneNumber;
+
 import java.time.LocalDate;
+import java.util.List;
 
 public class StudentRequestDto {
+
+    private long syllabusId;
 
     private long gradeId;
 
@@ -16,28 +23,75 @@ public class StudentRequestDto {
 
     private LocalDate dateOfBirth;
 
-    public long getGradeId() {return gradeId;}
+    private Parent parent;
 
-    public void setGradeId(long gradeId) {this.gradeId = gradeId;}
+    private List<Address> addresses;
 
-    public String getFirstName() {return firstName;}
+    private List<PhoneNumber> phoneNumber;
 
-    public void setFirstName(String firstName) {this.firstName = firstName;}
+    public long getGradeId() {
+        return gradeId;}
 
-    public String getMiddleName() {return middleName;}
+    public void setGradeId(long gradeId) {
+        this.gradeId = gradeId;}
 
-    public void setMiddleName(String middleName) {this.middleName = middleName;}
+    public String getFirstName() {
+        return firstName;}
 
-    public String getLastName() {return lastName;}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;}
 
-    public void setLastName(String lastName) {this.lastName = lastName;}
+    public String getMiddleName() {
+        return middleName;}
 
-    public String getEmail() {return email;}
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;}
 
-    public void setEmail(String email) {this.email = email;}
+    public String getLastName() {
+        return lastName;}
 
-    public LocalDate getDateOfBirth() {return dateOfBirth;}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;}
 
-    public void setDateOfBirth(LocalDate dateOfBirth) {this.dateOfBirth = dateOfBirth;}
+    public String getEmail() {
+        return email;}
 
+    public void setEmail(String email) {
+        this.email = email;}
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;}
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;}
+
+    public long getSyllabusId() {
+        return syllabusId;}
+
+    public void setSyllabusId(long syllabusId) {
+        this.syllabusId = syllabusId;}
+
+    public Parent getParent() {
+        return parent;
+    }
+
+    public void setParent(Parent parent) {
+        this.parent = parent;
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    public List<PhoneNumber> getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(List<PhoneNumber> phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }

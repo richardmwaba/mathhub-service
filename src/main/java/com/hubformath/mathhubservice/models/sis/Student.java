@@ -15,6 +15,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.OneToMany;
 
 import com.hubformath.mathhubservice.models.config.Grade;
+import com.hubformath.mathhubservice.models.config.Syllabus;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -42,6 +43,10 @@ public class Student {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Address> addresses;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "syllabus_id")
+    private Syllabus syllabus;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<PhoneNumber> phoneNumbers;
@@ -137,6 +142,10 @@ public class Student {
         this.dateOfBirth = dateOfBirth;
     }
 
+    public Syllabus getSyllabus() {return syllabus;}
+
+    public void setSyllabus(Syllabus syllabus) {this.syllabus = syllabus;}
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -169,6 +178,7 @@ public class Student {
                 && Objects.equals(this.phoneNumbers, student.phoneNumbers)
                 && Objects.equals(this.email, student.email)
                 && Objects.equals(this.dateOfBirth, student.dateOfBirth)
+                && Objects.equals(this.syllabus, student.syllabus)
                 && Objects.equals(this.createdAt, student.createdAt)
                 && Objects.equals(this.updatedAt, student.updatedAt);
     }
@@ -176,7 +186,7 @@ public class Student {
     @Override
     public int hashCode() {
         return Objects.hash(this.id, this.firstName, this.middleName, this.lastName, this.addresses, this.grade,
-                this.parent, this.phoneNumbers, this.email, this.dateOfBirth, this.createdAt, this.updatedAt);
+                this.parent, this.phoneNumbers, this.email, this.dateOfBirth, this.syllabus, this.createdAt, this.updatedAt);
     }
 
     @Override
@@ -185,6 +195,7 @@ public class Student {
                 + ", LastName="
                 + this.lastName + "grade=" + this.grade + ", parents=" + this.parent + ", addresses=" + this.addresses + ", phoneNumbers="
                 + this.phoneNumbers + ", email=" + this.email + ", dateOfBirth=" + this.dateOfBirth
-                + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
+                + ", syllabus=" + this.syllabus + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
     }
+
 }

@@ -37,13 +37,13 @@ import java.util.stream.Collectors;
         public SyllabusController() {super();}
 
         @GetMapping("/syllabus")
-        public ResponseEntity<CollectionModel<EntityModel<SyllabusDto>>> getAllSyllabi() {
-            List<SyllabusDto> syllabus = syllabusService.getAllSyllabi().stream()
-                    .map(syllabi -> modelMapper.map(syllabi, SyllabusDto.class))
+        public ResponseEntity<CollectionModel<EntityModel<SyllabusDto>>> getAllSyllabus() {
+            List<SyllabusDto> syllabusList = syllabusService.getAllSyllabi().stream()
+                    .map(syllabus -> modelMapper.map(syllabus, SyllabusDto.class))
                     .collect(Collectors.toList());
 
             CollectionModel<EntityModel<SyllabusDto>> syllabusCollectionModel = syllabusModelAssembler
-                    .toCollectionModel(syllabus);
+                    .toCollectionModel(syllabusList);
 
             return ResponseEntity.ok().body(syllabusCollectionModel);
         }

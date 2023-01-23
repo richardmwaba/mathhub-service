@@ -6,7 +6,12 @@ import java.util.Optional;
 
 import com.hubformath.mathhubservice.dtos.sis.StudentRequestDto;
 import com.hubformath.mathhubservice.models.config.Grade;
+import com.hubformath.mathhubservice.models.config.Syllabus;
+import com.hubformath.mathhubservice.models.sis.Address;
+import com.hubformath.mathhubservice.models.sis.Parent;
+import com.hubformath.mathhubservice.models.sis.PhoneNumber;
 import com.hubformath.mathhubservice.services.config.IGradeService;
+import com.hubformath.mathhubservice.services.config.ISyllabusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +25,9 @@ public class StudentServiceImpl implements IStudentService {
 
     @Autowired
     private IGradeService gradeService;
+
+    @Autowired
+    ISyllabusService syllabusService;
 
     private final StudentRepository studentRepository;
     private final String notFoundItemName;
@@ -49,16 +57,25 @@ public class StudentServiceImpl implements IStudentService {
     @Override
     public Student createStudent(StudentRequestDto studentRequest) {
         final long gradeId = studentRequest.getGradeId();
+        final long syllabusId = studentRequest.getSyllabusId();
         final String firstName = studentRequest.getFirstName();
         final String middleName = studentRequest.getMiddleName();
         final String lastName = studentRequest.getLastName();
         final String email = studentRequest.getEmail();
         final LocalDate dateOfBirth = studentRequest.getDateOfBirth();
+        final Parent parent = studentRequest.getParent();
+        final List<Address> addresses = studentRequest.getAddresses();
+        final List<PhoneNumber> phoneNumber = studentRequest.getPhoneNumber();
 
         final Grade grade = gradeService.getGradeById(gradeId);
+        final Syllabus syllabus = syllabusService.getSyllabusById(syllabusId);
 
         final Student newStudent = new Student(firstName, middleName, lastName, email,dateOfBirth);
         newStudent.setGrade(grade);
+        newStudent.setSyllabus(syllabus);
+        newStudent.setParent(parent);
+        newStudent.setPhoneNumbers(phoneNumber);
+        newStudent.setAddresses(addresses);
 
         return studentRepository.save(newStudent);
     }
@@ -76,6 +93,7 @@ public class StudentServiceImpl implements IStudentService {
                     student.setAddresses(studentRequest.getAddresses());
                     student.setPhoneNumbers(studentRequest.getPhoneNumbers());
                     student.setDateOfBirth(studentRequest.getDateOfBirth());
+                    student.setSyllabus(studentRequest.getSyllabus());
                     return studentRepository.save(student);
                 }) 
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));

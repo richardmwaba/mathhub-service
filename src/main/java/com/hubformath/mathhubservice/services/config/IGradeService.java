@@ -8,9 +8,7 @@ public interface IGradeService {
 
     List<Grade> getAllGrades();
 
-
     Grade getGradeById(Long id);
-
 
     Grade createGrade(Grade gradeRequest);
 

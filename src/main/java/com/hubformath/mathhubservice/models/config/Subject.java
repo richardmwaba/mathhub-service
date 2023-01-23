@@ -35,36 +35,41 @@ public class Subject {
 
     public  Subject(String subjectName){
         this.subjectName = subjectName;
-
-
     }
 
-
-    public Long getId() {return this.id;
+    public Long getId() {
+        return this.id;
+    }
+    
+    public String getSubjectName() {
+        return subjectName;
     }
 
-
-    public String getSubjectName() {return subjectName;
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
     }
 
-    public void setSubjectName(String subjectName) {this.subjectName = subjectName;
+    public Grade getSubjectGrade() {
+        return subjectGrade; }
+
+    public void setSubjectGrade(Grade grade) {
+        this.subjectGrade = grade; }
+
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public Grade getSubjectGrade() {return subjectGrade; }
-
-    public void setSubjectGrade(Grade grade) {this.subjectGrade = grade; }
-
-
-    public LocalDateTime getCreatedAt() {return createdAt;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {this.createdAt = createdAt;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public LocalDateTime getUpdatedAt() {return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {this.updatedAt = updatedAt;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override

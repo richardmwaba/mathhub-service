@@ -87,7 +87,7 @@ public class Syllabus {
     @Override
     public String toString() {
         return "Syllabus{" + "id=" + this.id + ", syllabusName='" + this.syllabusName + "'" + ", syllabusDescription='"
-                + this.syllabusDescription + ", asset=" + ", createdAt=" + this.createdAt
+                + this.syllabusDescription + ", createdAt=" + this.createdAt
                 + ", updatedAt=" + this.updatedAt + "}";
     }
 }
