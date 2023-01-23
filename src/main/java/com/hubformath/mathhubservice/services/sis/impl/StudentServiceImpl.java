@@ -6,12 +6,12 @@ import java.util.Optional;
 
 import com.hubformath.mathhubservice.dtos.sis.StudentRequestDto;
 import com.hubformath.mathhubservice.models.config.Grade;
-import com.hubformath.mathhubservice.models.config.Syllabus;
+import com.hubformath.mathhubservice.models.config.ExamBoard;
 import com.hubformath.mathhubservice.models.sis.Address;
 import com.hubformath.mathhubservice.models.sis.Parent;
 import com.hubformath.mathhubservice.models.sis.PhoneNumber;
 import com.hubformath.mathhubservice.services.config.IGradeService;
-import com.hubformath.mathhubservice.services.config.ISyllabusService;
+import com.hubformath.mathhubservice.services.config.IExamBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,7 @@ public class StudentServiceImpl implements IStudentService {
     private IGradeService gradeService;
 
     @Autowired
-    ISyllabusService syllabusService;
+    IExamBoardService examBoardService;
 
     private final StudentRepository studentRepository;
     private final String notFoundItemName;
@@ -57,7 +57,7 @@ public class StudentServiceImpl implements IStudentService {
     @Override
     public Student createStudent(StudentRequestDto studentRequest) {
         final long gradeId = studentRequest.getGradeId();
-        final long syllabusId = studentRequest.getSyllabusId();
+        final long examBoardId = studentRequest.getExamBoardId();
         final String firstName = studentRequest.getFirstName();
         final String middleName = studentRequest.getMiddleName();
         final String lastName = studentRequest.getLastName();
@@ -68,11 +68,11 @@ public class StudentServiceImpl implements IStudentService {
         final List<PhoneNumber> phoneNumber = studentRequest.getPhoneNumber();
 
         final Grade grade = gradeService.getGradeById(gradeId);
-        final Syllabus syllabus = syllabusService.getSyllabusById(syllabusId);
+        final ExamBoard examBoard = examBoardService.getExamBoardById(examBoardId);
 
         final Student newStudent = new Student(firstName, middleName, lastName, email,dateOfBirth);
         newStudent.setGrade(grade);
-        newStudent.setSyllabus(syllabus);
+        newStudent.setExamBoard(examBoard);
         newStudent.setParent(parent);
         newStudent.setPhoneNumbers(phoneNumber);
         newStudent.setAddresses(addresses);
@@ -93,7 +93,7 @@ public class StudentServiceImpl implements IStudentService {
                     student.setAddresses(studentRequest.getAddresses());
                     student.setPhoneNumbers(studentRequest.getPhoneNumbers());
                     student.setDateOfBirth(studentRequest.getDateOfBirth());
-                    student.setSyllabus(studentRequest.getSyllabus());
+                    student.setExamBoard(studentRequest.getExamBoard());
                     return studentRepository.save(student);
                 }) 
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));

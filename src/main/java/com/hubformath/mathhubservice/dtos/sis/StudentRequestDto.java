@@ -9,7 +9,7 @@ import java.util.List;
 
 public class StudentRequestDto {
 
-    private long syllabusId;
+    private long examBoardId;
 
     private long gradeId;
 
@@ -65,11 +65,11 @@ public class StudentRequestDto {
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;}
 
-    public long getSyllabusId() {
-        return syllabusId;}
+    public long getExamBoardId() {
+        return examBoardId;}
 
-    public void setSyllabusId(long syllabusId) {
-        this.syllabusId = syllabusId;}
+    public void setExamBoardId(long examBoardId) {
+        this.examBoardId = examBoardId;}
 
     public Parent getParent() {
         return parent;

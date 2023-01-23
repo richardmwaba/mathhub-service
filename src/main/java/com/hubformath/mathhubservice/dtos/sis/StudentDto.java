@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.dtos.sis;
 
 import com.hubformath.mathhubservice.dtos.config.GradeDto;
-import com.hubformath.mathhubservice.models.config.Syllabus;
+import com.hubformath.mathhubservice.models.config.ExamBoard;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -30,7 +30,7 @@ public class StudentDto {
 
     private LocalDate dateOfBirth;
 
-    private Syllabus syllabus;
+    private ExamBoard examBoard;
 
     public Long getId() {
         return id;
@@ -108,7 +108,7 @@ public class StudentDto {
         this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormatter);
     }
 
-    public Syllabus getSyllabus() {return this.syllabus;}
+    public ExamBoard getExamBoard() {return this.examBoard;}
 
-    public void setSyllabus(Syllabus syllabus) {this.syllabus = syllabus;}
+    public void setExamBoard(ExamBoard syllabus) {this.examBoard = syllabus;}
 }

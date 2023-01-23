@@ -15,7 +15,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.OneToMany;
 
 import com.hubformath.mathhubservice.models.config.Grade;
-import com.hubformath.mathhubservice.models.config.Syllabus;
+import com.hubformath.mathhubservice.models.config.ExamBoard;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -45,8 +45,8 @@ public class Student {
     private List<Address> addresses;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "syllabus_id")
-    private Syllabus syllabus;
+    @JoinColumn(name = "sxamBoard_id")
+    private ExamBoard examBoard;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<PhoneNumber> phoneNumbers;
@@ -142,9 +142,9 @@ public class Student {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public Syllabus getSyllabus() {return syllabus;}
+    public ExamBoard getExamBoard() {return examBoard;}
 
-    public void setSyllabus(Syllabus syllabus) {this.syllabus = syllabus;}
+    public void setExamBoard(ExamBoard sxamBoard) {this.examBoard = sxamBoard;}
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -178,7 +178,7 @@ public class Student {
                 && Objects.equals(this.phoneNumbers, student.phoneNumbers)
                 && Objects.equals(this.email, student.email)
                 && Objects.equals(this.dateOfBirth, student.dateOfBirth)
-                && Objects.equals(this.syllabus, student.syllabus)
+                && Objects.equals(this.examBoard, student.examBoard)
                 && Objects.equals(this.createdAt, student.createdAt)
                 && Objects.equals(this.updatedAt, student.updatedAt);
     }
@@ -186,7 +186,7 @@ public class Student {
     @Override
     public int hashCode() {
         return Objects.hash(this.id, this.firstName, this.middleName, this.lastName, this.addresses, this.grade,
-                this.parent, this.phoneNumbers, this.email, this.dateOfBirth, this.syllabus, this.createdAt, this.updatedAt);
+                this.parent, this.phoneNumbers, this.email, this.dateOfBirth, this.examBoard, this.createdAt, this.updatedAt);
     }
 
     @Override
@@ -195,7 +195,7 @@ public class Student {
                 + ", LastName="
                 + this.lastName + "grade=" + this.grade + ", parents=" + this.parent + ", addresses=" + this.addresses + ", phoneNumbers="
                 + this.phoneNumbers + ", email=" + this.email + ", dateOfBirth=" + this.dateOfBirth
-                + ", syllabus=" + this.syllabus + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
+                + ", examBoard=" + this.examBoard + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
     }
 
 }
