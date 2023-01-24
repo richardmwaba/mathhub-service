@@ -1,10 +1,11 @@
 package com.hubformath.mathhubservice.models.ops.cashbook;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,7 +20,7 @@ import com.hubformath.mathhubservice.models.config.PaymentMethod;
 @Entity
 public class Transaction {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     private String transactionNumber;
@@ -28,13 +29,14 @@ public class Transaction {
     @JoinColumn(name = "payment_method_id")
     private PaymentMethod paymentMethod;
 
+    @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
     private String narration;
 
     private Double amount;
 
-    private Instant transactionDate;
+    private LocalDateTime transactionDateTime;
 
     private Long transactedBy;
 
@@ -44,22 +46,23 @@ public class Transaction {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Transaction() {}
+    public Transaction() {
+    }
 
-    public Transaction(String transactionNumber, TransactionType transactionType, String narration, Double amount, 
-            Instant transactionDate, Long transactedBy) {
+    public Transaction(String transactionNumber, TransactionType transactionType, String narration, Double amount,
+            LocalDateTime transactionDateTime, Long transactedBy) {
         this.transactionNumber = transactionNumber;
         this.transactionType = transactionType;
         this.narration = narration;
         this.amount = amount;
-        this.transactionDate = transactionDate;
+        this.transactionDateTime = transactionDateTime;
         this.transactedBy = transactedBy;
     }
 
     public Long getId() {
         return this.id;
     }
-    
+
     public String getTransactionNumber() {
         return transactionNumber;
     }
@@ -100,12 +103,12 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public Instant getTransactionDate() {
-        return transactionDate;
+    public LocalDateTime getTransactionDateTime() {
+        return transactionDateTime;
     }
 
-    public void setTransactionDate(Instant transactionDate) {
-        this.transactionDate = transactionDate;
+    public void setTransactionDate(LocalDateTime transactionDateTime) {
+        this.transactionDateTime = transactionDateTime;
     }
 
     public Long getTransactedBy() {
@@ -115,7 +118,7 @@ public class Transaction {
     public void setTransactedBy(Long transactedBy) {
         this.transactedBy = transactedBy;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -139,28 +142,31 @@ public class Transaction {
         if (!(o instanceof Transaction))
             return false;
         Transaction transaction = (Transaction) o;
-        return Objects.equals(this.id, transaction.id) && Objects.equals(this.transactionNumber, transaction.transactionNumber)
-            && Objects.equals(this.paymentMethod, transaction.paymentMethod)
-            && Objects.equals(this.transactionType, transaction.transactionType)
-            && Objects.equals(this.narration, transaction.narration)
-            && Objects.equals(this.amount, transaction.amount)
-            && Objects.equals(this.transactionDate, transaction.transactionDate)
-            && Objects.equals(this.transactedBy, transaction.transactedBy)
-            && Objects.equals(this.createdAt, transaction.createdAt)
-            && Objects.equals(this.updatedAt, transaction.updatedAt);
+        return Objects.equals(this.id, transaction.id)
+                && Objects.equals(this.transactionNumber, transaction.transactionNumber)
+                && Objects.equals(this.paymentMethod, transaction.paymentMethod)
+                && Objects.equals(this.transactionType, transaction.transactionType)
+                && Objects.equals(this.narration, transaction.narration)
+                && Objects.equals(this.amount, transaction.amount)
+                && Objects.equals(this.transactionDateTime, transaction.transactionDateTime)
+                && Objects.equals(this.transactedBy, transaction.transactedBy)
+                && Objects.equals(this.createdAt, transaction.createdAt)
+                && Objects.equals(this.updatedAt, transaction.updatedAt);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(this.id, this.transactionNumber, this.paymentMethod, this.transactionType,
-                            this.narration, this.amount, this.transactionDate, this.transactedBy, this.createdAt, this.updatedAt);
-    }           
+                this.narration, this.amount, this.transactionDateTime, this.transactedBy, this.createdAt,
+                this.updatedAt);
+    }
 
     @Override
     public String toString() {
-        return "Transaction{id=" + this.id + ", transactionNumber=" + this.transactionNumber + ", paymentMethod=" 
-                + this.paymentMethod + ", transactionType=" + this.transactionType + ", narration=" + this.narration + ", amount=" 
-                + this.amount + ", transactionDate=" + this.transactionDate + ", transactedBy=" + this.transactedBy 
+        return "Transaction{id=" + this.id + ", transactionNumber=" + this.transactionNumber + ", paymentMethod="
+                + this.paymentMethod + ", transactionType=" + this.transactionType + ", narration=" + this.narration
+                + ", amount="
+                + this.amount + ", transactionDateTime=" + this.transactionDateTime + ", transactedBy=" + this.transactedBy
                 + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
     }
 }

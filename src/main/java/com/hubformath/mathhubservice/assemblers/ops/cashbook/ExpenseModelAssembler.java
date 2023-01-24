@@ -1,7 +1,5 @@
 package com.hubformath.mathhubservice.assemblers.ops.cashbook;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -9,6 +7,7 @@ import java.util.stream.StreamSupport;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
 import com.hubformath.mathhubservice.controllers.ops.cashbook.ExpenseController;
@@ -19,8 +18,8 @@ public class ExpenseModelAssembler implements RepresentationModelAssembler<Expen
     @Override
     public EntityModel<ExpenseDto> toModel(ExpenseDto expense) {
         return EntityModel.of(expense,
-                linkTo(methodOn(ExpenseController.class).getExpenseById(expense.getId())).withSelfRel(),
-                linkTo(methodOn(ExpenseController.class).getAllExpenses()).withRel("expenses"));
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class).getExpenseById(expense.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class).getAllExpenses()).withRel("expenses"));
     }
 
     @Override
@@ -30,7 +29,7 @@ public class ExpenseModelAssembler implements RepresentationModelAssembler<Expen
                 .map(this::toModel)
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(expenseList, linkTo(methodOn(ExpenseController.class)
+        return CollectionModel.of(expenseList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class)
                 .getAllExpenses())
                 .withSelfRel());
     }

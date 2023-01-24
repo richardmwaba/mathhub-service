@@ -1,7 +1,5 @@
 package com.hubformath.mathhubservice.assemblers.config;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -9,6 +7,7 @@ import java.util.stream.StreamSupport;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
 import com.hubformath.mathhubservice.controllers.config.AssetTypeController;
@@ -19,10 +18,9 @@ public class AssetTypeModelAssembler
         implements RepresentationModelAssembler<AssetTypeDto, EntityModel<AssetTypeDto>> {
     @Override
     public EntityModel<AssetTypeDto> toModel(AssetTypeDto assetType) {
-
         return EntityModel.of(assetType,
-                linkTo(methodOn(AssetTypeController.class).getAssetTypeById(assetType.getId())).withSelfRel(),
-                linkTo(methodOn(AssetTypeController.class).getAllAssetTypes()).withRel("assetTypes"));
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetTypeController.class).getAssetTypeById(assetType.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetTypeController.class).getAllAssetTypes()).withRel("assetTypes"));
     }
 
     @Override
@@ -32,7 +30,7 @@ public class AssetTypeModelAssembler
                 .map(this::toModel)
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(assetTypeList, linkTo(methodOn(AssetTypeController.class)
+        return CollectionModel.of(assetTypeList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetTypeController.class)
                 .getAllAssetTypes())
                 .withSelfRel());
     }
