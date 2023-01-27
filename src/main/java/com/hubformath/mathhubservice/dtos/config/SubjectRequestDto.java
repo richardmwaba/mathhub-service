@@ -6,7 +6,6 @@ public class SubjectRequestDto {
 
     private Long subjectGradeId;
 
-
     public String getSubjectName() {
         return subjectName;
     }

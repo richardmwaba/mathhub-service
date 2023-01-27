@@ -5,15 +5,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.CascadeType;
 import javax.persistence.OneToMany;
 
+import com.hubformath.mathhubservice.models.config.Grade;
+import com.hubformath.mathhubservice.models.config.ExamBoard;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -33,10 +35,18 @@ public class Student {
     @JoinColumn(name = "parent_id")
     private Parent parent;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "grade_id")
+    private Grade grade;
+
     private String email;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Address> addresses;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "sxamBoard_id")
+    private ExamBoard examBoard;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<PhoneNumber> phoneNumbers;
@@ -88,6 +98,10 @@ public class Student {
         this.lastName = lastName;
     }
 
+   public Grade getGrade() { return grade; }
+
+   public void setGrade(Grade grade) { this.grade = grade; }
+
     public Parent getParent() {
         return parent;
     }
@@ -128,6 +142,10 @@ public class Student {
         this.dateOfBirth = dateOfBirth;
     }
 
+    public ExamBoard getExamBoard() {return examBoard;}
+
+    public void setExamBoard(ExamBoard sxamBoard) {this.examBoard = sxamBoard;}
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -154,27 +172,30 @@ public class Student {
         return Objects.equals(this.id, student.id) && Objects.equals(this.firstName, student.firstName)
                 && Objects.equals(this.middleName, student.middleName)
                 && Objects.equals(this.lastName, student.lastName)
+                && Objects.equals(this.grade, student.grade)
                 && Objects.equals(this.parent, student.parent)
                 && Objects.equals(this.addresses, student.addresses)
                 && Objects.equals(this.phoneNumbers, student.phoneNumbers)
                 && Objects.equals(this.email, student.email)
                 && Objects.equals(this.dateOfBirth, student.dateOfBirth)
+                && Objects.equals(this.examBoard, student.examBoard)
                 && Objects.equals(this.createdAt, student.createdAt)
                 && Objects.equals(this.updatedAt, student.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.firstName, this.middleName, this.lastName, this.addresses,
-                this.parent, this.phoneNumbers, this.email, this.dateOfBirth, this.createdAt, this.updatedAt);
+        return Objects.hash(this.id, this.firstName, this.middleName, this.lastName, this.addresses, this.grade,
+                this.parent, this.phoneNumbers, this.email, this.dateOfBirth, this.examBoard, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
         return "Student {id=" + this.id + ", firstName=" + this.firstName + ", middleName=" + this.middleName
                 + ", LastName="
-                + this.lastName + ", parents=" + this.parent + ", addresses=" + this.addresses + ", phoneNumbers="
+                + this.lastName + "grade=" + this.grade + ", parents=" + this.parent + ", addresses=" + this.addresses + ", phoneNumbers="
                 + this.phoneNumbers + ", email=" + this.email + ", dateOfBirth=" + this.dateOfBirth
-                + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
+                + ", examBoard=" + this.examBoard + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
     }
+
 }

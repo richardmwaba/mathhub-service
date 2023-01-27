@@ -1,5 +1,8 @@
 package com.hubformath.mathhubservice.dtos.sis;
 
+import com.hubformath.mathhubservice.dtos.config.GradeDto;
+import com.hubformath.mathhubservice.models.config.ExamBoard;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -7,13 +10,15 @@ import java.util.List;
 public class StudentDto {
     private Long id;
 
-    private  DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private String firstName;
 
     private String middleName;
 
     private String lastName;
+
+    private GradeDto grade;
 
     private String email;
 
@@ -24,6 +29,8 @@ public class StudentDto {
     private List<PhoneNumberDto> phoneNumbers;
 
     private LocalDate dateOfBirth;
+
+    private ExamBoard examBoard;
 
     public Long getId() {
         return id;
@@ -65,6 +72,10 @@ public class StudentDto {
         this.email = email;
     }
 
+    public GradeDto getGrade() { return grade; }
+
+    public void setGrade(GradeDto grade) { this.grade = grade; }
+
     public ParentDto getParent() {
         return parent;
     }
@@ -93,7 +104,11 @@ public class StudentDto {
         return this.dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateofBirth) {
-        this.dateOfBirth = LocalDate.parse(dateofBirth, dateFormatter);
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormatter);
     }
+
+    public ExamBoard getExamBoard() {return this.examBoard;}
+
+    public void setExamBoard(ExamBoard syllabus) {this.examBoard = syllabus;}
 }

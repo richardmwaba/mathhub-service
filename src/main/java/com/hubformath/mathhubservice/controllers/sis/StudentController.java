@@ -3,6 +3,7 @@ package com.hubformath.mathhubservice.controllers.sis;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.hubformath.mathhubservice.dtos.sis.StudentRequestDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -53,9 +54,8 @@ public class StudentController {
 
     @PostMapping("/students")
     public ResponseEntity<EntityModel<StudentDto>> newStudent(
-            @RequestBody StudentDto studentDto) {
-        Student studentRequest = modelMapper.map(studentDto, Student.class);
-        Student newStudent = studentService.createStudent(studentRequest);
+            @RequestBody StudentRequestDto studentRequestDto) {
+        Student newStudent = studentService.createStudent(studentRequestDto);
 
         EntityModel<StudentDto> studentEntityModel = studentModelAssembler
                 .toModel(modelMapper.map(newStudent, StudentDto.class));
@@ -92,6 +92,6 @@ public class StudentController {
     public ResponseEntity<String> deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
 
-        return ResponseEntity.ok().body("Student deleted sucessfully");
+        return ResponseEntity.ok().body("Student deleted successfully");
     }
 }
