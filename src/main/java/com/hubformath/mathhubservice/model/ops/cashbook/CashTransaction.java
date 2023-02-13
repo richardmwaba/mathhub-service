@@ -18,7 +18,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 
 @Entity
-public class Transaction {
+public class CashTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -30,7 +30,7 @@ public class Transaction {
     private PaymentMethod paymentMethod;
 
     @Enumerated(EnumType.STRING)
-    private TransactionType transactionType;
+    private CashTransactionType transactionType;
 
     private String narration;
 
@@ -46,10 +46,10 @@ public class Transaction {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Transaction() {
+    public CashTransaction() {
     }
 
-    public Transaction(String transactionNumber, TransactionType transactionType, String narration, Double amount,
+    public CashTransaction(String transactionNumber, CashTransactionType transactionType, String narration, Double amount,
             LocalDateTime transactionDateTime, Long transactedBy) {
         this.transactionNumber = transactionNumber;
         this.transactionType = transactionType;
@@ -79,11 +79,11 @@ public class Transaction {
         this.paymentMethod = paymentMethod;
     }
 
-    public TransactionType getTransactionType() {
+    public CashTransactionType getTransactionType() {
         return transactionType;
     }
 
-    public void setTransactionType(TransactionType transactionType) {
+    public void setTransactionType(CashTransactionType transactionType) {
         this.transactionType = transactionType;
     }
 
@@ -139,9 +139,9 @@ public class Transaction {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof Transaction))
+        if (!(o instanceof CashTransaction))
             return false;
-        Transaction transaction = (Transaction) o;
+        CashTransaction transaction = (CashTransaction) o;
         return Objects.equals(this.id, transaction.id)
                 && Objects.equals(this.transactionNumber, transaction.transactionNumber)
                 && Objects.equals(this.paymentMethod, transaction.paymentMethod)

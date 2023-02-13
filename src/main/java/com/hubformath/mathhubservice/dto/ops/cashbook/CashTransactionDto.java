@@ -3,16 +3,16 @@ package com.hubformath.mathhubservice.dto.ops.cashbook;
 import java.time.LocalDateTime;
 
 import com.hubformath.mathhubservice.dto.systemconfig.PaymentMethodDto;
-import com.hubformath.mathhubservice.model.ops.cashbook.TransactionType;
+import com.hubformath.mathhubservice.model.ops.cashbook.CashTransactionType;
 
-public class TransactionDto {
+public class CashTransactionDto {
     private Long id;
 
     private String transactionNumber;
 
     private PaymentMethodDto paymentMethod;
 
-    private TransactionType transactionType;
+    private CashTransactionType transactionType;
 
     private String narration;
 
@@ -60,11 +60,11 @@ public class TransactionDto {
         this.amount = amount;
     }
 
-    public TransactionType getTransactionType() {
+    public CashTransactionType getTransactionType() {
         return transactionType;
     }
 
-    public void setTransactionType(TransactionType transactionType) {
+    public void setTransactionType(CashTransactionType transactionType) {
         this.transactionType = transactionType;
     }
 

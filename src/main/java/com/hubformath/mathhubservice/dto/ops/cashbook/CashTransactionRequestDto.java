@@ -3,15 +3,15 @@ package com.hubformath.mathhubservice.dto.ops.cashbook;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.hubformath.mathhubservice.model.ops.cashbook.TransactionType;
+import com.hubformath.mathhubservice.model.ops.cashbook.CashTransactionType;
 
-public class TransactionRequestDto {
+public class CashTransactionRequestDto {
 
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private Long paymentMethodId;
 
-    private TransactionType transactionType;
+    private CashTransactionType transactionType;
 
     private String narration;
 
@@ -27,11 +27,11 @@ public class TransactionRequestDto {
         this.paymentMethodId = paymentMethodId;
     }
 
-    public TransactionType getTransactionType() {
+    public CashTransactionType getTransactionType() {
         return transactionType;
     }
 
-    public void setTransactionTypeId(TransactionType transactionType) {
+    public void setTransactionTypeId(CashTransactionType transactionType) {
         this.transactionType = transactionType;
     }
 

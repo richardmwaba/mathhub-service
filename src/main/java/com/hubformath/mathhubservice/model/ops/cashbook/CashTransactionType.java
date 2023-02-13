@@ -1,5 +1,5 @@
 package com.hubformath.mathhubservice.model.ops.cashbook;
 
-public enum TransactionType {
-    DEBIT, CREDIT
+public enum CashTransactionType {
+    CASH_IN, CASH_OUT
 }

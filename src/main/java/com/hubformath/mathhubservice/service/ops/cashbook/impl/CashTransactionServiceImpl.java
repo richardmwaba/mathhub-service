@@ -8,39 +8,39 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hubformath.mathhubservice.dto.ops.cashbook.TransactionRequestDto;
-import com.hubformath.mathhubservice.model.ops.cashbook.Transaction;
-import com.hubformath.mathhubservice.model.ops.cashbook.TransactionType;
+import com.hubformath.mathhubservice.dto.ops.cashbook.CashTransactionRequestDto;
+import com.hubformath.mathhubservice.model.ops.cashbook.CashTransaction;
+import com.hubformath.mathhubservice.model.ops.cashbook.CashTransactionType;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
-import com.hubformath.mathhubservice.repository.ops.cashbook.TransactionRepository;
-import com.hubformath.mathhubservice.service.ops.cashbook.ITransactionService;
+import com.hubformath.mathhubservice.repository.ops.cashbook.CashTransactionRepository;
+import com.hubformath.mathhubservice.service.ops.cashbook.ICashTransactionService;
 import com.hubformath.mathhubservice.service.systemconfig.IPaymentMethodService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
 @Service
-public class TransactionServiceImpl implements ITransactionService{
+public class CashTransactionServiceImpl implements ICashTransactionService{
     
     @Autowired
     private IPaymentMethodService paymentMethodService;
 
-    private final TransactionRepository transactionRepository;
+    private final CashTransactionRepository transactionRepository;
 
     private final String notFoundItemName;
 
-    public TransactionServiceImpl(TransactionRepository transactionRepository) {
+    public CashTransactionServiceImpl(CashTransactionRepository transactionRepository) {
         super();
         this.transactionRepository = transactionRepository;
         this.notFoundItemName = "transaction";
     }
 
     @Override
-    public List<Transaction> getAllTransactions() {
+    public List<CashTransaction> getAllTransactions() {
         return transactionRepository.findAll();
     }
 
     @Override
-    public Transaction getTransactionById(Long id) {
-        Optional<Transaction> transaction = transactionRepository.findById(id);
+    public CashTransaction getTransactionById(Long id) {
+        Optional<CashTransaction> transaction = transactionRepository.findById(id);
 
         if(transaction.isPresent()){
             return transaction.get();
@@ -50,9 +50,9 @@ public class TransactionServiceImpl implements ITransactionService{
     }
 
     @Override
-    public Transaction createTransaction(TransactionRequestDto transactionRequest) {
+    public CashTransaction createTransaction(CashTransactionRequestDto transactionRequest) {
         final Long paymentMethodId = transactionRequest.getPaymentMethodId();
-        final TransactionType transactionType = transactionRequest.getTransactionType();
+        final CashTransactionType transactionType = transactionRequest.getTransactionType();
         final String narration = transactionRequest.getNarration();
         final Double amount = transactionRequest.getAmount();
         final LocalDateTime tranDateTime = transactionRequest.getTransactionDateTime();
@@ -61,14 +61,14 @@ public class TransactionServiceImpl implements ITransactionService{
         final PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(paymentMethodId);
 
         // To do: Replace null transacted by with actual logged in user
-        final Transaction newTransaction = new Transaction(transactionNumber, transactionType, narration, amount, tranDateTime, null);
+        final CashTransaction newTransaction = new CashTransaction(transactionNumber, transactionType, narration, amount, tranDateTime, null);
         newTransaction.setPaymentMethod(paymentMethod);
 
         return transactionRepository.save(newTransaction);
     }
 
     @Override
-    public Transaction updateTransaction(Long id, Transaction transactionRequest) {
+    public CashTransaction updateTransaction(Long id, CashTransaction transactionRequest) {
         return transactionRepository.findById(id)
                 .map(transaction -> {
                     transaction.setPaymentMethod(transactionRequest.getPaymentMethod());
@@ -84,7 +84,7 @@ public class TransactionServiceImpl implements ITransactionService{
 
     @Override
     public void deleteTransaction(Long id) {
-        Transaction transaction = transactionRepository.findById(id)
+        CashTransaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
 
         transactionRepository.delete(transaction);
