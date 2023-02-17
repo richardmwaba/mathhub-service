@@ -3,7 +3,6 @@ package com.hubformath.mathhubservice.assembler.ops.cashbook;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.hateoas.CollectionModel;
@@ -28,7 +27,7 @@ public class CashTransactionModelAssembler implements RepresentationModelAssembl
             Iterable<? extends CashTransactionDto> transactions) {
         List<EntityModel<CashTransactionDto>> transactionList = StreamSupport.stream(transactions.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(transactionList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionController.class)
                 .getAllTransactions())

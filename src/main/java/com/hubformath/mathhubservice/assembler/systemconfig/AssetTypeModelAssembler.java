@@ -1,7 +1,6 @@
 package com.hubformath.mathhubservice.assembler.systemconfig;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.hateoas.CollectionModel;
@@ -28,7 +27,7 @@ public class AssetTypeModelAssembler
             Iterable<? extends AssetTypeDto> assetTypes) {
         List<EntityModel<AssetTypeDto>> assetTypeList = StreamSupport.stream(assetTypes.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(assetTypeList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetTypeController.class)
                 .getAllAssetTypes())

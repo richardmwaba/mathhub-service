@@ -1,7 +1,6 @@
 package com.hubformath.mathhubservice.assembler.systemconfig;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.hateoas.CollectionModel;
@@ -27,7 +26,7 @@ public class IncomeTypeModelAssembler implements RepresentationModelAssembler<In
             Iterable<? extends IncomeTypeDto> incomeTypes) {
         List<EntityModel<IncomeTypeDto>> incomeTypeList = StreamSupport.stream(incomeTypes.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(incomeTypeList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeTypeController.class)
                 .getAllIncomeTypes())

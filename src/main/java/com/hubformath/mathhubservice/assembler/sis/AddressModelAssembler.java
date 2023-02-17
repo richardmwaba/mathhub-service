@@ -1,7 +1,6 @@
 package com.hubformath.mathhubservice.assembler.sis;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.hateoas.CollectionModel;
@@ -27,7 +26,7 @@ public class AddressModelAssembler implements RepresentationModelAssembler<Addre
             Iterable<? extends AddressDto> addresss) {
         List<EntityModel<AddressDto>> addressList = StreamSupport.stream(addresss.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(addressList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AddressController.class)
                 .getAllAddresses())

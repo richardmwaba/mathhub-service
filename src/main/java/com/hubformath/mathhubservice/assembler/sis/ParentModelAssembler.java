@@ -1,7 +1,6 @@
 package com.hubformath.mathhubservice.assembler.sis;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.hateoas.CollectionModel;
@@ -27,7 +26,7 @@ public class ParentModelAssembler implements RepresentationModelAssembler<Parent
             Iterable<? extends ParentDto> parents) {
         List<EntityModel<ParentDto>> parentList = StreamSupport.stream(parents.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(parentList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ParentController.class)
                 .getAllParents())

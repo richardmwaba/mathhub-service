@@ -9,7 +9,6 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -32,7 +31,7 @@ public class GradeModelAssembler
             Iterable<? extends GradeDto> grades) {
         List<EntityModel<GradeDto>> gradeList = StreamSupport.stream(grades.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(gradeList, linkTo(methodOn(GradeController.class)
                 .getAllGrades())

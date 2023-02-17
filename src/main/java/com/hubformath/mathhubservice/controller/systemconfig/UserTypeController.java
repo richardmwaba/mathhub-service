@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -38,7 +38,7 @@ public class UserTypeController {
     public CollectionModel<EntityModel<UserType>> all() {
         List<EntityModel<UserType>> userTypes = repository.findAll().stream()
                 .map(assembler::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(userTypes, linkTo(methodOn(UserTypeController.class).all()).withSelfRel());
     }

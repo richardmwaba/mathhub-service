@@ -2,6 +2,7 @@ package com.hubformath.mathhubservice.model.ops.cashbook;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,6 +16,7 @@ import javax.persistence.OneToOne;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.hubformath.mathhubservice.model.systemconfig.CashTransactionCategory;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 
 @Entity
@@ -31,6 +33,10 @@ public class CashTransaction {
 
     @Enumerated(EnumType.STRING)
     private CashTransactionType transactionType;
+
+    @OneToOne
+    @JoinColumn(name = "transaction_category_id")
+    private CashTransactionCategory transactionCategory;
 
     private String narration;
 
@@ -49,14 +55,13 @@ public class CashTransaction {
     public CashTransaction() {
     }
 
-    public CashTransaction(String transactionNumber, CashTransactionType transactionType, String narration, Double amount,
-            LocalDateTime transactionDateTime, Long transactedBy) {
-        this.transactionNumber = transactionNumber;
+    public CashTransaction(CashTransactionType transactionType, String narration, Double amount) {
+        this.transactionNumber = UUID.randomUUID().toString().substring(0, 11).toUpperCase();
         this.transactionType = transactionType;
         this.narration = narration;
         this.amount = amount;
-        this.transactionDateTime = transactionDateTime;
-        this.transactedBy = transactedBy;
+        this.transactionDateTime = LocalDateTime.now();
+        this.transactedBy = null;
     }
 
     public Long getId() {
@@ -85,6 +90,14 @@ public class CashTransaction {
 
     public void setTransactionType(CashTransactionType transactionType) {
         this.transactionType = transactionType;
+    }
+
+    public CashTransactionCategory getTransactionCategory() {
+        return transactionCategory;
+    }
+
+    public void setTransactionCategory(CashTransactionCategory transactionCategory) {
+        this.transactionCategory = transactionCategory;
     }
 
     public String getNarration() {
@@ -139,9 +152,8 @@ public class CashTransaction {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof CashTransaction))
+        if (!(o instanceof CashTransaction transaction))
             return false;
-        CashTransaction transaction = (CashTransaction) o;
         return Objects.equals(this.id, transaction.id)
                 && Objects.equals(this.transactionNumber, transaction.transactionNumber)
                 && Objects.equals(this.paymentMethod, transaction.paymentMethod)
@@ -166,7 +178,8 @@ public class CashTransaction {
         return "Transaction{id=" + this.id + ", transactionNumber=" + this.transactionNumber + ", paymentMethod="
                 + this.paymentMethod + ", transactionType=" + this.transactionType + ", narration=" + this.narration
                 + ", amount="
-                + this.amount + ", transactionDateTime=" + this.transactionDateTime + ", transactedBy=" + this.transactedBy
+                + this.amount + ", transactionDateTime=" + this.transactionDateTime + ", transactedBy="
+                + this.transactedBy
                 + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
     }
 }

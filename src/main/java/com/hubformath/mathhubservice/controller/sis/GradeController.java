@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping(path = "/api/v1/sis")
@@ -41,7 +41,7 @@ public class GradeController {
     public ResponseEntity<CollectionModel<EntityModel<GradeDto>>> getAllGrades() {
         List<GradeDto> grades = gradeService.getAllGrades().stream().
                 map(grade -> modelMapper.map(grade, GradeDto.class))
-                .collect(Collectors.toList());
+                .toList();
 
         CollectionModel<EntityModel<GradeDto>> gradeCollectionModel = gradeModelAssembler
                 .toCollectionModel(grades);

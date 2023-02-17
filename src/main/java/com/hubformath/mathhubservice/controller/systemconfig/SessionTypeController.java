@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class SessionTypeController {
     public ResponseEntity<CollectionModel<EntityModel<SessionTypeDto>>> getAllSessionTypes() {
         List<SessionTypeDto> sessionTypes = sessionTypeService.getAllSessionTypes().stream()
                 .map(sessionType -> modelMapper.map(sessionType, SessionTypeDto.class))
-                .collect(Collectors.toList());
+                .toList();
 
         CollectionModel<EntityModel<SessionTypeDto>> sessionTypeCollectionModel = sessionTypeModelAssembler
                 .toCollectionModel(sessionTypes);

@@ -10,7 +10,6 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Component
@@ -27,7 +26,7 @@ public class EquityModelAssembler implements RepresentationModelAssembler<Equity
             Iterable<? extends EquityDto> equity) {
         List<EntityModel<EquityDto>> equityList = StreamSupport.stream(equity.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(equityList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityController.class)
                 .getAllEquity())

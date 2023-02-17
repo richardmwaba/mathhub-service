@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class LiabilityTypeController {
     public ResponseEntity<CollectionModel<EntityModel<LiabilityTypeDto>>> getAllLiabilityTypes() {
         List<LiabilityTypeDto> liabilityTypes = liabilityTypeService.getAllLiabilityTypes().stream()
                 .map(liabilityType -> modelMapper.map(liabilityType, LiabilityTypeDto.class))
-                .collect(Collectors.toList());
+                .toList();
 
         CollectionModel<EntityModel<LiabilityTypeDto>> liabilityTypeCollectionModel = liabilityTypeModelAssembler
                 .toCollectionModel(liabilityTypes);

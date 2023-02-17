@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
     @RestController
     @RequestMapping(path="/api/v1/ops")
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
         public ResponseEntity<CollectionModel<EntityModel<SyllabusDto>>> getAllSyllabi() {
             List<SyllabusDto> syllabus = syllabusService.getAllSyllabi().stream()
                     .map(syllabi -> modelMapper.map(syllabi, SyllabusDto.class))
-                    .collect(Collectors.toList());
+                    .toList();
 
             CollectionModel<EntityModel<SyllabusDto>> syllabusCollectionModel = syllabusModelAssembler
                     .toCollectionModel(syllabus);

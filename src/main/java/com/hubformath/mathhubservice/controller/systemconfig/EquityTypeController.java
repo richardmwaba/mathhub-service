@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class EquityTypeController {
     public ResponseEntity<CollectionModel<EntityModel<EquityTypeDto>>> getAllEquityTypes() {
         List<EquityTypeDto> equityTypes = equityTypeService.getAllEquityTypes().stream()
                 .map(equityType -> modelMapper.map(equityType, EquityTypeDto.class))
-                .collect(Collectors.toList());
+                .toList();
 
         CollectionModel<EntityModel<EquityTypeDto>> equityTypeCollectionModel = equityTypeModelAssembler
                 .toCollectionModel(equityTypes);

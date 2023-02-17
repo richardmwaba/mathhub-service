@@ -1,7 +1,6 @@
 package com.hubformath.mathhubservice.assembler.systemconfig;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.hateoas.CollectionModel;
@@ -27,7 +26,7 @@ public class EquityTypeModelAssembler implements RepresentationModelAssembler<Eq
             Iterable<? extends EquityTypeDto> assessmentTypes) {
         List<EntityModel<EquityTypeDto>> assessmentTypeList = StreamSupport.stream(assessmentTypes.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(assessmentTypeList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityTypeController.class)
                 .getAllEquityTypes())

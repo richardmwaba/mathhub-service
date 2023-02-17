@@ -75,9 +75,8 @@ public class CashTransactionCategory {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof CashTransactionCategory))
+        if (!(o instanceof CashTransactionCategory cashTransactionCategory))
             return false;
-        CashTransactionCategory cashTransactionCategory = (CashTransactionCategory) o;
         return Objects.equals(this.id, cashTransactionCategory.id) && Objects.equals(this.categoryName, cashTransactionCategory.categoryName)
             && Objects.equals(this.categoryDescription, cashTransactionCategory.categoryDescription)
             && Objects.equals(this.createdAt, cashTransactionCategory.createdAt)

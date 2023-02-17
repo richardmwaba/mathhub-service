@@ -1,7 +1,6 @@
 package com.hubformath.mathhubservice.assembler.systemconfig;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.hateoas.CollectionModel;
@@ -27,7 +26,7 @@ public class SessionTypeModelAssembler implements RepresentationModelAssembler<S
             Iterable<? extends SessionTypeDto> sessionTypes) {
         List<EntityModel<SessionTypeDto>> sessionTypeList = StreamSupport.stream(sessionTypes.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(sessionTypeList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SessionTypeController.class)
                 .getAllSessionTypes())

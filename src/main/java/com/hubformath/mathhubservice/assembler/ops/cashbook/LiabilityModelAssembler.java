@@ -1,7 +1,6 @@
 package com.hubformath.mathhubservice.assembler.ops.cashbook;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.hateoas.CollectionModel;
@@ -27,7 +26,7 @@ public class LiabilityModelAssembler implements RepresentationModelAssembler<Lia
             Iterable<? extends LiabilityDto> liabilities) {
         List<EntityModel<LiabilityDto>> liabilityList = StreamSupport.stream(liabilities.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(liabilityList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LiabilityController.class)
                 .getAllLiabilities())

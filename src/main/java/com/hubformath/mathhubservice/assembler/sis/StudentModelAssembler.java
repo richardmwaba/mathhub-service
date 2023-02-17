@@ -1,7 +1,6 @@
 package com.hubformath.mathhubservice.assembler.sis;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.hateoas.CollectionModel;
@@ -27,7 +26,7 @@ public class StudentModelAssembler implements RepresentationModelAssembler<Stude
             Iterable<? extends StudentDto> students) {
         List<EntityModel<StudentDto>> studentList = StreamSupport.stream(students.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(studentList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(StudentController.class)
                 .getAllStudents())

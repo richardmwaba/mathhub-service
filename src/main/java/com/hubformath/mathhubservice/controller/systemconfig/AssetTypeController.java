@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class AssetTypeController {
     public ResponseEntity<CollectionModel<EntityModel<AssetTypeDto>>> getAllAssetTypes() {
         List<AssetTypeDto> assetTypes = assetTypeService.getAllAssetTypes().stream()
                 .map(assetType -> modelMapper.map(assetType, AssetTypeDto.class))
-                .collect(Collectors.toList());
+                .toList();
 
         CollectionModel<EntityModel<AssetTypeDto>> assetTypeCollectionModel = assetTypeModelAssembler
                 .toCollectionModel(assetTypes);

@@ -1,7 +1,6 @@
 package com.hubformath.mathhubservice.assembler.systemconfig;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.hateoas.CollectionModel;
@@ -27,7 +26,7 @@ public class CashTransactionCategoryModelAssembler implements RepresentationMode
             Iterable<? extends CashTransactionCategoryDto> cashTransactionCategories) {
         List<EntityModel<CashTransactionCategoryDto>> cashTransactionCategoryList = StreamSupport.stream(cashTransactionCategories.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(cashTransactionCategoryList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionCategoryController.class)
                 .getAllCashTransactionCategories())

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping(path = "/api/v1/sis")
@@ -43,7 +43,7 @@ public class SubjectController {
     public ResponseEntity<CollectionModel<EntityModel<SubjectDto>>> getAllSubjects() {
         List<SubjectDto> subjects = subjectService.getAllSubjects().stream().
                 map(subject -> modelMapper.map(subject, SubjectDto.class))
-                .collect(Collectors.toList());
+                .toList();
 
         CollectionModel<EntityModel<SubjectDto>> subjectCollectionModel = subjectModelAssembler
                 .toCollectionModel(subjects);

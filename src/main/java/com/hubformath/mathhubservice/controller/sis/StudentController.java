@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.controller.sis;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class StudentController {
     public ResponseEntity<CollectionModel<EntityModel<StudentDto>>> getAllStudents() {
         List<StudentDto> students = studentService.getAllStudents().stream()
                 .map(student -> modelMapper.map(student, StudentDto.class))
-                .collect(Collectors.toList());
+                .toList();
 
         CollectionModel<EntityModel<StudentDto>> studentCollectionModel = studentModelAssembler
                 .toCollectionModel(students);

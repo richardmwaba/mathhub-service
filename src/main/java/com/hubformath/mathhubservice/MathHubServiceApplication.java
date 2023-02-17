@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class MathhubServiceApplication {
+public class MathHubServiceApplication {
 
 	@Bean
 	public ModelMapper modelMapper() {
@@ -14,7 +14,7 @@ public class MathhubServiceApplication {
 	}
 	
 	public static void main(String[] args) {
-		SpringApplication.run(MathhubServiceApplication.class, args);
+		SpringApplication.run(MathHubServiceApplication.class, args);
 	}
 
 }

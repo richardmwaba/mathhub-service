@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.controller.sis;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class PhoneNumberController {
     public ResponseEntity<CollectionModel<EntityModel<PhoneNumberDto>>> getAllPhoneNumbers() {
         List<PhoneNumberDto> phoneNumbers = phoneNumberService.getAllPhoneNumbers().stream()
                 .map(phoneNumber -> modelMapper.map(phoneNumber, PhoneNumberDto.class))
-                .collect(Collectors.toList());
+                .toList();
 
         CollectionModel<EntityModel<PhoneNumberDto>> phoneNumberCollectionModel = phoneNumberModelAssembler
                 .toCollectionModel(phoneNumbers);

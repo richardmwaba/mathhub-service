@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class AssessmentTypeController {
     public ResponseEntity<CollectionModel<EntityModel<AssessmentTypeDto>>> getAllAssessmentTypes() {
         List<AssessmentTypeDto> assessmentTypes = assessmentTypeService.getAllAssessmentTypes().stream()
                 .map(assessmentType -> modelMapper.map(assessmentType, AssessmentTypeDto.class))
-                .collect(Collectors.toList());
+                .toList();
 
         CollectionModel<EntityModel<AssessmentTypeDto>> assessmentTypeCollectionModel = assessmentTypeModelAssembler
                 .toCollectionModel(assessmentTypes);

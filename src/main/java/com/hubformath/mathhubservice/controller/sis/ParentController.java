@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.controller.sis;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class ParentController {
     public ResponseEntity<CollectionModel<EntityModel<ParentDto>>> getAllParents() {
         List<ParentDto> parents = parentService.getAllParents().stream()
                 .map(parent -> modelMapper.map(parent, ParentDto.class))
-                .collect(Collectors.toList());
+                .toList();
 
         CollectionModel<EntityModel<ParentDto>> parentCollectionModel = parentModelAssembler
                 .toCollectionModel(parents);

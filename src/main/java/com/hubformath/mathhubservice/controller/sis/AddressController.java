@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.controller.sis;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class AddressController {
     public ResponseEntity<CollectionModel<EntityModel<AddressDto>>> getAllAddresses() {
         List<AddressDto> addresses = addressService.getAllAddresses().stream()
                 .map(address -> modelMapper.map(address, AddressDto.class))
-                .collect(Collectors.toList());
+                .toList();
 
         CollectionModel<EntityModel<AddressDto>> addressCollectionModel = addressModelAssembler
                 .toCollectionModel(addresses);

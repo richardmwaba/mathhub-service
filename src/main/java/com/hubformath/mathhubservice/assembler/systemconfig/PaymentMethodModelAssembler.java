@@ -1,7 +1,6 @@
 package com.hubformath.mathhubservice.assembler.systemconfig;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.hateoas.CollectionModel;
@@ -29,7 +28,7 @@ public class PaymentMethodModelAssembler implements RepresentationModelAssembler
         List<EntityModel<PaymentMethodDto>> paymentMethodList = StreamSupport
                 .stream(paymentMethods.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(paymentMethodList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PaymentMethodController.class)
                 .getAllPaymentMethods())

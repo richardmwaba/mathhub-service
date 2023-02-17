@@ -9,7 +9,6 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -30,7 +29,7 @@ public class ExamBoardModelAssembler implements RepresentationModelAssembler<Exa
             Iterable<? extends ExamBoardDto> examBoard) {
         List<EntityModel<ExamBoardDto>> examBoardList = StreamSupport.stream(examBoard.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(examBoardList, linkTo(methodOn(ExamBoardController.class)
                 .getAllExamBoard())

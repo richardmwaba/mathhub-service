@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
     @RestController
     @RequestMapping(path="/api/v1/ops")
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
         public ResponseEntity<CollectionModel<EntityModel<ExamBoardDto>>> getAllExamBoard() {
             List<ExamBoardDto> examBoardList = examBoardService.getAllExamBoards().stream()
                     .map(examBoard -> modelMapper.map(examBoard, ExamBoardDto.class))
-                    .collect(Collectors.toList());
+                    .toList();
 
             CollectionModel<EntityModel<ExamBoardDto>> examBoardCollectionModel = examBoardModelAssembler
                     .toCollectionModel(examBoardList);

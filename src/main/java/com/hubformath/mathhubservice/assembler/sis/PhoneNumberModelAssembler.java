@@ -1,7 +1,6 @@
 package com.hubformath.mathhubservice.assembler.sis;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.hateoas.CollectionModel;
@@ -27,7 +26,7 @@ public class PhoneNumberModelAssembler implements RepresentationModelAssembler<P
             Iterable<? extends PhoneNumberDto> phoneNumbers) {
         List<EntityModel<PhoneNumberDto>> phoneNumberList = StreamSupport.stream(phoneNumbers.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(phoneNumberList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PhoneNumberController.class)
                 .getAllPhoneNumbers())

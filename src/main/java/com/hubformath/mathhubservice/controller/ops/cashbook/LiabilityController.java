@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class LiabilityController {
     public ResponseEntity<CollectionModel<EntityModel<LiabilityDto>>> getAllLiabilities() {
         List<LiabilityDto> liabilities = liabilityService.getAllLiabilities().stream()
                 .map(liability -> modelMapper.map(liability, LiabilityDto.class))
-                .collect(Collectors.toList());
+                .toList();
 
         CollectionModel<EntityModel<LiabilityDto>> liabilityCollectionModel = liabilityModelAssembler
                 .toCollectionModel(liabilities);

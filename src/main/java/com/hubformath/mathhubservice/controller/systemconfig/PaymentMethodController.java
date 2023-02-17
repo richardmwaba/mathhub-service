@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class PaymentMethodController {
     public ResponseEntity<CollectionModel<EntityModel<PaymentMethodDto>>> getAllPaymentMethods() {
         List<PaymentMethodDto> paymentMethods = paymentMethodService.getAllPaymentMethods().stream()
                 .map(paymentMethod -> modelMapper.map(paymentMethod, PaymentMethodDto.class))
-                .collect(Collectors.toList());
+                .toList();
 
         CollectionModel<EntityModel<PaymentMethodDto>> paymentMethodCollectionModel = paymentMethodModelAssembler
                 .toCollectionModel(paymentMethods);

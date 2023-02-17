@@ -1,7 +1,6 @@
 package com.hubformath.mathhubservice.assembler.ops.cashbook;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.hateoas.CollectionModel;
@@ -27,7 +26,7 @@ public class IncomeModelAssembler implements RepresentationModelAssembler<Income
             Iterable<? extends IncomeDto> incomes) {
         List<EntityModel<IncomeDto>> incomeList = StreamSupport.stream(incomes.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(incomeList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeController.class)
                 .getAllIncomes())

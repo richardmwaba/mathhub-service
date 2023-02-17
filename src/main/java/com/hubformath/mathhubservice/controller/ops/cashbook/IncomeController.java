@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class IncomeController {
     public ResponseEntity<CollectionModel<EntityModel<IncomeDto>>> getAllIncomes() {
         List<IncomeDto> incomes = incomeService.getAllIncomes().stream()
                 .map(income -> modelMapper.map(income, IncomeDto.class))
-                .collect(Collectors.toList());
+                .toList();
 
         CollectionModel<EntityModel<IncomeDto>> incomeCollectionModel = incomeModelAssembler
                 .toCollectionModel(incomes);

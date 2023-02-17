@@ -10,7 +10,6 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Component
@@ -27,7 +26,7 @@ public class SyllabusModelAssembler implements RepresentationModelAssembler<Syll
             Iterable<? extends SyllabusDto> syllabus) {
         List<EntityModel<SyllabusDto>> syllabusList = StreamSupport.stream(syllabus.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
         return CollectionModel.of(syllabusList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SyllabusController.class)
                 .getAllSyllabi())
