@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hubformath.mathhubservice.assembler.ops.cashbook.AssetModelAssembler;
 import com.hubformath.mathhubservice.dto.ops.cashbook.AssetDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.Asset;
-import com.hubformath.mathhubservice.service.ops.cashbook.IAssetService;
+import com.hubformath.mathhubservice.service.ops.cashbook.AssetService;
 
 @RestController
 @RequestMapping(path = "/api/v1/ops")
@@ -30,7 +30,7 @@ public class AssetController {
     private ModelMapper modelMapper;
 
     @Autowired
-    private IAssetService assetService;
+    private AssetService assetService;
 
     @Autowired
     private AssetModelAssembler assetModelAssembler;

@@ -1,32 +1,33 @@
-package com.hubformath.mathhubservice.service.ops.cashbook.impl;
+package com.hubformath.mathhubservice.service.ops.cashbook;
 
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hubformath.mathhubservice.model.ops.cashbook.Equity;
 import com.hubformath.mathhubservice.repository.ops.cashbook.EquityRepository;
-import com.hubformath.mathhubservice.service.ops.cashbook.IEquityService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
 @Service
-public class EquityServiceImpl implements IEquityService {
+public class EquityService {
+
     private final EquityRepository equityRepository;
+
     private final String notFoundItemName;
 
-    public EquityServiceImpl(EquityRepository equityRepository) {
+    @Autowired
+    public EquityService(final EquityRepository equityRepository) {
         super();
         this.equityRepository = equityRepository;
         this.notFoundItemName = "equity";
     }
 
-    @Override
     public List<Equity> getAllEquity() {
         return equityRepository.findAll();
     }
 
-    @Override
     public Equity getEquityById(Long id) {
         Optional<Equity> equity = equityRepository.findById(id);
 
@@ -37,12 +38,10 @@ public class EquityServiceImpl implements IEquityService {
         }
     }
 
-    @Override
     public Equity createEquity(Equity equityRequest) {
         return equityRepository.save(equityRequest);
     }
 
-    @Override
     public Equity updateEquity(Long id, Equity equityRequest) {
         return equityRepository.findById(id)
                 .map(equity -> {
@@ -55,7 +54,6 @@ public class EquityServiceImpl implements IEquityService {
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
     }
 
-    @Override
     public void deleteEquity(Long id) {
         Equity equity = equityRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hubformath.mathhubservice.assembler.ops.cashbook.CashTransactionModelAssembler;
 import com.hubformath.mathhubservice.dto.ops.cashbook.CashTransactionDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.CashTransaction;
-import com.hubformath.mathhubservice.service.ops.cashbook.ICashTransactionService;
+import com.hubformath.mathhubservice.service.ops.cashbook.CashTransactionService;
 
 
 @RestController
@@ -29,7 +29,7 @@ public class CashTransactionController {
     private ModelMapper modelMapper;    
     
     @Autowired
-    private ICashTransactionService transactionService;
+    private CashTransactionService transactionService;
 
     @Autowired
     private CashTransactionModelAssembler transactionModelAssembler;

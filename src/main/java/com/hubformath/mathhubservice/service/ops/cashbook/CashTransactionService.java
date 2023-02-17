@@ -1,34 +1,33 @@
-package com.hubformath.mathhubservice.service.ops.cashbook.impl;
+package com.hubformath.mathhubservice.service.ops.cashbook;
 
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hubformath.mathhubservice.model.ops.cashbook.CashTransaction;
 import com.hubformath.mathhubservice.repository.ops.cashbook.CashTransactionRepository;
-import com.hubformath.mathhubservice.service.ops.cashbook.ICashTransactionService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
 @Service
-public class CashTransactionServiceImpl implements ICashTransactionService{
+public class CashTransactionService {
 
     private final CashTransactionRepository transactionRepository;
 
     private final String notFoundItemName;
 
-    public CashTransactionServiceImpl(CashTransactionRepository transactionRepository) {
+    @Autowired
+    public CashTransactionService(final CashTransactionRepository transactionRepository) {
         super();
         this.transactionRepository = transactionRepository;
         this.notFoundItemName = "transaction";
     }
 
-    @Override
     public List<CashTransaction> getAllTransactions() {
         return transactionRepository.findAll();
     }
 
-    @Override
     public CashTransaction getTransactionById(Long id) {
         Optional<CashTransaction> transaction = transactionRepository.findById(id);
 
@@ -39,12 +38,10 @@ public class CashTransactionServiceImpl implements ICashTransactionService{
         }
     }
 
-    @Override
     public CashTransaction createTransaction(CashTransaction cashTransaction) {
         return transactionRepository.save(cashTransaction);
     }
 
-    @Override
     public CashTransaction updateTransaction(Long id, CashTransaction transactionRequest) {
         return transactionRepository.findById(id)
                 .map(transaction -> {
@@ -59,7 +56,6 @@ public class CashTransactionServiceImpl implements ICashTransactionService{
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
     }
 
-    @Override
     public void deleteTransaction(Long id) {
         CashTransaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));

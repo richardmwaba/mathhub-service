@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hubformath.mathhubservice.assembler.ops.cashbook.EquityModelAssembler;
 import com.hubformath.mathhubservice.dto.ops.cashbook.EquityDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.Equity;
-import com.hubformath.mathhubservice.service.ops.cashbook.IEquityService;
+import com.hubformath.mathhubservice.service.ops.cashbook.EquityService;
 
 @RestController
 @RequestMapping(path = "/api/v1/ops")
@@ -32,7 +32,7 @@ public class EquityController {
     private ModelMapper modelMapper;
 
     @Autowired
-    private IEquityService equityService;
+    private EquityService equityService;
 
     @Autowired
     private EquityModelAssembler equityModelAssembler;

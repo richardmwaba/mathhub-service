@@ -1,12 +1,4 @@
-package com.hubformath.mathhubservice.service.ops.cashbook.impl;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+package com.hubformath.mathhubservice.service.ops.cashbook;
 
 import com.hubformath.mathhubservice.dto.ops.cashbook.TuitionPaymentRequestDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.CashTransaction;
@@ -18,54 +10,63 @@ import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.systemconfig.CashTransactionCategory;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import com.hubformath.mathhubservice.repository.ops.cashbook.TuitionPaymentRepository;
-import com.hubformath.mathhubservice.services.ops.cashbook.ITuitionPaymentService;
 import com.hubformath.mathhubservice.service.sis.ILessonsService;
 import com.hubformath.mathhubservice.service.sis.IStudentService;
 import com.hubformath.mathhubservice.service.systemconfig.ICashTransactionCategoryService;
 import com.hubformath.mathhubservice.service.systemconfig.IPaymentMethodService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Service
-public class TuitionPaymentServiceImpl implements ITuitionPaymentService{
-    @Autowired
-    private IPaymentMethodService paymentMethodService;
-
-    @Autowired
-    private ILessonsService lessonsService;
-
-    @Autowired
-    private ICashTransactionCategoryService cashTransactionCategoryService;
-
-    @Autowired
-    private IStudentService studentService;
+public class TuitionPaymentService {
 
     private final TuitionPaymentRepository tuitionPaymentRepository;
 
     private final String notFoundItemName;
 
-    public TuitionPaymentServiceImpl(TuitionPaymentRepository tuitionPaymentRepository) {
+    private final IPaymentMethodService paymentMethodService;
+
+    private final ILessonsService lessonsService;
+
+    private final ICashTransactionCategoryService cashTransactionCategoryService;
+
+    private final IStudentService studentService;
+
+    @Autowired
+    public TuitionPaymentService(final IPaymentMethodService paymentMethodService,
+                                     final ILessonsService lessonsService,
+                                     final ICashTransactionCategoryService cashTransactionCategoryService,
+                                     final IStudentService studentService,
+                                     final TuitionPaymentRepository tuitionPaymentRepository) {
         super();
+        this.paymentMethodService = paymentMethodService;
+        this.lessonsService = lessonsService;
+        this.cashTransactionCategoryService = cashTransactionCategoryService;
+        this.studentService = studentService;
         this.tuitionPaymentRepository = tuitionPaymentRepository;
         this.notFoundItemName = "tuition payment";
     }
 
-    @Override
     public List<TuitionPayment> getAllTuitionPayments() {
         return tuitionPaymentRepository.findAll();
     }
 
-    @Override
     public TuitionPayment getTuitionPaymentById(Long id) {
         Optional<TuitionPayment> tuitionPayment = tuitionPaymentRepository.findById(id);
 
-        if(tuitionPayment.isPresent()){
+        if (tuitionPayment.isPresent()) {
             return tuitionPayment.get();
         } else {
             throw new ItemNotFoundException(id, notFoundItemName);
         }
     }
 
-    @Override
     @Transactional
     public TuitionPayment createTuitionPayment(TuitionPaymentRequestDto tuitionPaymentRequest) {
         final Long paymentMethodId = tuitionPaymentRequest.getPaymentMethodId();
