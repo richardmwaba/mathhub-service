@@ -1,4 +1,4 @@
-package com.hubformath.mathhubservice.service.sis.impl;
+package com.hubformath.mathhubservice.service.sis;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,38 +12,35 @@ import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
 import com.hubformath.mathhubservice.repository.sis.StudentRepository;
-import com.hubformath.mathhubservice.service.sis.IStudentService;
-import com.hubformath.mathhubservice.service.systemconfig.IExamBoardService;
-import com.hubformath.mathhubservice.service.systemconfig.IGradeService;
+import com.hubformath.mathhubservice.service.systemconfig.ExamBoardService;
+import com.hubformath.mathhubservice.service.systemconfig.GradeService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class StudentServiceImpl implements IStudentService {
+public class StudentService {
 
-    @Autowired
-    private IGradeService gradeService;
+    private final GradeService gradeService;
 
-    @Autowired
-    IExamBoardService examBoardService;
+    private final ExamBoardService examBoardService;
 
     private final StudentRepository studentRepository;
+
     private final String notFoundItemName;
     
-    public StudentServiceImpl(StudentRepository studentRepository) {
+    public StudentService(final StudentRepository studentRepository, final GradeService gradeService, final ExamBoardService examBoardService) {
         super();
         this.studentRepository = studentRepository;
+        this.gradeService = gradeService;
+        this.examBoardService = examBoardService;
         this.notFoundItemName = "student";
     }
 
-    @Override
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
     }
 
-    @Override
     public Student getStudentById(Long id) {
         Optional<Student> student = studentRepository.findById(id);
 
@@ -54,7 +51,6 @@ public class StudentServiceImpl implements IStudentService {
         }
     }
 
-    @Override
     public Student createStudent(StudentRequestDto studentRequest) {
         final long gradeId = studentRequest.getGradeId();
         final long examBoardId = studentRequest.getExamBoardId();
@@ -80,7 +76,6 @@ public class StudentServiceImpl implements IStudentService {
         return studentRepository.save(newStudent);
     }
 
-    @Override
     public Student updateStudent(Long id, Student studentRequest) {
         return studentRepository.findById(id) 
                 .map(student -> {
@@ -99,7 +94,6 @@ public class StudentServiceImpl implements IStudentService {
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
     }
 
-    @Override
     public void deleteStudent(Long id) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));

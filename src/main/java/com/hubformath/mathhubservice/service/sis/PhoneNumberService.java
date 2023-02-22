@@ -1,4 +1,4 @@
-package com.hubformath.mathhubservice.service.sis.impl;
+package com.hubformath.mathhubservice.service.sis;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,27 +7,26 @@ import org.springframework.stereotype.Service;
 
 import com.hubformath.mathhubservice.model.sis.PhoneNumber;
 import com.hubformath.mathhubservice.repository.sis.PhoneNumberRepository;
-import com.hubformath.mathhubservice.service.sis.IPhoneNumberService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
 @Service
-public class PhoneNumberServiceImpl implements IPhoneNumberService {
+public class PhoneNumberService {
+
     private final PhoneNumberRepository phoneNumberRepository;
+
     private final String notFoundItemName;
     
-    public PhoneNumberServiceImpl(PhoneNumberRepository phoneNumberRepository) {
+    public PhoneNumberService(final PhoneNumberRepository phoneNumberRepository) {
         super();
         this.phoneNumberRepository = phoneNumberRepository;
         this.notFoundItemName = "phoneNumber";
     }
 
-    @Override
     public List<PhoneNumber> getAllPhoneNumbers() {
         return phoneNumberRepository.findAll();
     }
 
-    @Override
-    public PhoneNumber getPhoneNumberById(Long id) {
+    public PhoneNumber getPhoneNumberById(final Long id) {
         Optional<PhoneNumber> phoneNumber = phoneNumberRepository.findById(id);
 
         if(phoneNumber.isPresent()){
@@ -37,13 +36,11 @@ public class PhoneNumberServiceImpl implements IPhoneNumberService {
         }
     }
 
-    @Override
-    public PhoneNumber createPhoneNumber(PhoneNumber phoneNumberRequest) {
+    public PhoneNumber createPhoneNumber(final PhoneNumber phoneNumberRequest) {
         return phoneNumberRepository.save(phoneNumberRequest);
     }
 
-    @Override
-    public PhoneNumber updatePhoneNumber(Long id, PhoneNumber phoneNumberRequest) {
+    public PhoneNumber updatePhoneNumber(final Long id, final PhoneNumber phoneNumberRequest) {
         return phoneNumberRepository.findById(id) 
                 .map(phoneNumber -> {
                     phoneNumber.setType(phoneNumberRequest.getType());
@@ -54,8 +51,7 @@ public class PhoneNumberServiceImpl implements IPhoneNumberService {
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
     }
 
-    @Override
-    public void deletePhoneNumber(Long id) {
+    public void deletePhoneNumber(final Long id) {
         PhoneNumber phoneNumber = phoneNumberRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
 

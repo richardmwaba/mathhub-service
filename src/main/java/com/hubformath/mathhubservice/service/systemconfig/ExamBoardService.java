@@ -1,9 +1,8 @@
-package com.hubformath.mathhubservice.service.systemconfig.impl;
+package com.hubformath.mathhubservice.service.systemconfig;
 
 
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.repository.systemconfig.ExamBoardRepository;
-import com.hubformath.mathhubservice.service.systemconfig.IExamBoardService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
 import org.springframework.stereotype.Service;
@@ -12,22 +11,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ExamBoardServiceImpl implements IExamBoardService {
+public class ExamBoardService {
+
     private final ExamBoardRepository examBoardRepository;
+
     private final String notFoundItemName;
 
-    public ExamBoardServiceImpl(ExamBoardRepository examBoardRepository) {
-        super();
+    public ExamBoardService(final ExamBoardRepository examBoardRepository) {
         this.examBoardRepository = examBoardRepository;
         this.notFoundItemName = "Exam Board";
     }
 
-    @Override
     public List<ExamBoard> getAllExamBoards() {
         return examBoardRepository.findAll();
     }
 
-    @Override
     public ExamBoard getExamBoardById(Long id) {
         Optional<ExamBoard> examBoard = examBoardRepository.findById(id);
 
@@ -38,12 +36,10 @@ public class ExamBoardServiceImpl implements IExamBoardService {
         }
     }
 
-    @Override
     public ExamBoard createExamBoard(ExamBoard examBoardRequest) {
         return examBoardRepository.save(examBoardRequest);
     }
 
-    @Override
     public ExamBoard updateExamBoard(Long id, ExamBoard examBoardRequest) {
         return examBoardRepository.findById(id)
                 .map(examBoard -> {
@@ -54,7 +50,6 @@ public class ExamBoardServiceImpl implements IExamBoardService {
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
     }
 
-    @Override
     public void deleteExamBoard(Long id) {
         ExamBoard examBoard = examBoardRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));

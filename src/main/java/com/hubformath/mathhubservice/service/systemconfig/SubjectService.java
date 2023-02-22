@@ -1,39 +1,33 @@
-package com.hubformath.mathhubservice.service.systemconfig.impl;
+package com.hubformath.mathhubservice.service.systemconfig;
 
 import com.hubformath.mathhubservice.dto.systemconfig.SubjectRequestDto;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import com.hubformath.mathhubservice.repository.systemconfig.SubjectRepository;
-import com.hubformath.mathhubservice.service.systemconfig.IGradeService;
-import com.hubformath.mathhubservice.service.systemconfig.ISubjectService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SubjectServiceImpl implements ISubjectService {
+public class SubjectService {
 
-    @Autowired
-    IGradeService gradeService;
+    GradeService gradeService;
 
     private final SubjectRepository subjectRepository;
 
     private final String notFoundItemName;
 
-    public SubjectServiceImpl(SubjectRepository subjectRepository){
-        super();
+    public SubjectService(final GradeService gradeService, final SubjectRepository subjectRepository){
+        this.gradeService = gradeService;
         this.subjectRepository = subjectRepository;
         this.notFoundItemName = "subject";
     }
 
-    @Override
     public List<Subject> getAllSubjects() { return subjectRepository.findAll(); }
 
-    @Override
     public Subject getSubjectById(Long id){
         Optional<Subject> subject = subjectRepository.findById(id);
 
@@ -44,7 +38,6 @@ public class SubjectServiceImpl implements ISubjectService {
         }
     }
 
-    @Override
     public Subject createSubject(SubjectRequestDto subjectRequest){
         final long subjectGradeId = subjectRequest.getSubjectGradeId();
         final String subjectName = subjectRequest.getSubjectName();
@@ -57,7 +50,6 @@ public class SubjectServiceImpl implements ISubjectService {
         return subjectRepository.save(newSubject);
     }
 
-    @Override
     public Subject updateSubject(Long id, Subject subjectRequest) {
         return subjectRepository.findById(id)
                 .map(subject -> {
@@ -68,7 +60,6 @@ public class SubjectServiceImpl implements ISubjectService {
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
     }
 
-    @Override
     public void deleteSubject(Long id) {
         Subject subject = subjectRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));

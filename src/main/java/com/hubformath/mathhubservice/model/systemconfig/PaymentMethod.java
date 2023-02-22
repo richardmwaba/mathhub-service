@@ -38,6 +38,10 @@ public class PaymentMethod {
         return this.id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getTypeName() {
         return this.typeName;
     }
@@ -74,9 +78,8 @@ public class PaymentMethod {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof PaymentMethod))
+        if (!(o instanceof PaymentMethod paymentMethod))
             return false;
-        PaymentMethod paymentMethod = (PaymentMethod) o;
         return Objects.equals(this.id, paymentMethod.id) && Objects.equals(this.typeName, paymentMethod.typeName)
                 && Objects.equals(this.typeDescription, paymentMethod.typeDescription)
                 && Objects.equals(this.createdAt, paymentMethod.createdAt)

@@ -52,17 +52,23 @@ public class CashTransaction {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public CashTransaction() {
-    }
-
-    public CashTransaction(CashTransactionType transactionType, String narration, Double amount) {
-        this.transactionNumber = UUID.randomUUID().toString().substring(0, 11).toUpperCase();
+    public CashTransaction(final PaymentMethod paymentMethod,
+                           final CashTransactionType transactionType,
+                           final CashTransactionCategory transactionCategory,
+                           final String narration,
+                           final Double amount) {
+        this.paymentMethod = paymentMethod;
+        this.transactionCategory = transactionCategory;
+        this.transactionNumber = UUID.randomUUID().toString().toUpperCase();
         this.transactionType = transactionType;
         this.narration = narration;
         this.amount = amount;
         this.transactionDateTime = LocalDateTime.now();
+        //TODO: Add actual user on transacted by
         this.transactedBy = null;
     }
+
+    public CashTransaction() {}
 
     public Long getId() {
         return this.id;

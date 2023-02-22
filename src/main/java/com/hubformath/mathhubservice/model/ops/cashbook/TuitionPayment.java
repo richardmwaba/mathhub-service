@@ -59,10 +59,21 @@ public class TuitionPayment {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public TuitionPayment(){};
+    public TuitionPayment(){}
 
-    public TuitionPayment(LocalDate paymentDate, Double amount, String narration) {
-        this.paymentDate = paymentDate;
+    public TuitionPayment(final CashTransaction cashTransaction,
+                          final Student student,
+                          final Lessons lessons,
+                          final PaymentMethod paymentMethod,
+                          final Double amount,
+                          final Receipt receipt,
+                          final String narration) {
+        this.cashTransaction = cashTransaction;
+        this.student = student;
+        this.lessons = lessons;
+        this.paymentMethod = paymentMethod;
+        this.receipt = receipt;
+        this.paymentDate = LocalDate.now();
         this.amount = amount;
         this.narration = narration;
         this.createdBy = null;
@@ -70,6 +81,14 @@ public class TuitionPayment {
 
     public Long getId() {
         return id;
+    }
+
+    public CashTransaction getCashTransaction() {
+        return cashTransaction;
+    }
+
+    public void setCashTransaction(CashTransaction cashTransaction) {
+        this.cashTransaction = cashTransaction;
     }
 
     public Student getStudent() {
@@ -156,10 +175,10 @@ public class TuitionPayment {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof TuitionPayment))
+        if (!(o instanceof TuitionPayment tuitionPayment))
             return false;
-        TuitionPayment tuitionPayment = (TuitionPayment) o;
         return Objects.equals(this.id, tuitionPayment.id)
+                && Objects.equals(this.cashTransaction, tuitionPayment.cashTransaction)
                 && Objects.equals(this.student, tuitionPayment.student)
                 && Objects.equals(this.lessons, tuitionPayment.lessons)
                 && Objects.equals(this.paymentMethod, tuitionPayment.paymentMethod)
@@ -167,23 +186,23 @@ public class TuitionPayment {
                 && Objects.equals(this.amount, tuitionPayment.amount)
                 && Objects.equals(this.receipt, tuitionPayment.receipt)
                 && Objects.equals(this.narration, tuitionPayment.narration)
+                && Objects.equals(this.createdBy, tuitionPayment.createdBy)
                 && Objects.equals(this.createdAt, tuitionPayment.createdAt)
                 && Objects.equals(this.updatedAt, tuitionPayment.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.student, this.lessons, this.paymentDate, this.amount,
-                this.paymentMethod, this.receipt, this.narration, this.createdAt, this.updatedAt);
+        return Objects.hash(this.id, this.cashTransaction, this.student, this.lessons, this.paymentDate, this.amount,
+                this.paymentMethod, this.receipt, this.narration, this.createdBy, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
-        return "TuitionPayment {id=" + this.id + ", student=" + this.student + ", lessons="
+        return "TuitionPayment {id=" + this.id + ", cashTransaction=" + this.cashTransaction + ", student=" + this.student + ", lessons="
                 + this.lessons + ", paymentMethods=" + this.paymentMethod + ", paymentDate=" + this.paymentDate
                 + ", amount=" + this.amount + ", receipt="
-                + this.receipt + ", narration=" + this.narration + ", createdAt=" + this.createdAt + ", updatedAt="
-                + this.updatedAt + "}";
+                + this.receipt + ", narration=" + this.narration + "}";
     }
 
 }

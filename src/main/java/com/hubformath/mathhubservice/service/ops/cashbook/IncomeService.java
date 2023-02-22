@@ -3,6 +3,7 @@ package com.hubformath.mathhubservice.service.ops.cashbook;
 import java.util.List;
 import java.util.Optional;
 
+import com.hubformath.mathhubservice.service.systemconfig.PaymentMethodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +13,12 @@ import com.hubformath.mathhubservice.model.systemconfig.IncomeType;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import com.hubformath.mathhubservice.repository.ops.cashbook.IncomeRepository;
 import com.hubformath.mathhubservice.service.systemconfig.IIncomeTypeService;
-import com.hubformath.mathhubservice.service.systemconfig.IPaymentMethodService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
 @Service
 public class IncomeService {
 
-    private final IPaymentMethodService paymentMethodService;
+    private final PaymentMethodService paymentMethodService;
 
     private final IIncomeTypeService incomeTypeService;
 
@@ -27,7 +27,7 @@ public class IncomeService {
     private final String notFoundItemName;
 
     @Autowired
-    public IncomeService(final IPaymentMethodService paymentMethodService, final IIncomeTypeService incomeTypeService, final IncomeRepository incomeRepository) {
+    public IncomeService(final PaymentMethodService paymentMethodService, final IIncomeTypeService incomeTypeService, final IncomeRepository incomeRepository) {
         super();
         this.paymentMethodService = paymentMethodService;
         this.incomeTypeService = incomeTypeService;

@@ -39,6 +39,8 @@ public class Receipt {
         this.issuedBy = null;
     }
 
+    public Receipt() {}
+
     public Long getId() {
         return id;
     }

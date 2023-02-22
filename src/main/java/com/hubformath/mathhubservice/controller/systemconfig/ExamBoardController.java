@@ -1,10 +1,9 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
-import com.hubformath.mathhubservice.assembler.systemconfig.ExamBoardModelAssembler;
 import com.hubformath.mathhubservice.dto.systemconfig.ExamBoardDto;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
-import com.hubformath.mathhubservice.service.systemconfig.IExamBoardService;
 
+import com.hubformath.mathhubservice.service.systemconfig.ExamBoardService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -21,75 +20,86 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.StreamSupport;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
-    @RestController
-    @RequestMapping(path="/api/v1/ops")
-    public class ExamBoardController {
-        @Autowired
-        private ModelMapper modelMapper;
+@RestController
+@RequestMapping(path="/api/v1/systemconfig/ops")
+public class ExamBoardController {
 
-        @Autowired
-        private IExamBoardService examBoardService;
+    private final ModelMapper modelMapper;
 
-        @Autowired
-        private ExamBoardModelAssembler examBoardModelAssembler;
+    private final ExamBoardService examBoardService;
 
-        public ExamBoardController() {super();}
+    @Autowired
+    public ExamBoardController(final ModelMapper modelMapper, final ExamBoardService examBoardService) {
+        this.modelMapper = modelMapper;
+        this.examBoardService = examBoardService;
+    }
 
-        @GetMapping("/examBoard")
-        public ResponseEntity<CollectionModel<EntityModel<ExamBoardDto>>> getAllExamBoard() {
-            List<ExamBoardDto> examBoardList = examBoardService.getAllExamBoards().stream()
-                    .map(examBoard -> modelMapper.map(examBoard, ExamBoardDto.class))
-                    .toList();
+    @GetMapping("/examBoard")
+    public ResponseEntity<CollectionModel<EntityModel<ExamBoardDto>>> getAllExamBoard() {
+        List<ExamBoardDto> examBoardList = examBoardService.getAllExamBoards().stream()
+                .map(examBoard -> modelMapper.map(examBoard, ExamBoardDto.class))
+                .toList();
 
-            CollectionModel<EntityModel<ExamBoardDto>> examBoardCollectionModel = examBoardModelAssembler
-                    .toCollectionModel(examBoardList);
+        CollectionModel<EntityModel<ExamBoardDto>> examBoardCollectionModel = toCollectionModel(examBoardList);
 
-            return ResponseEntity.ok().body(examBoardCollectionModel);
-        }
+        return ResponseEntity.ok().body(examBoardCollectionModel);
+    }
 
-        @PostMapping("/examBoard")
-        public ResponseEntity<EntityModel<ExamBoardDto>> newExamBoard(
-                @RequestBody ExamBoardDto examBoardDto) {
-            ExamBoard examBoardRequest = modelMapper.map(examBoardDto, ExamBoard.class);
-            ExamBoard newExamBoard = examBoardService.createExamBoard(examBoardRequest);
+    @PostMapping("/examBoard")
+    public ResponseEntity<EntityModel<ExamBoardDto>> newExamBoard(@RequestBody final ExamBoardDto examBoardDto) {
+        ExamBoard examBoardRequest = modelMapper.map(examBoardDto, ExamBoard.class);
+        ExamBoard newExamBoard = examBoardService.createExamBoard(examBoardRequest);
+        EntityModel<ExamBoardDto> examBoardEntityModel = toModel(modelMapper.map(newExamBoard, ExamBoardDto.class));
 
-            EntityModel<ExamBoardDto> examBoardEntityModel = examBoardModelAssembler
-                    .toModel(modelMapper.map(newExamBoard, ExamBoardDto.class));
+        return ResponseEntity.created(examBoardEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(examBoardEntityModel);
+    }
 
-            return ResponseEntity.created(examBoardEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                    .body(examBoardEntityModel);
-        }
+    @GetMapping("/examBoard/{id}")
+    public ResponseEntity<EntityModel<ExamBoardDto>> getExamBoardById(@PathVariable final Long id) {
+        ExamBoard examBoard = examBoardService.getExamBoardById(id);
+        EntityModel<ExamBoardDto> examBoardEntityModel = toModel(modelMapper.map(examBoard, ExamBoardDto.class));
 
-        @GetMapping("/examBoard/{id}")
-        public ResponseEntity<EntityModel<ExamBoardDto>> getExamBoardById(@PathVariable Long id) {
-            ExamBoard examBoard = examBoardService.getExamBoardById(id);
+        return ResponseEntity.ok().body(examBoardEntityModel);
+    }
 
-            EntityModel<ExamBoardDto> examBoardEntityModel = examBoardModelAssembler
-                    .toModel(modelMapper.map(examBoard, ExamBoardDto.class));
+    @PutMapping("/examBoard/{id}")
+    public ResponseEntity<EntityModel<ExamBoardDto>> replaceExamBoard(
+            @RequestBody final ExamBoardDto examBoardDto,
+            @PathVariable final Long id) {
+        ExamBoard examBoardRequest = modelMapper.map(examBoardDto, ExamBoard.class);
+        ExamBoard updatedExamBoard = examBoardService.updateExamBoard(id, examBoardRequest);
+        EntityModel<ExamBoardDto> examBoardEntityModel = toModel(modelMapper.map(updatedExamBoard, ExamBoardDto.class));
 
-            return ResponseEntity.ok().body(examBoardEntityModel);
-        }
+        return ResponseEntity.ok().body(examBoardEntityModel);
 
-        @PutMapping("/examBoard/{id}")
-        public ResponseEntity<EntityModel<ExamBoardDto>> replaceExamBoard(
-                @RequestBody ExamBoardDto examBoardDto,
-                @PathVariable Long id) {
-            ExamBoard examBoardRequest = modelMapper.map(examBoardDto, ExamBoard.class);
-            ExamBoard updatedExamBoard = examBoardService.updateExamBoard(id, examBoardRequest);
+    }
 
-            EntityModel<ExamBoardDto> examBoardEntityModel = examBoardModelAssembler
-                    .toModel(modelMapper.map(updatedExamBoard, ExamBoardDto.class));
+    @DeleteMapping("/examBoard/{id}")
+    public ResponseEntity<String> deleteExamBoard(@PathVariable final Long id) {
+        examBoardService.deleteExamBoard(id);
+        return ResponseEntity.ok().body("Exam Board deleted successfully");
+    }
 
-            return ResponseEntity.ok().body(examBoardEntityModel);
+    private EntityModel<ExamBoardDto> toModel(final ExamBoardDto syllabus) {
+        return EntityModel.of(syllabus,
+                linkTo(methodOn(ExamBoardController.class).getExamBoardById(syllabus.getId())).withSelfRel(),
+                linkTo(methodOn(ExamBoardController.class).getAllExamBoard()).withRel("examBoard"));
+    }
 
-        }
+    private CollectionModel<EntityModel<ExamBoardDto>> toCollectionModel(final Iterable<? extends ExamBoardDto> examBoard) {
+        List<EntityModel<ExamBoardDto>> examBoardList = StreamSupport.stream(examBoard.spliterator(), false)
+                .map(this::toModel)
+                .toList();
 
-        @DeleteMapping("/examBoard/{id}")
-        public ResponseEntity<String> deleteExamBoard(@PathVariable Long id) {
-            examBoardService.deleteExamBoard(id);
-
-            return ResponseEntity.ok().body("Exam Board deleted successfully");
-        }
+        return CollectionModel.of(examBoardList, linkTo(methodOn(ExamBoardController.class)
+                .getAllExamBoard())
+                .withSelfRel());
+    }
 }

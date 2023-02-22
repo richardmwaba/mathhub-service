@@ -1,4 +1,4 @@
-package com.hubformath.mathhubservice.service.systemconfig.impl;
+package com.hubformath.mathhubservice.service.systemconfig;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,26 +7,25 @@ import org.springframework.stereotype.Service;
 
 import com.hubformath.mathhubservice.model.systemconfig.CashTransactionCategory;
 import com.hubformath.mathhubservice.repository.systemconfig.CashTransactionCategoryRepository;
-import com.hubformath.mathhubservice.service.systemconfig.ICashTransactionCategoryService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
 @Service
-public class CashTransactionCategoryServiceImpl implements ICashTransactionCategoryService {
+public class CashTransactionCategoryService {
+
     private final CashTransactionCategoryRepository cashTransactionCategoryRepository;
+
     private final String notFoundItemName;
     
-    public CashTransactionCategoryServiceImpl(CashTransactionCategoryRepository cashTransactionCategoryRepository) {
+    public CashTransactionCategoryService(final CashTransactionCategoryRepository cashTransactionCategoryRepository) {
         super();
         this.cashTransactionCategoryRepository = cashTransactionCategoryRepository;
         this.notFoundItemName = "cash transaction category";
     }
 
-    @Override
     public List<CashTransactionCategory> getAllCashTransactionCategories() {
         return cashTransactionCategoryRepository.findAll();
     }
 
-    @Override
     public CashTransactionCategory getCashTransactionCategoryById(Long id) {
         Optional<CashTransactionCategory> cashTransactionCategory = cashTransactionCategoryRepository.findById(id);
 
@@ -37,12 +36,10 @@ public class CashTransactionCategoryServiceImpl implements ICashTransactionCateg
         }
     }
 
-    @Override
     public CashTransactionCategory createCashTransactionCategory(CashTransactionCategory cashTransactionCategoryRequest) {
         return cashTransactionCategoryRepository.save(cashTransactionCategoryRequest);
     }
 
-    @Override
     public CashTransactionCategory updateCashTransactionCategory(Long id, CashTransactionCategory cashTransactionCategoryRequest) {
         return cashTransactionCategoryRepository.findById(id) 
                 .map(cashTransactionCategory -> {
@@ -53,7 +50,6 @@ public class CashTransactionCategoryServiceImpl implements ICashTransactionCateg
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
     }
 
-    @Override
     public void deleteCashTransactionCategory(Long id) {
         CashTransactionCategory cashTransactionCategory = cashTransactionCategoryRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));

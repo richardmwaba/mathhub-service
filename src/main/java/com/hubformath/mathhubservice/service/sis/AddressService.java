@@ -1,4 +1,4 @@
-package com.hubformath.mathhubservice.service.sis.impl;
+package com.hubformath.mathhubservice.service.sis;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,27 +7,26 @@ import org.springframework.stereotype.Service;
 
 import com.hubformath.mathhubservice.model.sis.Address;
 import com.hubformath.mathhubservice.repository.sis.AddressRepository;
-import com.hubformath.mathhubservice.service.sis.IAddressService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
 @Service
-public class AddressServiceImpl implements IAddressService {
+public class AddressService {
+
     private final AddressRepository addressRepository;
+
     private final String notFoundItemName;
     
-    public AddressServiceImpl(AddressRepository addressRepository) {
+    public AddressService(final AddressRepository addressRepository) {
         super();
         this.addressRepository = addressRepository;
         this.notFoundItemName = "address";
     }
 
-    @Override
     public List<Address> getAllAddresses() {
         return addressRepository.findAll();
     }
 
-    @Override
-    public Address getAddressById(Long id) {
+    public Address getAddressById(final Long id) {
         Optional<Address> address = addressRepository.findById(id);
 
         if(address.isPresent()){
@@ -37,13 +36,11 @@ public class AddressServiceImpl implements IAddressService {
         }
     }
 
-    @Override
-    public Address createAddress(Address addressRequest) {
+    public Address createAddress(final Address addressRequest) {
         return addressRepository.save(addressRequest);
     }
 
-    @Override
-    public Address updateAddress(Long id, Address addressRequest) {
+    public Address updateAddress(final Long id, final Address addressRequest) {
         return addressRepository.findById(id) 
                 .map(address -> {
                     address.setAddressType(addressRequest.getAddressType());
@@ -58,8 +55,7 @@ public class AddressServiceImpl implements IAddressService {
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
     }
 
-    @Override
-    public void deleteAddress(Long id) {
+    public void deleteAddress(final Long id) {
         Address address = addressRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
 

@@ -3,6 +3,7 @@ package com.hubformath.mathhubservice.service.ops.cashbook;
 import java.util.List;
 import java.util.Optional;
 
+import com.hubformath.mathhubservice.service.systemconfig.PaymentMethodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,6 @@ import com.hubformath.mathhubservice.model.systemconfig.ExpenseType;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import com.hubformath.mathhubservice.repository.ops.cashbook.ExpenseRepository;
 import com.hubformath.mathhubservice.service.systemconfig.IExpenseTypeService;
-import com.hubformath.mathhubservice.service.systemconfig.IPaymentMethodService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
 @Service
@@ -21,14 +21,14 @@ public class ExpenseService {
 
         private final IExpenseTypeService expenseTypeService;
 
-        private final IPaymentMethodService paymentMethodService;
+        private final PaymentMethodService paymentMethodService;
 
         private final ExpenseRepository expenseRepository;
 
         private final String notFoundItemName;
 
         @Autowired
-        public ExpenseService(final IExpenseTypeService expenseTypeService, final IPaymentMethodService paymentMethodService, final ExpenseRepository expenseRepository) {
+        public ExpenseService(final IExpenseTypeService expenseTypeService, final PaymentMethodService paymentMethodService, final ExpenseRepository expenseRepository) {
                 super();
                 this.expenseTypeService = expenseTypeService;
                 this.paymentMethodService = paymentMethodService;

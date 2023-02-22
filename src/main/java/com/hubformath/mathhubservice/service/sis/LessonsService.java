@@ -1,4 +1,4 @@
-package com.hubformath.mathhubservice.service.sis.impl;
+package com.hubformath.mathhubservice.service.sis;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,28 +6,25 @@ import org.springframework.stereotype.Service;
 
 import com.hubformath.mathhubservice.model.sis.Lessons;
 import com.hubformath.mathhubservice.repository.sis.LessonsRepository;
-import com.hubformath.mathhubservice.service.sis.ILessonsService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
 @Service
-public class LessonsServiceImpl implements ILessonsService{
+public class LessonsService {
 
     private final LessonsRepository lessonsRepository;
 
     private final String notFoundItemName;
 
-    public LessonsServiceImpl(LessonsRepository lessonsRepository) {
+    public LessonsService(final LessonsRepository lessonsRepository) {
         super();
         this.lessonsRepository = lessonsRepository;
         this.notFoundItemName = "lessons";
     }
 
-    @Override
     public List<Lessons> getAllLessons() {
         return lessonsRepository.findAll();
     }
 
-    @Override
     public Lessons getLessonsById(Long id) {
         Optional<Lessons> lessons = lessonsRepository.findById(id);
 
@@ -38,12 +35,10 @@ public class LessonsServiceImpl implements ILessonsService{
         }
     }
 
-    @Override
     public Lessons createLessons(Lessons lessonsRequest) {
         return lessonsRepository.save(lessonsRequest);
     }
 
-    @Override
     public Lessons updateLessons(Long id, Lessons lessonsRequest) {
         return lessonsRepository.findById(id)
                 .map(lessons -> {
@@ -57,7 +52,6 @@ public class LessonsServiceImpl implements ILessonsService{
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
     }
 
-    @Override
     public void deleteLessons(Long id) {
         Lessons lessons = lessonsRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));

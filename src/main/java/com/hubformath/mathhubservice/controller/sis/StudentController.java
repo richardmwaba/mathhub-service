@@ -1,13 +1,15 @@
 package com.hubformath.mathhubservice.controller.sis;
 
 import java.util.List;
+import java.util.stream.StreamSupport;
 
-
+import com.hubformath.mathhubservice.service.sis.StudentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,26 +20,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.assembler.sis.StudentModelAssembler;
 import com.hubformath.mathhubservice.dto.sis.StudentDto;
 import com.hubformath.mathhubservice.dto.sis.StudentRequestDto;
 import com.hubformath.mathhubservice.model.sis.Student;
-import com.hubformath.mathhubservice.service.sis.IStudentService;
 
 @RestController
 @RequestMapping(path = "/api/v1/sis")
 public class StudentController {
-    @Autowired
-    private ModelMapper modelMapper;
+
+    private final ModelMapper modelMapper;
+
+    private final StudentService studentService;
 
     @Autowired
-    private IStudentService studentService;
-
-    @Autowired
-    private StudentModelAssembler studentModelAssembler;
-
-    public StudentController() {
-        super();
+    public StudentController(final ModelMapper modelMapper, final StudentService studentService) {
+        this.modelMapper = modelMapper;
+        this.studentService = studentService;
     }
 
     @GetMapping("/students")
@@ -45,53 +43,58 @@ public class StudentController {
         List<StudentDto> students = studentService.getAllStudents().stream()
                 .map(student -> modelMapper.map(student, StudentDto.class))
                 .toList();
-
-        CollectionModel<EntityModel<StudentDto>> studentCollectionModel = studentModelAssembler
-                .toCollectionModel(students);
+        CollectionModel<EntityModel<StudentDto>> studentCollectionModel = toCollectionModel(students);
 
         return ResponseEntity.ok().body(studentCollectionModel);
     }
 
     @PostMapping("/students")
-    public ResponseEntity<EntityModel<StudentDto>> newStudent(
-            @RequestBody StudentRequestDto studentRequestDto) {
+    public ResponseEntity<EntityModel<StudentDto>> newStudent(@RequestBody final StudentRequestDto studentRequestDto) {
         Student newStudent = studentService.createStudent(studentRequestDto);
-
-        EntityModel<StudentDto> studentEntityModel = studentModelAssembler
-                .toModel(modelMapper.map(newStudent, StudentDto.class));
+        EntityModel<StudentDto> studentEntityModel = toModel(modelMapper.map(newStudent, StudentDto.class));
 
         return ResponseEntity.created(studentEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(studentEntityModel);
     }
 
     @GetMapping("/students/{id}")
-    public ResponseEntity<EntityModel<StudentDto>> getStudentById(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<StudentDto>> getStudentById(@PathVariable final Long id) {
         Student student = studentService.getStudentById(id);
-
-        EntityModel<StudentDto> studentEntityModel = studentModelAssembler
-                .toModel(modelMapper.map(student, StudentDto.class));
+        EntityModel<StudentDto> studentEntityModel = toModel(modelMapper.map(student, StudentDto.class));
 
         return ResponseEntity.ok().body(studentEntityModel);
     }
 
     @PutMapping("/students/{id}")
     public ResponseEntity<EntityModel<StudentDto>> replaceStudent(
-            @RequestBody StudentDto studentDto,
-            @PathVariable Long id) {
+            @RequestBody final StudentDto studentDto,
+            @PathVariable final Long id) {
         Student studentRequest = modelMapper.map(studentDto, Student.class);
         Student updatedStudent = studentService.updateStudent(id, studentRequest);
-
-        EntityModel<StudentDto> studentEntityModel = studentModelAssembler
-                .toModel(modelMapper.map(updatedStudent, StudentDto.class));
+        EntityModel<StudentDto> studentEntityModel = toModel(modelMapper.map(updatedStudent, StudentDto.class));
 
         return ResponseEntity.ok().body(studentEntityModel);
-
     }
 
     @DeleteMapping("/students/{id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable Long id) {
+    public ResponseEntity<String> deleteStudent(@PathVariable final Long id) {
         studentService.deleteStudent(id);
-
         return ResponseEntity.ok().body("Student deleted successfully");
+    }
+
+    private EntityModel<StudentDto> toModel(final StudentDto student) {
+        return EntityModel.of(student,
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(StudentController.class).getStudentById(student.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(StudentController.class).getAllStudents()).withRel("students"));
+    }
+
+    private CollectionModel<EntityModel<StudentDto>> toCollectionModel(final Iterable<? extends StudentDto> students) {
+        List<EntityModel<StudentDto>> studentList = StreamSupport.stream(students.spliterator(), false)
+                .map(this::toModel)
+                .toList();
+
+        return CollectionModel.of(studentList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(StudentController.class)
+                        .getAllStudents())
+                .withSelfRel());
     }
 }

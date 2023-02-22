@@ -1,4 +1,4 @@
-package com.hubformath.mathhubservice.service.sis.impl;
+package com.hubformath.mathhubservice.service.sis;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,27 +7,25 @@ import org.springframework.stereotype.Service;
 
 import com.hubformath.mathhubservice.model.sis.Parent;
 import com.hubformath.mathhubservice.repository.sis.ParentRepository;
-import com.hubformath.mathhubservice.service.sis.IParentService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
 @Service
-public class ParentServiceImpl implements IParentService {
+public class ParentService {
+
     private final ParentRepository parentRepository;
+
     private final String notFoundItemName;
     
-    public ParentServiceImpl(ParentRepository parentRepository) {
-        super();
+    public ParentService(final ParentRepository parentRepository) {
         this.parentRepository = parentRepository;
         this.notFoundItemName = "parent";
     }
 
-    @Override
     public List<Parent> getAllParents() {
         return parentRepository.findAll();
     }
 
-    @Override
-    public Parent getParentById(Long id) {
+    public Parent getParentById(final Long id) {
         Optional<Parent> parent = parentRepository.findById(id);
 
         if(parent.isPresent()){
@@ -37,13 +35,11 @@ public class ParentServiceImpl implements IParentService {
         }
     }
 
-    @Override
-    public Parent createParent(Parent parentRequest) {
+    public Parent createParent(final Parent parentRequest) {
         return parentRepository.save(parentRequest);
     }
 
-    @Override
-    public Parent updateParent(Long id, Parent parentRequest) {
+    public Parent updateParent(final Long id, final Parent parentRequest) {
         return parentRepository.findById(id) 
                 .map(parent -> {
                     parent.setFirstName(parentRequest.getFirstName());
@@ -58,8 +54,7 @@ public class ParentServiceImpl implements IParentService {
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
     }
 
-    @Override
-    public void deleteParent(Long id) {
+    public void deleteParent(final Long id) {
         Parent parent = parentRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
 

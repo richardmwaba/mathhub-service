@@ -43,6 +43,8 @@ public class Lessons {
         this.sessionType = sessionType;
     }
 
+    public Lessons(){}
+
     public Long getId() {
         return id;
     }
