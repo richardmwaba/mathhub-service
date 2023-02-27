@@ -27,7 +27,7 @@ public class StudentRequestDto {
 
     private List<Address> addresses;
 
-    private List<PhoneNumber> phoneNumber;
+    private List<PhoneNumber> phoneNumbers;
 
     public long getGradeId() {
         return gradeId;}
@@ -88,10 +88,10 @@ public class StudentRequestDto {
     }
 
     public List<PhoneNumber> getPhoneNumber() {
-        return phoneNumber;
+        return phoneNumbers;
     }
 
-    public void setPhoneNumber(List<PhoneNumber> phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhoneNumber(List<PhoneNumber> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
     }
 }

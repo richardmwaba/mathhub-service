@@ -6,7 +6,7 @@ import com.hubformath.mathhubservice.model.ops.cashbook.CashTransaction;
 import com.hubformath.mathhubservice.model.ops.cashbook.CashTransactionType;
 import com.hubformath.mathhubservice.model.ops.cashbook.Receipt;
 import com.hubformath.mathhubservice.model.ops.cashbook.TuitionPayment;
-import com.hubformath.mathhubservice.model.sis.Lessons;
+import com.hubformath.mathhubservice.model.sis.Lesson;
 import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.systemconfig.CashTransactionCategory;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
@@ -79,7 +79,7 @@ public class TuitionPaymentController {
         final String narration = tuitionPaymentRequestDto.getNarration();
         final Double amount = tuitionPaymentRequestDto.getAmount();
 
-        final Lessons lessons = lessonsService.getLessonsById(lessonsId);
+        final Lesson lesson = lessonsService.getLessonsById(lessonsId);
         final PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(paymentMethodId);
         final Student student = studentService.getStudentById(studentId);
         final CashTransactionCategory cashTransactionCategory = cashTransactionCategoryService.getCashTransactionCategoryById(transactionCategoryId);
@@ -87,7 +87,7 @@ public class TuitionPaymentController {
         final CashTransaction newCashTransaction = new CashTransaction(paymentMethod, CashTransactionType.CASH_IN, cashTransactionCategory, narration, amount);
         final Receipt receipt = new Receipt(newCashTransaction.getTransactionNumber());
 
-        final TuitionPayment newTuitionPayment = new TuitionPayment(newCashTransaction, student, lessons, paymentMethod, amount, receipt, narration);
+        final TuitionPayment newTuitionPayment = new TuitionPayment(newCashTransaction, student, lesson, paymentMethod, amount, receipt, narration);
 
         EntityModel<TuitionPaymentDto> tuitionPaymentEntityModel = toModel(modelMapper.map(tuitionPaymentService.createTuitionPayment(newTuitionPayment), TuitionPaymentDto.class));
 

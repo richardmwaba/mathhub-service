@@ -3,13 +3,7 @@ package com.hubformath.mathhubservice.model.systemconfig;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
-import javax.persistence.CascadeType;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -19,7 +13,7 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    private  String subjectName;
+    private String subjectName;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "grade_id")
@@ -31,16 +25,21 @@ public class Subject {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Subject(){}
+    public Subject() {
+    }
 
-    public  Subject(String subjectName){
+    public Subject(String subjectName) {
         this.subjectName = subjectName;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getId() {
         return this.id;
     }
-    
+
     public String getSubjectName() {
         return subjectName;
     }
@@ -50,11 +49,12 @@ public class Subject {
     }
 
     public Grade getSubjectGrade() {
-        return subjectGrade; }
+        return subjectGrade;
+    }
 
     public void setSubjectGrade(Grade grade) {
-        this.subjectGrade = grade; }
-
+        this.subjectGrade = grade;
+    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -73,12 +73,11 @@ public class Subject {
     }
 
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof Subject))
+        if (!(o instanceof Subject subject))
             return false;
-        Subject subject = (Subject) o;
         return Objects.equals(this.id, subject.id) && Objects.equals(this.subjectName, subject.subjectName)
                 && Objects.equals(this.subjectGrade, subject.subjectGrade)
                 && Objects.equals(this.createdAt, subject.createdAt)
@@ -86,12 +85,12 @@ public class Subject {
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return Objects.hash(this.id, this.subjectName, this.subjectGrade, this.createdAt, this.updatedAt);
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Subject {id=" + this.id + ", subjectName=" + this.subjectName + ", " +
                 "subjectGrade=" + this.subjectGrade + ", createdAt=" + this.createdAt +
                 ", updatedAt=" + this.updatedAt + "}";

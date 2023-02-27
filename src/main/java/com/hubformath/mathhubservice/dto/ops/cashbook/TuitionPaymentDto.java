@@ -2,7 +2,7 @@ package com.hubformath.mathhubservice.dto.ops.cashbook;
 
 import com.hubformath.mathhubservice.model.ops.cashbook.CashTransaction;
 import com.hubformath.mathhubservice.model.ops.cashbook.Receipt;
-import com.hubformath.mathhubservice.model.sis.Lessons;
+import com.hubformath.mathhubservice.model.sis.Lesson;
 import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 
@@ -15,7 +15,7 @@ public class TuitionPaymentDto {
 
     private Student student;
 
-    private Lessons lessons;
+    private Lesson lesson;
 
     private PaymentMethod paymentMethod;
 
@@ -51,12 +51,12 @@ public class TuitionPaymentDto {
         this.student = student;
     }
 
-    public Lessons getLessons() {
-        return lessons;
+    public Lesson getLessons() {
+        return lesson;
     }
 
-    public void setLessons(Lessons lessons) {
-        this.lessons = lessons;
+    public void setLessons(Lesson lesson) {
+        this.lesson = lesson;
     }
 
     public PaymentMethod getPaymentMethod() {

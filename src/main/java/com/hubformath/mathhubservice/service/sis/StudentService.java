@@ -18,6 +18,8 @@ import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class StudentService {
 
@@ -84,10 +86,10 @@ public class StudentService {
                     student.setLastName(studentRequest.getLastName());
                     student.setEmail(studentRequest.getEmail());
                     student.setGrade(studentRequest.getGrade());
+                    student.setLessons(studentRequest.getLessons());
                     student.setParent(studentRequest.getParent());
                     student.setAddresses(studentRequest.getAddresses());
                     student.setPhoneNumbers(studentRequest.getPhoneNumbers());
-                    student.setDateOfBirth(studentRequest.getDateOfBirth());
                     student.setExamBoard(studentRequest.getExamBoard());
                     return studentRepository.save(student);
                 }) 

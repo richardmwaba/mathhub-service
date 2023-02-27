@@ -15,7 +15,7 @@ import javax.persistence.OneToOne;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.hubformath.mathhubservice.model.sis.Lessons;
+import com.hubformath.mathhubservice.model.sis.Lesson;
 import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 
@@ -35,7 +35,7 @@ public class TuitionPayment {
 
     @OneToOne
     @JoinColumn(name = "lessons_id")
-    private Lessons lessons;
+    private Lesson lesson;
 
     @OneToOne
     @JoinColumn(name = "payment_method_id")
@@ -63,14 +63,14 @@ public class TuitionPayment {
 
     public TuitionPayment(final CashTransaction cashTransaction,
                           final Student student,
-                          final Lessons lessons,
+                          final Lesson lesson,
                           final PaymentMethod paymentMethod,
                           final Double amount,
                           final Receipt receipt,
                           final String narration) {
         this.cashTransaction = cashTransaction;
         this.student = student;
-        this.lessons = lessons;
+        this.lesson = lesson;
         this.paymentMethod = paymentMethod;
         this.receipt = receipt;
         this.paymentDate = LocalDate.now();
@@ -99,12 +99,12 @@ public class TuitionPayment {
         this.student = student;
     }
 
-    public Lessons getLessons() {
-        return lessons;
+    public Lesson getLessons() {
+        return lesson;
     }
 
-    public void setLessons(Lessons lessons) {
-        this.lessons = lessons;
+    public void setLessons(Lesson lesson) {
+        this.lesson = lesson;
     }
 
     public PaymentMethod getPaymentMethod() {
@@ -180,7 +180,7 @@ public class TuitionPayment {
         return Objects.equals(this.id, tuitionPayment.id)
                 && Objects.equals(this.cashTransaction, tuitionPayment.cashTransaction)
                 && Objects.equals(this.student, tuitionPayment.student)
-                && Objects.equals(this.lessons, tuitionPayment.lessons)
+                && Objects.equals(this.lesson, tuitionPayment.lesson)
                 && Objects.equals(this.paymentMethod, tuitionPayment.paymentMethod)
                 && Objects.equals(this.paymentDate, tuitionPayment.paymentDate)
                 && Objects.equals(this.amount, tuitionPayment.amount)
@@ -193,14 +193,14 @@ public class TuitionPayment {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.cashTransaction, this.student, this.lessons, this.paymentDate, this.amount,
+        return Objects.hash(this.id, this.cashTransaction, this.student, this.lesson, this.paymentDate, this.amount,
                 this.paymentMethod, this.receipt, this.narration, this.createdBy, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
         return "TuitionPayment {id=" + this.id + ", cashTransaction=" + this.cashTransaction + ", student=" + this.student + ", lessons="
-                + this.lessons + ", paymentMethods=" + this.paymentMethod + ", paymentDate=" + this.paymentDate
+                + this.lesson + ", paymentMethods=" + this.paymentMethod + ", paymentDate=" + this.paymentDate
                 + ", amount=" + this.amount + ", receipt="
                 + this.receipt + ", narration=" + this.narration + "}";
     }

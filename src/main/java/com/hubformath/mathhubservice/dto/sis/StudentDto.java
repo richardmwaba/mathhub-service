@@ -1,7 +1,8 @@
 package com.hubformath.mathhubservice.dto.sis;
 
+import com.hubformath.mathhubservice.dto.systemconfig.ExamBoardDto;
 import com.hubformath.mathhubservice.dto.systemconfig.GradeDto;
-import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
+import com.hubformath.mathhubservice.model.sis.Lesson;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +21,8 @@ public class StudentDto {
 
     private GradeDto grade;
 
+    private List<Lesson> lessons;
+
     private String email;
 
     private ParentDto parent;
@@ -30,7 +33,7 @@ public class StudentDto {
 
     private LocalDate dateOfBirth;
 
-    private ExamBoard examBoard;
+    private ExamBoardDto examBoard;
 
     public Long getId() {
         return id;
@@ -76,6 +79,14 @@ public class StudentDto {
 
     public void setGrade(GradeDto grade) { this.grade = grade; }
 
+    public List<Lesson> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
+    }
+
     public ParentDto getParent() {
         return parent;
     }
@@ -108,7 +119,7 @@ public class StudentDto {
         this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormatter);
     }
 
-    public ExamBoard getExamBoard() {return this.examBoard;}
+    public ExamBoardDto getExamBoard() {return this.examBoard;}
 
-    public void setExamBoard(ExamBoard syllabus) {this.examBoard = syllabus;}
+    public void setExamBoard(ExamBoardDto syllabus) {this.examBoard = syllabus;}
 }
