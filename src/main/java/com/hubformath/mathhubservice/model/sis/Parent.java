@@ -133,9 +133,8 @@ public class Parent {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof Parent))
+        if (!(o instanceof Parent parent))
             return false;
-        Parent parent = (Parent) o;
         return Objects.equals(this.id, parent.id) && Objects.equals(this.firstName, parent.firstName)
             && Objects.equals(this.middleName, parent.middleName)
             && Objects.equals(this.lastName, parent.lastName)

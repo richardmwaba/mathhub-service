@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
-import com.hubformath.mathhubservice.model.sis.Lessons;
+import com.hubformath.mathhubservice.model.sis.Lesson;
 import com.hubformath.mathhubservice.repository.sis.LessonsRepository;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
@@ -21,12 +21,12 @@ public class LessonsService {
         this.notFoundItemName = "lessons";
     }
 
-    public List<Lessons> getAllLessons() {
+    public List<Lesson> getAllLessons() {
         return lessonsRepository.findAll();
     }
 
-    public Lessons getLessonsById(Long id) {
-        Optional<Lessons> lessons = lessonsRepository.findById(id);
+    public Lesson getLessonsById(Long id) {
+        Optional<Lesson> lessons = lessonsRepository.findById(id);
 
         if(lessons.isPresent()){
             return lessons.get();
@@ -35,27 +35,27 @@ public class LessonsService {
         }
     }
 
-    public Lessons createLessons(Lessons lessonsRequest) {
-        return lessonsRepository.save(lessonsRequest);
+    public Lesson createLessons(Lesson lessonRequest) {
+        return lessonsRepository.save(lessonRequest);
     }
 
-    public Lessons updateLessons(Long id, Lessons lessonsRequest) {
+    public Lesson updateLessons(Long id, Lesson lessonRequest) {
         return lessonsRepository.findById(id)
                 .map(lessons -> {
-                    lessons.setNumberOfLessons(lessonsRequest.getNumberOfLessons());
-                    lessons.setLessonsStartDate(lessonsRequest.getLessonsStartDate());
-                    lessons.setLessonsDuration(lessonsRequest.getLessonsDuration());
-                    lessons.setLessonsPeriod(lessonsRequest.getLessonsPeriod());
-                    lessons.setSessionType(lessonsRequest.getSessionType());
+                    lessons.setNumberOfLessons(lessonRequest.getNumberOfLessons());
+                    lessons.setLessonsStartDate(lessonRequest.getLessonsStartDate());
+                    lessons.setLessonsDuration(lessonRequest.getLessonsDuration());
+                    lessons.setLessonsPeriod(lessonRequest.getLessonsPeriod());
+                    lessons.setSessionType(lessonRequest.getSessionType());
                     return lessonsRepository.save(lessons);
                 })
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
     }
 
     public void deleteLessons(Long id) {
-        Lessons lessons = lessonsRepository.findById(id)
+        Lesson lesson = lessonsRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
 
-        lessonsRepository.delete(lessons);
+        lessonsRepository.delete(lesson);
     }
 }

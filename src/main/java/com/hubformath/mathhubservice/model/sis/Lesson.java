@@ -13,7 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-public class Lessons {
+public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -34,8 +34,8 @@ public class Lessons {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Lessons(int numberOfLessons, LocalDate lessonsStartDate, int lessonsDuration, LessonsPeriod lessonsPeriod,
-                   SessionType sessionType) {
+    public Lesson(int numberOfLessons, LocalDate lessonsStartDate, int lessonsDuration, LessonsPeriod lessonsPeriod,
+                  SessionType sessionType) {
         this.numberOfLessons = numberOfLessons;
         this.lessonsStartDate = lessonsStartDate;
         this.lessonsDuration = lessonsDuration;
@@ -43,7 +43,7 @@ public class Lessons {
         this.sessionType = sessionType;
     }
 
-    public Lessons(){}
+    public Lesson(){}
 
     public Long getId() {
         return id;
@@ -109,16 +109,16 @@ public class Lessons {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof Lessons))
+        if (!(o instanceof Lesson))
             return false;
-        Lessons lessons = (Lessons) o;
-        return Objects.equals(this.id, lessons.id) && Objects.equals(this.numberOfLessons, lessons.numberOfLessons)
-                && Objects.equals(this.lessonsStartDate, lessons.lessonsStartDate)
-                && Objects.equals(this.lessonsDuration, lessons.lessonsDuration)
-                && Objects.equals(this.lessonsPeriod, lessons.lessonsPeriod)
-                && Objects.equals(this.sessionType, lessons.sessionType)
-                && Objects.equals(this.createdAt, lessons.createdAt)
-                && Objects.equals(this.updatedAt, lessons.updatedAt);
+        Lesson lesson = (Lesson) o;
+        return Objects.equals(this.id, lesson.id) && Objects.equals(this.numberOfLessons, lesson.numberOfLessons)
+                && Objects.equals(this.lessonsStartDate, lesson.lessonsStartDate)
+                && Objects.equals(this.lessonsDuration, lesson.lessonsDuration)
+                && Objects.equals(this.lessonsPeriod, lesson.lessonsPeriod)
+                && Objects.equals(this.sessionType, lesson.sessionType)
+                && Objects.equals(this.createdAt, lesson.createdAt)
+                && Objects.equals(this.updatedAt, lesson.updatedAt);
     }
 
     @Override

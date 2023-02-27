@@ -89,9 +89,8 @@ public class PhoneNumber {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof PhoneNumber))
+        if (!(o instanceof PhoneNumber phoneNumber))
             return false;
-        PhoneNumber phoneNumber = (PhoneNumber) o;
         return Objects.equals(this.id, phoneNumber.id) && Objects.equals(this.type, phoneNumber.type)
             && Objects.equals(this.countryCode, phoneNumber.countryCode)
             && Objects.equals(this.number, phoneNumber.number)
