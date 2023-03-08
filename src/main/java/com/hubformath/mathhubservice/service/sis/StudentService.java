@@ -1,24 +1,18 @@
 package com.hubformath.mathhubservice.service.sis;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
 import com.hubformath.mathhubservice.dto.sis.StudentRequestDto;
-import com.hubformath.mathhubservice.model.sis.Address;
-import com.hubformath.mathhubservice.model.sis.Parent;
-import com.hubformath.mathhubservice.model.sis.PhoneNumber;
-import com.hubformath.mathhubservice.model.sis.Student;
+import com.hubformath.mathhubservice.model.sis.*;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
 import com.hubformath.mathhubservice.repository.sis.StudentRepository;
 import com.hubformath.mathhubservice.service.systemconfig.ExamBoardService;
 import com.hubformath.mathhubservice.service.systemconfig.GradeService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
-
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentService {
@@ -30,7 +24,7 @@ public class StudentService {
     private final StudentRepository studentRepository;
 
     private final String notFoundItemName;
-    
+
     public StudentService(final StudentRepository studentRepository, final GradeService gradeService, final ExamBoardService examBoardService) {
         super();
         this.studentRepository = studentRepository;
@@ -46,7 +40,7 @@ public class StudentService {
     public Student getStudentById(Long id) {
         Optional<Student> student = studentRepository.findById(id);
 
-        if(student.isPresent()){
+        if (student.isPresent()) {
             return student.get();
         } else {
             throw new ItemNotFoundException(id, notFoundItemName);
@@ -68,7 +62,7 @@ public class StudentService {
         final Grade grade = gradeService.getGradeById(gradeId);
         final ExamBoard examBoard = examBoardService.getExamBoardById(examBoardId);
 
-        final Student newStudent = new Student(firstName, middleName, lastName, email,dateOfBirth);
+        final Student newStudent = new Student(firstName, middleName, lastName, email, dateOfBirth);
         newStudent.setGrade(grade);
         newStudent.setExamBoard(examBoard);
         newStudent.setParent(parent);
@@ -79,7 +73,7 @@ public class StudentService {
     }
 
     public Student updateStudent(Long id, Student studentRequest) {
-        return studentRepository.findById(id) 
+        return studentRepository.findById(id)
                 .map(student -> {
                     student.setFirstName(studentRequest.getFirstName());
                     student.setMiddleName(studentRequest.getMiddleName());
@@ -92,8 +86,15 @@ public class StudentService {
                     student.setPhoneNumbers(studentRequest.getPhoneNumbers());
                     student.setExamBoard(studentRequest.getExamBoard());
                     return studentRepository.save(student);
-                }) 
+                })
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+    }
+
+    public Student addLessonToStudent(final long studentId, final Lesson lesson) {
+        return studentRepository.findById(studentId).map(student -> {
+            student.getLessons().add(lesson);
+            return studentRepository.save(student);
+        }).orElseThrow(() -> new ItemNotFoundException(studentId, notFoundItemName));
     }
 
     public void deleteStudent(Long id) {

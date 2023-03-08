@@ -1,5 +1,5 @@
 package com.hubformath.mathhubservice.model.sis;
 
-public enum LessonsPeriod {
+public enum LessonPeriod {
     DAYS, WEEKS, MONTHS
 }

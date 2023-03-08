@@ -2,7 +2,7 @@ package com.hubformath.mathhubservice.dto.sis;
 
 import com.hubformath.mathhubservice.dto.systemconfig.ExamBoardDto;
 import com.hubformath.mathhubservice.dto.systemconfig.GradeDto;
-import com.hubformath.mathhubservice.model.sis.Lesson;
+import com.hubformath.mathhubservice.dto.systemconfig.LessonDto;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -21,7 +21,7 @@ public class StudentDto {
 
     private GradeDto grade;
 
-    private List<Lesson> lessons;
+    private List<LessonDto> lessons;
 
     private String email;
 
@@ -79,11 +79,11 @@ public class StudentDto {
 
     public void setGrade(GradeDto grade) { this.grade = grade; }
 
-    public List<Lesson> getLessons() {
+    public List<LessonDto> getLessons() {
         return lessons;
     }
 
-    public void setLessons(List<Lesson> lessons) {
+    public void setLessons(List<LessonDto> lessons) {
         this.lessons = lessons;
     }
 

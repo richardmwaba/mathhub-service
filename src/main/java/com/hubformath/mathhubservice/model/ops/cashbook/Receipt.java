@@ -3,6 +3,7 @@ package com.hubformath.mathhubservice.model.ops.cashbook;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,7 +34,7 @@ public class Receipt {
     private LocalDateTime updatedAt;
 
     public Receipt(String transactionNumber) {
-        this.receiptNumber = this.id.toString();
+        this.receiptNumber = UUID.randomUUID().toString().toUpperCase().replace("-", "");
         this.transactionNumber = transactionNumber;
         this.receiptDate = LocalDate.now();
         this.issuedBy = null;
