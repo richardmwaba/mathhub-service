@@ -57,7 +57,7 @@ public class StudentService {
         final LocalDate dateOfBirth = studentRequest.getDateOfBirth();
         final Parent parent = studentRequest.getParent();
         final List<Address> addresses = studentRequest.getAddresses();
-        final List<PhoneNumber> phoneNumber = studentRequest.getPhoneNumber();
+        final List<PhoneNumber> phoneNumbers = studentRequest.getPhoneNumbers();
 
         final Grade grade = gradeService.getGradeById(gradeId);
         final ExamBoard examBoard = examBoardService.getExamBoardById(examBoardId);
@@ -66,7 +66,7 @@ public class StudentService {
         newStudent.setGrade(grade);
         newStudent.setExamBoard(examBoard);
         newStudent.setParent(parent);
-        newStudent.setPhoneNumbers(phoneNumber);
+        newStudent.setPhoneNumbers(phoneNumbers);
         newStudent.setAddresses(addresses);
 
         return studentRepository.save(newStudent);

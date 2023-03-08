@@ -6,7 +6,6 @@ import com.hubformath.mathhubservice.model.ops.cashbook.CashTransactionType;
 import com.hubformath.mathhubservice.model.ops.cashbook.Receipt;
 import com.hubformath.mathhubservice.model.ops.cashbook.TuitionPayment;
 import com.hubformath.mathhubservice.model.sis.Student;
-import com.hubformath.mathhubservice.model.systemconfig.CashTransactionCategory;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import com.hubformath.mathhubservice.service.ops.cashbook.TuitionPaymentService;
 import com.hubformath.mathhubservice.service.sis.StudentService;
@@ -32,7 +31,6 @@ public class TuitionPaymentController {
 
     private final PaymentMethodService paymentMethodService;
 
-    private final CashTransactionCategoryService cashTransactionCategoryService;
 
     private final StudentService studentService;
 
@@ -46,7 +44,6 @@ public class TuitionPaymentController {
                                     final ModelMapper modelMapper) {
         this.tuitionPaymentService = tuitionPaymentService;
         this.paymentMethodService = paymentMethodService;
-        this.cashTransactionCategoryService = cashTransactionCategoryService;
         this.studentService = studentService;
         this.modelMapper = modelMapper;
     }
@@ -67,15 +64,13 @@ public class TuitionPaymentController {
             @RequestBody final TuitionPaymentDto tuitionPaymentDto) {
         final Long paymentMethodId = tuitionPaymentDto.getPaymentMethodId();
         final Long studentId = tuitionPaymentDto.getStudentId();
-        final Long transactionCategoryId = tuitionPaymentDto.getTransactionCategoryId();
         final String narration = tuitionPaymentDto.getNarration();
         final Double amount = tuitionPaymentDto.getAmount();
 
         final PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(paymentMethodId);
         final Student student = studentService.getStudentById(studentId);
-        final CashTransactionCategory cashTransactionCategory = cashTransactionCategoryService.getCashTransactionCategoryById(transactionCategoryId);
 
-        final CashTransaction newCashTransaction = new CashTransaction(paymentMethod, CashTransactionType.CASH_IN, cashTransactionCategory, narration, amount);
+        final CashTransaction newCashTransaction = new CashTransaction(paymentMethod, CashTransactionType.CASH_IN, narration, amount);
         final Receipt receipt = new Receipt(newCashTransaction.getTransactionNumber());
 
         final TuitionPayment newTuitionPayment = new TuitionPayment(newCashTransaction, student, paymentMethod, amount, receipt, narration);
