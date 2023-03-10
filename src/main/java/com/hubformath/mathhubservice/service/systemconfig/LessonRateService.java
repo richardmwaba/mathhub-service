@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.LessonRateRepositor
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,15 +16,28 @@ public class LessonRateService {
 
     private final String notFoundItemName;
 
-    public LessonRateService(LessonRateRepository lessonRateRepository, String notFoundItemName) {
+    public LessonRateService(final LessonRateRepository lessonRateRepository, final String notFoundItemName) {
         this.lessonRateRepository = lessonRateRepository;
         this.notFoundItemName = notFoundItemName;
     }
 
-    //TODO: Add filter by effectiveDate and expiredDate
-    public List<LessonRate> getAllLessonRates() { return lessonRateRepository.findAll(); }
+    public List<LessonRate> getAllLessonRates(final Instant effectiveDate, final Instant expiryDate) {
+        if (effectiveDate != null && expiryDate != null) {
+            return lessonRateRepository.findAll()
+                    .stream()
+                    .filter(lessonRate ->
+                            (lessonRate.getEffectiveDate().equals(effectiveDate) || lessonRate.getEffectiveDate().isAfter(expiryDate))
+                            && (lessonRate.getExpiryDate().isBefore(expiryDate) || lessonRate.getExpiryDate().equals(expiryDate))
+                    ).toList();
+        }
 
-    public LessonRate getLessonRateById(Long id){
+        return lessonRateRepository.findAll()
+                .stream()
+                .filter(lessonRate -> lessonRate.getExpiryDate().isAfter(Instant.now()))
+                .toList();
+    }
+
+    public LessonRate getLessonRateById(final Long id){
         Optional<LessonRate> lessonRate = lessonRateRepository.findById(id);
 
         if (lessonRate.isPresent()){
@@ -33,11 +47,11 @@ public class LessonRateService {
         }
     }
 
-    public LessonRate createLessonRate(LessonRate lessonRate){
+    public LessonRate createLessonRate(final LessonRate lessonRate){
         return lessonRateRepository.save(lessonRate);
     }
 
-    public void deleteLessonRate(Long id) {
+    public void deleteLessonRate(final Long id) {
         LessonRate lessonRate = lessonRateRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
 
