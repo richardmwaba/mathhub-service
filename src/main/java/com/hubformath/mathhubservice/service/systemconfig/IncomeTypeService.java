@@ -1,4 +1,4 @@
-package com.hubformath.mathhubservice.service.systemconfig.impl;
+package com.hubformath.mathhubservice.service.systemconfig;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,26 +7,23 @@ import org.springframework.stereotype.Service;
 
 import com.hubformath.mathhubservice.model.systemconfig.IncomeType;
 import com.hubformath.mathhubservice.repository.systemconfig.IncomeTypeRepository;
-import com.hubformath.mathhubservice.service.systemconfig.IIncomeTypeService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
 @Service
-public class IncomeTypeServiceImpl implements IIncomeTypeService{
+public class IncomeTypeService {
     private final IncomeTypeRepository incomeTypeRepository;
     private final String notFoundItemName;
     
-    public IncomeTypeServiceImpl(IncomeTypeRepository incomeTypeRepository) {
+    public IncomeTypeService(IncomeTypeRepository incomeTypeRepository) {
         super();
         this.incomeTypeRepository = incomeTypeRepository;
         this.notFoundItemName = "income type item";
     }
 
-    @Override
     public List<IncomeType> getAllIncomeTypes() {
         return incomeTypeRepository.findAll();
     }
 
-    @Override
     public IncomeType getIncomeTypeById(Long id) {
         Optional<IncomeType> incomeType = incomeTypeRepository.findById(id);
 
@@ -37,12 +34,10 @@ public class IncomeTypeServiceImpl implements IIncomeTypeService{
         }
     }
 
-    @Override
     public IncomeType createIncomeType(IncomeType incomeTypeRequest) {
         return incomeTypeRepository.save(incomeTypeRequest);
     }
 
-    @Override
     public IncomeType updateIncomeType(Long id, IncomeType incomeTypeRequest) {
         return incomeTypeRepository.findById(id) 
                 .map(incomeType -> {
@@ -53,7 +48,6 @@ public class IncomeTypeServiceImpl implements IIncomeTypeService{
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
     }
 
-    @Override
     public void deleteIncomeType(Long id) {
         IncomeType incomeType = incomeTypeRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));

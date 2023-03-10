@@ -3,6 +3,7 @@ package com.hubformath.mathhubservice.controller.systemconfig;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import com.hubformath.mathhubservice.service.systemconfig.AssessmentTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hubformath.mathhubservice.dto.systemconfig.AssessmentTypeDto;
 import com.hubformath.mathhubservice.model.systemconfig.AssessmentType;
-import com.hubformath.mathhubservice.service.systemconfig.IAssessmentTypeService;
 
 @RestController
 @RequestMapping(path = "/api/v1/systemconfig/sis")
@@ -29,10 +29,11 @@ public class AssessmentTypeController {
 
     private ModelMapper modelMapper;
 
-    private final IAssessmentTypeService assessmentTypeService;
+    private final AssessmentTypeService assessmentTypeService;
 
     @Autowired
-    public AssessmentTypeController(final ModelMapper modelMapper, final IAssessmentTypeService assessmentTypeService) {
+    public AssessmentTypeController(final ModelMapper modelMapper, final AssessmentTypeService assessmentTypeService
+    ) {
         this.modelMapper = modelMapper;
         this.assessmentTypeService = assessmentTypeService;
     }

@@ -3,6 +3,7 @@ package com.hubformath.mathhubservice.controller.systemconfig;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import com.hubformath.mathhubservice.service.systemconfig.LiabilityTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hubformath.mathhubservice.dto.systemconfig.LiabilityTypeDto;
 import com.hubformath.mathhubservice.model.systemconfig.LiabilityType;
-import com.hubformath.mathhubservice.service.systemconfig.ILiabilityTypeService;
 
 @RestController
 @RequestMapping(path="/api/v1/systemconfig/ops")
@@ -29,10 +29,10 @@ public class LiabilityTypeController {
 
     private final ModelMapper modelMapper;
 
-    private final ILiabilityTypeService liabilityTypeService;
+    private final LiabilityTypeService liabilityTypeService;
 
     @Autowired
-    public LiabilityTypeController(final ModelMapper modelMapper, final ILiabilityTypeService liabilityTypeService) {
+    public LiabilityTypeController(final ModelMapper modelMapper, final LiabilityTypeService liabilityTypeService) {
         this.modelMapper = modelMapper;
         this.liabilityTypeService = liabilityTypeService;
     }
