@@ -3,6 +3,7 @@ package com.hubformath.mathhubservice.controller.systemconfig;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import com.hubformath.mathhubservice.service.systemconfig.AssetTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hubformath.mathhubservice.dto.systemconfig.AssetTypeDto;
 import com.hubformath.mathhubservice.model.systemconfig.AssetType;
-import com.hubformath.mathhubservice.service.systemconfig.IAssetTypeService;
 
 @RestController
 @RequestMapping(path="/api/v1/systemconfig/ops")
@@ -29,10 +29,10 @@ public class AssetTypeController {
 
     private final ModelMapper modelMapper;
 
-    private final IAssetTypeService assetTypeService;
+    private final AssetTypeService assetTypeService;
 
     @Autowired
-    public AssetTypeController(final ModelMapper modelMapper, final IAssetTypeService assetTypeService) {
+    public AssetTypeController(final ModelMapper modelMapper, final AssetTypeService assetTypeService) {
         this.modelMapper = modelMapper;
         this.assetTypeService = assetTypeService;
     }

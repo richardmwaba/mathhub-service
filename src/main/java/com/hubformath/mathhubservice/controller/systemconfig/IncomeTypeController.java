@@ -3,6 +3,7 @@ package com.hubformath.mathhubservice.controller.systemconfig;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import com.hubformath.mathhubservice.service.systemconfig.IncomeTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hubformath.mathhubservice.dto.systemconfig.IncomeTypeDto;
 import com.hubformath.mathhubservice.model.systemconfig.IncomeType;
-import com.hubformath.mathhubservice.service.systemconfig.IIncomeTypeService;
 
 @RestController
 @RequestMapping(path="/api/v1/systemconfig/ops")
@@ -29,10 +29,10 @@ public class IncomeTypeController {
 
     private final ModelMapper modelMapper;
 
-    private final IIncomeTypeService incomeTypeService;
+    private final IncomeTypeService incomeTypeService;
 
     @Autowired
-    public IncomeTypeController(ModelMapper modelMapper, IIncomeTypeService incomeTypeService) {
+    public IncomeTypeController(ModelMapper modelMapper, IncomeTypeService incomeTypeService) {
         this.modelMapper = modelMapper;
         this.incomeTypeService = incomeTypeService;
     }

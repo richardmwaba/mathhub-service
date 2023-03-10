@@ -24,6 +24,8 @@ public class Grade {
 
     private String gradeName;
 
+    private String gradeDescription;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subjectGrade")
     private List<Subject> subjects;
 
@@ -38,8 +40,9 @@ public class Grade {
 
     public Grade(){}
 
-    public Grade(String gradeName){
+    public Grade(String gradeName, String gradeDescription){
         this.gradeName = gradeName;
+        this.gradeDescription = gradeDescription;
     }
 
 
@@ -52,6 +55,10 @@ public class Grade {
     public void setGradeName(String gradeName) {
         this.gradeName = gradeName;
     }
+
+    public String getGradeDescription() {return this.gradeDescription;}
+
+    public void setGradeDescription(String gradeDescription) {this.gradeDescription = gradeDescription;}
 
     public List<Student> getStudents() {return students;}
 
@@ -88,6 +95,7 @@ public class Grade {
         Grade grade = (Grade) o;
         return Objects.equals(this.id, grade.id)
                 && Objects.equals(this.gradeName, grade.gradeName)
+                && Objects.equals(this.gradeDescription, grade.gradeDescription)
                 && Objects.equals(this.students, grade.students)
                 && Objects.equals(this.subjects, grade.subjects)
                 && Objects.equals(this.createdAt, grade.createdAt)
@@ -101,10 +109,8 @@ public class Grade {
 
     @Override
     public String toString(){
-        return "Grade{" + "id=" + this.id + ", gradeName=" + this.gradeName + "students=" + this.students + ", subject=" + this.subjects + ", createdAt="
+        return "Grade{" + "id=" + this.id + ", gradeName=" + this.gradeName + "gradeDescription=" + this.gradeDescription + "students=" + this.students + ", subject=" + this.subjects + ", createdAt="
                 + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
     }
-
-
 
 }

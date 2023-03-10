@@ -77,7 +77,8 @@ public class AssessmentType {
         if (!(o instanceof AssessmentType))
             return false;
         AssessmentType assessmentType = (AssessmentType) o;
-        return Objects.equals(this.id, assessmentType.id) && Objects.equals(this.typeName, assessmentType.typeName)
+        return Objects.equals(this.id, assessmentType.id)
+                && Objects.equals(this.typeName, assessmentType.typeName)
             && Objects.equals(this.typeDescription, assessmentType.typeDescription)
             && Objects.equals(this.createdAt, assessmentType.createdAt)
             && Objects.equals(this.updatedAt, assessmentType.updatedAt);

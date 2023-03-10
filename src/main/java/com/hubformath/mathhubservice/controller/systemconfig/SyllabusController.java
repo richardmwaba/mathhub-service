@@ -2,8 +2,8 @@ package com.hubformath.mathhubservice.controller.systemconfig;
 
 import com.hubformath.mathhubservice.dto.systemconfig.SyllabusDto;
 import com.hubformath.mathhubservice.model.systemconfig.Syllabus;
-import com.hubformath.mathhubservice.service.systemconfig.ISyllabusService;
 
+import com.hubformath.mathhubservice.service.systemconfig.SyllabusService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -30,10 +30,10 @@ public class SyllabusController {
 
     private final ModelMapper modelMapper;
 
-    private final ISyllabusService syllabusService;
+    private final SyllabusService syllabusService;
 
     @Autowired
-    public SyllabusController(ModelMapper modelMapper, ISyllabusService syllabusService) {
+    public SyllabusController(ModelMapper modelMapper, SyllabusService syllabusService) {
         this.modelMapper = modelMapper;
         this.syllabusService = syllabusService;
     }

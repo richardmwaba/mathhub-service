@@ -1,4 +1,4 @@
-package com.hubformath.mathhubservice.service.systemconfig.impl;
+package com.hubformath.mathhubservice.service.systemconfig;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,26 +7,23 @@ import org.springframework.stereotype.Service;
 
 import com.hubformath.mathhubservice.model.systemconfig.AssetType;
 import com.hubformath.mathhubservice.repository.systemconfig.AssetTypeRepository;
-import com.hubformath.mathhubservice.service.systemconfig.IAssetTypeService;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
 @Service
-public class AssetTypeServiceImpl implements IAssetTypeService{
+public class AssetTypeService {
     private final AssetTypeRepository assetTypeRepository;
     private final String notFoundItemName;
     
-    public AssetTypeServiceImpl(AssetTypeRepository assetTypeRepository) {
+    public AssetTypeService(AssetTypeRepository assetTypeRepository) {
         super();
         this.assetTypeRepository = assetTypeRepository;
         this.notFoundItemName = "asset type";
     }
 
-    @Override
     public List<AssetType> getAllAssetTypes() {
         return assetTypeRepository.findAll();
     }
 
-    @Override
     public AssetType getAssetTypeById(Long id) {
         Optional<AssetType> assetType = assetTypeRepository.findById(id);
 
@@ -37,12 +34,10 @@ public class AssetTypeServiceImpl implements IAssetTypeService{
         }
     }
 
-    @Override
     public AssetType createAssetType(AssetType assetTypeRequest) {
         return assetTypeRepository.save(assetTypeRequest);
     }
 
-    @Override
     public AssetType updateAssetType(Long id, AssetType assetTypeRequest) {
         return assetTypeRepository.findById(id) 
                 .map(assetType -> {
@@ -53,7 +48,6 @@ public class AssetTypeServiceImpl implements IAssetTypeService{
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
     }
 
-    @Override
     public void deleteAssetType(Long id) {
         AssetType assetType = assetTypeRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
