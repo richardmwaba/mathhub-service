@@ -19,10 +19,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
 @Entity
 public class Student {
     @Id
+    @ReadOnlyProperty
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
@@ -36,17 +38,20 @@ public class Student {
     @JoinColumn(name = "parent_id")
     private Parent parent;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "grade_id")
     private Grade grade;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Lesson> lessons;
 
     private String email;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Address> addresses;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "sxamBoard_id")
+    @ManyToOne
+    @JoinColumn(name = "examBoard_id")
     private ExamBoard examBoard;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -55,15 +60,17 @@ public class Student {
     private LocalDate dateOfBirth;
 
     @CreationTimestamp
+    @ReadOnlyProperty
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @ReadOnlyProperty
     private LocalDateTime updatedAt;
 
     public Student() {
     }
 
-    public Student(String firstName, String middleName, String lastName, String email, LocalDate dateOfBirth) {
+    public Student(final String firstName, final String middleName, final String lastName, final String email, final LocalDate dateOfBirth) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -99,9 +106,17 @@ public class Student {
         this.lastName = lastName;
     }
 
-   public Grade getGrade() { return grade; }
+    public Grade getGrade() { return grade; }
 
-   public void setGrade(Grade grade) { this.grade = grade; }
+    public void setGrade(Grade grade) { this.grade = grade; }
+
+    public List<Lesson> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
+    }
 
     public Parent getParent() {
         return parent;
@@ -145,7 +160,7 @@ public class Student {
 
     public ExamBoard getExamBoard() {return examBoard;}
 
-    public void setExamBoard(ExamBoard sxamBoard) {this.examBoard = sxamBoard;}
+    public void setExamBoard(ExamBoard examBoard) {this.examBoard = examBoard;}
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -167,9 +182,8 @@ public class Student {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof Student))
+        if (!(o instanceof Student student))
             return false;
-        Student student = (Student) o;
         return Objects.equals(this.id, student.id) && Objects.equals(this.firstName, student.firstName)
                 && Objects.equals(this.middleName, student.middleName)
                 && Objects.equals(this.lastName, student.lastName)

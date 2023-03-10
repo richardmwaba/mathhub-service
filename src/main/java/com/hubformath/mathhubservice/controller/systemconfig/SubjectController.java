@@ -1,7 +1,6 @@
-package com.hubformath.mathhubservice.controller.sis;
+package com.hubformath.mathhubservice.controller.systemconfig;
 
 import com.hubformath.mathhubservice.dto.systemconfig.SubjectDto;
-import com.hubformath.mathhubservice.dto.systemconfig.SubjectRequestDto;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
 
 import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
@@ -52,8 +51,8 @@ public class SubjectController {
     }
 
     @PostMapping("/subjects")
-    public ResponseEntity<EntityModel<SubjectDto>> newSubject(@RequestBody final SubjectRequestDto subjectRequestDto) {
-        Subject newSubject = subjectService.createSubject(subjectRequestDto);
+    public ResponseEntity<EntityModel<SubjectDto>> newSubject(@RequestBody final SubjectDto subjectDto) {
+        Subject newSubject = subjectService.createSubject(subjectDto);
         EntityModel<SubjectDto> subjectDtoEntityModel = toModel(modelMapper.map(newSubject, SubjectDto.class));
 
         return ResponseEntity.created(subjectDtoEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).

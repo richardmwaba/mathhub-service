@@ -30,7 +30,7 @@ public class ExamBoard {
     
     public ExamBoard(){}
 
-    public ExamBoard(String examBoardName, String examBoardDescription) {
+    public ExamBoard(final String examBoardName, final String examBoardDescription) {
         this.examBoardName = examBoardName;
         this.examBoardDescription = examBoardDescription;
     }

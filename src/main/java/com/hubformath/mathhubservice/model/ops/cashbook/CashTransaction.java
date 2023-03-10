@@ -54,12 +54,10 @@ public class CashTransaction {
 
     public CashTransaction(final PaymentMethod paymentMethod,
                            final CashTransactionType transactionType,
-                           final CashTransactionCategory transactionCategory,
                            final String narration,
                            final Double amount) {
         this.paymentMethod = paymentMethod;
-        this.transactionCategory = transactionCategory;
-        this.transactionNumber = UUID.randomUUID().toString().toUpperCase();
+        this.transactionNumber = UUID.randomUUID().toString().toUpperCase().replace("-", "");
         this.transactionType = transactionType;
         this.narration = narration;
         this.amount = amount;
