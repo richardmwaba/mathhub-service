@@ -87,11 +87,11 @@ public class StudentRequestDto {
         this.addresses = addresses;
     }
 
-    public List<PhoneNumber> getPhoneNumber() {
+    public List<PhoneNumber> getPhoneNumbers() {
         return phoneNumbers;
     }
 
-    public void setPhoneNumber(List<PhoneNumber> phoneNumbers) {
+    public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
     }
 }

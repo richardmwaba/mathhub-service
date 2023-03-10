@@ -3,7 +3,12 @@ package com.hubformath.mathhubservice.controller.sis;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.systemconfig.LessonDto;
+import com.hubformath.mathhubservice.model.sis.Lesson;
+import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import com.hubformath.mathhubservice.service.sis.StudentService;
+import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -32,10 +37,13 @@ public class StudentController {
 
     private final StudentService studentService;
 
+    private final SubjectService subjectService;
+
     @Autowired
-    public StudentController(final ModelMapper modelMapper, final StudentService studentService) {
-        this.modelMapper = modelMapper;
+    public StudentController(final ModelMapperConfig modelMapperConfig, final StudentService studentService, final SubjectService subjectService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.studentService = studentService;
+        this.subjectService = subjectService;
     }
 
     @GetMapping("/students")
@@ -80,6 +88,17 @@ public class StudentController {
     public ResponseEntity<String> deleteStudent(@PathVariable final Long id) {
         studentService.deleteStudent(id);
         return ResponseEntity.ok().body("Student deleted successfully");
+    }
+
+    @PostMapping("/students/{id}/lessons")
+    public ResponseEntity<EntityModel<StudentDto>> addStudentLesson(@PathVariable final Long id, @RequestBody final LessonDto lesson) {
+        Lesson newlesson = modelMapper.map(lesson, Lesson.class);
+        Subject subject = subjectService.getSubjectById(lesson.getSubjectId());
+        newlesson.setSubject(subject);
+        Student student = studentService.addLessonToStudent(id, newlesson);
+
+        EntityModel<StudentDto> studentEntityModel = toModel(modelMapper.map(student, StudentDto.class));
+        return ResponseEntity.ok(studentEntityModel);
     }
 
     private EntityModel<StudentDto> toModel(final StudentDto student) {

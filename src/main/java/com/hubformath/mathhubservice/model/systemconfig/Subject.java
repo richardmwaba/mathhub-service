@@ -15,6 +15,9 @@ public class Subject {
 
     private String subjectName;
 
+    @Enumerated(EnumType.STRING)
+    private SubjectComplexity subjectComplexity;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "grade_id")
     private Grade subjectGrade;
@@ -28,8 +31,9 @@ public class Subject {
     public Subject() {
     }
 
-    public Subject(String subjectName) {
+    public Subject(final String subjectName, final SubjectComplexity subjectComplexity) {
         this.subjectName = subjectName;
+        this.subjectComplexity = subjectComplexity;
     }
 
     public void setId(Long id) {
@@ -46,6 +50,14 @@ public class Subject {
 
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
+    }
+
+    public SubjectComplexity getSubjectComplexity() {
+        return subjectComplexity;
+    }
+
+    public void setSubjectComplexity(SubjectComplexity subjectComplexity) {
+        this.subjectComplexity = subjectComplexity;
     }
 
     public Grade getSubjectGrade() {
@@ -80,19 +92,25 @@ public class Subject {
             return false;
         return Objects.equals(this.id, subject.id) && Objects.equals(this.subjectName, subject.subjectName)
                 && Objects.equals(this.subjectGrade, subject.subjectGrade)
+                && Objects.equals(this.subjectComplexity, subject.subjectComplexity)
                 && Objects.equals(this.createdAt, subject.createdAt)
                 && Objects.equals(this.updatedAt, subject.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.subjectName, this.subjectGrade, this.createdAt, this.updatedAt);
+        return Objects.hash(this.id, this.subjectName, this.subjectGrade, this.subjectComplexity, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
-        return "Subject {id=" + this.id + ", subjectName=" + this.subjectName + ", " +
-                "subjectGrade=" + this.subjectGrade + ", createdAt=" + this.createdAt +
-                ", updatedAt=" + this.updatedAt + "}";
+        return "Subject{" +
+                "id=" + id +
+                ", subjectName='" + subjectName + '\'' +
+                ", subjectComplexity=" + subjectComplexity +
+                ", subjectGrade=" + subjectGrade +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

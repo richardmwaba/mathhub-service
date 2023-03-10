@@ -4,42 +4,50 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
+import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
 @Entity
 public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @ReadOnlyProperty
     private Long id;
 
-    private int numberOfLessons;
+    @ManyToOne
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
 
-    private LocalDate lessonsStartDate;
+    private int occurrence;
 
-    private int lessonsDuration;
+    private LocalDate lessonStartDate;
 
-    private LessonsPeriod lessonsPeriod;
+    private int lessonDuration;
 
+    @Enumerated(EnumType.STRING)
+    private LessonPeriod lessonPeriod;
+
+    @Enumerated(EnumType.STRING)
     private SessionType sessionType;
 
     @CreationTimestamp
+    @ReadOnlyProperty
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Lesson(int numberOfLessons, LocalDate lessonsStartDate, int lessonsDuration, LessonsPeriod lessonsPeriod,
+    public Lesson(final Subject subject, final int occurrence, final LocalDate lessonStartDate, final int lessonDuration, final LessonPeriod lessonPeriod,
                   SessionType sessionType) {
-        this.numberOfLessons = numberOfLessons;
-        this.lessonsStartDate = lessonsStartDate;
-        this.lessonsDuration = lessonsDuration;
-        this.lessonsPeriod = lessonsPeriod;
+        this.subject = subject;
+        this.occurrence = occurrence;
+        this.lessonStartDate = lessonStartDate;
+        this.lessonDuration = lessonDuration;
+        this.lessonPeriod = lessonPeriod;
         this.sessionType = sessionType;
     }
 
@@ -49,36 +57,48 @@ public class Lesson {
         return id;
     }
 
-    public int getNumberOfLessons() {
-        return numberOfLessons;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setNumberOfLessons(int numberOfLessons) {
-        this.numberOfLessons = numberOfLessons;
+    public Subject getSubject() {
+        return subject;
     }
 
-    public LocalDate getLessonsStartDate() {
-        return lessonsStartDate;
+    public void setSubject(Subject subject) {
+        this.subject = subject;
     }
 
-    public void setLessonsStartDate(LocalDate lessonsStartDate) {
-        this.lessonsStartDate = lessonsStartDate;
+    public int getOccurrence() {
+        return occurrence;
     }
 
-    public int getLessonsDuration() {
-        return lessonsDuration;
+    public void setOccurrence(int occurrence) {
+        this.occurrence = occurrence;
     }
 
-    public void setLessonsDuration(int lessonsDuration) {
-        this.lessonsDuration = lessonsDuration;
+    public LocalDate getLessonStartDate() {
+        return lessonStartDate;
     }
 
-    public LessonsPeriod getLessonsPeriod() {
-        return lessonsPeriod;
+    public void setLessonStartDate(LocalDate lessonStartDate) {
+        this.lessonStartDate = lessonStartDate;
     }
 
-    public void setLessonsPeriod(LessonsPeriod lessonsPeriod) {
-        this.lessonsPeriod = lessonsPeriod;
+    public int getLessonDuration() {
+        return lessonDuration;
+    }
+
+    public void setLessonDuration(int lessonDuration) {
+        this.lessonDuration = lessonDuration;
+    }
+
+    public LessonPeriod getLessonPeriod() {
+        return lessonPeriod;
+    }
+
+    public void setLessonPeriod(LessonPeriod lessonPeriod) {
+        this.lessonPeriod = lessonPeriod;
     }
 
     public SessionType getSessionType() {
@@ -109,13 +129,12 @@ public class Lesson {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof Lesson))
+        if (!(o instanceof Lesson lesson))
             return false;
-        Lesson lesson = (Lesson) o;
-        return Objects.equals(this.id, lesson.id) && Objects.equals(this.numberOfLessons, lesson.numberOfLessons)
-                && Objects.equals(this.lessonsStartDate, lesson.lessonsStartDate)
-                && Objects.equals(this.lessonsDuration, lesson.lessonsDuration)
-                && Objects.equals(this.lessonsPeriod, lesson.lessonsPeriod)
+        return Objects.equals(this.id, lesson.id) && Objects.equals(this.occurrence, lesson.occurrence)
+                && Objects.equals(this.lessonStartDate, lesson.lessonStartDate)
+                && Objects.equals(this.lessonDuration, lesson.lessonDuration)
+                && Objects.equals(this.lessonPeriod, lesson.lessonPeriod)
                 && Objects.equals(this.sessionType, lesson.sessionType)
                 && Objects.equals(this.createdAt, lesson.createdAt)
                 && Objects.equals(this.updatedAt, lesson.updatedAt);
@@ -123,17 +142,17 @@ public class Lesson {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.numberOfLessons, this.lessonsStartDate, this.lessonsDuration,
+        return Objects.hash(this.id, this.occurrence, this.lessonStartDate, this.lessonDuration,
                 this.sessionType,
-                this.lessonsPeriod, this.createdAt, this.updatedAt);
+                this.lessonPeriod, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
-        return "Lessons {id=" + this.id + ", numberOfLessons=" + this.numberOfLessons + ", lessonsStartDate="
-                + this.lessonsStartDate
+        return "Lesson {id=" + this.id + ", numberOfLessons=" + this.occurrence + ", lessonStartDate="
+                + this.lessonStartDate
                 + ", LastName="
-                + this.lessonsDuration + ", lessonsPeriods=" + this.lessonsPeriod + ", sessionType=" + this.sessionType
+                + this.lessonDuration + ", lessonPeriods=" + this.lessonPeriod + ", sessionType=" + this.sessionType
                 + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
     }
 }

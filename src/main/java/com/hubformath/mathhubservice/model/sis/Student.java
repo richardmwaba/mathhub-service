@@ -19,10 +19,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
 @Entity
 public class Student {
     @Id
+    @ReadOnlyProperty
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
@@ -40,7 +42,7 @@ public class Student {
     @JoinColumn(name = "grade_id")
     private Grade grade;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Lesson> lessons;
 
     private String email;
@@ -58,9 +60,11 @@ public class Student {
     private LocalDate dateOfBirth;
 
     @CreationTimestamp
+    @ReadOnlyProperty
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @ReadOnlyProperty
     private LocalDateTime updatedAt;
 
     public Student() {

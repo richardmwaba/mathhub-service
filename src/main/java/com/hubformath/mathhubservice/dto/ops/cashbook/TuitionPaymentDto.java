@@ -1,29 +1,30 @@
 package com.hubformath.mathhubservice.dto.ops.cashbook;
 
-import com.hubformath.mathhubservice.model.ops.cashbook.CashTransaction;
-import com.hubformath.mathhubservice.model.ops.cashbook.Receipt;
-import com.hubformath.mathhubservice.model.sis.Lesson;
-import com.hubformath.mathhubservice.model.sis.Student;
-import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.hubformath.mathhubservice.dto.sis.StudentDto;
+import com.hubformath.mathhubservice.dto.systemconfig.PaymentMethodDto;
 
 import java.time.LocalDate;
 
 public class TuitionPaymentDto {
     private Long id;
 
-    private CashTransaction cashTransaction;
+    private CashTransactionDto cashTransaction;
 
-    private Student student;
+    private StudentDto student;
 
-    private Lesson lesson;
+    private Long studentId;
 
-    private PaymentMethod paymentMethod;
+    private Long paymentMethodId;
+
+    private PaymentMethodDto paymentMethod;
 
     private LocalDate paymentDate;
 
     private Double amount;
 
-    private Receipt receipt;
+    private ReceiptDto receipt;
 
     private String narration;
 
@@ -35,35 +36,47 @@ public class TuitionPaymentDto {
         this.id = id;
     }
 
-    public CashTransaction getCashTransaction() {
+    public CashTransactionDto getCashTransaction() {
         return cashTransaction;
     }
 
-    public void setCashTransaction(CashTransaction cashTransaction) {
+    public void setCashTransaction(CashTransactionDto cashTransaction) {
         this.cashTransaction = cashTransaction;
     }
 
-    public Student getStudent() {
+    public StudentDto getStudent() {
         return student;
     }
 
-    public void setStudent(Student student) {
+    public void setStudent(StudentDto student) {
         this.student = student;
     }
 
-    public Lesson getLessons() {
-        return lesson;
+    @JsonIgnore
+    public Long getStudentId() {
+        return studentId;
     }
 
-    public void setLessons(Lesson lesson) {
-        this.lesson = lesson;
+    @JsonProperty
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
     }
 
-    public PaymentMethod getPaymentMethod() {
+    @JsonIgnore
+    public Long getPaymentMethodId() {
+        return paymentMethodId;
+    }
+
+    @JsonProperty
+    public void setPaymentMethodId(Long paymentMethodId) {
+        this.paymentMethodId = paymentMethodId;
+    }
+
+    public PaymentMethodDto getPaymentMethod() {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
+    public void setPaymentMethod(PaymentMethodDto paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
@@ -83,11 +96,11 @@ public class TuitionPaymentDto {
         this.amount = amount;
     }
 
-    public Receipt getReceipt() {
+    public ReceiptDto getReceipt() {
         return receipt;
     }
 
-    public void setReceipt(Receipt receipt) {
+    public void setReceipt(ReceiptDto receipt) {
         this.receipt = receipt;
     }
 

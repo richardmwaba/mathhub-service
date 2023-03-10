@@ -42,10 +42,10 @@ public class LessonsService {
     public Lesson updateLessons(Long id, Lesson lessonRequest) {
         return lessonsRepository.findById(id)
                 .map(lessons -> {
-                    lessons.setNumberOfLessons(lessonRequest.getNumberOfLessons());
-                    lessons.setLessonsStartDate(lessonRequest.getLessonsStartDate());
-                    lessons.setLessonsDuration(lessonRequest.getLessonsDuration());
-                    lessons.setLessonsPeriod(lessonRequest.getLessonsPeriod());
+                    lessons.setOccurrence(lessonRequest.getOccurrence());
+                    lessons.setLessonStartDate(lessonRequest.getLessonStartDate());
+                    lessons.setLessonDuration(lessonRequest.getLessonDuration());
+                    lessons.setLessonPeriod(lessonRequest.getLessonPeriod());
                     lessons.setSessionType(lessonRequest.getSessionType());
                     return lessonsRepository.save(lessons);
                 })
