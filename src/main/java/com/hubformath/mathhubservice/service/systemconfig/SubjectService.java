@@ -1,8 +1,9 @@
 package com.hubformath.mathhubservice.service.systemconfig;
 
-import com.hubformath.mathhubservice.dto.systemconfig.SubjectRequestDto;
+import com.hubformath.mathhubservice.dto.systemconfig.SubjectDto;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
+import com.hubformath.mathhubservice.model.systemconfig.SubjectComplexity;
 import com.hubformath.mathhubservice.repository.systemconfig.SubjectRepository;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 
@@ -38,12 +39,13 @@ public class SubjectService {
         }
     }
 
-    public Subject createSubject(SubjectRequestDto subjectRequest){
+    public Subject createSubject(SubjectDto subjectRequest){
         final long subjectGradeId = subjectRequest.getSubjectGradeId();
         final String subjectName = subjectRequest.getSubjectName();
+        final SubjectComplexity subjectComplexity = subjectRequest.getSubjectComplexity();
         final Grade grade = gradeService.getGradeById(subjectGradeId);
 
-        final Subject newSubject = new Subject(subjectName);
+        final Subject newSubject = new Subject(subjectName, subjectComplexity);
         newSubject.setSubjectGrade(grade);
 
 

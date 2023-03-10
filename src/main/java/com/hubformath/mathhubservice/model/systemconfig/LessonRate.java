@@ -3,10 +3,7 @@ package com.hubformath.mathhubservice.model.systemconfig;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -19,6 +16,9 @@ public class LessonRate {
 
     private Double amountPerLesson;
 
+    @Enumerated(EnumType.STRING)
+    private SubjectComplexity subjectComplexity;
+
     private Instant effectiveDate;
 
     private Instant expiryDate;
@@ -29,8 +29,15 @@ public class LessonRate {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public LessonRate(Double amountPerLesson, Instant effectiveDate, Instant expiryDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public LessonRate(
+            final Double amountPerLesson,
+            final SubjectComplexity subjectComplexity,
+            final Instant effectiveDate,
+            final Instant expiryDate,
+            final LocalDateTime createdAt,
+            final LocalDateTime updatedAt) {
         this.amountPerLesson = amountPerLesson;
+        this.subjectComplexity = subjectComplexity;
         this.effectiveDate = effectiveDate;
         this.expiryDate = expiryDate;
         this.createdAt = createdAt;
@@ -51,6 +58,14 @@ public class LessonRate {
 
     public void setAmountPerLesson(Double amountPerLesson) {
         this.amountPerLesson = amountPerLesson;
+    }
+
+    public SubjectComplexity getSubjectComplexity() {
+        return subjectComplexity;
+    }
+
+    public void setSubjectComplexity(SubjectComplexity subjectComplexity) {
+        this.subjectComplexity = subjectComplexity;
     }
 
     public Instant getEffectiveDate() {
