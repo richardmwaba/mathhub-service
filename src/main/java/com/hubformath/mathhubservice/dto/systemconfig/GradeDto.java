@@ -6,6 +6,8 @@ public class GradeDto {
 
     private  String gradeName;
 
+    private String gradeDescription;
+
     public Long getId() {
         return id;
     }
@@ -21,4 +23,8 @@ public class GradeDto {
     public void setGradeName(String gradeName) {
         this.gradeName = gradeName;
     }
+
+    public String getGradeDescription() {return gradeDescription;}
+
+    public void setGradeDescription(String gradeDescription) {this.gradeDescription = gradeDescription;}
 }

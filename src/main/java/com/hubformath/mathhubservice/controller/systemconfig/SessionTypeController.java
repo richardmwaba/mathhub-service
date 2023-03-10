@@ -3,6 +3,7 @@ package com.hubformath.mathhubservice.controller.systemconfig;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import com.hubformath.mathhubservice.service.systemconfig.SessionTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hubformath.mathhubservice.dto.systemconfig.SessionTypeDto;
 import com.hubformath.mathhubservice.model.systemconfig.SessionType;
-import com.hubformath.mathhubservice.service.systemconfig.ISessionTypeService;
 
 @RestController
 @RequestMapping(path="/v1/sis/systemconfig/ops")
@@ -29,10 +29,10 @@ public class SessionTypeController {
 
     private final ModelMapper modelMapper;
 
-    private final ISessionTypeService sessionTypeService;
+    private final SessionTypeService sessionTypeService;
 
     @Autowired
-    public SessionTypeController(final ModelMapper modelMapper, final ISessionTypeService sessionTypeService) {
+    public SessionTypeController(final ModelMapper modelMapper, final SessionTypeService sessionTypeService) {
         this.modelMapper = modelMapper;
         this.sessionTypeService = sessionTypeService;
     }

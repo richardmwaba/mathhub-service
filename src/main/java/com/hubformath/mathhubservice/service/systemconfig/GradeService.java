@@ -40,6 +40,7 @@ public class GradeService {
     public  Grade updateGrade(Long id, Grade gradeRequest){
         return gradeRepository.findById(id).map(grade -> {
             grade.setGradeName(gradeRequest.getGradeName());
+            grade.setGradeDescription(gradeRequest.getGradeDescription());
             grade.setSubjects(gradeRequest.getSubjects());
             return gradeRepository.save(grade);
         })

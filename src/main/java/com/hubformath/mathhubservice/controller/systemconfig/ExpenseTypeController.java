@@ -3,6 +3,7 @@ package com.hubformath.mathhubservice.controller.systemconfig;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import com.hubformath.mathhubservice.service.systemconfig.ExpenseTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hubformath.mathhubservice.dto.systemconfig.ExpenseTypeDto;
 import com.hubformath.mathhubservice.model.systemconfig.ExpenseType;
-import com.hubformath.mathhubservice.service.systemconfig.IExpenseTypeService;
 
 @RestController
 @RequestMapping(path="/api/v1/systemconfig/ops")
@@ -29,10 +29,10 @@ public class ExpenseTypeController {
 
     private final ModelMapper modelMapper;
 
-    private final IExpenseTypeService expenseTypeService;
+    private final ExpenseTypeService expenseTypeService;
 
     @Autowired
-    public ExpenseTypeController(final ModelMapper modelMapper, final IExpenseTypeService expenseTypeService) {
+    public ExpenseTypeController(final ModelMapper modelMapper, final ExpenseTypeService expenseTypeService) {
         this.modelMapper = modelMapper;
         this.expenseTypeService = expenseTypeService;
     }
