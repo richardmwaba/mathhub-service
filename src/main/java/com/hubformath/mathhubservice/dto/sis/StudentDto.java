@@ -1,5 +1,7 @@
 package com.hubformath.mathhubservice.dto.sis;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hubformath.mathhubservice.dto.systemconfig.ExamBoardDto;
 import com.hubformath.mathhubservice.dto.systemconfig.GradeDto;
 import com.hubformath.mathhubservice.dto.systemconfig.LessonDto;
@@ -10,6 +12,10 @@ import java.util.List;
 
 public class StudentDto {
     private Long id;
+
+    private long examBoardId;
+
+    private long gradeId;
 
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -41,6 +47,26 @@ public class StudentDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @JsonIgnore
+    public long getExamBoardId() {
+        return examBoardId;
+    }
+
+    @JsonProperty
+    public void setExamBoardId(long examBoardId) {
+        this.examBoardId = examBoardId;
+    }
+
+    @JsonIgnore
+    public long getGradeId() {
+        return gradeId;
+    }
+
+    @JsonProperty
+    public void setGradeId(long gradeId) {
+        this.gradeId = gradeId;
     }
 
     public String getFirstName() {

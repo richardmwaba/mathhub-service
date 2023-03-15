@@ -1,6 +1,7 @@
 package com.hubformath.mathhubservice.service.systemconfig;
 
 import com.hubformath.mathhubservice.model.systemconfig.LessonRate;
+import com.hubformath.mathhubservice.model.systemconfig.SubjectComplexity;
 import com.hubformath.mathhubservice.repository.systemconfig.LessonRateRepository;
 import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
 import org.springframework.stereotype.Service;
@@ -9,7 +10,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-//@Service
+@Service
 public class LessonRateService {
     
     private final LessonRateRepository lessonRateRepository;
@@ -26,14 +27,16 @@ public class LessonRateService {
             return lessonRateRepository.findAll()
                     .stream()
                     .filter(lessonRate ->
-                            (lessonRate.getEffectiveDate().equals(effectiveDate) || lessonRate.getEffectiveDate().isAfter(expiryDate))
+                            (lessonRate.getEffectiveDate().equals(effectiveDate) || lessonRate.getEffectiveDate().isAfter(effectiveDate))
                             && (lessonRate.getExpiryDate().isBefore(expiryDate) || lessonRate.getExpiryDate().equals(expiryDate))
                     ).toList();
         }
 
+        final Instant instantNow = Instant.now();
+
         return lessonRateRepository.findAll()
                 .stream()
-                .filter(lessonRate -> lessonRate.getExpiryDate().isAfter(Instant.now()))
+                .filter(lessonRate -> lessonRate.getExpiryDate().equals(instantNow) || lessonRate.getExpiryDate().isAfter(instantNow))
                 .toList();
     }
 
@@ -47,14 +50,17 @@ public class LessonRateService {
         }
     }
 
-    public LessonRate createLessonRate(final LessonRate lessonRate){
-        return lessonRateRepository.save(lessonRate);
+    public LessonRate getLessonRateBySubjectComplexity(final SubjectComplexity subjectComplexity) {
+        final Instant instantNow = Instant.now();
+        return lessonRateRepository.findAll()
+                .stream()
+                .filter(lessonRate ->
+                        (lessonRate.getExpiryDate().equals(instantNow) || lessonRate.getExpiryDate().isAfter(instantNow))
+                        && lessonRate.getSubjectComplexity().equals(subjectComplexity))
+                .findAny().orElse(null);
     }
 
-    public void deleteLessonRate(final Long id) {
-        LessonRate lessonRate = lessonRateRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
-
-        lessonRateRepository.delete(lessonRate);
+    public LessonRate createLessonRate(final LessonRate lessonRate){
+        return lessonRateRepository.save(lessonRate);
     }
 }

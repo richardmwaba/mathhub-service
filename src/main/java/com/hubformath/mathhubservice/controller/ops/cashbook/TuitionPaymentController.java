@@ -9,7 +9,6 @@ import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import com.hubformath.mathhubservice.service.ops.cashbook.TuitionPaymentService;
 import com.hubformath.mathhubservice.service.sis.StudentService;
-import com.hubformath.mathhubservice.service.systemconfig.CashTransactionCategoryService;
 import com.hubformath.mathhubservice.service.systemconfig.PaymentMethodService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,12 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -39,7 +43,6 @@ public class TuitionPaymentController {
     @Autowired
     public TuitionPaymentController(final TuitionPaymentService tuitionPaymentService,
                                     final PaymentMethodService paymentMethodService,
-                                    final CashTransactionCategoryService cashTransactionCategoryService,
                                     final StudentService studentService,
                                     final ModelMapper modelMapper) {
         this.tuitionPaymentService = tuitionPaymentService;
