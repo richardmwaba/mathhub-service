@@ -1,25 +1,25 @@
 package com.hubformath.mathhubservice.model.sis;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
+import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
+import com.hubformath.mathhubservice.model.systemconfig.Grade;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.CascadeType;
 import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
-import com.hubformath.mathhubservice.model.systemconfig.Grade;
-import org.springframework.data.annotation.ReadOnlyProperty;
+import javax.persistence.Transient;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Student {
@@ -57,6 +57,9 @@ public class Student {
     @OneToMany(cascade = CascadeType.ALL)
     private List<PhoneNumber> phoneNumbers;
 
+    @Transient
+    private StudentFinancialSummary studentFinancialSummary;
+
     private LocalDate dateOfBirth;
 
     @CreationTimestamp
@@ -67,7 +70,9 @@ public class Student {
     @ReadOnlyProperty
     private LocalDateTime updatedAt;
 
+    @SuppressWarnings("unused")
     public Student() {
+        // Used by hibernate instantiation
     }
 
     public Student(final String firstName, final String middleName, final String lastName, final String email, final LocalDate dateOfBirth) {
@@ -80,6 +85,10 @@ public class Student {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -142,6 +151,14 @@ public class Student {
         this.phoneNumbers = phoneNumbers;
     }
 
+    public StudentFinancialSummary getStudentFinancialSummary() {
+        return studentFinancialSummary;
+    }
+
+    public void setStudentFinancialSummary(StudentFinancialSummary studentFinancialSummary) {
+        this.studentFinancialSummary = studentFinancialSummary;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -156,6 +173,10 @@ public class Student {
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public boolean isOwingPayment() {
+        return getLessons().stream().anyMatch(lesson -> lesson.getLessonPaymentStatus() == PaymentStatus.UNPAID);
     }
 
     public ExamBoard getExamBoard() {return examBoard;}
@@ -180,37 +201,62 @@ public class Student {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof Student student))
-            return false;
-        return Objects.equals(this.id, student.id) && Objects.equals(this.firstName, student.firstName)
-                && Objects.equals(this.middleName, student.middleName)
-                && Objects.equals(this.lastName, student.lastName)
-                && Objects.equals(this.grade, student.grade)
-                && Objects.equals(this.parent, student.parent)
-                && Objects.equals(this.addresses, student.addresses)
-                && Objects.equals(this.phoneNumbers, student.phoneNumbers)
-                && Objects.equals(this.email, student.email)
-                && Objects.equals(this.dateOfBirth, student.dateOfBirth)
-                && Objects.equals(this.examBoard, student.examBoard)
-                && Objects.equals(this.createdAt, student.createdAt)
-                && Objects.equals(this.updatedAt, student.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof Student student)) return false;
+        return getId().equals(student.getId())
+                && getFirstName().equals(student.getFirstName())
+                && getMiddleName().equals(student.getMiddleName())
+                && getLastName().equals(student.getLastName())
+                && getParent().equals(student.getParent())
+                && getGrade().equals(student.getGrade())
+                && getLessons().equals(student.getLessons())
+                && getEmail().equals(student.getEmail())
+                && getAddresses().equals(student.getAddresses())
+                && getExamBoard().equals(student.getExamBoard())
+                && getPhoneNumbers().equals(student.getPhoneNumbers())
+                && getStudentFinancialSummary().equals(student.getStudentFinancialSummary())
+                && getDateOfBirth().equals(student.getDateOfBirth())
+                && getCreatedAt().equals(student.getCreatedAt())
+                && getUpdatedAt().equals(student.getUpdatedAt());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.firstName, this.middleName, this.lastName, this.addresses, this.grade,
-                this.parent, this.phoneNumbers, this.email, this.dateOfBirth, this.examBoard, this.createdAt, this.updatedAt);
+        return Objects.hash(getId(),
+                getFirstName(),
+                getMiddleName(),
+                getLastName(),
+                getParent(),
+                getGrade(),
+                getLessons(),
+                getEmail(),
+                getAddresses(),
+                getExamBoard(),
+                getPhoneNumbers(),
+                getStudentFinancialSummary(),
+                getDateOfBirth(),
+                getCreatedAt(),
+                getUpdatedAt());
     }
 
     @Override
     public String toString() {
-        return "Student {id=" + this.id + ", firstName=" + this.firstName + ", middleName=" + this.middleName
-                + ", LastName="
-                + this.lastName + "grade=" + this.grade + ", parents=" + this.parent + ", addresses=" + this.addresses + ", phoneNumbers="
-                + this.phoneNumbers + ", email=" + this.email + ", dateOfBirth=" + this.dateOfBirth
-                + ", examBoard=" + this.examBoard + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
+        return "Student{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", parent=" + parent +
+                ", grade=" + grade +
+                ", lessons=" + lessons +
+                ", email='" + email + '\'' +
+                ", addresses=" + addresses +
+                ", examBoard=" + examBoard +
+                ", phoneNumbers=" + phoneNumbers +
+                ", studentFinancialSummary=" + studentFinancialSummary +
+                ", dateOfBirth=" + dateOfBirth +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
-
 }

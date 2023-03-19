@@ -1,18 +1,29 @@
 package com.hubformath.mathhubservice.service.sis;
 
-import com.hubformath.mathhubservice.dto.sis.StudentRequestDto;
-import com.hubformath.mathhubservice.model.sis.*;
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.sis.StudentDto;
+import com.hubformath.mathhubservice.dto.systemconfig.LessonDto;
+import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
+import com.hubformath.mathhubservice.model.sis.Address;
+import com.hubformath.mathhubservice.model.sis.Lesson;
+import com.hubformath.mathhubservice.model.sis.Parent;
+import com.hubformath.mathhubservice.model.sis.PhoneNumber;
+import com.hubformath.mathhubservice.model.sis.Student;
+import com.hubformath.mathhubservice.model.sis.StudentFinancialSummary;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
+import com.hubformath.mathhubservice.model.systemconfig.LessonRate;
+import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import com.hubformath.mathhubservice.repository.sis.StudentRepository;
 import com.hubformath.mathhubservice.service.systemconfig.ExamBoardService;
 import com.hubformath.mathhubservice.service.systemconfig.GradeService;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
+import com.hubformath.mathhubservice.service.systemconfig.LessonRateService;
+import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class StudentService {
@@ -21,16 +32,26 @@ public class StudentService {
 
     private final ExamBoardService examBoardService;
 
+    private final SubjectService subjectService;
+
+    private final LessonRateService lessonRateService;
+
     private final StudentRepository studentRepository;
 
-    private final String notFoundItemName;
+    private final ModelMapper modelMapper;
 
-    public StudentService(final StudentRepository studentRepository, final GradeService gradeService, final ExamBoardService examBoardService) {
-        super();
+    public StudentService(final StudentRepository studentRepository,
+                          final GradeService gradeService,
+                          final ExamBoardService examBoardService,
+                          final SubjectService subjectService,
+                          final LessonRateService lessonRateService,
+                          final ModelMapperConfig modelMapperConfig) {
         this.studentRepository = studentRepository;
         this.gradeService = gradeService;
         this.examBoardService = examBoardService;
-        this.notFoundItemName = "student";
+        this.subjectService = subjectService;
+        this.lessonRateService = lessonRateService;
+        this.modelMapper = modelMapperConfig.createModelMapper();
     }
 
     public List<Student> getAllStudents() {
@@ -38,16 +59,15 @@ public class StudentService {
     }
 
     public Student getStudentById(Long id) {
-        Optional<Student> student = studentRepository.findById(id);
-
-        if (student.isPresent()) {
-            return student.get();
-        } else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return studentRepository.findById(id)
+                .map(student -> {
+                    student.setStudentFinancialSummary(computeStudentFinancialSummary(student));
+                    return student;
+                })
+                .orElseThrow();
     }
 
-    public Student createStudent(StudentRequestDto studentRequest) {
+    public Student createStudent(StudentDto studentRequest) {
         final long gradeId = studentRequest.getGradeId();
         final long examBoardId = studentRequest.getExamBoardId();
         final String firstName = studentRequest.getFirstName();
@@ -55,9 +75,15 @@ public class StudentService {
         final String lastName = studentRequest.getLastName();
         final String email = studentRequest.getEmail();
         final LocalDate dateOfBirth = studentRequest.getDateOfBirth();
-        final Parent parent = studentRequest.getParent();
-        final List<Address> addresses = studentRequest.getAddresses();
-        final List<PhoneNumber> phoneNumbers = studentRequest.getPhoneNumbers();
+        final Parent parent = modelMapper.map(studentRequest.getParent(), Parent.class);
+        final List<Address> addresses = studentRequest.getAddresses()
+                .stream()
+                .map(address -> modelMapper.map(address, Address.class))
+                .toList();
+        final List<PhoneNumber> phoneNumbers = studentRequest.getPhoneNumbers()
+                .stream()
+                .map(phoneNumber -> modelMapper.map(phoneNumber, PhoneNumber.class))
+                .toList();
 
         final Grade grade = gradeService.getGradeById(gradeId);
         final ExamBoard examBoard = examBoardService.getExamBoardById(examBoardId);
@@ -87,19 +113,36 @@ public class StudentService {
                     student.setExamBoard(studentRequest.getExamBoard());
                     return studentRepository.save(student);
                 })
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
-    public Student addLessonToStudent(final long studentId, final Lesson lesson) {
-        return studentRepository.findById(studentId).map(student -> {
-            student.getLessons().add(lesson);
-            return studentRepository.save(student);
-        }).orElseThrow(() -> new ItemNotFoundException(studentId, notFoundItemName));
+    public Student addLessonToStudent(final Long studentId, final LessonDto lesson) {
+        Student student = getStudentById(studentId);
+        Subject subject = subjectService.getSubjectById(lesson.getSubjectId());
+        LessonRate lessonRate = lessonRateService.getLessonRateBySubjectComplexity(subject.getSubjectComplexity());
+        Lesson newlesson = modelMapper.map(lesson, Lesson.class);
+        newlesson.setSubject(subject);
+        newlesson.setLessonRateAmount(lessonRate.getAmountPerLesson());
+        newlesson.setLessonPaymentStatus(PaymentStatus.UNPAID);
+        student.getLessons().add(newlesson);
+        student.setStudentFinancialSummary(computeStudentFinancialSummary(student));
+
+        return studentRepository.save(student);
+    }
+
+    private StudentFinancialSummary computeStudentFinancialSummary(final Student student ) {
+        Double amountOwing = student.getLessons()
+                .stream()
+                .filter(lesson -> lesson.getLessonPaymentStatus() == PaymentStatus.UNPAID)
+                .map(lesson -> lesson.getLessonRateAmount() * lesson.getOccurrence())
+                .reduce(Double::sum)
+                .orElse(0d);
+        return new StudentFinancialSummary(student.isOwingPayment(), amountOwing);
     }
 
     public void deleteStudent(Long id) {
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         studentRepository.delete(student);
     }

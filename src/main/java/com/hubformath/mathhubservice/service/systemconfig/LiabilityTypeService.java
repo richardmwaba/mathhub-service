@@ -1,23 +1,17 @@
 package com.hubformath.mathhubservice.service.systemconfig;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.hubformath.mathhubservice.model.systemconfig.LiabilityType;
 import com.hubformath.mathhubservice.repository.systemconfig.LiabilityTypeRepository;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class LiabilityTypeService {
     private final LiabilityTypeRepository liabilityTypeRepository;
-    private final String notFoundItemName;
-    
+
     public LiabilityTypeService(LiabilityTypeRepository liabilityTypeRepository) {
-        super();
         this.liabilityTypeRepository = liabilityTypeRepository;
-        this.notFoundItemName = "liability type";
     }
 
     public List<LiabilityType> getAllLiabilityTypes() {
@@ -25,13 +19,7 @@ public class LiabilityTypeService {
     }
 
     public LiabilityType getLiabilityTypeById(Long id) {
-        Optional<LiabilityType> liabilityType = liabilityTypeRepository.findById(id);
-
-        if(liabilityType.isPresent()){
-            return liabilityType.get();
-        } else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return liabilityTypeRepository.findById(id).orElseThrow();
     }
 
     public LiabilityType createLiabilityType(LiabilityType liabilityTypeRequest) {
@@ -45,12 +33,12 @@ public class LiabilityTypeService {
                     liabilityType.setTypeDescription(liabilityTypeRequest.getTypeDescription());
                     return liabilityTypeRepository.save(liabilityType);
                 }) 
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
     public void deleteLiabilityType(Long id) {
         LiabilityType liabilityType = liabilityTypeRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         liabilityTypeRepository.delete(liabilityType);
     }

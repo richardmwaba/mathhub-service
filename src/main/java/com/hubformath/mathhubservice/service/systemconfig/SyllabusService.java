@@ -3,22 +3,17 @@ package com.hubformath.mathhubservice.service.systemconfig;
 
 import com.hubformath.mathhubservice.model.systemconfig.Syllabus;
 import com.hubformath.mathhubservice.repository.systemconfig.SyllabusRepository;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
-
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SyllabusService {
+
     private final SyllabusRepository syllabusRepository;
-    private final String notFoundItemName;
 
     public SyllabusService(SyllabusRepository syllabusRepository) {
-        super();
         this.syllabusRepository = syllabusRepository;
-        this.notFoundItemName = "asset type";
     }
 
     public List<Syllabus> getAllSyllabi() {
@@ -26,13 +21,7 @@ public class SyllabusService {
     }
 
     public Syllabus getSyllabusById(Long id) {
-        Optional<Syllabus> syllabus = syllabusRepository.findById(id);
-
-        if(syllabus.isPresent()){
-            return syllabus.get();
-        } else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return syllabusRepository.findById(id).orElseThrow();
     }
 
     public Syllabus createSyllabus(Syllabus syllabusRequest) {
@@ -46,12 +35,12 @@ public class SyllabusService {
                     syllabus.setSyllabusDescription(syllabusRequest.getSyllabusDescription());
                     return syllabusRepository.save(syllabus);
                 })
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
     public void deleteSyllabus(Long id) {
         Syllabus syllabus = syllabusRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         syllabusRepository.delete(syllabus);
     }

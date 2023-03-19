@@ -1,8 +1,9 @@
 package com.hubformath.mathhubservice.model.ops.cashbook;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.UUID;
+import com.hubformath.mathhubservice.model.systemconfig.CashTransactionCategory;
+import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,12 +13,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import com.hubformath.mathhubservice.model.systemconfig.CashTransactionCategory;
-import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 public class CashTransaction {
@@ -66,7 +64,9 @@ public class CashTransaction {
         this.transactedBy = null;
     }
 
-    public CashTransaction() {}
+    @SuppressWarnings("unused")
+    public CashTransaction() {
+    }
 
     public Long getId() {
         return this.id;
@@ -124,7 +124,7 @@ public class CashTransaction {
         return transactionDateTime;
     }
 
-    public void setTransactionDate(LocalDateTime transactionDateTime) {
+    public void setTransactionDateTime(LocalDateTime transactionDateTime) {
         this.transactionDateTime = transactionDateTime;
     }
 
@@ -154,36 +154,37 @@ public class CashTransaction {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof CashTransaction transaction))
-            return false;
-        return Objects.equals(this.id, transaction.id)
-                && Objects.equals(this.transactionNumber, transaction.transactionNumber)
-                && Objects.equals(this.paymentMethod, transaction.paymentMethod)
-                && Objects.equals(this.transactionType, transaction.transactionType)
-                && Objects.equals(this.narration, transaction.narration)
-                && Objects.equals(this.amount, transaction.amount)
-                && Objects.equals(this.transactionDateTime, transaction.transactionDateTime)
-                && Objects.equals(this.transactedBy, transaction.transactedBy)
-                && Objects.equals(this.createdAt, transaction.createdAt)
-                && Objects.equals(this.updatedAt, transaction.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof CashTransaction that)) return false;
+        return getId().equals(that.getId())
+                && getTransactionNumber().equals(that.getTransactionNumber())
+                && getPaymentMethod().equals(that.getPaymentMethod())
+                && getTransactionType() == that.getTransactionType()
+                && getTransactionCategory().equals(that.getTransactionCategory())
+                && Objects.equals(getNarration(), that.getNarration())
+                && getAmount().equals(that.getAmount())
+                && getTransactedBy().equals(that.getTransactedBy());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.transactionNumber, this.paymentMethod, this.transactionType,
-                this.narration, this.amount, this.transactionDateTime, this.transactedBy, this.createdAt,
-                this.updatedAt);
+        return Objects.hash(getId(), getTransactionNumber(), getPaymentMethod(), getTransactionType(), getTransactionCategory(), getNarration(), getAmount(), getTransactedBy());
     }
 
     @Override
     public String toString() {
-        return "Transaction{id=" + this.id + ", transactionNumber=" + this.transactionNumber + ", paymentMethod="
-                + this.paymentMethod + ", transactionType=" + this.transactionType + ", narration=" + this.narration
-                + ", amount="
-                + this.amount + ", transactionDateTime=" + this.transactionDateTime + ", transactedBy="
-                + this.transactedBy
-                + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
+        return "CashTransaction{" +
+                "id=" + id +
+                ", transactionNumber='" + transactionNumber + '\'' +
+                ", paymentMethod=" + paymentMethod +
+                ", transactionType=" + transactionType +
+                ", transactionCategory=" + transactionCategory +
+                ", narration='" + narration + '\'' +
+                ", amount=" + amount +
+                ", transactionDateTime=" + transactionDateTime +
+                ", transactedBy=" + transactedBy +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

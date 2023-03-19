@@ -4,6 +4,7 @@ import com.hubformath.mathhubservice.model.systemconfig.SubjectComplexity;
 
 import java.time.Instant;
 
+@SuppressWarnings("unused")
 public class LessonRateDto {
     private Long id;
 

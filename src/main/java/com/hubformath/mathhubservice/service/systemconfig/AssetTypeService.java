@@ -1,23 +1,19 @@
 package com.hubformath.mathhubservice.service.systemconfig;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.hubformath.mathhubservice.model.systemconfig.AssetType;
 import com.hubformath.mathhubservice.repository.systemconfig.AssetTypeRepository;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AssetTypeService {
+
     private final AssetTypeRepository assetTypeRepository;
-    private final String notFoundItemName;
-    
+
     public AssetTypeService(AssetTypeRepository assetTypeRepository) {
         super();
         this.assetTypeRepository = assetTypeRepository;
-        this.notFoundItemName = "asset type";
     }
 
     public List<AssetType> getAllAssetTypes() {
@@ -25,13 +21,7 @@ public class AssetTypeService {
     }
 
     public AssetType getAssetTypeById(Long id) {
-        Optional<AssetType> assetType = assetTypeRepository.findById(id);
-
-        if(assetType.isPresent()){
-            return assetType.get();
-        } else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return assetTypeRepository.findById(id).orElseThrow();
     }
 
     public AssetType createAssetType(AssetType assetTypeRequest) {
@@ -45,12 +35,12 @@ public class AssetTypeService {
                     assetType.setTypeDescription(assetTypeRequest.getTypeDescription());
                     return assetTypeRepository.save(assetType);
                 }) 
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
     public void deleteAssetType(Long id) {
         AssetType assetType = assetTypeRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         assetTypeRepository.delete(assetType);
     }

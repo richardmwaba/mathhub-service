@@ -1,9 +1,9 @@
 package com.hubformath.mathhubservice.controller.sis;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.sis.AddressDto;
+import com.hubformath.mathhubservice.model.sis.Address;
+import com.hubformath.mathhubservice.service.sis.AddressService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.sis.AddressDto;
-import com.hubformath.mathhubservice.model.sis.Address;
-import com.hubformath.mathhubservice.service.sis.AddressService;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/sis")
@@ -33,8 +33,8 @@ public class AddressController {
     private final AddressService addressService;
 
     @Autowired
-    public AddressController(final ModelMapper modelMapper, final AddressService addressService) {
-        this.modelMapper = modelMapper;
+    public AddressController(final ModelMapperConfig modelMapperConfig, final AddressService addressService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.addressService = addressService;
     }
 
@@ -43,7 +43,6 @@ public class AddressController {
         List<AddressDto> addresses = addressService.getAllAddresses().stream()
                 .map(address -> modelMapper.map(address, AddressDto.class))
                 .toList();
-
         CollectionModel<EntityModel<AddressDto>> addressCollectionModel = toCollectionModel(addresses);
 
         return ResponseEntity.ok().body(addressCollectionModel);
@@ -53,7 +52,6 @@ public class AddressController {
     public ResponseEntity<EntityModel<AddressDto>> newAddress(@RequestBody final AddressDto addressDto) {
         Address addressRequest = modelMapper.map(addressDto, Address.class);
         Address newAddress = addressService.createAddress(addressRequest);
-
         EntityModel<AddressDto> addressEntityModel = toModel(modelMapper.map(newAddress, AddressDto.class));
 
         return ResponseEntity.created(addressEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -62,31 +60,36 @@ public class AddressController {
 
     @GetMapping("/addresses/{id}")
     public ResponseEntity<EntityModel<AddressDto>> getAddressById(@PathVariable final Long id) {
-        Address address = addressService.getAddressById(id);
-
-        EntityModel<AddressDto> addressEntityModel = toModel(modelMapper.map(address, AddressDto.class));
-
-        return ResponseEntity.ok().body(addressEntityModel);
+        try {
+            Address address = addressService.getAddressById(id);
+            EntityModel<AddressDto> addressEntityModel = toModel(modelMapper.map(address, AddressDto.class));
+            return ResponseEntity.ok().body(addressEntityModel);
+        } catch (NoSuchElementException e) {
+            return  ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/addresses/{id}")
-    public ResponseEntity<EntityModel<AddressDto>> replaceAddress(
-            @RequestBody final AddressDto addressDto,
-            @PathVariable final Long id) {
-        Address addressRequest = modelMapper.map(addressDto, Address.class);
-        Address updatedAddress = addressService.updateAddress(id, addressRequest);
-
-        EntityModel<AddressDto> addressEntityModel = toModel(modelMapper.map(updatedAddress, AddressDto.class));
-
-        return ResponseEntity.ok().body(addressEntityModel);
-
+    public ResponseEntity<EntityModel<AddressDto>> replaceAddress(@RequestBody final AddressDto addressDto,
+                                                                  @PathVariable final Long id) {
+        try {
+            Address addressRequest = modelMapper.map(addressDto, Address.class);
+            Address updatedAddress = addressService.updateAddress(id, addressRequest);
+            EntityModel<AddressDto> addressEntityModel = toModel(modelMapper.map(updatedAddress, AddressDto.class));
+            return ResponseEntity.ok().body(addressEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/addresses/{id}")
     public ResponseEntity<String> deleteAddress(@PathVariable final Long id) {
-        addressService.deleteAddress(id);
-
-        return ResponseEntity.ok().body("Address deleted successfully");
+        try {
+            addressService.deleteAddress(id);
+            return ResponseEntity.ok().body("Address deleted successfully");
+        } catch (NoSuchElementException e) {
+            return  ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<AddressDto> toModel(final AddressDto address) {

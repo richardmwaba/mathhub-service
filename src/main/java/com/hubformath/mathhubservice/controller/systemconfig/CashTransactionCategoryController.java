@@ -1,8 +1,8 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.systemconfig.CashTransactionCategoryDto;
+import com.hubformath.mathhubservice.model.systemconfig.CashTransactionCategory;
 import com.hubformath.mathhubservice.service.systemconfig.CashTransactionCategoryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.systemconfig.CashTransactionCategoryDto;
-import com.hubformath.mathhubservice.model.systemconfig.CashTransactionCategory;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path="/api/v1/systemconfig/ops")
@@ -32,8 +33,8 @@ public class CashTransactionCategoryController {
     private final CashTransactionCategoryService cashTransactionCategoryService;
 
     @Autowired
-    public CashTransactionCategoryController(final ModelMapper modelMapper, final CashTransactionCategoryService cashTransactionCategoryService) {
-        this.modelMapper = modelMapper;
+    public CashTransactionCategoryController (final ModelMapperConfig modelMapperConfig, final CashTransactionCategoryService cashTransactionCategoryService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.cashTransactionCategoryService = cashTransactionCategoryService;
     }
 
@@ -60,28 +61,36 @@ public class CashTransactionCategoryController {
 
     @GetMapping("/cashTransactionCategories/{id}")
     public ResponseEntity<EntityModel<CashTransactionCategoryDto>> getCashTransactionCategoryById(@PathVariable final Long id) {
-        CashTransactionCategory cashTransactionCategory = cashTransactionCategoryService.getCashTransactionCategoryById(id);
-        EntityModel<CashTransactionCategoryDto> cashTransactionCategoryEntityModel = toModel(modelMapper.map(cashTransactionCategory, CashTransactionCategoryDto.class));
-
-        return ResponseEntity.ok().body(cashTransactionCategoryEntityModel);
+        try {
+            CashTransactionCategory cashTransactionCategory = cashTransactionCategoryService.getCashTransactionCategoryById(id);
+            EntityModel<CashTransactionCategoryDto> cashTransactionCategoryEntityModel = toModel(modelMapper.map(cashTransactionCategory, CashTransactionCategoryDto.class));
+            return ResponseEntity.ok().body(cashTransactionCategoryEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/cashTransactionCategories/{id}")
-    public ResponseEntity<EntityModel<CashTransactionCategoryDto>> replaceCashTransactionCategory(
-            @RequestBody final CashTransactionCategoryDto cashTransactionCategoryDto,
-            @PathVariable final Long id) {
-        CashTransactionCategory cashTransactionCategoryRequest = modelMapper.map(cashTransactionCategoryDto, CashTransactionCategory.class);
-        CashTransactionCategory updatedCashTransactionCategory = cashTransactionCategoryService.updateCashTransactionCategory(id, cashTransactionCategoryRequest);
-
-        EntityModel<CashTransactionCategoryDto> cashTransactionCategoryEntityModel = toModel(modelMapper.map(updatedCashTransactionCategory, CashTransactionCategoryDto.class));
-
-        return ResponseEntity.ok().body(cashTransactionCategoryEntityModel);
+    public ResponseEntity<EntityModel<CashTransactionCategoryDto>> replaceCashTransactionCategory(@RequestBody final CashTransactionCategoryDto cashTransactionCategoryDto,
+                                                                                                  @PathVariable final Long id) {
+        try {
+            CashTransactionCategory cashTransactionCategoryRequest = modelMapper.map(cashTransactionCategoryDto, CashTransactionCategory.class);
+            CashTransactionCategory updatedCashTransactionCategory = cashTransactionCategoryService.updateCashTransactionCategory(id, cashTransactionCategoryRequest);
+            EntityModel<CashTransactionCategoryDto> cashTransactionCategoryEntityModel = toModel(modelMapper.map(updatedCashTransactionCategory, CashTransactionCategoryDto.class));
+            return ResponseEntity.ok().body(cashTransactionCategoryEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/cashTransactionCategories/{id}")
     public ResponseEntity<String> deleteCashTransactionCategory(@PathVariable final Long id) {
-        cashTransactionCategoryService.deleteCashTransactionCategory(id);
-        return ResponseEntity.ok().body("Cash Transaction Category deleted successfully");
+        try {
+            cashTransactionCategoryService.deleteCashTransactionCategory(id);
+            return ResponseEntity.ok().body("Cash Transaction Category deleted successfully");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<CashTransactionCategoryDto> toModel(final CashTransactionCategoryDto cashTransactionCategory) {

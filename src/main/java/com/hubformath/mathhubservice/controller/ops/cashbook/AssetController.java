@@ -1,8 +1,9 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.ops.cashbook.AssetDto;
+import com.hubformath.mathhubservice.model.ops.cashbook.Asset;
+import com.hubformath.mathhubservice.service.ops.cashbook.AssetService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -19,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.ops.cashbook.AssetDto;
-import com.hubformath.mathhubservice.model.ops.cashbook.Asset;
-import com.hubformath.mathhubservice.service.ops.cashbook.AssetService;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/ops")
@@ -32,8 +33,8 @@ public class AssetController {
     private final AssetService assetService;
 
     @Autowired
-    public AssetController(final ModelMapper modelMapper, final AssetService assetService) {
-        this.modelMapper = modelMapper;
+    public AssetController(final ModelMapperConfig modelMapperConfig, final AssetService assetService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.assetService = assetService;
     }
 
@@ -61,31 +62,35 @@ public class AssetController {
 
     @GetMapping("/assets/{id}")
     public ResponseEntity<EntityModel<AssetDto>> getAssetById(@PathVariable final Long id) {
-        Asset asset = assetService.getAssetById(id);
-
-        EntityModel<AssetDto> assetEntityModel = toModel(modelMapper.map(asset, AssetDto.class));
-
-        return ResponseEntity.ok().body(assetEntityModel);
+        try {
+            Asset asset = assetService.getAssetById(id);
+            EntityModel<AssetDto> assetEntityModel = toModel(modelMapper.map(asset, AssetDto.class));
+            return ResponseEntity.ok().body(assetEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/assets/{id}")
-    public ResponseEntity<EntityModel<AssetDto>> replaceAsset(
-            @RequestBody final AssetDto assetDto,
-            @PathVariable final Long id) {
-        Asset assetRequest = modelMapper.map(assetDto, Asset.class);
-        Asset updatedAsset = assetService.updateAsset(id, assetRequest);
-
-        EntityModel<AssetDto> assetEntityModel = toModel(modelMapper.map(updatedAsset, AssetDto.class));
-
-        return ResponseEntity.ok().body(assetEntityModel);
-
+    public ResponseEntity<EntityModel<AssetDto>> replaceAsset(@RequestBody final AssetDto assetDto, @PathVariable final Long id) {
+        try {
+            Asset assetRequest = modelMapper.map(assetDto, Asset.class);
+            Asset updatedAsset = assetService.updateAsset(id, assetRequest);
+            EntityModel<AssetDto> assetEntityModel = toModel(modelMapper.map(updatedAsset, AssetDto.class));
+            return ResponseEntity.ok().body(assetEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/assets/{id}")
     public ResponseEntity<String> deleteAsset(@PathVariable Long id) {
-        assetService.deleteAsset(id);
-
-        return ResponseEntity.ok().body("Asset deleted successfully");
+        try {
+            assetService.deleteAsset(id);
+            return ResponseEntity.ok().body("Asset deleted successfully");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<AssetDto> toModel(final AssetDto asset) {

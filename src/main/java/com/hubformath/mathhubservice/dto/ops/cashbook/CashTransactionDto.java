@@ -1,9 +1,9 @@
 package com.hubformath.mathhubservice.dto.ops.cashbook;
 
-import java.time.LocalDateTime;
-
 import com.hubformath.mathhubservice.dto.systemconfig.PaymentMethodDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.CashTransactionType;
+
+import java.time.LocalDateTime;
 
 public class CashTransactionDto {
     private Long id;
@@ -72,7 +72,7 @@ public class CashTransactionDto {
         return transactionDateTime;
     }
 
-    public void setTransactionDate(LocalDateTime transactionDateTime) {
+    public void setTransactionDateTime(LocalDateTime transactionDateTime) {
         this.transactionDateTime = transactionDateTime;
     }
 

@@ -1,23 +1,18 @@
 package com.hubformath.mathhubservice.service.systemconfig;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.hubformath.mathhubservice.model.systemconfig.EquityType;
 import com.hubformath.mathhubservice.repository.systemconfig.EquityTypeRepository;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class EquityTypeService {
+
     private final EquityTypeRepository equityTypeRepository;
-    private final String notFoundItemName;
-    
-    public EquityTypeService(EquityTypeRepository equityTypeRepository) {
-        super();
+
+    public EquityTypeService(final EquityTypeRepository equityTypeRepository) {
         this.equityTypeRepository = equityTypeRepository;
-        this.notFoundItemName = "equity type";
     }
 
     public List<EquityType> getAllEquityTypes() {
@@ -25,13 +20,7 @@ public class EquityTypeService {
     }
 
     public EquityType getEquityTypeById(Long id) {
-        Optional<EquityType> equityType = equityTypeRepository.findById(id);
-
-        if(equityType.isPresent()){
-            return equityType.get();
-        } else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return equityTypeRepository.findById(id).orElseThrow();
     }
 
     public EquityType createEquityType(EquityType equityTypeRequest) {
@@ -45,12 +34,12 @@ public class EquityTypeService {
                     equityType.setTypeDescription(equityTypeRequest.getTypeDescription());
                     return equityTypeRepository.save(equityType);
                 }) 
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
     public void deleteEquityType(Long id) {
         EquityType equityType = equityTypeRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         equityTypeRepository.delete(equityType);
     }

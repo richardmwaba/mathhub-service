@@ -1,27 +1,20 @@
 package com.hubformath.mathhubservice.service.ops.cashbook;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.hubformath.mathhubservice.model.ops.cashbook.Asset;
+import com.hubformath.mathhubservice.repository.ops.cashbook.AssetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hubformath.mathhubservice.model.ops.cashbook.Asset;
-import com.hubformath.mathhubservice.repository.ops.cashbook.AssetRepository;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
+import java.util.List;
 
 @Service
 public class AssetService {
 
     private final AssetRepository assetRepository;
 
-    private final String notFoundItemName;
-
     @Autowired
     public AssetService(final AssetRepository assetRepository) {
-        super();
         this.assetRepository = assetRepository;
-        this.notFoundItemName = "asset";
     }
 
     public List<Asset> getAllAssets() {
@@ -29,13 +22,7 @@ public class AssetService {
     }
 
     public Asset getAssetById(Long id) {
-        Optional<Asset> asset = assetRepository.findById(id);
-
-        if(asset.isPresent()){
-            return asset.get();
-        } else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return assetRepository.findById(id).orElseThrow();
     }
 
     public Asset createAsset(Asset assetRequest) {
@@ -51,12 +38,12 @@ public class AssetService {
                     asset.setAmount(assetRequest.getAmount());
                     return assetRepository.save(asset);
                 })
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
     public void deleteAsset(Long id) {
         Asset asset = assetRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         assetRepository.delete(asset);
     }

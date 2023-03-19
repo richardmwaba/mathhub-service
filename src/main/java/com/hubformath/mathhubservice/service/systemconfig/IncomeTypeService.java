@@ -1,23 +1,18 @@
 package com.hubformath.mathhubservice.service.systemconfig;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.hubformath.mathhubservice.model.systemconfig.IncomeType;
 import com.hubformath.mathhubservice.repository.systemconfig.IncomeTypeRepository;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class IncomeTypeService {
+
     private final IncomeTypeRepository incomeTypeRepository;
-    private final String notFoundItemName;
-    
+
     public IncomeTypeService(IncomeTypeRepository incomeTypeRepository) {
-        super();
         this.incomeTypeRepository = incomeTypeRepository;
-        this.notFoundItemName = "income type item";
     }
 
     public List<IncomeType> getAllIncomeTypes() {
@@ -25,13 +20,7 @@ public class IncomeTypeService {
     }
 
     public IncomeType getIncomeTypeById(Long id) {
-        Optional<IncomeType> incomeType = incomeTypeRepository.findById(id);
-
-        if(incomeType.isPresent()){
-            return incomeType.get();
-        } else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return incomeTypeRepository.findById(id).orElseThrow();
     }
 
     public IncomeType createIncomeType(IncomeType incomeTypeRequest) {
@@ -45,12 +34,12 @@ public class IncomeTypeService {
                     incomeType.setTypeDescription(incomeTypeRequest.getTypeDescription());
                     return incomeTypeRepository.save(incomeType);
                 }) 
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
     public void deleteIncomeType(Long id) {
         IncomeType incomeType = incomeTypeRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         incomeTypeRepository.delete(incomeType);
     }

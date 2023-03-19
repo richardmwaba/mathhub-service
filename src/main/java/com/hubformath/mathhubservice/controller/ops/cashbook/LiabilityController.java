@@ -1,8 +1,9 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.ops.cashbook.LiabilityDto;
+import com.hubformath.mathhubservice.model.ops.cashbook.Liability;
+import com.hubformath.mathhubservice.service.ops.cashbook.LiabilityService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -19,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.ops.cashbook.LiabilityDto;
-import com.hubformath.mathhubservice.model.ops.cashbook.Liability;
-import com.hubformath.mathhubservice.service.ops.cashbook.LiabilityService;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/ops")
@@ -32,8 +33,8 @@ public class LiabilityController {
     private final LiabilityService liabilityService;
 
     @Autowired
-    public LiabilityController(final ModelMapper modelMapper, final LiabilityService liabilityService) {
-        this.modelMapper = modelMapper;
+    public LiabilityController(final ModelMapperConfig modelMapperConfig, final LiabilityService liabilityService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.liabilityService = liabilityService;
     }
 
@@ -49,10 +50,9 @@ public class LiabilityController {
     }
 
     @PostMapping("/liabilities")
-    public ResponseEntity<EntityModel<LiabilityDto>> newLiability(@RequestBody final LiabilityDto liabilityDto) {
-        Liability liabilityRequest = modelMapper.map(liabilityDto, Liability.class);
+    public ResponseEntity<EntityModel<LiabilityDto>> newLiability(@RequestBody final LiabilityDto liability) {
+        Liability liabilityRequest = modelMapper.map(liability, Liability.class);
         Liability newLiability = liabilityService.createLiability(liabilityRequest);
-
         EntityModel<LiabilityDto> liabilityEntityModel = toModel(modelMapper.map(newLiability, LiabilityDto.class));
 
         return ResponseEntity.created(liabilityEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -61,31 +61,36 @@ public class LiabilityController {
 
     @GetMapping("/liabilities/{id}")
     public ResponseEntity<EntityModel<LiabilityDto>> getLiabilityById(@PathVariable final Long id) {
-        Liability liability = liabilityService.getLiabilityById(id);
-
-        EntityModel<LiabilityDto> liabilityEntityModel = toModel(modelMapper.map(liability, LiabilityDto.class));
-
-        return ResponseEntity.ok().body(liabilityEntityModel);
+        try {
+            Liability liability = liabilityService.getLiabilityById(id);
+            EntityModel<LiabilityDto> liabilityEntityModel = toModel(modelMapper.map(liability, LiabilityDto.class));
+            return ResponseEntity.ok().body(liabilityEntityModel);
+        } catch (NoSuchElementException e) {
+            return  ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/liabilities/{id}")
-    public ResponseEntity<EntityModel<LiabilityDto>> replaceLiability(
-            @RequestBody LiabilityDto liabilityDto,
-            @PathVariable Long id) {
-        Liability liabilityRequest = modelMapper.map(liabilityDto, Liability.class);
-        Liability updatedLiability = liabilityService.updateLiability(id, liabilityRequest);
-
-        EntityModel<LiabilityDto> liabilityEntityModel = toModel(modelMapper.map(updatedLiability, LiabilityDto.class));
-
-        return ResponseEntity.ok().body(liabilityEntityModel);
-
+    public ResponseEntity<EntityModel<LiabilityDto>> replaceLiability(@RequestBody LiabilityDto liabilityDto,
+                                                                      @PathVariable Long id) {
+        try {
+            Liability liabilityRequest = modelMapper.map(liabilityDto, Liability.class);
+            Liability updatedLiability = liabilityService.updateLiability(id, liabilityRequest);
+            EntityModel<LiabilityDto> liabilityEntityModel = toModel(modelMapper.map(updatedLiability, LiabilityDto.class));
+            return ResponseEntity.ok().body(liabilityEntityModel);
+        } catch (NoSuchElementException e) {
+            return  ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/liabilities/{id}")
     public ResponseEntity<String> deleteLiability(@PathVariable final Long id) {
-        liabilityService.deleteLiability(id);
-
-        return ResponseEntity.ok().body("Liability deleted successfully");
+        try {
+            liabilityService.deleteLiability(id);
+            return ResponseEntity.ok().body("Liability deleted successfully");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<LiabilityDto> toModel(final LiabilityDto liability) {

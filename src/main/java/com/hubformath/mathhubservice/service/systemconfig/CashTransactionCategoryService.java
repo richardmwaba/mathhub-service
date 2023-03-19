@@ -1,25 +1,19 @@
 package com.hubformath.mathhubservice.service.systemconfig;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.hubformath.mathhubservice.model.systemconfig.CashTransactionCategory;
 import com.hubformath.mathhubservice.repository.systemconfig.CashTransactionCategoryRepository;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CashTransactionCategoryService {
 
     private final CashTransactionCategoryRepository cashTransactionCategoryRepository;
 
-    private final String notFoundItemName;
-    
     public CashTransactionCategoryService(final CashTransactionCategoryRepository cashTransactionCategoryRepository) {
         super();
         this.cashTransactionCategoryRepository = cashTransactionCategoryRepository;
-        this.notFoundItemName = "cash transaction category";
     }
 
     public List<CashTransactionCategory> getAllCashTransactionCategories() {
@@ -27,13 +21,7 @@ public class CashTransactionCategoryService {
     }
 
     public CashTransactionCategory getCashTransactionCategoryById(Long id) {
-        Optional<CashTransactionCategory> cashTransactionCategory = cashTransactionCategoryRepository.findById(id);
-
-        if(cashTransactionCategory.isPresent()){
-            return cashTransactionCategory.get();
-        } else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return cashTransactionCategoryRepository.findById(id).orElseThrow();
     }
 
     public CashTransactionCategory createCashTransactionCategory(CashTransactionCategory cashTransactionCategoryRequest) {
@@ -47,12 +35,12 @@ public class CashTransactionCategoryService {
                     cashTransactionCategory.setCategoryDescription(cashTransactionCategoryRequest.getCategoryDescription());
                     return cashTransactionCategoryRepository.save(cashTransactionCategory);
                 }) 
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
     public void deleteCashTransactionCategory(Long id) {
         CashTransactionCategory cashTransactionCategory = cashTransactionCategoryRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         cashTransactionCategoryRepository.delete(cashTransactionCategory);
     }

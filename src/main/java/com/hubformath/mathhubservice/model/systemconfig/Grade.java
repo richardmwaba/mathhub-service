@@ -90,9 +90,8 @@ public class Grade {
     public boolean equals(Object o){
         if (this == o)
             return  true;
-        if(!(o instanceof Grade))
+        if(!(o instanceof Grade grade))
             return  false;
-        Grade grade = (Grade) o;
         return Objects.equals(this.id, grade.id)
                 && Objects.equals(this.gradeName, grade.gradeName)
                 && Objects.equals(this.gradeDescription, grade.gradeDescription)

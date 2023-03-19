@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
 import com.hubformath.mathhubservice.dto.systemconfig.SyllabusDto;
 import com.hubformath.mathhubservice.model.systemconfig.Syllabus;
 
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.StreamSupport;
 
 
@@ -33,8 +35,8 @@ public class SyllabusController {
     private final SyllabusService syllabusService;
 
     @Autowired
-    public SyllabusController(ModelMapper modelMapper, SyllabusService syllabusService) {
-        this.modelMapper = modelMapper;
+    public SyllabusController(final ModelMapperConfig modelMapperConfig, SyllabusService syllabusService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.syllabusService = syllabusService;
     }
 
@@ -61,30 +63,36 @@ public class SyllabusController {
 
     @GetMapping("/syllabus/{id}")
     public ResponseEntity<EntityModel<SyllabusDto>> getSyllabusById(@PathVariable final Long id) {
-        Syllabus syllabus = syllabusService.getSyllabusById(id);
-
-        EntityModel<SyllabusDto> syllabusEntityModel = toModel(modelMapper.map(syllabus, SyllabusDto.class));
-
-        return ResponseEntity.ok().body(syllabusEntityModel);
+        try {
+            Syllabus syllabus = syllabusService.getSyllabusById(id);
+            EntityModel<SyllabusDto> syllabusEntityModel = toModel(modelMapper.map(syllabus, SyllabusDto.class));
+            return ResponseEntity.ok().body(syllabusEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/syllabus/{id}")
-    public ResponseEntity<EntityModel<SyllabusDto>> replaceSyllabus(
-            @RequestBody final SyllabusDto syllabusDto,
-            @PathVariable final Long id) {
-        Syllabus syllabusRequest = modelMapper.map(syllabusDto, Syllabus.class);
-        Syllabus updatedSyllabus = syllabusService.updateSyllabus(id, syllabusRequest);
-
-        EntityModel<SyllabusDto> syllabusEntityModel = toModel(modelMapper.map(updatedSyllabus, SyllabusDto.class));
-
-        return ResponseEntity.ok().body(syllabusEntityModel);
-
+    public ResponseEntity<EntityModel<SyllabusDto>> replaceSyllabus(@RequestBody final SyllabusDto syllabusDto,
+                                                                    @PathVariable final Long id) {
+        try {
+            Syllabus syllabusRequest = modelMapper.map(syllabusDto, Syllabus.class);
+            Syllabus updatedSyllabus = syllabusService.updateSyllabus(id, syllabusRequest);
+            EntityModel<SyllabusDto> syllabusEntityModel = toModel(modelMapper.map(updatedSyllabus, SyllabusDto.class));
+            return ResponseEntity.ok().body(syllabusEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/syllabus/{id}")
     public ResponseEntity<String> deleteSyllabus(@PathVariable final Long id) {
-        syllabusService.deleteSyllabus(id);
-        return ResponseEntity.ok().body("Syllabus deleted successfully");
+        try {
+            syllabusService.deleteSyllabus(id);
+            return ResponseEntity.ok().body("Syllabus deleted successfully");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<SyllabusDto> toModel(final SyllabusDto syllabus) {

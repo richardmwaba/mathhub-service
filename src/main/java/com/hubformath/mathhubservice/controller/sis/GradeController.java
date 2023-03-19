@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.controller.sis;
 
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
 import com.hubformath.mathhubservice.dto.systemconfig.GradeDto;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
 
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -35,8 +37,8 @@ public class GradeController {
     private final GradeService gradeService;
 
     @Autowired
-    public GradeController(final ModelMapper modelMapper, final GradeService gradeService) {
-        this.modelMapper = modelMapper;
+    public GradeController(final ModelMapperConfig modelMapperConfig, final GradeService gradeService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.gradeService = gradeService;
     }
 
@@ -62,26 +64,36 @@ public class GradeController {
 
     @GetMapping("/grades/{id}")
     public ResponseEntity<EntityModel<GradeDto>> getGradeById(@PathVariable final Long id) {
-        Grade grade = gradeService.getGradeById(id);
-        EntityModel<GradeDto> gradeEntityModel = toModel(modelMapper.map(grade, GradeDto.class));
-        return ResponseEntity.ok().body(gradeEntityModel);
+        try {
+            Grade grade = gradeService.getGradeById(id);
+            EntityModel<GradeDto> gradeEntityModel = toModel(modelMapper.map(grade, GradeDto.class));
+            return ResponseEntity.ok().body(gradeEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/grades/{id}")
-    public ResponseEntity<EntityModel<GradeDto>> replaceGrade(
-            @RequestBody final GradeDto gradeDto,
-            @PathVariable final Long id) {
-        Grade gradeRequest = modelMapper.map(gradeDto, Grade.class);
-        Grade updatedGrade = gradeService.updateGrade(id, gradeRequest);
-        EntityModel<GradeDto> gradeEntityModel = toModel(modelMapper.map(updatedGrade, GradeDto.class));
-
-        return ResponseEntity.ok().body(gradeEntityModel);
+    public ResponseEntity<EntityModel<GradeDto>> replaceGrade(@RequestBody final GradeDto gradeDto,
+                                                              @PathVariable final Long id) {
+        try {
+            Grade gradeRequest = modelMapper.map(gradeDto, Grade.class);
+            Grade updatedGrade = gradeService.updateGrade(id, gradeRequest);
+            EntityModel<GradeDto> gradeEntityModel = toModel(modelMapper.map(updatedGrade, GradeDto.class));
+            return ResponseEntity.ok().body(gradeEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/grades/{id}")
     public ResponseEntity<String> deleteGrade(@PathVariable final Long id) {
-        gradeService.deleteGrade(id);
-        return ResponseEntity.ok().body("Grade deleted successfully");
+        try {
+            gradeService.deleteGrade(id);
+            return ResponseEntity.ok().body("Grade deleted successfully");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<GradeDto> toModel(final GradeDto grade){
