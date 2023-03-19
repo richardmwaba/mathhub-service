@@ -37,7 +37,7 @@ public class CashTransactionService {
                     transaction.setTransactionType(transactionRequest.getTransactionType());
                     transaction.setAmount(transactionRequest.getAmount());
                     transaction.setTransactionNumber(transactionRequest.getTransactionNumber());
-                    transaction.setTransactionDate(transactionRequest.getTransactionDateTime());
+                    transaction.setTransactionDateTime(transactionRequest.getTransactionDateTime());
                     return transactionRepository.save(transaction);
                 })
                 .orElseThrow();

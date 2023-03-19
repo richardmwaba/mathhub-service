@@ -15,7 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -57,7 +57,7 @@ public class Student {
     @OneToMany(cascade = CascadeType.ALL)
     private List<PhoneNumber> phoneNumbers;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @Transient
     private StudentFinancialSummary studentFinancialSummary;
 
     private LocalDate dateOfBirth;

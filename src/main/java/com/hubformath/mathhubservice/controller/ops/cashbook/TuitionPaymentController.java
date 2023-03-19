@@ -28,7 +28,6 @@ public class TuitionPaymentController {
 
     private final TuitionPaymentService tuitionPaymentService;
 
-
     private final ModelMapper modelMapper;
 
     @Autowired
@@ -51,6 +50,9 @@ public class TuitionPaymentController {
     @PostMapping("/tuitionPayments")
     public ResponseEntity<EntityModel<TuitionPaymentDto>> newTuitionPayment(@RequestBody final TuitionPaymentDto tuitionPayment) {
         final TuitionPayment newTuitionPayment = tuitionPaymentService.createTuitionPayment(tuitionPayment);
+        if (newTuitionPayment == null) {
+            return ResponseEntity.noContent().build();
+        }
         EntityModel<TuitionPaymentDto> tuitionPaymentEntityModel = toModel(modelMapper.map(newTuitionPayment, TuitionPaymentDto.class));
 
         return ResponseEntity.created(tuitionPaymentEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())

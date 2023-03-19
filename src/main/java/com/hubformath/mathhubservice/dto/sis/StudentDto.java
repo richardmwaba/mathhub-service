@@ -30,6 +30,8 @@ public class StudentDto {
 
     private List<LessonDto> lessons;
 
+    private StudentFinancialSummary studentFinancialSummary;
+
     private String email;
 
     private ParentDto parent;
@@ -37,8 +39,6 @@ public class StudentDto {
     private List<AddressDto> addresses;
 
     private List<PhoneNumberDto> phoneNumbers;
-
-    private StudentFinancialSummary studentFinancialSummary;
 
     private LocalDate dateOfBirth;
 

@@ -46,18 +46,21 @@ public class TuitionPaymentService {
 
     @Transactional
     public TuitionPayment createTuitionPayment(TuitionPaymentDto tuitionPayment) {
+        final Student student = studentService.getStudentById(tuitionPayment.getStudentId());
+        if(!student.isOwingPayment()) {
+            return  null;
+        }
+
         final Long paymentMethodId = tuitionPayment.getPaymentMethodId();
-        final Long studentId = tuitionPayment.getStudentId();
         final String narration = tuitionPayment.getNarration();
         final Double amount = tuitionPayment.getAmount();
         final Set<Long> lessonsIds = tuitionPayment.getLessonsIds();
 
         final PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(paymentMethodId);
-        final Student student = studentService.getStudentById(studentId);
 
         student.getLessons()
                 .stream()
-                .filter(lesson -> lessonsIds.contains(lesson.getId()))
+                .filter(lesson -> lesson.getLessonPaymentStatus().equals(PaymentStatus.UNPAID) && lessonsIds.contains(lesson.getId()))
                 .forEach(lesson -> lesson.setLessonPaymentStatus(PaymentStatus.PAID));
 
         final CashTransaction newCashTransaction = new CashTransaction(paymentMethod, CashTransactionType.CASH_IN, narration, amount);

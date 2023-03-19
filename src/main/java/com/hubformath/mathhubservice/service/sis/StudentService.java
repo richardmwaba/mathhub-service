@@ -59,7 +59,12 @@ public class StudentService {
     }
 
     public Student getStudentById(Long id) {
-        return studentRepository.findById(id).orElseThrow();
+        return studentRepository.findById(id)
+                .map(student -> {
+                    student.setStudentFinancialSummary(computeStudentFinancialSummary(student));
+                    return student;
+                })
+                .orElseThrow();
     }
 
     public Student createStudent(StudentDto studentRequest) {
@@ -120,12 +125,12 @@ public class StudentService {
         newlesson.setLessonRateAmount(lessonRate.getAmountPerLesson());
         newlesson.setLessonPaymentStatus(PaymentStatus.UNPAID);
         student.getLessons().add(newlesson);
-        student.setStudentFinancialSummary(establishStudentFinancialSummary(student));
+        student.setStudentFinancialSummary(computeStudentFinancialSummary(student));
 
         return studentRepository.save(student);
     }
 
-    private StudentFinancialSummary establishStudentFinancialSummary(final Student student ) {
+    private StudentFinancialSummary computeStudentFinancialSummary(final Student student ) {
         Double amountOwing = student.getLessons()
                 .stream()
                 .filter(lesson -> lesson.getLessonPaymentStatus() == PaymentStatus.UNPAID)
