@@ -17,6 +17,10 @@ public class StudentFinancialSummary {
 
     private Double amountOwing;
 
+    @SuppressWarnings("unused")
+    public StudentFinancialSummary() {
+    }
+
     public StudentFinancialSummary(boolean isStudentOwing, Double amountOwing) {
         this.isStudentOwing = isStudentOwing;
         this.amountOwing = amountOwing;

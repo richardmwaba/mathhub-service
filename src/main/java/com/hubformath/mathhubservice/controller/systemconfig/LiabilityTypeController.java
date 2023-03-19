@@ -1,8 +1,8 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.systemconfig.LiabilityTypeDto;
+import com.hubformath.mathhubservice.model.systemconfig.LiabilityType;
 import com.hubformath.mathhubservice.service.systemconfig.LiabilityTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.systemconfig.LiabilityTypeDto;
-import com.hubformath.mathhubservice.model.systemconfig.LiabilityType;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path="/api/v1/systemconfig/ops")
@@ -32,8 +33,8 @@ public class LiabilityTypeController {
     private final LiabilityTypeService liabilityTypeService;
 
     @Autowired
-    public LiabilityTypeController(final ModelMapper modelMapper, final LiabilityTypeService liabilityTypeService) {
-        this.modelMapper = modelMapper;
+    public LiabilityTypeController (final ModelMapperConfig modelMapperConfig, final LiabilityTypeService liabilityTypeService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.liabilityTypeService = liabilityTypeService;
     }
 
@@ -60,28 +61,36 @@ public class LiabilityTypeController {
 
     @GetMapping("/liabilityTypes/{id}")
     public ResponseEntity<EntityModel<LiabilityTypeDto>> getLiabilityTypeById(@PathVariable final Long id) {
-        LiabilityType liabilityType = liabilityTypeService.getLiabilityTypeById(id);
-        EntityModel<LiabilityTypeDto> liabilityTypeEntityModel = toModel(modelMapper.map(liabilityType, LiabilityTypeDto.class));
-
-        return ResponseEntity.ok().body(liabilityTypeEntityModel);
+        try {
+            LiabilityType liabilityType = liabilityTypeService.getLiabilityTypeById(id);
+            EntityModel<LiabilityTypeDto> liabilityTypeEntityModel = toModel(modelMapper.map(liabilityType, LiabilityTypeDto.class));
+            return ResponseEntity.ok().body(liabilityTypeEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/liabilityTypes/{id}")
-    public ResponseEntity<EntityModel<LiabilityTypeDto>> replaceLiabilityType(
-            @RequestBody final LiabilityTypeDto liabilityTypeDto,
-            @PathVariable final Long id) {
-        LiabilityType liabilityTypeRequest = modelMapper.map(liabilityTypeDto, LiabilityType.class);
-        LiabilityType updatedLiabilityType = liabilityTypeService.updateLiabilityType(id, liabilityTypeRequest);
-        EntityModel<LiabilityTypeDto> liabilityTypeEntityModel = toModel(modelMapper.map(updatedLiabilityType, LiabilityTypeDto.class));
-
-        return ResponseEntity.ok().body(liabilityTypeEntityModel);
-
+    public ResponseEntity<EntityModel<LiabilityTypeDto>> replaceLiabilityType(@RequestBody final LiabilityTypeDto liabilityTypeDto,
+                                                                              @PathVariable final Long id) {
+        try {
+            LiabilityType liabilityTypeRequest = modelMapper.map(liabilityTypeDto, LiabilityType.class);
+            LiabilityType updatedLiabilityType = liabilityTypeService.updateLiabilityType(id, liabilityTypeRequest);
+            EntityModel<LiabilityTypeDto> liabilityTypeEntityModel = toModel(modelMapper.map(updatedLiabilityType, LiabilityTypeDto.class));
+            return ResponseEntity.ok().body(liabilityTypeEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/liabilityTypes/{id}")
     public ResponseEntity<String> deleteLiabilityType(@PathVariable final Long id) {
-        liabilityTypeService.deleteLiabilityType(id);
-        return ResponseEntity.ok().body("Liability type deleted successfully");
+        try {
+            liabilityTypeService.deleteLiabilityType(id);
+            return ResponseEntity.ok().body("Liability type deleted successfully");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<LiabilityTypeDto> toModel(final LiabilityTypeDto assessmentType) {

@@ -1,9 +1,10 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.ops.cashbook.EquityDto;
+import com.hubformath.mathhubservice.model.ops.cashbook.Equity;
+import com.hubformath.mathhubservice.service.ops.cashbook.EquityService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -11,18 +12,18 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.ops.cashbook.EquityDto;
-import com.hubformath.mathhubservice.model.ops.cashbook.Equity;
-import com.hubformath.mathhubservice.service.ops.cashbook.EquityService;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/ops")
@@ -33,8 +34,8 @@ public class EquityController {
     private final EquityService equityService;
 
     @Autowired
-    public EquityController(final ModelMapper modelMapper, final EquityService equityService) {
-        this.modelMapper = modelMapper;
+    public EquityController(final ModelMapperConfig modelMapperConfig, final EquityService equityService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.equityService = equityService;
     }
 
@@ -62,31 +63,37 @@ public class EquityController {
 
     @GetMapping("/equity/{id}")
     public ResponseEntity<EntityModel<EquityDto>> getEquityById(@PathVariable final Long id) {
-        Equity equity = equityService.getEquityById(id);
-
-        EntityModel<EquityDto> equityEntityModel = toModel(modelMapper.map(equity, EquityDto.class));
-
-        return ResponseEntity.ok().body(equityEntityModel);
+        try {
+            Equity equity = equityService.getEquityById(id);
+            EntityModel<EquityDto> equityEntityModel = toModel(modelMapper.map(equity, EquityDto.class));
+            return ResponseEntity.ok().body(equityEntityModel);
+        } catch (NoSuchElementException e) {
+            return  ResponseEntity.notFound().build();
+        }
     }
 
     @PatchMapping("/equity/{id}")
-    public ResponseEntity<EntityModel<EquityDto>> updateEquity(
-            @RequestBody final EquityDto equityDto,
-            @PathVariable final Long id) {
-        Equity equityRequest = modelMapper.map(equityDto, Equity.class);
-        Equity updatedEquity = equityService.updateEquity(id, equityRequest);
-
-        EntityModel<EquityDto> equityEntityModel = toModel(modelMapper.map(updatedEquity, EquityDto.class));
-
-        return ResponseEntity.ok().body(equityEntityModel);
+    public ResponseEntity<EntityModel<EquityDto>> updateEquity(@RequestBody final EquityDto equityDto,
+                                                               @PathVariable final Long id) {
+        try {
+            Equity equityRequest = modelMapper.map(equityDto, Equity.class);
+            Equity updatedEquity = equityService.updateEquity(id, equityRequest);
+            EntityModel<EquityDto> equityEntityModel = toModel(modelMapper.map(updatedEquity, EquityDto.class));
+            return ResponseEntity.ok().body(equityEntityModel);
+        } catch (NoSuchElementException e) {
+            return  ResponseEntity.notFound().build();
+        }
 
     }
 
     @DeleteMapping("/equity/{id}")
     public ResponseEntity<String> deleteEquity(@PathVariable Long id) {
-        equityService.deleteEquity(id);
-
-        return ResponseEntity.ok().body("Equity deleted successfully");
+        try {
+            equityService.deleteEquity(id);
+            return ResponseEntity.ok().body("Equity deleted successfully");
+        } catch (NoSuchElementException e) {
+            return  ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<EquityDto> toModel(final EquityDto equity) {

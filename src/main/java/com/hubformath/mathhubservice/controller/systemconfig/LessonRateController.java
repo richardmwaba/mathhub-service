@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
 import com.hubformath.mathhubservice.dto.systemconfig.LessonRateDto;
 import com.hubformath.mathhubservice.model.systemconfig.LessonRate;
 import com.hubformath.mathhubservice.service.systemconfig.LessonRateService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
@@ -33,13 +35,14 @@ public class LessonRateController {
     private final LessonRateService lessonRateService;
 
     @Autowired
-    public LessonRateController(final ModelMapper modelMapper, final LessonRateService lessonRateService) {
-        this.modelMapper = modelMapper;
+    public LessonRateController (final ModelMapperConfig modelMapperConfig, final LessonRateService lessonRateService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.lessonRateService = lessonRateService;
     }
 
     @GetMapping("/lessonRates")
-    public ResponseEntity<CollectionModel<EntityModel<LessonRateDto>>> getAllLessonRates(@RequestParam final Optional<Instant> effectiveDate, @RequestParam final Optional<Instant> expiryDate) {
+    public ResponseEntity<CollectionModel<EntityModel<LessonRateDto>>> getAllLessonRates(@RequestParam final Optional<Instant> effectiveDate,
+                                                                                         @RequestParam final Optional<Instant> expiryDate) {
         List<LessonRateDto> lessonRates = lessonRateService.getAllLessonRates(effectiveDate.orElse(null), expiryDate.orElse(null))
                 .stream()
                 .map(lessonRate -> modelMapper.map(lessonRate, LessonRateDto.class))
@@ -62,11 +65,14 @@ public class LessonRateController {
 
     @GetMapping("/lessonRates/{id}")
     public ResponseEntity<EntityModel<LessonRateDto>> getLessonRateById(@PathVariable final Long id) {
-        LessonRate lessonRate = lessonRateService.getLessonRateById(id);
-        EntityModel<LessonRateDto> lessonRateEntityModel =
-                toModel(modelMapper.map(lessonRate, LessonRateDto.class), Optional.empty(), Optional.empty());
-
-        return ResponseEntity.ok().body(lessonRateEntityModel);
+        try {
+            LessonRate lessonRate = lessonRateService.getLessonRateById(id);
+            EntityModel<LessonRateDto> lessonRateEntityModel =
+                    toModel(modelMapper.map(lessonRate, LessonRateDto.class), Optional.empty(), Optional.empty());
+            return ResponseEntity.ok().body(lessonRateEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<LessonRateDto> toModel(final LessonRateDto lessonRate, final Optional<Instant> effectiveDate, final Optional<Instant> expiryDate) {

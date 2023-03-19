@@ -1,19 +1,16 @@
 package com.hubformath.mathhubservice.service.ops.cashbook;
 
-import java.util.List;
-import java.util.Optional;
-
-import com.hubformath.mathhubservice.service.systemconfig.IncomeTypeService;
-import com.hubformath.mathhubservice.service.systemconfig.PaymentMethodService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.hubformath.mathhubservice.dto.ops.cashbook.IncomeRequestDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.Income;
 import com.hubformath.mathhubservice.model.systemconfig.IncomeType;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import com.hubformath.mathhubservice.repository.ops.cashbook.IncomeRepository;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
+import com.hubformath.mathhubservice.service.systemconfig.IncomeTypeService;
+import com.hubformath.mathhubservice.service.systemconfig.PaymentMethodService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class IncomeService {
@@ -24,15 +21,11 @@ public class IncomeService {
 
     private final IncomeRepository incomeRepository;
 
-    private final String notFoundItemName;
-
     @Autowired
     public IncomeService(final PaymentMethodService paymentMethodService, final IncomeTypeService incomeTypeService, final IncomeRepository incomeRepository) {
-        super();
         this.paymentMethodService = paymentMethodService;
         this.incomeTypeService = incomeTypeService;
         this.incomeRepository = incomeRepository;
-        this.notFoundItemName = "income";
     }
 
     public List<Income> getAllIncomes() {
@@ -40,13 +33,7 @@ public class IncomeService {
     }
 
     public Income getIncomeById(Long id) {
-        Optional<Income> income = incomeRepository.findById(id);
-
-        if(income.isPresent()){
-            return income.get();
-        } else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return incomeRepository.findById(id).orElseThrow();
     }
 
     public Income createIncome(IncomeRequestDto incomeRequest) {
@@ -75,12 +62,12 @@ public class IncomeService {
                     income.setAmount(incomeRequest.getAmount());
                     return incomeRepository.save(income);
                 })
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
     public void deleteIncome(Long id) {
         Income income = incomeRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         incomeRepository.delete(income);
     }

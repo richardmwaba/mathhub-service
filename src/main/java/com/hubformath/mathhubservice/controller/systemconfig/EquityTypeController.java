@@ -1,8 +1,8 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.systemconfig.EquityTypeDto;
+import com.hubformath.mathhubservice.model.systemconfig.EquityType;
 import com.hubformath.mathhubservice.service.systemconfig.EquityTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.systemconfig.EquityTypeDto;
-import com.hubformath.mathhubservice.model.systemconfig.EquityType;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path="/api/v1/systemconfig/ops")
@@ -32,8 +33,8 @@ public class EquityTypeController {
     private final EquityTypeService equityTypeService;
 
     @Autowired
-    public EquityTypeController(final ModelMapper modelMapper, final EquityTypeService equityTypeService) {
-        this.modelMapper = modelMapper;
+    public EquityTypeController (final ModelMapperConfig modelMapperConfig, final EquityTypeService equityTypeService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.equityTypeService = equityTypeService;
     }
 
@@ -60,28 +61,37 @@ public class EquityTypeController {
 
     @GetMapping("/equityTypes/{id}")
     public ResponseEntity<EntityModel<EquityTypeDto>> getEquityTypeById(@PathVariable final Long id) {
-        EquityType equityType = equityTypeService.getEquityTypeById(id);
-        EntityModel<EquityTypeDto> equityTypeEntityModel = toModel(modelMapper.map(equityType, EquityTypeDto.class));
-
-        return ResponseEntity.ok().body(equityTypeEntityModel);
+        try {
+            EquityType equityType = equityTypeService.getEquityTypeById(id);
+            EntityModel<EquityTypeDto> equityTypeEntityModel = toModel(modelMapper.map(equityType, EquityTypeDto.class));
+            return ResponseEntity.ok().body(equityTypeEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/equityTypes/{id}")
-    public ResponseEntity<EntityModel<EquityTypeDto>> replaceEquityType(
-            @RequestBody final EquityTypeDto equityTypeDto,
-            @PathVariable final Long id) {
-        EquityType equityTypeRequest = modelMapper.map(equityTypeDto, EquityType.class);
-        EquityType updatedEquityType = equityTypeService.updateEquityType(id, equityTypeRequest);
-        EntityModel<EquityTypeDto> equityTypeEntityModel = toModel(modelMapper.map(updatedEquityType, EquityTypeDto.class));
-
-        return ResponseEntity.ok().body(equityTypeEntityModel);
+    public ResponseEntity<EntityModel<EquityTypeDto>> replaceEquityType(@RequestBody final EquityTypeDto equityTypeDto,
+                                                                        @PathVariable final Long id) {
+        try {
+            EquityType equityTypeRequest = modelMapper.map(equityTypeDto, EquityType.class);
+            EquityType updatedEquityType = equityTypeService.updateEquityType(id, equityTypeRequest);
+            EntityModel<EquityTypeDto> equityTypeEntityModel = toModel(modelMapper.map(updatedEquityType, EquityTypeDto.class));
+            return ResponseEntity.ok().body(equityTypeEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
 
     }
 
     @DeleteMapping("/equityTypes/{id}")
     public ResponseEntity<String> deleteEquityType(@PathVariable final Long id) {
-        equityTypeService.deleteEquityType(id);
-        return ResponseEntity.ok().body("Equity type deleted successfully");
+        try {
+            equityTypeService.deleteEquityType(id);
+            return ResponseEntity.ok().body("Equity type deleted successfully");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<EquityTypeDto> toModel(final EquityTypeDto assessmentType) {

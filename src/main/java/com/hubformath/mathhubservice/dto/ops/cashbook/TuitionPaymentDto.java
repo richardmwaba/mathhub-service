@@ -6,6 +6,7 @@ import com.hubformath.mathhubservice.dto.sis.StudentDto;
 import com.hubformath.mathhubservice.dto.systemconfig.PaymentMethodDto;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 public class TuitionPaymentDto {
     private Long id;
@@ -15,6 +16,8 @@ public class TuitionPaymentDto {
     private StudentDto student;
 
     private Long studentId;
+
+    private Set<Long> lessonsIds;
 
     private Long paymentMethodId;
 
@@ -60,6 +63,16 @@ public class TuitionPaymentDto {
     @JsonProperty
     public void setStudentId(Long studentId) {
         this.studentId = studentId;
+    }
+
+    @JsonIgnore
+    public Set<Long> getLessonsIds() {
+        return lessonsIds;
+    }
+
+    @JsonProperty
+    public void setLessonsIds(Set<Long> lessonsIds) {
+        this.lessonsIds = lessonsIds;
     }
 
     @JsonIgnore

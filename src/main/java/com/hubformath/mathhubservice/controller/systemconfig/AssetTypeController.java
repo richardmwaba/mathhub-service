@@ -1,8 +1,8 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.systemconfig.AssetTypeDto;
+import com.hubformath.mathhubservice.model.systemconfig.AssetType;
 import com.hubformath.mathhubservice.service.systemconfig.AssetTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.systemconfig.AssetTypeDto;
-import com.hubformath.mathhubservice.model.systemconfig.AssetType;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path="/api/v1/systemconfig/ops")
@@ -32,8 +33,8 @@ public class AssetTypeController {
     private final AssetTypeService assetTypeService;
 
     @Autowired
-    public AssetTypeController(final ModelMapper modelMapper, final AssetTypeService assetTypeService) {
-        this.modelMapper = modelMapper;
+    public AssetTypeController (final ModelMapperConfig modelMapperConfig, final AssetTypeService assetTypeService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.assetTypeService = assetTypeService;
     }
 
@@ -59,27 +60,36 @@ public class AssetTypeController {
 
     @GetMapping("/assetTypes/{id}")
     public ResponseEntity<EntityModel<AssetTypeDto>> getAssetTypeById(@PathVariable final Long id) {
-        AssetType assetType = assetTypeService.getAssetTypeById(id);
-        EntityModel<AssetTypeDto> assetTypeEntityModel = toModel(modelMapper.map(assetType, AssetTypeDto.class));
-
-        return ResponseEntity.ok().body(assetTypeEntityModel);
+        try {
+            AssetType assetType = assetTypeService.getAssetTypeById(id);
+            EntityModel<AssetTypeDto> assetTypeEntityModel = toModel(modelMapper.map(assetType, AssetTypeDto.class));
+            return ResponseEntity.ok().body(assetTypeEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/assetTypes/{id}")
-    public ResponseEntity<EntityModel<AssetTypeDto>> replaceAssetType(
-            @RequestBody final AssetTypeDto assetTypeDto,
-            @PathVariable final Long id) {
-        AssetType assetTypeRequest = modelMapper.map(assetTypeDto, AssetType.class);
-        AssetType updatedAssetType = assetTypeService.updateAssetType(id, assetTypeRequest);
-        EntityModel<AssetTypeDto> assetTypeEntityModel = toModel(modelMapper.map(updatedAssetType, AssetTypeDto.class));
-
-        return ResponseEntity.ok().body(assetTypeEntityModel);
+    public ResponseEntity<EntityModel<AssetTypeDto>> replaceAssetType(@RequestBody final AssetTypeDto assetTypeDto,
+                                                                      @PathVariable final Long id) {
+        try {
+            AssetType assetTypeRequest = modelMapper.map(assetTypeDto, AssetType.class);
+            AssetType updatedAssetType = assetTypeService.updateAssetType(id, assetTypeRequest);
+            EntityModel<AssetTypeDto> assetTypeEntityModel = toModel(modelMapper.map(updatedAssetType, AssetTypeDto.class));
+            return ResponseEntity.ok().body(assetTypeEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/assetTypes/{id}")
     public ResponseEntity<String> deleteAssetType(@PathVariable final Long id) {
-        assetTypeService.deleteAssetType(id);
-        return ResponseEntity.ok().body("Asset type deleted successfully");
+        try {
+            assetTypeService.deleteAssetType(id);
+            return ResponseEntity.ok().body("Asset type deleted successfully");
+        } catch (NoSuchElementException e) {
+            return  ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<AssetTypeDto> toModel(final AssetTypeDto assetType) {

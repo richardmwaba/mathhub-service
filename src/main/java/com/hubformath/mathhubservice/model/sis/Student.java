@@ -1,27 +1,25 @@
 package com.hubformath.mathhubservice.model.sis;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
+import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
+import com.hubformath.mathhubservice.model.systemconfig.Grade;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.CascadeType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-
-import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
-import com.hubformath.mathhubservice.model.systemconfig.Grade;
-import org.springframework.data.annotation.ReadOnlyProperty;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Student {
@@ -71,6 +69,11 @@ public class Student {
     @UpdateTimestamp
     @ReadOnlyProperty
     private LocalDateTime updatedAt;
+
+    @SuppressWarnings("unused")
+    public Student() {
+        // Used by hibernate instantiation
+    }
 
     public Student(final String firstName, final String middleName, final String lastName, final String email, final LocalDate dateOfBirth) {
         this.firstName = firstName;

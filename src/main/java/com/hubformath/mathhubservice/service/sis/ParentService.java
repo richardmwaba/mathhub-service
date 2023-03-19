@@ -1,24 +1,18 @@
 package com.hubformath.mathhubservice.service.sis;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.hubformath.mathhubservice.model.sis.Parent;
 import com.hubformath.mathhubservice.repository.sis.ParentRepository;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ParentService {
 
     private final ParentRepository parentRepository;
 
-    private final String notFoundItemName;
-    
     public ParentService(final ParentRepository parentRepository) {
         this.parentRepository = parentRepository;
-        this.notFoundItemName = "parent";
     }
 
     public List<Parent> getAllParents() {
@@ -26,13 +20,7 @@ public class ParentService {
     }
 
     public Parent getParentById(final Long id) {
-        Optional<Parent> parent = parentRepository.findById(id);
-
-        if(parent.isPresent()){
-            return parent.get();
-        } else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return parentRepository.findById(id).orElseThrow();
     }
 
     public Parent createParent(final Parent parentRequest) {
@@ -51,12 +39,12 @@ public class ParentService {
                     parent.setPhoneNumbers(parentRequest.getPhoneNumbers());
                     return parentRepository.save(parent);
                 }) 
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
     public void deleteParent(final Long id) {
         Parent parent = parentRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         parentRepository.delete(parent);
     }

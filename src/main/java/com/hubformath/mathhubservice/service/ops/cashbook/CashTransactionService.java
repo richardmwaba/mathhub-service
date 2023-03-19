@@ -1,27 +1,20 @@
 package com.hubformath.mathhubservice.service.ops.cashbook;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.hubformath.mathhubservice.model.ops.cashbook.CashTransaction;
+import com.hubformath.mathhubservice.repository.ops.cashbook.CashTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hubformath.mathhubservice.model.ops.cashbook.CashTransaction;
-import com.hubformath.mathhubservice.repository.ops.cashbook.CashTransactionRepository;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
+import java.util.List;
 
 @Service
 public class CashTransactionService {
 
     private final CashTransactionRepository transactionRepository;
 
-    private final String notFoundItemName;
-
     @Autowired
     public CashTransactionService(final CashTransactionRepository transactionRepository) {
-        super();
         this.transactionRepository = transactionRepository;
-        this.notFoundItemName = "transaction";
     }
 
     public List<CashTransaction> getAllTransactions() {
@@ -29,13 +22,7 @@ public class CashTransactionService {
     }
 
     public CashTransaction getTransactionById(Long id) {
-        Optional<CashTransaction> transaction = transactionRepository.findById(id);
-
-        if(transaction.isPresent()){
-            return transaction.get();
-        } else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return transactionRepository.findById(id).orElseThrow();
     }
 
     public CashTransaction createTransaction(CashTransaction cashTransaction) {
@@ -53,12 +40,12 @@ public class CashTransactionService {
                     transaction.setTransactionDate(transactionRequest.getTransactionDateTime());
                     return transactionRepository.save(transaction);
                 })
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
     public void deleteTransaction(Long id) {
         CashTransaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         transactionRepository.delete(transaction);
     }

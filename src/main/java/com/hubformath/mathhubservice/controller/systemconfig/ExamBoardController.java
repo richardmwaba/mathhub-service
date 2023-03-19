@@ -1,8 +1,8 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
 import com.hubformath.mathhubservice.dto.systemconfig.ExamBoardDto;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
-
 import com.hubformath.mathhubservice.service.systemconfig.ExamBoardService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -35,8 +36,8 @@ public class ExamBoardController {
     private final ExamBoardService examBoardService;
 
     @Autowired
-    public ExamBoardController(final ModelMapper modelMapper, final ExamBoardService examBoardService) {
-        this.modelMapper = modelMapper;
+    public ExamBoardController (final ModelMapperConfig modelMapperConfig, final ExamBoardService examBoardService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.examBoardService = examBoardService;
     }
 
@@ -63,28 +64,36 @@ public class ExamBoardController {
 
     @GetMapping("/examBoard/{id}")
     public ResponseEntity<EntityModel<ExamBoardDto>> getExamBoardById(@PathVariable final Long id) {
-        ExamBoard examBoard = examBoardService.getExamBoardById(id);
-        EntityModel<ExamBoardDto> examBoardEntityModel = toModel(modelMapper.map(examBoard, ExamBoardDto.class));
-
-        return ResponseEntity.ok().body(examBoardEntityModel);
+        try {
+            ExamBoard examBoard = examBoardService.getExamBoardById(id);
+            EntityModel<ExamBoardDto> examBoardEntityModel = toModel(modelMapper.map(examBoard, ExamBoardDto.class));
+            return ResponseEntity.ok().body(examBoardEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/examBoard/{id}")
-    public ResponseEntity<EntityModel<ExamBoardDto>> replaceExamBoard(
-            @RequestBody final ExamBoardDto examBoardDto,
-            @PathVariable final Long id) {
-        ExamBoard examBoardRequest = modelMapper.map(examBoardDto, ExamBoard.class);
-        ExamBoard updatedExamBoard = examBoardService.updateExamBoard(id, examBoardRequest);
-        EntityModel<ExamBoardDto> examBoardEntityModel = toModel(modelMapper.map(updatedExamBoard, ExamBoardDto.class));
-
-        return ResponseEntity.ok().body(examBoardEntityModel);
-
+    public ResponseEntity<EntityModel<ExamBoardDto>> replaceExamBoard(@RequestBody final ExamBoardDto examBoardDto,
+                                                                      @PathVariable final Long id) {
+        try {
+            ExamBoard examBoardRequest = modelMapper.map(examBoardDto, ExamBoard.class);
+            ExamBoard updatedExamBoard = examBoardService.updateExamBoard(id, examBoardRequest);
+            EntityModel<ExamBoardDto> examBoardEntityModel = toModel(modelMapper.map(updatedExamBoard, ExamBoardDto.class));
+            return ResponseEntity.ok().body(examBoardEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/examBoard/{id}")
     public ResponseEntity<String> deleteExamBoard(@PathVariable final Long id) {
-        examBoardService.deleteExamBoard(id);
-        return ResponseEntity.ok().body("Exam Board deleted successfully");
+        try {
+            examBoardService.deleteExamBoard(id);
+            return ResponseEntity.ok().body("Exam Board deleted successfully");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<ExamBoardDto> toModel(final ExamBoardDto syllabus) {

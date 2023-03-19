@@ -1,24 +1,18 @@
 package com.hubformath.mathhubservice.service.systemconfig;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import com.hubformath.mathhubservice.repository.systemconfig.PaymentMethodRepository;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class PaymentMethodService {
 
     private final PaymentMethodRepository paymentMethodRepository;
 
-    private final String notFoundItemName;
-    
     public PaymentMethodService(final PaymentMethodRepository paymentMethodRepository) {
         this.paymentMethodRepository = paymentMethodRepository;
-        this.notFoundItemName = "payment method";
     }
 
     public List<PaymentMethod> getAllPaymentMethods() {
@@ -26,13 +20,7 @@ public class PaymentMethodService {
     }
 
     public PaymentMethod getPaymentMethodById(Long id) {
-        Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(id);
-
-        if(paymentMethod.isPresent()){
-            return paymentMethod.get();
-        } else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return paymentMethodRepository.findById(id).orElseThrow();
     }
 
     public PaymentMethod createPaymentMethod(PaymentMethod paymentMethodRequest) {
@@ -46,12 +34,12 @@ public class PaymentMethodService {
                     paymentMethod.setTypeDescription(paymentMethodRequest.getTypeDescription());
                     return paymentMethodRepository.save(paymentMethod);
                 }) 
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
     public void deletePaymentMethod(Long id) {
         PaymentMethod paymentMethod = paymentMethodRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         paymentMethodRepository.delete(paymentMethod);
     }

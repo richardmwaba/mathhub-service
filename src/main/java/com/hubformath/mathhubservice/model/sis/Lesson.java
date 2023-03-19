@@ -54,24 +54,8 @@ public class Lesson {
     @ReadOnlyProperty
     private LocalDateTime updatedAt;
 
-    public Lesson(final Subject subject,
-                  final int occurrence,
-                  final LocalDate lessonStartDate,
-                  final Double lessonRateAmount,
-                  final int lessonDuration,
-                  final LessonPeriod lessonPeriod,
-                  SessionType sessionType) {
-        this.subject = subject;
-        this.occurrence = occurrence;
-        this.lessonStartDate = lessonStartDate;
-        this.lessonRateAmount = lessonRateAmount;
-        this.lessonDuration = lessonDuration;
-        this.lessonPeriod = lessonPeriod;
-        this.sessionType = sessionType;
-        this.lessonPaymentStatus = PaymentStatus.UNPAID;
-    }
-
     public Lesson() {
+        // Used for hibernate instantiation
     }
 
     public Long getId() {

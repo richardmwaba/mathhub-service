@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hubformath.mathhubservice.dto.systemconfig.ExamBoardDto;
 import com.hubformath.mathhubservice.dto.systemconfig.GradeDto;
 import com.hubformath.mathhubservice.dto.systemconfig.LessonDto;
+import com.hubformath.mathhubservice.model.sis.StudentFinancialSummary;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -36,6 +37,8 @@ public class StudentDto {
     private List<AddressDto> addresses;
 
     private List<PhoneNumberDto> phoneNumbers;
+
+    private StudentFinancialSummary studentFinancialSummary;
 
     private LocalDate dateOfBirth;
 
@@ -135,6 +138,14 @@ public class StudentDto {
 
     public void setPhoneNumbers(List<PhoneNumberDto> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
+    }
+
+    public StudentFinancialSummary getStudentFinancialSummary() {
+        return studentFinancialSummary;
+    }
+
+    public void setStudentFinancialSummary(StudentFinancialSummary studentFinancialSummary) {
+        this.studentFinancialSummary = studentFinancialSummary;
     }
 
     public LocalDate getDateOfBirth() {

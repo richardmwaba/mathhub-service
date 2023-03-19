@@ -10,6 +10,8 @@ import java.time.LocalDate;
 
 public class LessonDto {
 
+    private Long id;
+
     private SubjectDto subject;
 
     private Long subjectId;
@@ -27,6 +29,14 @@ public class LessonDto {
     private Double lessonRateAmount;
 
     private PaymentStatus lessonPaymentStatus;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @JsonProperty
     public SubjectDto getSubject() {

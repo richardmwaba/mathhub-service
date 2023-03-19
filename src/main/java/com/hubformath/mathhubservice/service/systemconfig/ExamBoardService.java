@@ -3,23 +3,17 @@ package com.hubformath.mathhubservice.service.systemconfig;
 
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.repository.systemconfig.ExamBoardRepository;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
-
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ExamBoardService {
 
     private final ExamBoardRepository examBoardRepository;
 
-    private final String notFoundItemName;
-
     public ExamBoardService(final ExamBoardRepository examBoardRepository) {
         this.examBoardRepository = examBoardRepository;
-        this.notFoundItemName = "Exam Board";
     }
 
     public List<ExamBoard> getAllExamBoards() {
@@ -27,13 +21,7 @@ public class ExamBoardService {
     }
 
     public ExamBoard getExamBoardById(Long id) {
-        Optional<ExamBoard> examBoard = examBoardRepository.findById(id);
-
-        if(examBoard.isPresent()){
-            return examBoard.get();
-        } else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return examBoardRepository.findById(id).orElseThrow();
     }
 
     public ExamBoard createExamBoard(ExamBoard examBoardRequest) {
@@ -47,12 +35,12 @@ public class ExamBoardService {
                     examBoard.setExamBoardDescription(examBoardRequest.getExamBoardDescription());
                     return examBoardRepository.save(examBoard);
                 })
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
     public void deleteExamBoard(Long id) {
         ExamBoard examBoard = examBoardRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         examBoardRepository.delete(examBoard);
     }

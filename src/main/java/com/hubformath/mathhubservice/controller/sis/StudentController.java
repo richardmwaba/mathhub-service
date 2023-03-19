@@ -3,14 +3,9 @@ package com.hubformath.mathhubservice.controller.sis;
 import com.hubformath.mathhubservice.config.ModelMapperConfig;
 import com.hubformath.mathhubservice.dto.sis.StudentDto;
 import com.hubformath.mathhubservice.dto.systemconfig.LessonDto;
-import com.hubformath.mathhubservice.model.sis.Lesson;
 import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.sis.StudentActionBase;
-import com.hubformath.mathhubservice.model.systemconfig.LessonRate;
-import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import com.hubformath.mathhubservice.service.sis.StudentService;
-import com.hubformath.mathhubservice.service.systemconfig.LessonRateService;
-import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -28,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -38,16 +34,10 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    private final SubjectService subjectService;
-
-    private final LessonRateService lessonRateService;
-
     @Autowired
-    public StudentController(final ModelMapperConfig modelMapperConfig, final StudentService studentService, final SubjectService subjectService, final LessonRateService lessonRateService) {
+    public StudentController(final ModelMapperConfig modelMapperConfig, final StudentService studentService) {
         this.modelMapper = modelMapperConfig.createModelMapper();
         this.studentService = studentService;
-        this.subjectService = subjectService;
-        this.lessonRateService = lessonRateService;
     }
 
     @GetMapping("/students")
@@ -71,45 +61,52 @@ public class StudentController {
 
     @GetMapping("/students/{id}")
     public ResponseEntity<EntityModel<StudentDto>> getStudentById(@PathVariable final Long id) {
-        Student student = studentService.getStudentById(id);
-        EntityModel<StudentDto> studentEntityModel = toModel(modelMapper.map(student, StudentDto.class));
-
-        return ResponseEntity.ok().body(studentEntityModel);
+        try {
+            Student student = studentService.getStudentById(id);
+            EntityModel<StudentDto> studentEntityModel = toModel(modelMapper.map(student, StudentDto.class));
+            return ResponseEntity.ok().body(studentEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/students/{id}")
-    public ResponseEntity<EntityModel<StudentDto>> replaceStudent(
-            @RequestBody final StudentDto studentDto,
-            @PathVariable final Long id) {
-        Student studentRequest = modelMapper.map(studentDto, Student.class);
-        Student updatedStudent = studentService.updateStudent(id, studentRequest);
-        EntityModel<StudentDto> studentEntityModel = toModel(modelMapper.map(updatedStudent, StudentDto.class));
-
-        return ResponseEntity.ok().body(studentEntityModel);
+    public ResponseEntity<EntityModel<StudentDto>> replaceStudent(@RequestBody final StudentDto studentDto,
+                                                                  @PathVariable final Long id) {
+        try {
+            Student studentRequest = modelMapper.map(studentDto, Student.class);
+            Student updatedStudent = studentService.updateStudent(id, studentRequest);
+            EntityModel<StudentDto> studentEntityModel = toModel(modelMapper.map(updatedStudent, StudentDto.class));
+            return ResponseEntity.ok().body(studentEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/students/{id}")
     public ResponseEntity<String> deleteStudent(@PathVariable final Long id) {
-        studentService.deleteStudent(id);
-        return ResponseEntity.ok().body("Student deleted successfully");
+        try {
+            studentService.deleteStudent(id);
+            return ResponseEntity.ok().body("Student deleted successfully");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/students/{id}/lessons")
-    public ResponseEntity<EntityModel<StudentDto>> addStudentLesson(@PathVariable final Long id, @RequestBody final LessonDto lesson) {
-        Lesson newlesson = modelMapper.map(lesson, Lesson.class);
-        Subject subject = subjectService.getSubjectById(lesson.getSubjectId());
-        LessonRate lessonRate = lessonRateService.getLessonRateBySubjectComplexity(subject.getSubjectComplexity());
-        newlesson.setSubject(subject);
-        newlesson.setLessonRateAmount(lessonRate.getAmountPerLesson());
-        Student student = studentService.addLessonToStudent(id, newlesson);
-
-        EntityModel<StudentDto> studentEntityModel = toModel(modelMapper.map(student, StudentDto.class));
-        return ResponseEntity.ok(studentEntityModel);
+    public ResponseEntity<EntityModel<StudentDto>> addStudentLesson(@PathVariable final Long id, @RequestBody final LessonDto lessonRequest) {
+        try {
+            Student student = studentService.addLessonToStudent(id, lessonRequest);
+            EntityModel<StudentDto> studentEntityModel = toModel(modelMapper.map(student, StudentDto.class));
+            return ResponseEntity.ok(studentEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("students/{id}/actions")
     public ResponseEntity<EntityModel<StudentActionBase>> executeStudentAction(@PathVariable final Long id, @RequestBody final StudentActionBase studentActionBase) {
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 
     private EntityModel<StudentDto> toModel(final StudentDto student) {

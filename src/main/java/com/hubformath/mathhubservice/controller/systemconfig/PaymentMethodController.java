@@ -1,9 +1,8 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.systemconfig.PaymentMethodDto;
+import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import com.hubformath.mathhubservice.service.systemconfig.PaymentMethodService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.systemconfig.PaymentMethodDto;
-import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path="/api/v1/systemconfig/ops")
@@ -33,8 +33,8 @@ public class PaymentMethodController {
     private final PaymentMethodService paymentMethodService;
 
 @Autowired
-    public PaymentMethodController(final ModelMapper modelMapper, final PaymentMethodService paymentMethodService) {
-        this.modelMapper = modelMapper;
+    public PaymentMethodController (final ModelMapperConfig modelMapperConfig, final PaymentMethodService paymentMethodService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.paymentMethodService = paymentMethodService;
     }
 
@@ -62,31 +62,36 @@ public class PaymentMethodController {
 
     @GetMapping("/paymentMethods/{id}")
     public ResponseEntity<EntityModel<PaymentMethodDto>> getPaymentMethodById(@PathVariable final Long id) {
-        PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(id);
-
-        EntityModel<PaymentMethodDto> paymentMethodEntityModel = toModel(modelMapper.map(paymentMethod, PaymentMethodDto.class));
-
-        return ResponseEntity.ok().body(paymentMethodEntityModel);
+        try {
+            PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(id);
+            EntityModel<PaymentMethodDto> paymentMethodEntityModel = toModel(modelMapper.map(paymentMethod, PaymentMethodDto.class));
+            return ResponseEntity.ok().body(paymentMethodEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/paymentMethods/{id}")
-    public ResponseEntity<EntityModel<PaymentMethodDto>> replacePaymentMethod(
-            @RequestBody final PaymentMethodDto paymentMethodDto,
-            @PathVariable final Long id) {
-        PaymentMethod paymentMethodRequest = modelMapper.map(paymentMethodDto, PaymentMethod.class);
-        PaymentMethod updatedPaymentMethod = paymentMethodService.updatePaymentMethod(id, paymentMethodRequest);
-
-        EntityModel<PaymentMethodDto> paymentMethodEntityModel = toModel(modelMapper.map(updatedPaymentMethod, PaymentMethodDto.class));
-
-        return ResponseEntity.ok().body(paymentMethodEntityModel);
-
+    public ResponseEntity<EntityModel<PaymentMethodDto>> replacePaymentMethod(@RequestBody final PaymentMethodDto paymentMethodDto,
+                                                                              @PathVariable final Long id) {
+        try {
+            PaymentMethod paymentMethodRequest = modelMapper.map(paymentMethodDto, PaymentMethod.class);
+            PaymentMethod updatedPaymentMethod = paymentMethodService.updatePaymentMethod(id, paymentMethodRequest);
+            EntityModel<PaymentMethodDto> paymentMethodEntityModel = toModel(modelMapper.map(updatedPaymentMethod, PaymentMethodDto.class));
+            return ResponseEntity.ok().body(paymentMethodEntityModel);
+        } catch (NoSuchElementException e) {
+            return  ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/paymentMethods/{id}")
     public ResponseEntity<String> deletePaymentMethod(@PathVariable final Long id) {
-        paymentMethodService.deletePaymentMethod(id);
-
-        return ResponseEntity.ok().body("Payment method deleted successfully");
+        try {
+            paymentMethodService.deletePaymentMethod(id);
+            return ResponseEntity.ok().body("Payment method deleted successfully");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<PaymentMethodDto> toModel(final PaymentMethodDto paymentMethod) {

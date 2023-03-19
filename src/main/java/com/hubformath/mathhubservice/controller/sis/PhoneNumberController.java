@@ -1,8 +1,8 @@
 package com.hubformath.mathhubservice.controller.sis;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.sis.PhoneNumberDto;
+import com.hubformath.mathhubservice.model.sis.PhoneNumber;
 import com.hubformath.mathhubservice.service.sis.PhoneNumberService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.sis.PhoneNumberDto;
-import com.hubformath.mathhubservice.model.sis.PhoneNumber;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/sis")
@@ -32,8 +33,8 @@ public class PhoneNumberController {
     private final PhoneNumberService phoneNumberService;
 
     @Autowired
-    public PhoneNumberController(final ModelMapper modelMapper, final PhoneNumberService phoneNumberService) {
-        this.modelMapper = modelMapper;
+    public PhoneNumberController(final ModelMapperConfig modelMapperConfig, final PhoneNumberService phoneNumberService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.phoneNumberService = phoneNumberService;
     }
 
@@ -51,7 +52,6 @@ public class PhoneNumberController {
     public ResponseEntity<EntityModel<PhoneNumberDto>> newPhoneNumber(@RequestBody final PhoneNumberDto phoneNumberDto) {
         PhoneNumber phoneNumberRequest = modelMapper.map(phoneNumberDto, PhoneNumber.class);
         PhoneNumber newPhoneNumber = phoneNumberService.createPhoneNumber(phoneNumberRequest);
-
         EntityModel<PhoneNumberDto> phoneNumberEntityModel = toModel(modelMapper.map(newPhoneNumber, PhoneNumberDto.class));
 
         return ResponseEntity.created(phoneNumberEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -60,29 +60,36 @@ public class PhoneNumberController {
 
     @GetMapping("/phoneNumbers/{id}")
     public ResponseEntity<EntityModel<PhoneNumberDto>> getPhoneNumberById(@PathVariable final Long id) {
-        PhoneNumber phoneNumber = phoneNumberService.getPhoneNumberById(id);
-        EntityModel<PhoneNumberDto> phoneNumberEntityModel = toModel(modelMapper.map(phoneNumber, PhoneNumberDto.class));
-
-        return ResponseEntity.ok().body(phoneNumberEntityModel);
+        try {
+            PhoneNumber phoneNumber = phoneNumberService.getPhoneNumberById(id);
+            EntityModel<PhoneNumberDto> phoneNumberEntityModel = toModel(modelMapper.map(phoneNumber, PhoneNumberDto.class));
+            return ResponseEntity.ok().body(phoneNumberEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/phoneNumbers/{id}")
-    public ResponseEntity<EntityModel<PhoneNumberDto>> replacePhoneNumber(
-            @RequestBody final PhoneNumberDto phoneNumberDto,
-            @PathVariable final Long id) {
-        PhoneNumber phoneNumberRequest = modelMapper.map(phoneNumberDto, PhoneNumber.class);
-        PhoneNumber updatedPhoneNumber = phoneNumberService.updatePhoneNumber(id, phoneNumberRequest);
-
-        EntityModel<PhoneNumberDto> phoneNumberEntityModel = toModel(modelMapper.map(updatedPhoneNumber, PhoneNumberDto.class));
-
-        return ResponseEntity.ok().body(phoneNumberEntityModel);
-
+    public ResponseEntity<EntityModel<PhoneNumberDto>> replacePhoneNumber(@RequestBody final PhoneNumberDto phoneNumberDto,
+                                                                          @PathVariable final Long id) {
+        try {
+            PhoneNumber phoneNumberRequest = modelMapper.map(phoneNumberDto, PhoneNumber.class);
+            PhoneNumber updatedPhoneNumber = phoneNumberService.updatePhoneNumber(id, phoneNumberRequest);
+            EntityModel<PhoneNumberDto> phoneNumberEntityModel = toModel(modelMapper.map(updatedPhoneNumber, PhoneNumberDto.class));
+            return ResponseEntity.ok().body(phoneNumberEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/phoneNumbers/{id}")
     public ResponseEntity<String> deletePhoneNumber(@PathVariable final Long id) {
-        phoneNumberService.deletePhoneNumber(id);
-        return ResponseEntity.ok().body("PhoneNumber deleted successfully");
+        try {
+            phoneNumberService.deletePhoneNumber(id);
+            return ResponseEntity.ok().body("PhoneNumber deleted successfully");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<PhoneNumberDto> toModel(final PhoneNumberDto phoneNumber) {

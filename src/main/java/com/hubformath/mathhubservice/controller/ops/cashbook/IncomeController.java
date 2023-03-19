@@ -1,8 +1,10 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.ops.cashbook.IncomeDto;
+import com.hubformath.mathhubservice.dto.ops.cashbook.IncomeRequestDto;
+import com.hubformath.mathhubservice.model.ops.cashbook.Income;
+import com.hubformath.mathhubservice.service.ops.cashbook.IncomeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -19,10 +21,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.ops.cashbook.IncomeDto;
-import com.hubformath.mathhubservice.dto.ops.cashbook.IncomeRequestDto;
-import com.hubformath.mathhubservice.model.ops.cashbook.Income;
-import com.hubformath.mathhubservice.service.ops.cashbook.IncomeService;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/ops")
@@ -33,8 +34,8 @@ public class IncomeController {
     private final IncomeService incomeService;
 
     @Autowired
-    public IncomeController(final ModelMapper modelMapper, final IncomeService incomeService) {
-        this.modelMapper = modelMapper;
+    public IncomeController(final ModelMapperConfig modelMapperConfig, final IncomeService incomeService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.incomeService = incomeService;
     }
 
@@ -52,40 +53,43 @@ public class IncomeController {
     @PostMapping("/incomes")
     public ResponseEntity<EntityModel<IncomeDto>> newIncome( @RequestBody final IncomeRequestDto incomeRequestDto) {
         Income newIncome = incomeService.createIncome(incomeRequestDto);
-
         EntityModel<IncomeDto> incomeEntityModel = toModel(modelMapper.map(newIncome, IncomeDto.class));
-
         return ResponseEntity.created(incomeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(incomeEntityModel);
     }
 
     @GetMapping("/incomes/{id}")
     public ResponseEntity<EntityModel<IncomeDto>> getIncomeById(@PathVariable final Long id) {
-        Income income = incomeService.getIncomeById(id);
-
-        EntityModel<IncomeDto> incomeEntityModel = toModel(modelMapper.map(income, IncomeDto.class));
-
-        return ResponseEntity.ok().body(incomeEntityModel);
+        try {
+            Income income = incomeService.getIncomeById(id);
+            EntityModel<IncomeDto> incomeEntityModel = toModel(modelMapper.map(income, IncomeDto.class));
+            return ResponseEntity.ok().body(incomeEntityModel);
+        } catch (NoSuchElementException e) {
+            return  ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/incomes/{id}")
-    public ResponseEntity<EntityModel<IncomeDto>> replaceIncome(
-            @RequestBody final IncomeDto incomeDto,
-            @PathVariable final Long id) {
-        Income incomeRequest = modelMapper.map(incomeDto, Income.class);
-        Income updatedIncome = incomeService.updateIncome(id, incomeRequest);
-
-        EntityModel<IncomeDto> incomeEntityModel = toModel(modelMapper.map(updatedIncome, IncomeDto.class));
-
-        return ResponseEntity.ok().body(incomeEntityModel);
-
+    public ResponseEntity<EntityModel<IncomeDto>> replaceIncome(@RequestBody final IncomeDto incomeDto,
+                                                                @PathVariable final Long id) {
+        try {
+            Income incomeRequest = modelMapper.map(incomeDto, Income.class);
+            Income updatedIncome = incomeService.updateIncome(id, incomeRequest);
+            EntityModel<IncomeDto> incomeEntityModel = toModel(modelMapper.map(updatedIncome, IncomeDto.class));
+            return ResponseEntity.ok().body(incomeEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/incomes/{id}")
     public ResponseEntity<String> deleteIncome(@PathVariable final Long id) {
-        incomeService.deleteIncome(id);
-
-        return ResponseEntity.ok().body("Income deleted successfully");
+        try {
+            incomeService.deleteIncome(id);
+            return ResponseEntity.ok().body("Income deleted successfully");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<IncomeDto> toModel(final IncomeDto income) {

@@ -1,6 +1,8 @@
 package com.hubformath.mathhubservice.service.sis;
 
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
 import com.hubformath.mathhubservice.dto.sis.StudentDto;
+import com.hubformath.mathhubservice.dto.systemconfig.LessonDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.sis.Address;
 import com.hubformath.mathhubservice.model.sis.Lesson;
@@ -10,9 +12,13 @@ import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.sis.StudentFinancialSummary;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
+import com.hubformath.mathhubservice.model.systemconfig.LessonRate;
+import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import com.hubformath.mathhubservice.repository.sis.StudentRepository;
 import com.hubformath.mathhubservice.service.systemconfig.ExamBoardService;
 import com.hubformath.mathhubservice.service.systemconfig.GradeService;
+import com.hubformath.mathhubservice.service.systemconfig.LessonRateService;
+import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +32,10 @@ public class StudentService {
 
     private final ExamBoardService examBoardService;
 
+    private final SubjectService subjectService;
+
+    private final LessonRateService lessonRateService;
+
     private final StudentRepository studentRepository;
 
     private final ModelMapper modelMapper;
@@ -33,11 +43,15 @@ public class StudentService {
     public StudentService(final StudentRepository studentRepository,
                           final GradeService gradeService,
                           final ExamBoardService examBoardService,
-                          final ModelMapper modelMapper) {
+                          final SubjectService subjectService,
+                          final LessonRateService lessonRateService,
+                          final ModelMapperConfig modelMapperConfig) {
         this.studentRepository = studentRepository;
         this.gradeService = gradeService;
         this.examBoardService = examBoardService;
-        this.modelMapper = modelMapper;
+        this.subjectService = subjectService;
+        this.lessonRateService = lessonRateService;
+        this.modelMapper = modelMapperConfig.createModelMapper();
     }
 
     public List<Student> getAllStudents() {
@@ -97,21 +111,27 @@ public class StudentService {
                 .orElseThrow();
     }
 
-    public Student addLessonToStudent(final Long studentId, final Lesson lesson) {
-        return studentRepository.findById(studentId).map(student -> {
-            student.getLessons().add(lesson);
-            student.setStudentFinancialSummary(establishStudentFinancialSummary(student));
-            return studentRepository.save(student);
-        }).orElseThrow();
+    public Student addLessonToStudent(final Long studentId, final LessonDto lesson) {
+        Student student = getStudentById(studentId);
+        Subject subject = subjectService.getSubjectById(lesson.getSubjectId());
+        LessonRate lessonRate = lessonRateService.getLessonRateBySubjectComplexity(subject.getSubjectComplexity());
+        Lesson newlesson = modelMapper.map(lesson, Lesson.class);
+        newlesson.setSubject(subject);
+        newlesson.setLessonRateAmount(lessonRate.getAmountPerLesson());
+        newlesson.setLessonPaymentStatus(PaymentStatus.UNPAID);
+        student.getLessons().add(newlesson);
+        student.setStudentFinancialSummary(establishStudentFinancialSummary(student));
+
+        return studentRepository.save(student);
     }
 
     private StudentFinancialSummary establishStudentFinancialSummary(final Student student ) {
         Double amountOwing = student.getLessons()
                 .stream()
                 .filter(lesson -> lesson.getLessonPaymentStatus() == PaymentStatus.UNPAID)
-                .map(Lesson::getLessonRateAmount)
+                .map(lesson -> lesson.getLessonRateAmount() * lesson.getOccurrence())
                 .reduce(Double::sum)
-                .orElse(0.0);
+                .orElse(0d);
         return new StudentFinancialSummary(student.isOwingPayment(), amountOwing);
     }
 

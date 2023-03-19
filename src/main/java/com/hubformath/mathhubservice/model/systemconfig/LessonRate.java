@@ -26,7 +26,7 @@ public class LessonRate {
 
     private Instant effectiveDate;
 
-    private Instant expiryDate;
+    private Instant expiredDate;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -34,17 +34,22 @@ public class LessonRate {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @SuppressWarnings("unused")
+    public LessonRate(){
+        // Used by hibernate instantiation
+    }
+
     public LessonRate(
             final Double amountPerLesson,
             final SubjectComplexity subjectComplexity,
             final Instant effectiveDate,
-            final Instant expiryDate,
+            final Instant expiredDate,
             final LocalDateTime createdAt,
             final LocalDateTime updatedAt) {
         this.amountPerLesson = amountPerLesson;
         this.subjectComplexity = subjectComplexity;
         this.effectiveDate = effectiveDate;
-        this.expiryDate = expiryDate;
+        this.expiredDate = expiredDate;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -81,12 +86,12 @@ public class LessonRate {
         this.effectiveDate = effectiveDate;
     }
 
-    public Instant getExpiryDate() {
-        return expiryDate;
+    public Instant getExpiredDate() {
+        return expiredDate;
     }
 
-    public void setExpiryDate(Instant expiryDate) {
-        this.expiryDate = expiryDate;
+    public void setExpiredDate(Instant expiredDate) {
+        this.expiredDate = expiredDate;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -114,14 +119,14 @@ public class LessonRate {
         return Objects.equals(this.id, lessonRate.id)
                 && Objects.equals(this.amountPerLesson, lessonRate.amountPerLesson)
                 && Objects.equals(this.effectiveDate, lessonRate.effectiveDate)
-                && Objects.equals(this.expiryDate, lessonRate.expiryDate)
+                && Objects.equals(this.expiredDate, lessonRate.expiredDate)
                 && Objects.equals(this.createdAt, lessonRate.createdAt)
                 && Objects.equals(this.updatedAt, lessonRate.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, amountPerLesson, effectiveDate, expiryDate, createdAt, updatedAt);
+        return Objects.hash(id, amountPerLesson, effectiveDate, expiredDate, createdAt, updatedAt);
     }
 
     @Override
@@ -130,7 +135,7 @@ public class LessonRate {
                 "id=" + id +
                 ", amountPerLesson=" + amountPerLesson +
                 ", effectiveDate=" + effectiveDate +
-                ", expiredDate=" + expiryDate +
+                ", expiredDate=" + expiredDate +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
