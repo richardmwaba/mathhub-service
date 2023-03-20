@@ -1,8 +1,8 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.systemconfig.AssessmentTypeDto;
+import com.hubformath.mathhubservice.model.systemconfig.AssessmentType;
 import com.hubformath.mathhubservice.service.systemconfig.AssessmentTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,21 +20,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.systemconfig.AssessmentTypeDto;
-import com.hubformath.mathhubservice.model.systemconfig.AssessmentType;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/systemconfig/sis")
 public class AssessmentTypeController {
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     private final AssessmentTypeService assessmentTypeService;
 
     @Autowired
-    public AssessmentTypeController(final ModelMapper modelMapper, final AssessmentTypeService assessmentTypeService
+    public AssessmentTypeController(final ModelMapperConfig modelMapperConfig, final AssessmentTypeService assessmentTypeService
     ) {
-        this.modelMapper = modelMapper;
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.assessmentTypeService = assessmentTypeService;
     }
 
@@ -60,28 +61,36 @@ public class AssessmentTypeController {
 
     @GetMapping("/assessmentTypes/{id}")
     public ResponseEntity<EntityModel<AssessmentTypeDto>> getAssessmentTypeById(@PathVariable final Long id) {
-        AssessmentType assessmentType = assessmentTypeService.getAssessmentTypeById(id);
-        EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(assessmentType, AssessmentTypeDto.class));
-
-        return ResponseEntity.ok().body(assessmentTypeEntityModel);
+        try {
+            AssessmentType assessmentType = assessmentTypeService.getAssessmentTypeById(id);
+            EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(assessmentType, AssessmentTypeDto.class));
+            return ResponseEntity.ok().body(assessmentTypeEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/assessmentTypes/{id}")
-    public ResponseEntity<EntityModel<AssessmentTypeDto>> replaceAssessmentType(
-            @RequestBody final AssessmentTypeDto assessmentTypeDto,
-            @PathVariable final Long id) {
-        AssessmentType assessmentTypeRequest = modelMapper.map(assessmentTypeDto, AssessmentType.class);
-        AssessmentType updatedAssessmentType = assessmentTypeService.updateAssessmentType(id, assessmentTypeRequest);
-        EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(updatedAssessmentType, AssessmentTypeDto.class));
-
-        return ResponseEntity.ok().body(assessmentTypeEntityModel);
-
+    public ResponseEntity<EntityModel<AssessmentTypeDto>> replaceAssessmentType(@RequestBody final AssessmentTypeDto assessmentTypeDto,
+                                                                                @PathVariable final Long id) {
+        try {
+            AssessmentType assessmentTypeRequest = modelMapper.map(assessmentTypeDto, AssessmentType.class);
+            AssessmentType updatedAssessmentType = assessmentTypeService.updateAssessmentType(id, assessmentTypeRequest);
+            EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(updatedAssessmentType, AssessmentTypeDto.class));
+            return ResponseEntity.ok().body(assessmentTypeEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/assessmentTypes/{id}")
     public ResponseEntity<String> deleteAssessmentType(@PathVariable final Long id) {
-        assessmentTypeService.deleteAssessmentType(id);
-        return ResponseEntity.ok().body("Assessment type deleted successfully");
+        try {
+            assessmentTypeService.deleteAssessmentType(id);
+            return ResponseEntity.ok().body("Assessment type deleted successfully");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<AssessmentTypeDto> toModel(final AssessmentTypeDto assessmentType) {

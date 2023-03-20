@@ -1,8 +1,10 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.ops.cashbook.ExpenseDto;
+import com.hubformath.mathhubservice.dto.ops.cashbook.ExpenseRequestDto;
+import com.hubformath.mathhubservice.model.ops.cashbook.Expense;
+import com.hubformath.mathhubservice.service.ops.cashbook.ExpenseService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -19,10 +21,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.ops.cashbook.ExpenseDto;
-import com.hubformath.mathhubservice.dto.ops.cashbook.ExpenseRequestDto;
-import com.hubformath.mathhubservice.model.ops.cashbook.Expense;
-import com.hubformath.mathhubservice.service.ops.cashbook.ExpenseService;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 
 @RestController
@@ -34,9 +35,9 @@ public class ExpenseController {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public ExpenseController(final ExpenseService expenseService, final ModelMapper modelMapper) {
+    public ExpenseController(final ExpenseService expenseService, final ModelMapperConfig modelMapperConfig) {
         this.expenseService = expenseService;
-        this.modelMapper = modelMapper;
+        this.modelMapper = modelMapperConfig.createModelMapper();
     }
 
     @GetMapping("/expenses")
@@ -62,31 +63,36 @@ public class ExpenseController {
 
     @GetMapping("/expenses/{id}")
     public ResponseEntity<EntityModel<ExpenseDto>> getExpenseById(@PathVariable final Long id) {
-        Expense expense = expenseService.getExpenseById(id);
-
-        EntityModel<ExpenseDto> expenseEntityModel = toModel(modelMapper.map(expense, ExpenseDto.class));
-
-        return ResponseEntity.ok().body(expenseEntityModel);
+        try {
+            Expense expense = expenseService.getExpenseById(id);
+            EntityModel<ExpenseDto> expenseEntityModel = toModel(modelMapper.map(expense, ExpenseDto.class));
+            return ResponseEntity.ok().body(expenseEntityModel);
+        } catch (NoSuchElementException e) {
+            return  ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/expenses/{id}")
-    public ResponseEntity<EntityModel<ExpenseDto>> replaceExpense(
-            @RequestBody final ExpenseDto expenseDto,
-            @PathVariable final Long id) {
-        Expense expenseRequest = modelMapper.map(expenseDto, Expense.class);
-        Expense updatedExpense = expenseService.updateExpense(id, expenseRequest);
-
-        EntityModel<ExpenseDto> expenseEntityModel = toModel(modelMapper.map(updatedExpense, ExpenseDto.class));
-
-        return ResponseEntity.ok().body(expenseEntityModel);
-
+    public ResponseEntity<EntityModel<ExpenseDto>> replaceExpense(@RequestBody final ExpenseDto expenseDto,
+                                                                  @PathVariable final Long id) {
+        try {
+            Expense expenseRequest = modelMapper.map(expenseDto, Expense.class);
+            Expense updatedExpense = expenseService.updateExpense(id, expenseRequest);
+            EntityModel<ExpenseDto> expenseEntityModel = toModel(modelMapper.map(updatedExpense, ExpenseDto.class));
+            return ResponseEntity.ok().body(expenseEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/expenses/{id}")
     public ResponseEntity<String> deleteExpense(@PathVariable final Long id) {
-        expenseService.deleteExpense(id);
-
-        return ResponseEntity.ok().body("Expense deleted successfully");
+        try {
+            expenseService.deleteExpense(id);
+            return ResponseEntity.ok().body("Expense deleted successfully");
+        } catch (NoSuchElementException e) {
+            return  ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<ExpenseDto> toModel(final ExpenseDto expense) {

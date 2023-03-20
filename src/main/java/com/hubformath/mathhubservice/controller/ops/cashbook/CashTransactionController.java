@@ -1,25 +1,26 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.ops.cashbook.CashTransactionDto;
+import com.hubformath.mathhubservice.model.ops.cashbook.CashTransaction;
+import com.hubformath.mathhubservice.service.ops.cashbook.CashTransactionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.ops.cashbook.CashTransactionDto;
-import com.hubformath.mathhubservice.model.ops.cashbook.CashTransaction;
-import com.hubformath.mathhubservice.service.ops.cashbook.CashTransactionService;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 
 @RestController
@@ -31,8 +32,8 @@ public class CashTransactionController {
     private final CashTransactionService transactionService;
 
     @Autowired
-    public CashTransactionController(final ModelMapper modelMapper, final CashTransactionService transactionService) {
-        this.modelMapper = modelMapper;
+    public CashTransactionController(final ModelMapperConfig modelMapperConfig, final CashTransactionService transactionService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.transactionService = transactionService;
     }
 
@@ -49,31 +50,37 @@ public class CashTransactionController {
 
     @GetMapping("/transactions/{id}")
     public ResponseEntity<EntityModel<CashTransactionDto>> getTransactionById(@PathVariable final Long id) {
-        CashTransaction transaction = transactionService.getTransactionById(id);
-
-        EntityModel<CashTransactionDto> transactionEntityModel = toModel(modelMapper.map(transaction, CashTransactionDto.class));
-
-        return ResponseEntity.ok().body(transactionEntityModel);
+        try {
+            CashTransaction transaction = transactionService.getTransactionById(id);
+            EntityModel<CashTransactionDto> transactionEntityModel = toModel(modelMapper.map(transaction, CashTransactionDto.class));
+            return ResponseEntity.ok().body(transactionEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PatchMapping("/transactions/{id}")
-    public ResponseEntity<EntityModel<CashTransactionDto>> replaceTransaction(
-            @RequestBody final CashTransactionDto transactionDto,
-            @PathVariable final Long id) {
-        CashTransaction transactionRequest = modelMapper.map(transactionDto, CashTransaction.class);
-        CashTransaction updatedTransaction = transactionService.updateTransaction(id, transactionRequest);
-
-        EntityModel<CashTransactionDto> transactionEntityModel = toModel(modelMapper.map(updatedTransaction, CashTransactionDto.class));
-
-        return ResponseEntity.ok().body(transactionEntityModel);
+    public ResponseEntity<EntityModel<CashTransactionDto>> replaceTransaction(@RequestBody final CashTransactionDto transactionDto,
+                                                                              @PathVariable final Long id) {
+        try {
+            CashTransaction transactionRequest = modelMapper.map(transactionDto, CashTransaction.class);
+            CashTransaction updatedTransaction = transactionService.updateTransaction(id, transactionRequest);
+            EntityModel<CashTransactionDto> transactionEntityModel = toModel(modelMapper.map(updatedTransaction, CashTransactionDto.class));
+            return ResponseEntity.ok().body(transactionEntityModel);
+        } catch (NoSuchElementException e) {
+            return  ResponseEntity.notFound().build();
+        }
 
     }
 
     @DeleteMapping("/transactions/{id}")
     public ResponseEntity<String> deleteTransaction(@PathVariable final Long id) {
-        transactionService.deleteTransaction(id);
-
-        return ResponseEntity.ok().body("Transaction deleted successfully");
+        try {
+            transactionService.deleteTransaction(id);
+            return ResponseEntity.ok().body("Transaction deleted successfully");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<CashTransactionDto> toModel(final CashTransactionDto transaction) {

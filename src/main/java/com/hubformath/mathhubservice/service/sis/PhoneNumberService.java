@@ -1,25 +1,19 @@
 package com.hubformath.mathhubservice.service.sis;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.hubformath.mathhubservice.model.sis.PhoneNumber;
 import com.hubformath.mathhubservice.repository.sis.PhoneNumberRepository;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class PhoneNumberService {
 
     private final PhoneNumberRepository phoneNumberRepository;
 
-    private final String notFoundItemName;
-    
     public PhoneNumberService(final PhoneNumberRepository phoneNumberRepository) {
         super();
         this.phoneNumberRepository = phoneNumberRepository;
-        this.notFoundItemName = "phoneNumber";
     }
 
     public List<PhoneNumber> getAllPhoneNumbers() {
@@ -27,13 +21,7 @@ public class PhoneNumberService {
     }
 
     public PhoneNumber getPhoneNumberById(final Long id) {
-        Optional<PhoneNumber> phoneNumber = phoneNumberRepository.findById(id);
-
-        if(phoneNumber.isPresent()){
-            return phoneNumber.get();
-        } else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return phoneNumberRepository.findById(id).orElseThrow();
     }
 
     public PhoneNumber createPhoneNumber(final PhoneNumber phoneNumberRequest) {
@@ -48,12 +36,12 @@ public class PhoneNumberService {
                     phoneNumber.setNumber(phoneNumberRequest.getNumber());
                     return phoneNumberRepository.save(phoneNumber);
                 }) 
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
     public void deletePhoneNumber(final Long id) {
         PhoneNumber phoneNumber = phoneNumberRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         phoneNumberRepository.delete(phoneNumber);
     }

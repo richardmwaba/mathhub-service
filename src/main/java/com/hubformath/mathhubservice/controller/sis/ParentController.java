@@ -1,8 +1,8 @@
 package com.hubformath.mathhubservice.controller.sis;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.sis.ParentDto;
+import com.hubformath.mathhubservice.model.sis.Parent;
 import com.hubformath.mathhubservice.service.sis.ParentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.sis.ParentDto;
-import com.hubformath.mathhubservice.model.sis.Parent;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/sis")
@@ -32,8 +33,8 @@ public class ParentController {
     private final ParentService parentService;
 
     @Autowired
-    public ParentController(final ModelMapper modelMapper, final ParentService parentService) {
-        this.modelMapper = modelMapper;
+    public ParentController(final ModelMapperConfig modelMapperConfig, final ParentService parentService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.parentService = parentService;
     }
 
@@ -59,29 +60,36 @@ public class ParentController {
 
     @GetMapping("/parents/{id}")
     public ResponseEntity<EntityModel<ParentDto>> getParentById(@PathVariable final Long id) {
-        Parent parent = parentService.getParentById(id);
-        EntityModel<ParentDto> parentEntityModel = toModel(modelMapper.map(parent, ParentDto.class));
-
-        return ResponseEntity.ok().body(parentEntityModel);
+        try {
+            Parent parent = parentService.getParentById(id);
+            EntityModel<ParentDto> parentEntityModel = toModel(modelMapper.map(parent, ParentDto.class));
+            return ResponseEntity.ok().body(parentEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/parents/{id}")
-    public ResponseEntity<EntityModel<ParentDto>> replaceParent(
-            @RequestBody final ParentDto parentDto,
-            @PathVariable final Long id) {
-        Parent parentRequest = modelMapper.map(parentDto, Parent.class);
-        Parent updatedParent = parentService.updateParent(id, parentRequest);
-
-        EntityModel<ParentDto> parentEntityModel = toModel(modelMapper.map(updatedParent, ParentDto.class));
-
-        return ResponseEntity.ok().body(parentEntityModel);
-
+    public ResponseEntity<EntityModel<ParentDto>> replaceParent(@RequestBody final ParentDto parentDto,
+                                                                @PathVariable final Long id) {
+        try {
+            Parent parentRequest = modelMapper.map(parentDto, Parent.class);
+            Parent updatedParent = parentService.updateParent(id, parentRequest);
+            EntityModel<ParentDto> parentEntityModel = toModel(modelMapper.map(updatedParent, ParentDto.class));
+            return ResponseEntity.ok().body(parentEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/parents/{id}")
     public ResponseEntity<String> deleteParent(@PathVariable final Long id) {
-        parentService.deleteParent(id);
-        return ResponseEntity.ok().body("Parent deleted successfully");
+        try {
+            parentService.deleteParent(id);
+            return ResponseEntity.ok().body("Parent deleted successfully");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     public EntityModel<ParentDto> toModel(final ParentDto parent) {
@@ -97,6 +105,6 @@ public class ParentController {
 
         return CollectionModel.of(parentList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ParentController.class)
                         .getAllParents())
-                .withSelfRel());
+                .withRel("parents"));
     }
 }

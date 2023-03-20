@@ -1,15 +1,22 @@
 package com.hubformath.mathhubservice.model.sis;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Objects;
-
-import javax.persistence.*;
-
+import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.ReadOnlyProperty;
+
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class Lesson {
@@ -26,6 +33,8 @@ public class Lesson {
 
     private LocalDate lessonStartDate;
 
+    private Double lessonRateAmount;
+
     private int lessonDuration;
 
     @Enumerated(EnumType.STRING)
@@ -34,24 +43,20 @@ public class Lesson {
     @Enumerated(EnumType.STRING)
     private SessionType sessionType;
 
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus lessonPaymentStatus;
+
     @CreationTimestamp
     @ReadOnlyProperty
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @ReadOnlyProperty
     private LocalDateTime updatedAt;
 
-    public Lesson(final Subject subject, final int occurrence, final LocalDate lessonStartDate, final int lessonDuration, final LessonPeriod lessonPeriod,
-                  SessionType sessionType) {
-        this.subject = subject;
-        this.occurrence = occurrence;
-        this.lessonStartDate = lessonStartDate;
-        this.lessonDuration = lessonDuration;
-        this.lessonPeriod = lessonPeriod;
-        this.sessionType = sessionType;
+    public Lesson() {
+        // Used for hibernate instantiation
     }
-
-    public Lesson(){}
 
     public Long getId() {
         return id;
@@ -85,6 +90,14 @@ public class Lesson {
         this.lessonStartDate = lessonStartDate;
     }
 
+    public Double getLessonRateAmount() {
+        return lessonRateAmount;
+    }
+
+    public void setLessonRateAmount(Double lessonRateAmount) {
+        this.lessonRateAmount = lessonRateAmount;
+    }
+
     public int getLessonDuration() {
         return lessonDuration;
     }
@@ -107,6 +120,14 @@ public class Lesson {
 
     public void setSessionType(SessionType sessionType) {
         this.sessionType = sessionType;
+    }
+
+    public PaymentStatus getLessonPaymentStatus() {
+        return lessonPaymentStatus;
+    }
+
+    public void setLessonPaymentStatus(PaymentStatus lessonPaymentStatus) {
+        this.lessonPaymentStatus = lessonPaymentStatus;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -133,26 +154,44 @@ public class Lesson {
             return false;
         return Objects.equals(this.id, lesson.id) && Objects.equals(this.occurrence, lesson.occurrence)
                 && Objects.equals(this.lessonStartDate, lesson.lessonStartDate)
+                && Objects.equals(this.lessonRateAmount, lesson.lessonRateAmount)
                 && Objects.equals(this.lessonDuration, lesson.lessonDuration)
                 && Objects.equals(this.lessonPeriod, lesson.lessonPeriod)
                 && Objects.equals(this.sessionType, lesson.sessionType)
+                && Objects.equals(this.lessonPaymentStatus, lesson.lessonPaymentStatus)
                 && Objects.equals(this.createdAt, lesson.createdAt)
                 && Objects.equals(this.updatedAt, lesson.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.occurrence, this.lessonStartDate, this.lessonDuration,
+        return Objects.hash(
+                this.id,
+                this.occurrence,
+                this.lessonStartDate,
+                this.lessonRateAmount,
+                this.lessonDuration,
                 this.sessionType,
-                this.lessonPeriod, this.createdAt, this.updatedAt);
+                this.lessonPaymentStatus,
+                this.lessonPeriod,
+                this.createdAt,
+                this.updatedAt);
     }
 
     @Override
     public String toString() {
-        return "Lesson {id=" + this.id + ", numberOfLessons=" + this.occurrence + ", lessonStartDate="
-                + this.lessonStartDate
-                + ", LastName="
-                + this.lessonDuration + ", lessonPeriods=" + this.lessonPeriod + ", sessionType=" + this.sessionType
-                + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
+        return "Lesson{" +
+                "id=" + id +
+                ", subject=" + subject +
+                ", occurrence=" + occurrence +
+                ", lessonStartDate=" + lessonStartDate +
+                ", lessonRate=" + lessonRateAmount +
+                ", lessonDuration=" + lessonDuration +
+                ", lessonPeriod=" + lessonPeriod +
+                ", sessionType=" + sessionType +
+                ", lessonPaymentStatus=" + lessonPaymentStatus +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

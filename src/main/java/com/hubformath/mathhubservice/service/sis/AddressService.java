@@ -1,25 +1,18 @@
 package com.hubformath.mathhubservice.service.sis;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.hubformath.mathhubservice.model.sis.Address;
 import com.hubformath.mathhubservice.repository.sis.AddressRepository;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AddressService {
 
     private final AddressRepository addressRepository;
 
-    private final String notFoundItemName;
-    
     public AddressService(final AddressRepository addressRepository) {
-        super();
         this.addressRepository = addressRepository;
-        this.notFoundItemName = "address";
     }
 
     public List<Address> getAllAddresses() {
@@ -27,13 +20,7 @@ public class AddressService {
     }
 
     public Address getAddressById(final Long id) {
-        Optional<Address> address = addressRepository.findById(id);
-
-        if(address.isPresent()){
-            return address.get();
-        } else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return addressRepository.findById(id).orElseThrow();
     }
 
     public Address createAddress(final Address addressRequest) {
@@ -52,12 +39,12 @@ public class AddressService {
                     address.setZipCode(addressRequest.getZipCode());
                     return addressRepository.save(address);
                 }) 
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
     public void deleteAddress(final Long id) {
         Address address = addressRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         addressRepository.delete(address);
     }

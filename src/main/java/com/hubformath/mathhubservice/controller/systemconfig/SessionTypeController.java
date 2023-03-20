@@ -1,8 +1,8 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
+import com.hubformath.mathhubservice.config.ModelMapperConfig;
+import com.hubformath.mathhubservice.dto.systemconfig.SessionTypeDto;
+import com.hubformath.mathhubservice.model.systemconfig.SessionType;
 import com.hubformath.mathhubservice.service.systemconfig.SessionTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hubformath.mathhubservice.dto.systemconfig.SessionTypeDto;
-import com.hubformath.mathhubservice.model.systemconfig.SessionType;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path="/v1/sis/systemconfig/ops")
@@ -32,8 +33,8 @@ public class SessionTypeController {
     private final SessionTypeService sessionTypeService;
 
     @Autowired
-    public SessionTypeController(final ModelMapper modelMapper, final SessionTypeService sessionTypeService) {
-        this.modelMapper = modelMapper;
+    public SessionTypeController (final ModelMapperConfig modelMapperConfig, final SessionTypeService sessionTypeService) {
+        this.modelMapper = modelMapperConfig.createModelMapper();
         this.sessionTypeService = sessionTypeService;
     }
 
@@ -60,28 +61,36 @@ public class SessionTypeController {
 
     @GetMapping("/sessionTypes/{id}")
     public ResponseEntity<EntityModel<SessionTypeDto>> getSessionTypeById(@PathVariable final Long id) {
-        SessionType sessionType = sessionTypeService.getSessionTypeById(id);
-        EntityModel<SessionTypeDto> sessionTypeEntityModel = toModel(modelMapper.map(sessionType, SessionTypeDto.class));
-
-        return ResponseEntity.ok().body(sessionTypeEntityModel);
+        try {
+            SessionType sessionType = sessionTypeService.getSessionTypeById(id);
+            EntityModel<SessionTypeDto> sessionTypeEntityModel = toModel(modelMapper.map(sessionType, SessionTypeDto.class));
+            return ResponseEntity.ok().body(sessionTypeEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/sessionTypes/{id}")
-    public ResponseEntity<EntityModel<SessionTypeDto>> replaceSessionType(
-            @RequestBody final SessionTypeDto sessionTypeDto,
-            @PathVariable final Long id) {
-        SessionType sessionTypeRequest = modelMapper.map(sessionTypeDto, SessionType.class);
-        SessionType updatedSessionType = sessionTypeService.updateSessionType(id, sessionTypeRequest);
-        EntityModel<SessionTypeDto> sessionTypeEntityModel = toModel(modelMapper.map(updatedSessionType, SessionTypeDto.class));
-
-        return ResponseEntity.ok().body(sessionTypeEntityModel);
-
+    public ResponseEntity<EntityModel<SessionTypeDto>> replaceSessionType(@RequestBody final SessionTypeDto sessionTypeDto,
+                                                                          @PathVariable final Long id) {
+        try {
+            SessionType sessionTypeRequest = modelMapper.map(sessionTypeDto, SessionType.class);
+            SessionType updatedSessionType = sessionTypeService.updateSessionType(id, sessionTypeRequest);
+            EntityModel<SessionTypeDto> sessionTypeEntityModel = toModel(modelMapper.map(updatedSessionType, SessionTypeDto.class));
+            return ResponseEntity.ok().body(sessionTypeEntityModel);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/sessionTypes/{id}")
     public ResponseEntity<String> deleteSessionType(@PathVariable final Long id) {
-        sessionTypeService.deleteSessionType(id);
-        return ResponseEntity.ok().body("Session type deleted successfully");
+        try {
+            sessionTypeService.deleteSessionType(id);
+            return ResponseEntity.ok().body("Session type deleted successfully");
+        } catch (NoSuchElementException e) {
+            return  ResponseEntity.notFound().build();
+        }
     }
 
     private EntityModel<SessionTypeDto> toModel(final SessionTypeDto sessionType) {

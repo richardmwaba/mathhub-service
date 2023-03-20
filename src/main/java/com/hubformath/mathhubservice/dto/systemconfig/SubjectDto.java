@@ -40,12 +40,10 @@ public class SubjectDto {
         this.subjectGradeId = subjectGradeId;
     }
 
-    @JsonIgnore
     public SubjectComplexity getSubjectComplexity() {
         return subjectComplexity;
     }
 
-    @JsonProperty
     public void setSubjectComplexity(SubjectComplexity subjectComplexity) {
         this.subjectComplexity = subjectComplexity;
     }

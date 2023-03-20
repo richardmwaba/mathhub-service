@@ -5,38 +5,26 @@ import com.hubformath.mathhubservice.model.systemconfig.Grade;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import com.hubformath.mathhubservice.model.systemconfig.SubjectComplexity;
 import com.hubformath.mathhubservice.repository.systemconfig.SubjectRepository;
-import com.hubformath.mathhubservice.util.exceptions.ItemNotFoundException;
-
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SubjectService {
 
-    GradeService gradeService;
+    private final GradeService gradeService;
 
     private final SubjectRepository subjectRepository;
-
-    private final String notFoundItemName;
 
     public SubjectService(final GradeService gradeService, final SubjectRepository subjectRepository){
         this.gradeService = gradeService;
         this.subjectRepository = subjectRepository;
-        this.notFoundItemName = "subject";
     }
 
     public List<Subject> getAllSubjects() { return subjectRepository.findAll(); }
 
     public Subject getSubjectById(Long id){
-        Optional<Subject> subject = subjectRepository.findById(id);
-
-        if (subject.isPresent()){
-            return subject.get();
-        }else {
-            throw new ItemNotFoundException(id, notFoundItemName);
-        }
+        return subjectRepository.findById(id).orElseThrow();
     }
 
     public Subject createSubject(SubjectDto subjectRequest){
@@ -59,12 +47,12 @@ public class SubjectService {
                     subject.setSubjectGrade(subjectRequest.getSubjectGrade());
                     return subjectRepository.save(subject);
                 })
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
     }
 
     public void deleteSubject(Long id) {
         Subject subject = subjectRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id, notFoundItemName));
+                .orElseThrow();
 
         subjectRepository.delete(subject);
     }
