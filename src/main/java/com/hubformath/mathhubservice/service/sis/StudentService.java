@@ -130,7 +130,7 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    private StudentFinancialSummary computeStudentFinancialSummary(final Student student ) {
+    public StudentFinancialSummary computeStudentFinancialSummary(final Student student ) {
         Double amountOwing = student.getLessons()
                 .stream()
                 .filter(lesson -> lesson.getLessonPaymentStatus() == PaymentStatus.UNPAID)
