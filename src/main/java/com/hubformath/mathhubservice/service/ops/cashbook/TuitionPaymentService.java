@@ -66,6 +66,9 @@ public class TuitionPaymentService {
         final CashTransaction newCashTransaction = new CashTransaction(paymentMethod, CashTransactionType.CASH_IN, narration, amount);
         final Receipt receipt = new Receipt(newCashTransaction.getTransactionNumber());
 
+        // Update student financial summary
+        student.setStudentFinancialSummary(studentService.computeStudentFinancialSummary(student));
+
         final TuitionPayment newTuitionPayment = new TuitionPayment(newCashTransaction, student, paymentMethod, amount, receipt, narration);
 
         return tuitionPaymentRepository.save(newTuitionPayment);
