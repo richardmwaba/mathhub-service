@@ -6,6 +6,7 @@ import com.hubformath.mathhubservice.dto.systemconfig.ExamBoardDto;
 import com.hubformath.mathhubservice.dto.systemconfig.GradeDto;
 import com.hubformath.mathhubservice.dto.systemconfig.LessonDto;
 import com.hubformath.mathhubservice.model.sis.StudentFinancialSummary;
+import com.hubformath.mathhubservice.model.sis.StudentGender;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +26,8 @@ public class StudentDto {
     private String middleName;
 
     private String lastName;
+
+    private StudentGender gender;
 
     private GradeDto grade;
 
@@ -107,6 +110,10 @@ public class StudentDto {
     public GradeDto getGrade() { return grade; }
 
     public void setGrade(GradeDto grade) { this.grade = grade; }
+
+    public StudentGender getGender() { return gender;}
+
+    public void setGender(StudentGender gender) {this.gender = gender;}
 
     public List<LessonDto> getLessons() {
         return lessons;

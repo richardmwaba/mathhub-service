@@ -7,15 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,6 +25,9 @@ public class Student {
     private String middleName;
 
     private String lastName;
+
+    @Enumerated(EnumType.STRING)
+    private StudentGender gender;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent_id")
@@ -75,12 +70,13 @@ public class Student {
         // Used by hibernate instantiation
     }
 
-    public Student(final String firstName, final String middleName, final String lastName, final String email, final LocalDate dateOfBirth) {
+    public Student(final String firstName, final String middleName, final String lastName, final String email, final LocalDate dateOfBirth, final StudentGender gender) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.email = email;
         this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
     }
 
     public Long getId() {
@@ -114,6 +110,10 @@ public class Student {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+    public StudentGender getGender() {return gender; }
+
+    public void setGender(StudentGender gender) {this.gender = gender; }
 
     public Grade getGrade() { return grade; }
 
@@ -207,6 +207,7 @@ public class Student {
                 && getFirstName().equals(student.getFirstName())
                 && getMiddleName().equals(student.getMiddleName())
                 && getLastName().equals(student.getLastName())
+                && getGender().equals(student.getGender())
                 && getParent().equals(student.getParent())
                 && getGrade().equals(student.getGrade())
                 && getLessons().equals(student.getLessons())
@@ -226,6 +227,7 @@ public class Student {
                 getFirstName(),
                 getMiddleName(),
                 getLastName(),
+                getGender(),
                 getParent(),
                 getGrade(),
                 getLessons(),
@@ -243,13 +245,14 @@ public class Student {
     public String toString() {
         return "Student{" +
                 "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", firstName=" + firstName + '\'' +
+                ", middleName=" + middleName + '\'' +
+                ", lastName=" + lastName + '\'' +
+                ", gender=" + gender +
                 ", parent=" + parent +
                 ", grade=" + grade +
                 ", lessons=" + lessons +
-                ", email='" + email + '\'' +
+                ", email=" + email + '\'' +
                 ", addresses=" + addresses +
                 ", examBoard=" + examBoard +
                 ", phoneNumbers=" + phoneNumbers +

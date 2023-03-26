@@ -4,12 +4,7 @@ import com.hubformath.mathhubservice.config.ModelMapperConfig;
 import com.hubformath.mathhubservice.dto.sis.StudentDto;
 import com.hubformath.mathhubservice.dto.systemconfig.LessonDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
-import com.hubformath.mathhubservice.model.sis.Address;
-import com.hubformath.mathhubservice.model.sis.Lesson;
-import com.hubformath.mathhubservice.model.sis.Parent;
-import com.hubformath.mathhubservice.model.sis.PhoneNumber;
-import com.hubformath.mathhubservice.model.sis.Student;
-import com.hubformath.mathhubservice.model.sis.StudentFinancialSummary;
+import com.hubformath.mathhubservice.model.sis.*;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
 import com.hubformath.mathhubservice.model.systemconfig.LessonRate;
@@ -39,6 +34,7 @@ public class StudentService {
     private final StudentRepository studentRepository;
 
     private final ModelMapper modelMapper;
+
 
     public StudentService(final StudentRepository studentRepository,
                           final GradeService gradeService,
@@ -73,6 +69,7 @@ public class StudentService {
         final String firstName = studentRequest.getFirstName();
         final String middleName = studentRequest.getMiddleName();
         final String lastName = studentRequest.getLastName();
+        final StudentGender gender = studentRequest.getGender();
         final String email = studentRequest.getEmail();
         final LocalDate dateOfBirth = studentRequest.getDateOfBirth();
         final Parent parent = modelMapper.map(studentRequest.getParent(), Parent.class);
@@ -88,7 +85,7 @@ public class StudentService {
         final Grade grade = gradeService.getGradeById(gradeId);
         final ExamBoard examBoard = examBoardService.getExamBoardById(examBoardId);
 
-        final Student newStudent = new Student(firstName, middleName, lastName, email, dateOfBirth);
+        final Student newStudent = new Student(firstName, middleName, lastName, email, dateOfBirth, gender);
         newStudent.setGrade(grade);
         newStudent.setExamBoard(examBoard);
         newStudent.setParent(parent);
@@ -104,6 +101,7 @@ public class StudentService {
                     student.setFirstName(studentRequest.getFirstName());
                     student.setMiddleName(studentRequest.getMiddleName());
                     student.setLastName(studentRequest.getLastName());
+                    student.setGender(studentRequest.getGender());
                     student.setEmail(studentRequest.getEmail());
                     student.setGrade(studentRequest.getGrade());
                     student.setLessons(studentRequest.getLessons());
