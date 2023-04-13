@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class IncomeService {
@@ -37,8 +38,8 @@ public class IncomeService {
     }
 
     public Income createIncome(IncomeRequestDto incomeRequest) {
-        final Long paymentMethodId = incomeRequest.getPaymentMethodId();
-        final Long incomeTypeId = incomeRequest.getIncomeTypeId();
+        final UUID paymentMethodId = incomeRequest.getPaymentMethodId();
+        final UUID incomeTypeId = incomeRequest.getIncomeTypeId();
         final String narration = incomeRequest.getNarration();
         final Double amount = incomeRequest.getAmount();
 

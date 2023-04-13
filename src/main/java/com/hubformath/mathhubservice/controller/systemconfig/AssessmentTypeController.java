@@ -60,7 +60,7 @@ public class AssessmentTypeController {
                 .body(assessmentTypeEntityModel);
     }
 
-    @GetMapping("/assessmentTypes/{id}")
+    @GetMapping("/assessmentTypes/{assessmentTypeId}")
     public ResponseEntity<EntityModel<AssessmentTypeDto>> getAssessmentTypeById(@PathVariable final UUID assessmentTypeId) {
         try {
             AssessmentType assessmentType = assessmentTypeService.getAssessmentTypeById(assessmentTypeId);
@@ -71,7 +71,7 @@ public class AssessmentTypeController {
         }
     }
 
-    @PutMapping("/assessmentTypes/{id}")
+    @PutMapping("/assessmentTypes/{assessmentTypeId}")
     public ResponseEntity<EntityModel<AssessmentTypeDto>> replaceAssessmentType(@RequestBody final AssessmentTypeDto assessmentTypeDto,
                                                                                 @PathVariable final UUID assessmentTypeId) {
         try {
@@ -84,7 +84,7 @@ public class AssessmentTypeController {
         }
     }
 
-    @DeleteMapping("/assessmentTypes/{id}")
+    @DeleteMapping("/assessmentTypes/{assessmentTypeId}")
     public ResponseEntity<String> deleteAssessmentType(@PathVariable final UUID assessmentTypeId) {
         try {
             assessmentTypeService.deleteAssessmentType(assessmentTypeId);

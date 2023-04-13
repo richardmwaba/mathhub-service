@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class LessonRateService {
@@ -35,8 +36,8 @@ public class LessonRateService {
                 .toList();
     }
 
-    public LessonRate getLessonRateById(final Long id){
-        return lessonRateRepository.findById(id).orElseThrow();
+    public LessonRate getLessonRateById(final UUID lessonRateId){
+        return lessonRateRepository.findById(lessonRateId).orElseThrow();
     }
 
     public LessonRate getLessonRateBySubjectComplexity(final SubjectComplexity subjectComplexity) {

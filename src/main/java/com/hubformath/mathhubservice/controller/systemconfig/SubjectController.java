@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -60,10 +61,10 @@ public class SubjectController {
                 body(subjectDtoEntityModel);
     }
 
-    @GetMapping("/subjects/{id}")
-    public ResponseEntity<EntityModel<SubjectDto>> getSubjectById(@PathVariable final Long id) {
+    @GetMapping("/subjects/{subjectId}")
+    public ResponseEntity<EntityModel<SubjectDto>> getSubjectById(@PathVariable final UUID subjectId) {
         try {
-            Subject subject = subjectService.getSubjectById(id);
+            Subject subject = subjectService.getSubjectById(subjectId);
             EntityModel<SubjectDto> subjectEntityModel = toModel(modelMapper.map(subject, SubjectDto.class));
             return ResponseEntity.ok().body(subjectEntityModel);
         } catch (NoSuchElementException e) {
@@ -71,12 +72,12 @@ public class SubjectController {
         }
     }
 
-    @PutMapping("/subjects/{id}")
+    @PutMapping("/subjects/{subjectId}")
     public ResponseEntity<EntityModel<SubjectDto>> replaceSubject(@RequestBody final SubjectDto subjectDto,
-                                                                  @PathVariable final Long id) {
+                                                                  @PathVariable final UUID subjectId) {
         try {
             Subject subjectRequest = modelMapper.map(subjectDto, Subject.class);
-            Subject updatedSubject = subjectService.updateSubject(id, subjectRequest);
+            Subject updatedSubject = subjectService.updateSubject(subjectId, subjectRequest);
             EntityModel<SubjectDto> subjectEntityModel = toModel(modelMapper.map(updatedSubject, SubjectDto.class));
             return ResponseEntity.ok().body(subjectEntityModel);
         } catch (NoSuchElementException e) {
@@ -85,9 +86,9 @@ public class SubjectController {
     }
 
     @DeleteMapping("/subjects/{id}")
-    public ResponseEntity<String> deleteSubject(@PathVariable final Long id) {
+    public ResponseEntity<String> deleteSubject(@PathVariable final UUID subjectId) {
         try {
-            subjectService.deleteSubject(id);
+            subjectService.deleteSubject(subjectId);
             return ResponseEntity.ok().body("Subject deleted successfully");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -96,7 +97,7 @@ public class SubjectController {
 
     private EntityModel<SubjectDto> toModel(final SubjectDto subject){
         return EntityModel.of(subject,
-                linkTo(methodOn(SubjectController.class).getSubjectById(subject.getId())).withSelfRel(),
+                linkTo(methodOn(SubjectController.class).getSubjectById(subject.getSubjectId())).withSelfRel(),
                 linkTo(methodOn(SubjectController.class).getAllSubjects()).withRel("subjects"));
     }
 

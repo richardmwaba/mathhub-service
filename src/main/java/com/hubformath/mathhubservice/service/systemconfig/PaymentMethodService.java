@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.PaymentMethodReposi
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PaymentMethodService {
@@ -19,16 +20,16 @@ public class PaymentMethodService {
         return paymentMethodRepository.findAll();
     }
 
-    public PaymentMethod getPaymentMethodById(Long id) {
-        return paymentMethodRepository.findById(id).orElseThrow();
+    public PaymentMethod getPaymentMethodById(UUID paymentMethodId) {
+        return paymentMethodRepository.findById(paymentMethodId).orElseThrow();
     }
 
     public PaymentMethod createPaymentMethod(PaymentMethod paymentMethodRequest) {
         return paymentMethodRepository.save(paymentMethodRequest);
     }
 
-    public PaymentMethod updatePaymentMethod(Long id, PaymentMethod paymentMethodRequest) {
-        return paymentMethodRepository.findById(id) 
+    public PaymentMethod updatePaymentMethod(UUID paymentMethodId, PaymentMethod paymentMethodRequest) {
+        return paymentMethodRepository.findById(paymentMethodId)
                 .map(paymentMethod -> {
                     paymentMethod.setTypeName(paymentMethodRequest.getTypeName());
                     paymentMethod.setTypeDescription(paymentMethodRequest.getTypeDescription());
@@ -37,8 +38,8 @@ public class PaymentMethodService {
                 .orElseThrow();
     }
 
-    public void deletePaymentMethod(Long id) {
-        PaymentMethod paymentMethod = paymentMethodRepository.findById(id)
+    public void deletePaymentMethod(UUID paymentMethodId) {
+        PaymentMethod paymentMethod = paymentMethodRepository.findById(paymentMethodId)
                 .orElseThrow();
 
         paymentMethodRepository.delete(paymentMethod);

@@ -22,6 +22,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -63,10 +64,10 @@ public class LessonRateController {
                 body(lessonRateDtoEntityModel);
     }
 
-    @GetMapping("/lessonRates/{id}")
-    public ResponseEntity<EntityModel<LessonRateDto>> getLessonRateById(@PathVariable final Long id) {
+    @GetMapping("/lessonRates/{lessonRateId}")
+    public ResponseEntity<EntityModel<LessonRateDto>> getLessonRateById(@PathVariable final UUID lessonRateId) {
         try {
-            LessonRate lessonRate = lessonRateService.getLessonRateById(id);
+            LessonRate lessonRate = lessonRateService.getLessonRateById(lessonRateId);
             EntityModel<LessonRateDto> lessonRateEntityModel =
                     toModel(modelMapper.map(lessonRate, LessonRateDto.class), Optional.empty(), Optional.empty());
             return ResponseEntity.ok().body(lessonRateEntityModel);
@@ -77,7 +78,7 @@ public class LessonRateController {
 
     private EntityModel<LessonRateDto> toModel(final LessonRateDto lessonRate, final Optional<Instant> effectiveDate, final Optional<Instant> expiryDate) {
         return EntityModel.of(lessonRate,
-                linkTo(methodOn(LessonRateController.class).getLessonRateById(lessonRate.getId())).withSelfRel(),
+                linkTo(methodOn(LessonRateController.class).getLessonRateById(lessonRate.getLessonRateId())).withSelfRel(),
                 linkTo(methodOn(LessonRateController.class).getAllLessonRates(effectiveDate, expiryDate)).withRel("lessonRates"));
     }
 

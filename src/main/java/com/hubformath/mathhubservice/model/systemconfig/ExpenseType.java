@@ -1,21 +1,23 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
 @Entity
+@Table(name = "expense_type")
 public class ExpenseType {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy=GenerationType.UUID)
+    private UUID expenseTypeId;
 
     private String typeName;
 
@@ -35,8 +37,12 @@ public class ExpenseType {
         this.typeDescription = typeDescription;
     }
 
-    public Long getId() {
-        return this.id;
+    public UUID getExpenseTypeId() {
+        return this.expenseTypeId;
+    }
+
+    public void setExpenseTypeId(UUID expenseTypeId) {
+        this.expenseTypeId = expenseTypeId;
     }
 
     public String getTypeName() {
@@ -74,27 +80,24 @@ public class ExpenseType {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof ExpenseType))
-            return false;
-        ExpenseType expenseType = (ExpenseType) o;
-        return Objects.equals(this.id, expenseType.id) && Objects.equals(this.typeName, expenseType.typeName)
-            && Objects.equals(this.typeDescription, expenseType.typeDescription)
-            && Objects.equals(this.createdAt, expenseType.createdAt)
-            && Objects.equals(this.updatedAt, expenseType.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof ExpenseType that)) return false;
+        return Objects.equals(getExpenseTypeId(), that.getExpenseTypeId())
+                && Objects.equals(getTypeName(), that.getTypeName())
+                && Objects.equals(getTypeDescription(), that.getTypeDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription, this.createdAt, this.updatedAt);
+        return Objects.hash(getExpenseTypeId(), getTypeName(), getTypeDescription());
     }
 
     @Override
     public String toString() {
-        return "ExpenseType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + ", typeDescription='" 
-                + this.typeDescription + ", expense='" + ", createdAt='" + this.createdAt
-                + ", updatedAt='" + this.updatedAt + "'}";
+        return "ExpenseType{" +
+                "expenseTypeId=" + expenseTypeId +
+                ", typeName='" + typeName + '\'' +
+                ", typeDescription='" + typeDescription + '\'' +
+                '}';
     }
-
 }

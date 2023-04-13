@@ -9,17 +9,20 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
+@Table(name = "subject")
 public class Subject {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID subjectId;
 
     private String subjectName;
 
@@ -44,12 +47,12 @@ public class Subject {
         this.subjectComplexity = subjectComplexity;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setSubjectId(UUID subjectId) {
+        this.subjectId = subjectId;
     }
 
-    public Long getId() {
-        return this.id;
+    public UUID getSubjectId() {
+        return this.subjectId;
     }
 
     public String getSubjectName() {
@@ -94,31 +97,26 @@ public class Subject {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof Subject subject))
-            return false;
-        return Objects.equals(this.id, subject.id) && Objects.equals(this.subjectName, subject.subjectName)
-                && Objects.equals(this.subjectGrade, subject.subjectGrade)
-                && Objects.equals(this.subjectComplexity, subject.subjectComplexity)
-                && Objects.equals(this.createdAt, subject.createdAt)
-                && Objects.equals(this.updatedAt, subject.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof Subject subject)) return false;
+        return Objects.equals(getSubjectId(), subject.getSubjectId())
+                && Objects.equals(getSubjectName(), subject.getSubjectName())
+                && getSubjectComplexity() == subject.getSubjectComplexity()
+                && Objects.equals(getSubjectGrade(), subject.getSubjectGrade());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.subjectName, this.subjectGrade, this.subjectComplexity, this.createdAt, this.updatedAt);
+        return Objects.hash(getSubjectId(), getSubjectName(), getSubjectComplexity(), getSubjectGrade());
     }
 
     @Override
     public String toString() {
         return "Subject{" +
-                "id=" + id +
+                "subjectId=" + subjectId +
                 ", subjectName='" + subjectName + '\'' +
                 ", subjectComplexity=" + subjectComplexity +
                 ", subjectGrade=" + subjectGrade +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

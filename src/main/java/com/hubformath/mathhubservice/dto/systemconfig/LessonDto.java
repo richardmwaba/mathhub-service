@@ -7,6 +7,7 @@ import com.hubformath.mathhubservice.model.sis.LessonPeriod;
 import com.hubformath.mathhubservice.model.sis.SessionType;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class LessonDto {
 
@@ -14,7 +15,7 @@ public class LessonDto {
 
     private SubjectDto subject;
 
-    private Long subjectId;
+    private UUID subjectId;
 
     private int occurrence;
 
@@ -49,12 +50,12 @@ public class LessonDto {
     }
 
     @JsonProperty
-    public void setSubjectId(Long subjectId) {
+    public void setSubjectId(UUID subjectId) {
         this.subjectId = subjectId;
     }
 
     @JsonIgnore
-    public Long getSubjectId() {
+    public UUID getSubjectId() {
         return subjectId;
     }
 

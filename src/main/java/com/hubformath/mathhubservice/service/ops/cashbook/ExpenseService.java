@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ExpenseService {
@@ -39,8 +40,8 @@ public class ExpenseService {
     }
 
     public Expense createExpense(ExpenseRequestDto expenseRequest) {
-        final long expenseTypeId = expenseRequest.getExpenseTypeId();
-        final long paymentMethodId = expenseRequest.getPaymentMethodId();
+        final UUID expenseTypeId = expenseRequest.getExpenseTypeId();
+        final UUID paymentMethodId = expenseRequest.getPaymentMethodId();
         final Double amount = expenseRequest.getAmount();
         final String narration = expenseRequest.getNarration();
         final ExpenseStatus expenseStatus = expenseRequest.getStatus();

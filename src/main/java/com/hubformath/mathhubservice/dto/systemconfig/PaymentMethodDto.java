@@ -1,19 +1,20 @@
 package com.hubformath.mathhubservice.dto.systemconfig;
 
+import java.util.UUID;
+
 public class PaymentMethodDto {
-    private Long id;
+    private UUID paymentMethodId;
 
     private String typeName;
 
     private String typeDescription;
 
-
-    public Long getId() {
-        return id;
+    public UUID getPaymentMethodId() {
+        return paymentMethodId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setPaymentMethodId(UUID paymentMethodId) {
+        this.paymentMethodId = paymentMethodId;
     }
 
     public String getTypeName() {
