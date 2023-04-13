@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -60,9 +61,9 @@ public class AssessmentTypeController {
     }
 
     @GetMapping("/assessmentTypes/{id}")
-    public ResponseEntity<EntityModel<AssessmentTypeDto>> getAssessmentTypeById(@PathVariable final Long id) {
+    public ResponseEntity<EntityModel<AssessmentTypeDto>> getAssessmentTypeById(@PathVariable final UUID assessmentTypeId) {
         try {
-            AssessmentType assessmentType = assessmentTypeService.getAssessmentTypeById(id);
+            AssessmentType assessmentType = assessmentTypeService.getAssessmentTypeById(assessmentTypeId);
             EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(assessmentType, AssessmentTypeDto.class));
             return ResponseEntity.ok().body(assessmentTypeEntityModel);
         } catch (NoSuchElementException e) {
@@ -72,10 +73,10 @@ public class AssessmentTypeController {
 
     @PutMapping("/assessmentTypes/{id}")
     public ResponseEntity<EntityModel<AssessmentTypeDto>> replaceAssessmentType(@RequestBody final AssessmentTypeDto assessmentTypeDto,
-                                                                                @PathVariable final Long id) {
+                                                                                @PathVariable final UUID assessmentTypeId) {
         try {
             AssessmentType assessmentTypeRequest = modelMapper.map(assessmentTypeDto, AssessmentType.class);
-            AssessmentType updatedAssessmentType = assessmentTypeService.updateAssessmentType(id, assessmentTypeRequest);
+            AssessmentType updatedAssessmentType = assessmentTypeService.updateAssessmentType(assessmentTypeId, assessmentTypeRequest);
             EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(updatedAssessmentType, AssessmentTypeDto.class));
             return ResponseEntity.ok().body(assessmentTypeEntityModel);
         } catch (NoSuchElementException e) {
@@ -84,9 +85,9 @@ public class AssessmentTypeController {
     }
 
     @DeleteMapping("/assessmentTypes/{id}")
-    public ResponseEntity<String> deleteAssessmentType(@PathVariable final Long id) {
+    public ResponseEntity<String> deleteAssessmentType(@PathVariable final UUID assessmentTypeId) {
         try {
-            assessmentTypeService.deleteAssessmentType(id);
+            assessmentTypeService.deleteAssessmentType(assessmentTypeId);
             return ResponseEntity.ok().body("Assessment type deleted successfully");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -95,7 +96,7 @@ public class AssessmentTypeController {
 
     private EntityModel<AssessmentTypeDto> toModel(final AssessmentTypeDto assessmentType) {
         return EntityModel.of(assessmentType,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssessmentTypeController.class).getAssessmentTypeById(assessmentType.getId()))
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssessmentTypeController.class).getAssessmentTypeById(assessmentType.getAssessmentTypeId()))
                         .withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssessmentTypeController.class).getAllAssessmentTypes()).withRel("assessmentTypes"));
     }

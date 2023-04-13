@@ -4,7 +4,13 @@ import com.hubformath.mathhubservice.config.ModelMapperConfig;
 import com.hubformath.mathhubservice.dto.sis.StudentDto;
 import com.hubformath.mathhubservice.dto.systemconfig.LessonDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
-import com.hubformath.mathhubservice.model.sis.*;
+import com.hubformath.mathhubservice.model.sis.Address;
+import com.hubformath.mathhubservice.model.sis.Lesson;
+import com.hubformath.mathhubservice.model.sis.Parent;
+import com.hubformath.mathhubservice.model.sis.PhoneNumber;
+import com.hubformath.mathhubservice.model.sis.Student;
+import com.hubformath.mathhubservice.model.sis.StudentFinancialSummary;
+import com.hubformath.mathhubservice.model.sis.StudentGender;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
 import com.hubformath.mathhubservice.model.systemconfig.LessonRate;
@@ -19,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class StudentService {
@@ -65,7 +72,7 @@ public class StudentService {
 
     public Student createStudent(StudentDto studentRequest) {
         final long gradeId = studentRequest.getGradeId();
-        final long examBoardId = studentRequest.getExamBoardId();
+        final UUID examBoardId = studentRequest.getExamBoardId();
         final String firstName = studentRequest.getFirstName();
         final String middleName = studentRequest.getMiddleName();
         final String lastName = studentRequest.getLastName();

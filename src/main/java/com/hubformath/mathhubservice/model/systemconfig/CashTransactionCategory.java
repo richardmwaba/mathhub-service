@@ -1,21 +1,23 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
 @Entity
+@Table(name = "cash_transaction_category")
 public class CashTransactionCategory {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy=GenerationType.UUID)
+    private UUID cashTransactionCategoryId;
 
     private String categoryName;
 
@@ -35,8 +37,12 @@ public class CashTransactionCategory {
         this.categoryDescription = categoryDescription;
     }
 
-    public Long getId() {
-        return id;
+    public UUID getCashTransactionCategoryId() {
+        return cashTransactionCategoryId;
+    }
+
+    public void setCashTransactionCategoryId(UUID cashTransactionCategoryId) {
+        this.cashTransactionCategoryId = cashTransactionCategoryId;
     }
 
     public String getCategoryName() {
@@ -77,7 +83,7 @@ public class CashTransactionCategory {
             return true;
         if (!(o instanceof CashTransactionCategory cashTransactionCategory))
             return false;
-        return Objects.equals(this.id, cashTransactionCategory.id) && Objects.equals(this.categoryName, cashTransactionCategory.categoryName)
+        return Objects.equals(this.cashTransactionCategoryId, cashTransactionCategory.cashTransactionCategoryId) && Objects.equals(this.categoryName, cashTransactionCategory.categoryName)
             && Objects.equals(this.categoryDescription, cashTransactionCategory.categoryDescription)
             && Objects.equals(this.createdAt, cashTransactionCategory.createdAt)
             && Objects.equals(this.updatedAt, cashTransactionCategory.updatedAt);
@@ -85,12 +91,12 @@ public class CashTransactionCategory {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.categoryName, this.categoryDescription, this.createdAt, this.updatedAt);
+        return Objects.hash(this.cashTransactionCategoryId, this.categoryName, this.categoryDescription, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
-        return "CashTransactionCategory {id=" + id + ", categoryName=" + categoryName + ", categoryDescription="
+        return "CashTransactionCategory {id=" + cashTransactionCategoryId + ", categoryName=" + categoryName + ", categoryDescription="
                 + categoryDescription + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "}";
     }
     

@@ -6,6 +6,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.ExamBoardRepository
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ExamBoardService {
@@ -20,16 +21,16 @@ public class ExamBoardService {
         return examBoardRepository.findAll();
     }
 
-    public ExamBoard getExamBoardById(Long id) {
-        return examBoardRepository.findById(id).orElseThrow();
+    public ExamBoard getExamBoardById(UUID examBoardId) {
+        return examBoardRepository.findById(examBoardId).orElseThrow();
     }
 
     public ExamBoard createExamBoard(ExamBoard examBoardRequest) {
         return examBoardRepository.save(examBoardRequest);
     }
 
-    public ExamBoard updateExamBoard(Long id, ExamBoard examBoardRequest) {
-        return examBoardRepository.findById(id)
+    public ExamBoard updateExamBoard(UUID examBoardId, ExamBoard examBoardRequest) {
+        return examBoardRepository.findById(examBoardId)
                 .map(examBoard -> {
                     examBoard.setExamBoardName(examBoardRequest.getExamBoardName());
                     examBoard.setExamBoardDescription(examBoardRequest.getExamBoardDescription());
@@ -38,8 +39,8 @@ public class ExamBoardService {
                 .orElseThrow();
     }
 
-    public void deleteExamBoard(Long id) {
-        ExamBoard examBoard = examBoardRepository.findById(id)
+    public void deleteExamBoard(UUID examBoardId) {
+        ExamBoard examBoard = examBoardRepository.findById(examBoardId)
                 .orElseThrow();
 
         examBoardRepository.delete(examBoard);

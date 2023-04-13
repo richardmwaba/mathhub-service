@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -60,9 +61,9 @@ public class EquityTypeController {
     }
 
     @GetMapping("/equityTypes/{id}")
-    public ResponseEntity<EntityModel<EquityTypeDto>> getEquityTypeById(@PathVariable final Long id) {
+    public ResponseEntity<EntityModel<EquityTypeDto>> getEquityTypeById(@PathVariable final UUID equityTypeId) {
         try {
-            EquityType equityType = equityTypeService.getEquityTypeById(id);
+            EquityType equityType = equityTypeService.getEquityTypeById(equityTypeId);
             EntityModel<EquityTypeDto> equityTypeEntityModel = toModel(modelMapper.map(equityType, EquityTypeDto.class));
             return ResponseEntity.ok().body(equityTypeEntityModel);
         } catch (NoSuchElementException e) {
@@ -72,10 +73,10 @@ public class EquityTypeController {
 
     @PutMapping("/equityTypes/{id}")
     public ResponseEntity<EntityModel<EquityTypeDto>> replaceEquityType(@RequestBody final EquityTypeDto equityTypeDto,
-                                                                        @PathVariable final Long id) {
+                                                                        @PathVariable final UUID equityTypeId) {
         try {
             EquityType equityTypeRequest = modelMapper.map(equityTypeDto, EquityType.class);
-            EquityType updatedEquityType = equityTypeService.updateEquityType(id, equityTypeRequest);
+            EquityType updatedEquityType = equityTypeService.updateEquityType(equityTypeId, equityTypeRequest);
             EntityModel<EquityTypeDto> equityTypeEntityModel = toModel(modelMapper.map(updatedEquityType, EquityTypeDto.class));
             return ResponseEntity.ok().body(equityTypeEntityModel);
         } catch (NoSuchElementException e) {
@@ -85,9 +86,9 @@ public class EquityTypeController {
     }
 
     @DeleteMapping("/equityTypes/{id}")
-    public ResponseEntity<String> deleteEquityType(@PathVariable final Long id) {
+    public ResponseEntity<String> deleteEquityType(@PathVariable final UUID equityTypeId) {
         try {
-            equityTypeService.deleteEquityType(id);
+            equityTypeService.deleteEquityType(equityTypeId);
             return ResponseEntity.ok().body("Equity type deleted successfully");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -96,7 +97,7 @@ public class EquityTypeController {
 
     private EntityModel<EquityTypeDto> toModel(final EquityTypeDto assessmentType) {
         return EntityModel.of(assessmentType,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityTypeController.class).getEquityTypeById(assessmentType.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityTypeController.class).getEquityTypeById(assessmentType.getEquityTypeId())).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityTypeController.class).getAllEquityTypes()).withRel("equityTypes"));
     }
 

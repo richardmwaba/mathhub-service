@@ -1,25 +1,25 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class UserType {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    private String typeName;
-
-    private String typeDescription;
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -27,33 +27,25 @@ public class UserType {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public UserType() {}
+    public UserType() {
+    }
 
-    public UserType(String typeName, String typeDescription) {
-        this.typeName = typeName;
-        this.typeDescription = typeDescription;
+    public UserType(final UserRole userRole) {
+        this.userRole = userRole;
     }
 
     public Long getId() {
         return this.id;
     }
 
-    public String getTypeName() {
-        return this.typeName;
+    public UserRole getRole() {
+        return this.userRole;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public void setRole(final UserRole role) {
+        this.userRole = role;
     }
 
-    public String getTypeDescription() {
-        return this.typeDescription;
-    }
-
-    public void setTypeDescription(String typeDescription) {
-        this.typeDescription = typeDescription;
-    }
-    
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -74,23 +66,23 @@ public class UserType {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof UserType))
+        if (!(o instanceof UserType userType))
             return false;
-        UserType userType = (UserType) o;
-        return Objects.equals(this.id, userType.id) && Objects.equals(this.typeName, userType.typeName)
-            && Objects.equals(this.typeDescription, userType.typeDescription)
-            && Objects.equals(this.createdAt, userType.createdAt)
-            && Objects.equals(this.updatedAt, userType.updatedAt);
+        return Objects.equals(this.id, userType.id) && Objects.equals(this.userRole, userType.userRole);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription, this.createdAt, this.updatedAt);
+        return Objects.hash(this.id, this.userRole, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
-        return "UserType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + ", typeDescription='" 
-                + this.typeDescription + ", createdAt='" + this.createdAt + ", updatedAt='" + this.updatedAt + "'}";
+        return "UserType{" +
+                "id=" + id +
+                ", userRole=" + userRole +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

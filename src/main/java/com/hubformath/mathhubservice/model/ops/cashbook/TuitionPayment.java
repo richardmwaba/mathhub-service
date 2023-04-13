@@ -1,22 +1,20 @@
 package com.hubformath.mathhubservice.model.ops.cashbook;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Objects;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-
+import com.hubformath.mathhubservice.model.sis.Student;
+import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.hubformath.mathhubservice.model.sis.Student;
-import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class TuitionPayment {
@@ -40,6 +38,8 @@ public class TuitionPayment {
 
     private Double amount;
 
+    private Long invoiceId;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "receipt_id")
     private Receipt receipt;
@@ -60,11 +60,13 @@ public class TuitionPayment {
                           final Student student,
                           final PaymentMethod paymentMethod,
                           final Double amount,
+                          final Long InvoiceId,
                           final Receipt receipt,
                           final String narration) {
         this.cashTransaction = cashTransaction;
         this.student = student;
         this.paymentMethod = paymentMethod;
+        this.invoiceId = InvoiceId;
         this.receipt = receipt;
         this.paymentDate = LocalDate.now();
         this.amount = amount;
@@ -116,6 +118,14 @@ public class TuitionPayment {
         this.amount = amount;
     }
 
+    public Long getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(Long invoiceId) {
+        this.invoiceId = invoiceId;
+    }
+
     public Receipt getReceipt() {
         return receipt;
     }
@@ -158,35 +168,49 @@ public class TuitionPayment {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof TuitionPayment tuitionPayment))
-            return false;
-        return Objects.equals(this.id, tuitionPayment.id)
-                && Objects.equals(this.cashTransaction, tuitionPayment.cashTransaction)
-                && Objects.equals(this.student, tuitionPayment.student)
-                && Objects.equals(this.paymentMethod, tuitionPayment.paymentMethod)
-                && Objects.equals(this.paymentDate, tuitionPayment.paymentDate)
-                && Objects.equals(this.amount, tuitionPayment.amount)
-                && Objects.equals(this.receipt, tuitionPayment.receipt)
-                && Objects.equals(this.narration, tuitionPayment.narration)
-                && Objects.equals(this.createdBy, tuitionPayment.createdBy)
-                && Objects.equals(this.createdAt, tuitionPayment.createdAt)
-                && Objects.equals(this.updatedAt, tuitionPayment.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof TuitionPayment that)) return false;
+        return Objects.equals(getId(), that.getId())
+                && Objects.equals(getCashTransaction(), that.getCashTransaction())
+                && Objects.equals(getStudent(), that.getStudent())
+                && Objects.equals(getPaymentMethod(), that.getPaymentMethod())
+                && Objects.equals(getPaymentDate(), that.getPaymentDate())
+                && Objects.equals(getAmount(), that.getAmount())
+                && Objects.equals(getInvoiceId(), that.getInvoiceId())
+                && Objects.equals(getReceipt(), that.getReceipt())
+                && Objects.equals(getNarration(), that.getNarration())
+                && Objects.equals(getCreatedBy(), that.getCreatedBy());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.cashTransaction, this.student, this.paymentDate, this.amount,
-                this.paymentMethod, this.receipt, this.narration, this.createdBy, this.createdAt, this.updatedAt);
+        return Objects.hash(getId(),
+                            getCashTransaction(),
+                            getStudent(),
+                            getPaymentMethod(),
+                            getPaymentDate(),
+                            getAmount(),
+                            getInvoiceId(),
+                            getReceipt(),
+                            getNarration(),
+                            getCreatedBy());
     }
 
     @Override
     public String toString() {
-        return "TuitionPayment {id=" + this.id + ", cashTransaction=" + this.cashTransaction + ", student=" + this.student
-                + ", paymentMethods=" + this.paymentMethod + ", paymentDate=" + this.paymentDate
-                + ", amount=" + this.amount + ", receipt="
-                + this.receipt + ", narration=" + this.narration + "}";
+        return "TuitionPayment{" +
+                "id=" + id +
+                ", cashTransaction=" + cashTransaction +
+                ", student=" + student +
+                ", paymentMethod=" + paymentMethod +
+                ", paymentDate=" + paymentDate +
+                ", amount=" + amount +
+                ", invoiceNumber='" + invoiceId +
+                ", receipt=" + receipt +
+                ", narration='" + narration + '\'' +
+                ", createdBy=" + createdBy +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
-
 }

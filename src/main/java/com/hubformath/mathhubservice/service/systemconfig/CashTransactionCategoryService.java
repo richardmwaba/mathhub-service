@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.CashTransactionCate
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CashTransactionCategoryService {
@@ -20,16 +21,16 @@ public class CashTransactionCategoryService {
         return cashTransactionCategoryRepository.findAll();
     }
 
-    public CashTransactionCategory getCashTransactionCategoryById(Long id) {
-        return cashTransactionCategoryRepository.findById(id).orElseThrow();
+    public CashTransactionCategory getCashTransactionCategoryById(UUID cashTransactionCategoryId) {
+        return cashTransactionCategoryRepository.findById(cashTransactionCategoryId).orElseThrow();
     }
 
     public CashTransactionCategory createCashTransactionCategory(CashTransactionCategory cashTransactionCategoryRequest) {
         return cashTransactionCategoryRepository.save(cashTransactionCategoryRequest);
     }
 
-    public CashTransactionCategory updateCashTransactionCategory(Long id, CashTransactionCategory cashTransactionCategoryRequest) {
-        return cashTransactionCategoryRepository.findById(id) 
+    public CashTransactionCategory updateCashTransactionCategory(UUID cashTransactionCategoryId, CashTransactionCategory cashTransactionCategoryRequest) {
+        return cashTransactionCategoryRepository.findById(cashTransactionCategoryId)
                 .map(cashTransactionCategory -> {
                     cashTransactionCategory.setCategoryName(cashTransactionCategoryRequest.getCategoryName());
                     cashTransactionCategory.setCategoryDescription(cashTransactionCategoryRequest.getCategoryDescription());
@@ -38,8 +39,8 @@ public class CashTransactionCategoryService {
                 .orElseThrow();
     }
 
-    public void deleteCashTransactionCategory(Long id) {
-        CashTransactionCategory cashTransactionCategory = cashTransactionCategoryRepository.findById(id)
+    public void deleteCashTransactionCategory(UUID cashTransactionCategoryId) {
+        CashTransactionCategory cashTransactionCategory = cashTransactionCategoryRepository.findById(cashTransactionCategoryId)
                 .orElseThrow();
 
         cashTransactionCategoryRepository.delete(cashTransactionCategory);

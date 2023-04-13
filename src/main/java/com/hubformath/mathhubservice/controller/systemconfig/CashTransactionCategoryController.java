@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -59,10 +60,10 @@ public class CashTransactionCategoryController {
                 .body(cashTransactionCategoryEntityModel);
     }
 
-    @GetMapping("/cashTransactionCategories/{id}")
-    public ResponseEntity<EntityModel<CashTransactionCategoryDto>> getCashTransactionCategoryById(@PathVariable final Long id) {
+    @GetMapping("/cashTransactionCategories/{cashTransactionCategoryId}")
+    public ResponseEntity<EntityModel<CashTransactionCategoryDto>> getCashTransactionCategoryById(@PathVariable final UUID cashTransactionCategoryId) {
         try {
-            CashTransactionCategory cashTransactionCategory = cashTransactionCategoryService.getCashTransactionCategoryById(id);
+            CashTransactionCategory cashTransactionCategory = cashTransactionCategoryService.getCashTransactionCategoryById(cashTransactionCategoryId);
             EntityModel<CashTransactionCategoryDto> cashTransactionCategoryEntityModel = toModel(modelMapper.map(cashTransactionCategory, CashTransactionCategoryDto.class));
             return ResponseEntity.ok().body(cashTransactionCategoryEntityModel);
         } catch (NoSuchElementException e) {
@@ -70,12 +71,12 @@ public class CashTransactionCategoryController {
         }
     }
 
-    @PutMapping("/cashTransactionCategories/{id}")
+    @PutMapping("/cashTransactionCategories/{cashTransactionCategoryId}")
     public ResponseEntity<EntityModel<CashTransactionCategoryDto>> replaceCashTransactionCategory(@RequestBody final CashTransactionCategoryDto cashTransactionCategoryDto,
-                                                                                                  @PathVariable final Long id) {
+                                                                                                  @PathVariable final UUID cashTransactionCategoryId) {
         try {
             CashTransactionCategory cashTransactionCategoryRequest = modelMapper.map(cashTransactionCategoryDto, CashTransactionCategory.class);
-            CashTransactionCategory updatedCashTransactionCategory = cashTransactionCategoryService.updateCashTransactionCategory(id, cashTransactionCategoryRequest);
+            CashTransactionCategory updatedCashTransactionCategory = cashTransactionCategoryService.updateCashTransactionCategory(cashTransactionCategoryId, cashTransactionCategoryRequest);
             EntityModel<CashTransactionCategoryDto> cashTransactionCategoryEntityModel = toModel(modelMapper.map(updatedCashTransactionCategory, CashTransactionCategoryDto.class));
             return ResponseEntity.ok().body(cashTransactionCategoryEntityModel);
         } catch (NoSuchElementException e) {
@@ -83,10 +84,10 @@ public class CashTransactionCategoryController {
         }
     }
 
-    @DeleteMapping("/cashTransactionCategories/{id}")
-    public ResponseEntity<String> deleteCashTransactionCategory(@PathVariable final Long id) {
+    @DeleteMapping("/cashTransactionCategories/{cashTransactionCategoryId}")
+    public ResponseEntity<String> deleteCashTransactionCategory(@PathVariable final UUID cashTransactionCategoryId) {
         try {
-            cashTransactionCategoryService.deleteCashTransactionCategory(id);
+            cashTransactionCategoryService.deleteCashTransactionCategory(cashTransactionCategoryId);
             return ResponseEntity.ok().body("Cash Transaction Category deleted successfully");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -95,7 +96,7 @@ public class CashTransactionCategoryController {
 
     private EntityModel<CashTransactionCategoryDto> toModel(final CashTransactionCategoryDto cashTransactionCategory) {
         return EntityModel.of(cashTransactionCategory,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionCategoryController.class).getCashTransactionCategoryById(cashTransactionCategory.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionCategoryController.class).getCashTransactionCategoryById(cashTransactionCategory.getCashTransactionCategoryId())).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionCategoryController.class).getAllCashTransactionCategories()).withRel("cashTransactionCategories"));
     }
 

@@ -1,22 +1,25 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
+@Table(name = "exam_board")
 public class ExamBoard {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID examBoardId;
 
     private String examBoardName;
     
@@ -35,7 +38,9 @@ public class ExamBoard {
         this.examBoardDescription = examBoardDescription;
     }
 
-    public Long getId() {return this.id;}
+    public UUID getExamBoardId() {return this.examBoardId;}
+
+    public void setExamBoardId(UUID examBoardId) {this.examBoardId = examBoardId;}
 
     public String getExamBoardName() {return this.examBoardName;}
 
@@ -63,26 +68,24 @@ public class ExamBoard {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof ExamBoard))
-            return false;
-        ExamBoard examBoard = (ExamBoard) o;
-        return Objects.equals(this.id, examBoard.id) && Objects.equals(this.examBoardName, examBoard.examBoardName)
-                && Objects.equals(this.examBoardDescription, examBoard.examBoardDescription)
-                && Objects.equals(this.createdAt, examBoard.createdAt)
-                && Objects.equals(this.updatedAt, examBoard.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof ExamBoard examBoard)) return false;
+        return Objects.equals(getExamBoardId(), examBoard.getExamBoardId())
+                && Objects.equals(getExamBoardName(), examBoard.getExamBoardName())
+                && Objects.equals(getExamBoardDescription(), examBoard.getExamBoardDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.examBoardName, this.examBoardDescription, this.createdAt, this.updatedAt);
+        return Objects.hash(getExamBoardId(), getExamBoardName(), getExamBoardDescription());
     }
 
     @Override
     public String toString() {
-        return "ExamBoard{" + "id=" + this.id + ", examBoardName='" + this.examBoardName + "'" + ", examBoardDescription='"
-                + this.examBoardDescription + ", createdAt=" + this.createdAt
-                + ", updatedAt=" + this.updatedAt + "}";
+        return "ExamBoard{" +
+                "examBoardId=" + examBoardId +
+                ", examBoardName='" + examBoardName + '\'' +
+                ", examBoardDescription='" + examBoardDescription + '\'' +
+                '}';
     }
 }

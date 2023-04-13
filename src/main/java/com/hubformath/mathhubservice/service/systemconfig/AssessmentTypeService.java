@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.AssessmentTypeRepos
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AssessmentTypeService{
@@ -19,16 +20,16 @@ public class AssessmentTypeService{
         return assessmentTypeRepository.findAll();
     }
 
-    public AssessmentType getAssessmentTypeById(Long id) {
-        return assessmentTypeRepository.findById(id).orElseThrow();
+    public AssessmentType getAssessmentTypeById(UUID assessmentTypeId) {
+        return assessmentTypeRepository.findById(assessmentTypeId).orElseThrow();
     }
 
     public AssessmentType createAssessmentType(AssessmentType assessmentTypeRequest) {
         return assessmentTypeRepository.save(assessmentTypeRequest);
     }
 
-    public AssessmentType updateAssessmentType(Long id, AssessmentType assessmentTypeRequest) {
-        return assessmentTypeRepository.findById(id) 
+    public AssessmentType updateAssessmentType(UUID assessmentTypeId, AssessmentType assessmentTypeRequest) {
+        return assessmentTypeRepository.findById(assessmentTypeId)
                 .map(assessmentType -> {
                     assessmentType.setTypeName(assessmentTypeRequest.getTypeName());
                     assessmentType.setTypeDescription(assessmentTypeRequest.getTypeDescription());
@@ -37,8 +38,8 @@ public class AssessmentTypeService{
                 .orElseThrow();
     }
 
-    public void deleteAssessmentType(Long id) {
-        AssessmentType assessmentType = assessmentTypeRepository.findById(id)
+    public void deleteAssessmentType(UUID assessmentTypeId) {
+        AssessmentType assessmentType = assessmentTypeRepository.findById(assessmentTypeId)
                 .orElseThrow();
 
         assessmentTypeRepository.delete(assessmentType);

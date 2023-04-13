@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.hubformath.mathhubservice.model.systemconfig.AssetType;
 
-public interface AssetTypeRepository extends JpaRepository<AssetType, Long> {
+import java.util.UUID;
+
+public interface AssetTypeRepository extends JpaRepository<AssetType, UUID> {
     
 }

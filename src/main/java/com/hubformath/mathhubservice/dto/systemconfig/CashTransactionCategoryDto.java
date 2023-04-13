@@ -1,18 +1,20 @@
 package com.hubformath.mathhubservice.dto.systemconfig;
 
+import java.util.UUID;
+
 public class CashTransactionCategoryDto {
-    private Long id;
+    private UUID cashTransactionCategoryId;
 
     private String categoryName;
 
     private String categoryDescription;
 
-    public Long getId() {
-        return id;
+    public UUID getCashTransactionCategoryId() {
+        return cashTransactionCategoryId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCashTransactionCategoryId(UUID cashTransactionCategoryId) {
+        this.cashTransactionCategoryId = cashTransactionCategoryId;
     }
 
     public String getCategoryName() {
