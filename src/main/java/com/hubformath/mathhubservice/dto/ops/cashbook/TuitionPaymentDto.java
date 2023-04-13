@@ -27,6 +27,8 @@ public class TuitionPaymentDto {
 
     private Double amount;
 
+    private Long invoiceId;
+
     private ReceiptDto receipt;
 
     private String narration;
@@ -107,6 +109,14 @@ public class TuitionPaymentDto {
 
     public void setAmount(Double amount) {
         this.amount = amount;
+    }
+
+    public Long getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(Long invoiceId) {
+        this.invoiceId = invoiceId;
     }
 
     public ReceiptDto getReceipt() {

@@ -1,20 +1,23 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
 @Entity
+@Table(name = "asset_type")
 public class AssetType {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy=GenerationType.UUID)
+    private UUID assetTypeId;
     
     private String typeName;
 
@@ -33,10 +36,13 @@ public class AssetType {
         this.typeDescription = typeDescription;
     }
 
-    public Long getId() {
-        return this.id;
+    public UUID getAssetTypeId() {
+        return this.assetTypeId;
     }
 
+    public void setAssetTypeId(UUID assetTypeId) {
+        this.assetTypeId = assetTypeId;
+    }
 
     public String getTypeName() {
         return this.typeName;
@@ -72,26 +78,24 @@ public class AssetType {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof AssetType))
-            return false;
-        AssetType assetType = (AssetType) o;
-        return Objects.equals(this.id, assetType.id) && Objects.equals(this.typeName, assetType.typeName)
-            && Objects.equals(this.typeDescription, assetType.typeDescription)
-            && Objects.equals(this.createdAt, assetType.createdAt)
-            && Objects.equals(this.updatedAt, assetType.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof AssetType assetType)) return false;
+        return Objects.equals(getAssetTypeId(), assetType.getAssetTypeId())
+                && Objects.equals(getTypeName(), assetType.getTypeName())
+                && Objects.equals(getTypeDescription(), assetType.getTypeDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription, this.createdAt, this.updatedAt);
+        return Objects.hash(getAssetTypeId(), getTypeName(), getTypeDescription());
     }
 
     @Override
     public String toString() {
-        return "AssetType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + ", typeDescription='" 
-                + this.typeDescription + ", asset='" + ", createdAt='" + this.createdAt
-                + ", updatedAt='" + this.updatedAt + "'}";
+        return "AssetType{" +
+                "assetTypeId=" + assetTypeId +
+                ", typeName='" + typeName + '\'' +
+                ", typeDescription='" + typeDescription + '\'' +
+                '}';
     }
 }

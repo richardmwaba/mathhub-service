@@ -3,6 +3,8 @@ package com.hubformath.mathhubservice.service.ops.cashbook;
 import com.hubformath.mathhubservice.dto.ops.cashbook.TuitionPaymentDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.CashTransaction;
 import com.hubformath.mathhubservice.model.ops.cashbook.CashTransactionType;
+import com.hubformath.mathhubservice.model.ops.cashbook.Invoice;
+import com.hubformath.mathhubservice.model.ops.cashbook.InvoiceStatus;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.ops.cashbook.Receipt;
 import com.hubformath.mathhubservice.model.ops.cashbook.TuitionPayment;
@@ -27,13 +29,17 @@ public class TuitionPaymentService {
 
     private final StudentService studentService;
 
+    private final InvoiceService invoiceService;
+
     @Autowired
     public TuitionPaymentService(final TuitionPaymentRepository tuitionPaymentRepository,
                                  final PaymentMethodService paymentMethodService,
-                                 final StudentService studentService) {
+                                 final StudentService studentService,
+                                 final InvoiceService invoiceService) {
         this.tuitionPaymentRepository = tuitionPaymentRepository;
         this.paymentMethodService = paymentMethodService;
         this.studentService = studentService;
+        this.invoiceService = invoiceService;
     }
 
     public List<TuitionPayment> getAllTuitionPayments() {
@@ -51,6 +57,8 @@ public class TuitionPaymentService {
             return  null;
         }
 
+        final Long invoiceId = tuitionPayment.getInvoiceId();
+        final Invoice invoice = invoiceService.getInvoiceById(invoiceId);
         final Long paymentMethodId = tuitionPayment.getPaymentMethodId();
         final String narration = tuitionPayment.getNarration();
         final Double amount = tuitionPayment.getAmount();
@@ -69,7 +77,11 @@ public class TuitionPaymentService {
         // Update student financial summary
         student.setStudentFinancialSummary(studentService.computeStudentFinancialSummary(student));
 
-        final TuitionPayment newTuitionPayment = new TuitionPayment(newCashTransaction, student, paymentMethod, amount, receipt, narration);
+        // Update invoice
+        invoice.setInvoiceStatus(InvoiceStatus.PAID);
+        invoiceService.updateInvoice(invoiceId, invoice);
+
+        final TuitionPayment newTuitionPayment = new TuitionPayment(newCashTransaction, student, paymentMethod, amount,  invoice.getId(), receipt, narration);
 
         return tuitionPaymentRepository.save(newTuitionPayment);
     }

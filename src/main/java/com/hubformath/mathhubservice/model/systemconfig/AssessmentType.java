@@ -1,21 +1,23 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
 @Entity
+@Table(name = "assessment_type")
 public class AssessmentType {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE) 
-    private Long id;
+    @GeneratedValue(strategy=GenerationType.UUID)
+    private UUID assessmentTypeId;
 
     private String typeName;
     
@@ -34,8 +36,12 @@ public class AssessmentType {
         this.typeDescription = typeDescription;
     }
 
-    public Long getId() {
-        return this.id;
+    public UUID getAssessmentTypeId() {
+        return this.assessmentTypeId;
+    }
+
+    public void setAssessmentTypeId(UUID assessmentTypeId) {
+        this.assessmentTypeId = assessmentTypeId;
     }
     
     public String getTypeName() {
@@ -72,26 +78,24 @@ public class AssessmentType {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof AssessmentType))
-            return false;
-        AssessmentType assessmentType = (AssessmentType) o;
-        return Objects.equals(this.id, assessmentType.id)
-                && Objects.equals(this.typeName, assessmentType.typeName)
-            && Objects.equals(this.typeDescription, assessmentType.typeDescription)
-            && Objects.equals(this.createdAt, assessmentType.createdAt)
-            && Objects.equals(this.updatedAt, assessmentType.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof AssessmentType that)) return false;
+        return Objects.equals(getAssessmentTypeId(), that.getAssessmentTypeId())
+                && Objects.equals(getTypeName(), that.getTypeName())
+                && Objects.equals(getTypeDescription(), that.getTypeDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription, this.createdAt, this.updatedAt);
+        return Objects.hash(getAssessmentTypeId(), getTypeName(), getTypeDescription());
     }
 
     @Override
     public String toString() {
-        return "AsssessmentType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + ", typeDescription='" 
-                + this.typeDescription + ", createdAt='" + this.createdAt + ", updatedAt='" + this.updatedAt +"'}";
+        return "AssessmentType{" +
+                "assessmentId=" + assessmentTypeId +
+                ", typeName='" + typeName + '\'' +
+                ", typeDescription='" + typeDescription + '\'' +
+                '}';
     }
 }

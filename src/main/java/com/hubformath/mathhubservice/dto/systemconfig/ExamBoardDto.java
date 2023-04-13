@@ -1,18 +1,20 @@
 package com.hubformath.mathhubservice.dto.systemconfig;
 
+import java.util.UUID;
+
 public class ExamBoardDto {
 
-    private Long id;
+    private UUID examBoardId;
 
     private String examBoardName;
 
     private String examBoardDescription;
 
-    public Long getId() {
-        return id;}
+    public UUID getExamBoardId() {
+        return examBoardId;}
 
-    public void setId(Long id) {
-        this.id = id;}
+    public void setExamBoardId(UUID examBoardId) {
+        this.examBoardId = examBoardId;}
 
     public String getExamBoardName() {
         return examBoardName;}

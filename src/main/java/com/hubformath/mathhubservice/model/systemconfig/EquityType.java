@@ -4,17 +4,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
+@Table(name = "equity_type")
 public class EquityType {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy=GenerationType.UUID)
+    private UUID equityTypeId;
 
     private String typeName;
 
@@ -34,10 +37,13 @@ public class EquityType {
         this.typeDescription = typeDescription;
     }
 
-    public Long getId() {
-        return this.id;
+    public UUID getEquityTypeId() {
+        return this.equityTypeId;
     }
 
+    public void setEquityTypeId(UUID equityTypeId) {
+        this.equityTypeId = equityTypeId;
+    }
     
     public String getTypeName() {
         return this.typeName;
@@ -74,27 +80,24 @@ public class EquityType {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof EquityType))
-            return false;
-        EquityType equityType = (EquityType) o;
-        return Objects.equals(this.id, equityType.id) && Objects.equals(this.typeName, equityType.typeName)
-            && Objects.equals(this.typeDescription, equityType.typeDescription)
-            && Objects.equals(this.createdAt, equityType.createdAt)
-            && Objects.equals(this.updatedAt, equityType.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof EquityType that)) return false;
+        return Objects.equals(getEquityTypeId(), that.getEquityTypeId())
+                && Objects.equals(getTypeName(), that.getTypeName())
+                && Objects.equals(getTypeDescription(), that.getTypeDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription, this.createdAt, this.updatedAt);
+        return Objects.hash(getEquityTypeId(), getTypeName(), getTypeDescription());
     }
 
     @Override
     public String toString() {
-        return "EquityType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + ", typeDescription='" 
-                + this.typeDescription + ", equity='" + ", createdAt='" + this.createdAt
-                + ", updatedAt='" + this.updatedAt + "'}";
+        return "EquityType{" +
+                "equityTypeId=" + equityTypeId +
+                ", typeName='" + typeName + '\'' +
+                ", typeDescription='" + typeDescription + '\'' +
+                '}';
     }
-
 }

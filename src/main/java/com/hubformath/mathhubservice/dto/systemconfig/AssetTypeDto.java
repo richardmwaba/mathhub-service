@@ -1,18 +1,20 @@
 package com.hubformath.mathhubservice.dto.systemconfig;
 
+import java.util.UUID;
+
 public class AssetTypeDto {
-    private Long id;
+    private UUID assetTypeId;
 
     private String typeName;
 
     private String typeDescription;
 
-    public Long getId() {
-        return id;
+    public UUID getAssetTypeId() {
+        return assetTypeId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setAssetTypeId(UUID assetTypeId) {
+        this.assetTypeId = assetTypeId;
     }
 
     public String getTypeName() {

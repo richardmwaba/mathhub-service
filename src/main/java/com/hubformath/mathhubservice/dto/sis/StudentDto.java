@@ -11,11 +11,12 @@ import com.hubformath.mathhubservice.model.sis.StudentGender;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 
 public class StudentDto {
     private Long id;
 
-    private long examBoardId;
+    private UUID examBoardId;
 
     private long gradeId;
 
@@ -56,12 +57,12 @@ public class StudentDto {
     }
 
     @JsonIgnore
-    public long getExamBoardId() {
+    public UUID getExamBoardId() {
         return examBoardId;
     }
 
     @JsonProperty
-    public void setExamBoardId(long examBoardId) {
+    public void setExamBoardId(UUID examBoardId) {
         this.examBoardId = examBoardId;
     }
 

@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.EquityTypeRepositor
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class EquityTypeService {
@@ -19,16 +20,16 @@ public class EquityTypeService {
         return equityTypeRepository.findAll();
     }
 
-    public EquityType getEquityTypeById(Long id) {
-        return equityTypeRepository.findById(id).orElseThrow();
+    public EquityType getEquityTypeById(UUID equityTypeId) {
+        return equityTypeRepository.findById(equityTypeId).orElseThrow();
     }
 
     public EquityType createEquityType(EquityType equityTypeRequest) {
         return equityTypeRepository.save(equityTypeRequest);
     }
 
-    public EquityType updateEquityType(Long id, EquityType equityTypeRequest) {
-        return equityTypeRepository.findById(id) 
+    public EquityType updateEquityType(UUID equityTypeId, EquityType equityTypeRequest) {
+        return equityTypeRepository.findById(equityTypeId) 
                 .map(equityType -> {
                     equityType.setTypeName(equityTypeRequest.getTypeName());
                     equityType.setTypeDescription(equityTypeRequest.getTypeDescription());
@@ -37,8 +38,8 @@ public class EquityTypeService {
                 .orElseThrow();
     }
 
-    public void deleteEquityType(Long id) {
-        EquityType equityType = equityTypeRepository.findById(id)
+    public void deleteEquityType(UUID equityTypeId) {
+        EquityType equityType = equityTypeRepository.findById(equityTypeId)
                 .orElseThrow();
 
         equityTypeRepository.delete(equityType);
