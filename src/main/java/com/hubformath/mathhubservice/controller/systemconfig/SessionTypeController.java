@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -59,10 +60,10 @@ public class SessionTypeController {
                 .body(sessionTypeEntityModel);
     }
 
-    @GetMapping("/sessionTypes/{id}")
-    public ResponseEntity<EntityModel<SessionTypeDto>> getSessionTypeById(@PathVariable final Long id) {
+    @GetMapping("/sessionTypes/{sessionTypeId}")
+    public ResponseEntity<EntityModel<SessionTypeDto>> getSessionTypeById(@PathVariable final UUID sessionTypeId) {
         try {
-            SessionType sessionType = sessionTypeService.getSessionTypeById(id);
+            SessionType sessionType = sessionTypeService.getSessionTypeById(sessionTypeId);
             EntityModel<SessionTypeDto> sessionTypeEntityModel = toModel(modelMapper.map(sessionType, SessionTypeDto.class));
             return ResponseEntity.ok().body(sessionTypeEntityModel);
         } catch (NoSuchElementException e) {
@@ -70,12 +71,12 @@ public class SessionTypeController {
         }
     }
 
-    @PutMapping("/sessionTypes/{id}")
+    @PutMapping("/sessionTypes/{sessionTypeId}")
     public ResponseEntity<EntityModel<SessionTypeDto>> replaceSessionType(@RequestBody final SessionTypeDto sessionTypeDto,
-                                                                          @PathVariable final Long id) {
+                                                                          @PathVariable final UUID sessionTypeId) {
         try {
             SessionType sessionTypeRequest = modelMapper.map(sessionTypeDto, SessionType.class);
-            SessionType updatedSessionType = sessionTypeService.updateSessionType(id, sessionTypeRequest);
+            SessionType updatedSessionType = sessionTypeService.updateSessionType(sessionTypeId, sessionTypeRequest);
             EntityModel<SessionTypeDto> sessionTypeEntityModel = toModel(modelMapper.map(updatedSessionType, SessionTypeDto.class));
             return ResponseEntity.ok().body(sessionTypeEntityModel);
         } catch (NoSuchElementException e) {
@@ -83,10 +84,10 @@ public class SessionTypeController {
         }
     }
 
-    @DeleteMapping("/sessionTypes/{id}")
-    public ResponseEntity<String> deleteSessionType(@PathVariable final Long id) {
+    @DeleteMapping("/sessionTypes/{sessionTypeId}")
+    public ResponseEntity<String> deleteSessionType(@PathVariable final UUID sessionTypeId) {
         try {
-            sessionTypeService.deleteSessionType(id);
+            sessionTypeService.deleteSessionType(sessionTypeId);
             return ResponseEntity.ok().body("Session type deleted successfully");
         } catch (NoSuchElementException e) {
             return  ResponseEntity.notFound().build();
@@ -95,7 +96,7 @@ public class SessionTypeController {
 
     private EntityModel<SessionTypeDto> toModel(final SessionTypeDto sessionType) {
         return EntityModel.of(sessionType,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SessionTypeController.class).getSessionTypeById(sessionType.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SessionTypeController.class).getSessionTypeById(sessionType.getSessionTypeId())).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SessionTypeController.class).getAllSessionTypes()).withRel("sessionTypes"));
     }
 

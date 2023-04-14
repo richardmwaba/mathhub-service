@@ -1,26 +1,28 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
 
-import org.hibernate.annotations.CreationTimestamp;
-
 import com.hubformath.mathhubservice.model.sis.Student;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
+@Table(name = "grade")
 public class Grade {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID gradeId;
 
     private String gradeName;
 
@@ -46,8 +48,12 @@ public class Grade {
     }
 
 
-    public Long getId() {
-        return this.id;
+    public UUID getGradeId() {
+        return this.gradeId;
+    }
+
+    public void setGradeId(UUID gradeId) {
+        this.gradeId = gradeId;
     }
 
     public String getGradeName() {return this.gradeName;}
@@ -87,29 +93,29 @@ public class Grade {
     }
 
     @Override
-    public boolean equals(Object o){
-        if (this == o)
-            return  true;
-        if(!(o instanceof Grade grade))
-            return  false;
-        return Objects.equals(this.id, grade.id)
-                && Objects.equals(this.gradeName, grade.gradeName)
-                && Objects.equals(this.gradeDescription, grade.gradeDescription)
-                && Objects.equals(this.students, grade.students)
-                && Objects.equals(this.subjects, grade.subjects)
-                && Objects.equals(this.createdAt, grade.createdAt)
-                && Objects.equals(this.updatedAt, grade.updatedAt);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Grade grade)) return false;
+        return Objects.equals(getGradeId(), grade.getGradeId())
+                && Objects.equals(getGradeName(), grade.getGradeName())
+                && Objects.equals(getGradeDescription(), grade.getGradeDescription())
+                && Objects.equals(getSubjects(), grade.getSubjects())
+                && Objects.equals(getStudents(), grade.getStudents());
     }
 
     @Override
-    public int hashCode(){
-        return Objects.hash(this.id, this.gradeName, this.students, this.subjects, this.createdAt, this.updatedAt);
+    public int hashCode() {
+        return Objects.hash(getGradeId(), getGradeName(), getGradeDescription(), getSubjects(), getStudents());
     }
 
     @Override
-    public String toString(){
-        return "Grade{" + "id=" + this.id + ", gradeName=" + this.gradeName + "gradeDescription=" + this.gradeDescription + "students=" + this.students + ", subject=" + this.subjects + ", createdAt="
-                + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
+    public String toString() {
+        return "Grade{" +
+                "gradeId=" + gradeId +
+                ", gradeName='" + gradeName + '\'' +
+                ", gradeDescription='" + gradeDescription + '\'' +
+                ", subjects=" + subjects +
+                ", students=" + students +
+                '}';
     }
-
 }

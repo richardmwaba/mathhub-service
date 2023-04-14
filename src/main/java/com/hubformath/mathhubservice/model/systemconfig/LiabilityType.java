@@ -1,20 +1,23 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
 @Entity
+@Table(name = "liability_type")
 public class LiabilityType {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy=GenerationType.UUID)
+    private UUID liabilityTypeId;
 
     private String typeName;
 
@@ -34,8 +37,12 @@ public class LiabilityType {
         this.typeDescription = typeDescription;
     }
 
-    public Long getId() {
-        return this.id;
+    public UUID getLiabilityTypeId() {
+        return this.liabilityTypeId;
+    }
+
+    public void setLiabilityTypeId(UUID liabilityTypeId) {
+        this.liabilityTypeId = liabilityTypeId;
     }
     
     public String getTypeName() {
@@ -72,26 +79,24 @@ public class LiabilityType {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof LiabilityType))
-            return false;
-        LiabilityType liabilityType = (LiabilityType) o;
-        return Objects.equals(this.id, liabilityType.id) && Objects.equals(this.typeName, liabilityType.typeName)
-            && Objects.equals(this.typeDescription, liabilityType.typeDescription)
-            && Objects.equals(this.createdAt, liabilityType.createdAt)
-            && Objects.equals(this.updatedAt, liabilityType.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof LiabilityType that)) return false;
+        return Objects.equals(getLiabilityTypeId(), that.getLiabilityTypeId())
+                && Objects.equals(getTypeName(), that.getTypeName())
+                && Objects.equals(getTypeDescription(), that.getTypeDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription, this.createdAt, this.updatedAt);
+        return Objects.hash(getLiabilityTypeId(), getTypeName(), getTypeDescription());
     }
 
     @Override
     public String toString() {
-        return "LiabilityType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + ", typeDescription='" 
-                + this.typeDescription + ", liability='" + ", createdAt='" + this.createdAt
-                + ", updatedAt='" + this.updatedAt + "'}";
+        return "LiabilityType{" +
+                "liabilityTypeId=" + liabilityTypeId +
+                ", typeName='" + typeName + '\'' +
+                ", typeDescription='" + typeDescription + '\'' +
+                '}';
     }
 }

@@ -63,7 +63,7 @@ public class ExamBoardController {
                 .body(examBoardEntityModel);
     }
 
-    @GetMapping("/examBoard/{id}")
+    @GetMapping("/examBoard/{examBoardId}")
     public ResponseEntity<EntityModel<ExamBoardDto>> getExamBoardById(@PathVariable final UUID examBoardId) {
         try {
             ExamBoard examBoard = examBoardService.getExamBoardById(examBoardId);
@@ -74,7 +74,7 @@ public class ExamBoardController {
         }
     }
 
-    @PutMapping("/examBoard/{id}")
+    @PutMapping("/examBoard/{examBoardId}")
     public ResponseEntity<EntityModel<ExamBoardDto>> replaceExamBoard(@RequestBody final ExamBoardDto examBoardDto,
                                                                       @PathVariable final UUID examBoardId) {
         try {
@@ -87,7 +87,7 @@ public class ExamBoardController {
         }
     }
 
-    @DeleteMapping("/examBoard/{id}")
+    @DeleteMapping("/examBoard/{examBoardId}")
     public ResponseEntity<String> deleteExamBoard(@PathVariable final UUID examBoardId) {
         try {
             examBoardService.deleteExamBoard(examBoardId);

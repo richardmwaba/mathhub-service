@@ -1,19 +1,21 @@
 package com.hubformath.mathhubservice.dto.systemconfig;
 
+import java.util.UUID;
+
 public class GradeDto {
 
-    private Long id;
+    private UUID gradeId;
 
     private  String gradeName;
 
     private String gradeDescription;
 
-    public Long getId() {
-        return id;
+    public UUID getGradeId() {
+        return gradeId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setGradeId(UUID gradeId) {
+        this.gradeId = gradeId;
     }
 
     public String getGradeName() {

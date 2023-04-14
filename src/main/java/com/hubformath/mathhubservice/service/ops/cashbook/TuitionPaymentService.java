@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class TuitionPaymentService {
@@ -59,7 +60,7 @@ public class TuitionPaymentService {
 
         final Long invoiceId = tuitionPayment.getInvoiceId();
         final Invoice invoice = invoiceService.getInvoiceById(invoiceId);
-        final Long paymentMethodId = tuitionPayment.getPaymentMethodId();
+        final UUID paymentMethodId = tuitionPayment.getPaymentMethodId();
         final String narration = tuitionPayment.getNarration();
         final Double amount = tuitionPayment.getAmount();
         final Set<Long> lessonsIds = tuitionPayment.getLessonsIds();

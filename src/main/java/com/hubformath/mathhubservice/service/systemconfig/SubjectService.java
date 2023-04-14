@@ -8,6 +8,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.SubjectRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class SubjectService {
@@ -23,12 +24,12 @@ public class SubjectService {
 
     public List<Subject> getAllSubjects() { return subjectRepository.findAll(); }
 
-    public Subject getSubjectById(Long id){
-        return subjectRepository.findById(id).orElseThrow();
+    public Subject getSubjectById(UUID subjectId){
+        return subjectRepository.findById(subjectId).orElseThrow();
     }
 
     public Subject createSubject(SubjectDto subjectRequest){
-        final long subjectGradeId = subjectRequest.getSubjectGradeId();
+        final UUID subjectGradeId = subjectRequest.getSubjectGradeId();
         final String subjectName = subjectRequest.getSubjectName();
         final SubjectComplexity subjectComplexity = subjectRequest.getSubjectComplexity();
         final Grade grade = gradeService.getGradeById(subjectGradeId);
@@ -40,8 +41,8 @@ public class SubjectService {
         return subjectRepository.save(newSubject);
     }
 
-    public Subject updateSubject(Long id, Subject subjectRequest) {
-        return subjectRepository.findById(id)
+    public Subject updateSubject(UUID subjectId, Subject subjectRequest) {
+        return subjectRepository.findById(subjectId)
                 .map(subject -> {
                     subject.setSubjectName(subjectRequest.getSubjectName());
                     subject.setSubjectGrade(subjectRequest.getSubjectGrade());
@@ -50,8 +51,8 @@ public class SubjectService {
                 .orElseThrow();
     }
 
-    public void deleteSubject(Long id) {
-        Subject subject = subjectRepository.findById(id)
+    public void deleteSubject(UUID subjectId) {
+        Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow();
 
         subjectRepository.delete(subject);

@@ -71,7 +71,7 @@ public class StudentService {
     }
 
     public Student createStudent(StudentDto studentRequest) {
-        final long gradeId = studentRequest.getGradeId();
+        final UUID gradeId = studentRequest.getGradeId();
         final UUID examBoardId = studentRequest.getExamBoardId();
         final String firstName = studentRequest.getFirstName();
         final String middleName = studentRequest.getMiddleName();

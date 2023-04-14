@@ -4,5 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
 
-public interface GradeRepository extends JpaRepository<Grade, Long> {
+import java.util.UUID;
+
+public interface GradeRepository extends JpaRepository<Grade, UUID> {
 }

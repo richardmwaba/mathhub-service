@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -59,10 +60,10 @@ public class IncomeTypeController {
                 .body(incomeTypeEntityModel);
     }
 
-    @GetMapping("/incomeTypes/{id}")
-    public ResponseEntity<EntityModel<IncomeTypeDto>> getIncomeTypeById(@PathVariable final Long id) {
+    @GetMapping("/incomeTypes/{incomeTypeId}")
+    public ResponseEntity<EntityModel<IncomeTypeDto>> getIncomeTypeById(@PathVariable final UUID incomeTypeId) {
         try {
-            IncomeType incomeType = incomeTypeService.getIncomeTypeById(id);
+            IncomeType incomeType = incomeTypeService.getIncomeTypeById(incomeTypeId);
             EntityModel<IncomeTypeDto> incomeTypeEntityModel = toModel(modelMapper.map(incomeType, IncomeTypeDto.class));
             return ResponseEntity.ok().body(incomeTypeEntityModel);
         } catch (NoSuchElementException e) {
@@ -70,12 +71,12 @@ public class IncomeTypeController {
         }
     }
 
-    @PutMapping("/incomeTypes/{id}")
+    @PutMapping("/incomeTypes/{incomeTypeId}")
     public ResponseEntity<EntityModel<IncomeTypeDto>> replaceIncomeType(@RequestBody final IncomeTypeDto incomeTypeDto,
-                                                                        @PathVariable final Long id) {
+                                                                        @PathVariable final UUID incomeTypeId) {
         try {
             IncomeType incomeTypeRequest = modelMapper.map(incomeTypeDto, IncomeType.class);
-            IncomeType updatedIncomeType = incomeTypeService.updateIncomeType(id, incomeTypeRequest);
+            IncomeType updatedIncomeType = incomeTypeService.updateIncomeType(incomeTypeId, incomeTypeRequest);
             EntityModel<IncomeTypeDto> incomeTypeEntityModel = toModel(modelMapper.map(updatedIncomeType, IncomeTypeDto.class));
             return ResponseEntity.ok().body(incomeTypeEntityModel);
         } catch (NoSuchElementException e) {
@@ -83,10 +84,10 @@ public class IncomeTypeController {
         }
     }
 
-    @DeleteMapping("/incomeTypes/{id}")
-    public ResponseEntity<String> deleteIncomeType(@PathVariable final Long id) {
+    @DeleteMapping("/incomeTypes/{incomeTypeId}")
+    public ResponseEntity<String> deleteIncomeType(@PathVariable final UUID incomeTypeId) {
         try {
-            incomeTypeService.deleteIncomeType(id);
+            incomeTypeService.deleteIncomeType(incomeTypeId);
             return ResponseEntity.ok().body("Income type deleted successfully");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -95,7 +96,7 @@ public class IncomeTypeController {
 
     public EntityModel<IncomeTypeDto> toModel(final IncomeTypeDto incomeType) {
         return EntityModel.of(incomeType,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeTypeController.class).getIncomeTypeById(incomeType.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeTypeController.class).getIncomeTypeById(incomeType.getIncomeTypeId())).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeTypeController.class).getAllIncomeTypes()).withRel("incomeTypes"));
     }
 

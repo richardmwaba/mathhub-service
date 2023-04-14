@@ -60,7 +60,7 @@ public class EquityTypeController {
                 .body(equityTypeEntityModel);
     }
 
-    @GetMapping("/equityTypes/{id}")
+    @GetMapping("/equityTypes/{equityTypeId}")
     public ResponseEntity<EntityModel<EquityTypeDto>> getEquityTypeById(@PathVariable final UUID equityTypeId) {
         try {
             EquityType equityType = equityTypeService.getEquityTypeById(equityTypeId);
@@ -71,7 +71,7 @@ public class EquityTypeController {
         }
     }
 
-    @PutMapping("/equityTypes/{id}")
+    @PutMapping("/equityTypes/{equityTypeId}")
     public ResponseEntity<EntityModel<EquityTypeDto>> replaceEquityType(@RequestBody final EquityTypeDto equityTypeDto,
                                                                         @PathVariable final UUID equityTypeId) {
         try {
@@ -85,7 +85,7 @@ public class EquityTypeController {
 
     }
 
-    @DeleteMapping("/equityTypes/{id}")
+    @DeleteMapping("/equityTypes/{equityTypeId}")
     public ResponseEntity<String> deleteEquityType(@PathVariable final UUID equityTypeId) {
         try {
             equityTypeService.deleteEquityType(equityTypeId);

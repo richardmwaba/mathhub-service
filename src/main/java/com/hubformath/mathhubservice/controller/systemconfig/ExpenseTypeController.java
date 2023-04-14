@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -59,10 +60,10 @@ public class ExpenseTypeController {
                 .body(expenseTypeEntityModel);
     }
 
-    @GetMapping("/expenseTypes/{id}")
-    public ResponseEntity<EntityModel<ExpenseTypeDto>> getExpenseTypeById(@PathVariable final Long id) {
+    @GetMapping("/expenseTypes/{expenseTypeId}")
+    public ResponseEntity<EntityModel<ExpenseTypeDto>> getExpenseTypeById(@PathVariable final UUID expenseTypeId) {
         try {
-            ExpenseType expenseType = expenseTypeService.getExpenseTypeById(id);
+            ExpenseType expenseType = expenseTypeService.getExpenseTypeById(expenseTypeId);
             EntityModel<ExpenseTypeDto> expenseTypeEntityModel = toModel(modelMapper.map(expenseType, ExpenseTypeDto.class));
             return ResponseEntity.ok().body(expenseTypeEntityModel);
         } catch (NoSuchElementException e) {
@@ -70,12 +71,12 @@ public class ExpenseTypeController {
         }
     }
 
-    @PutMapping("/expenseTypes/{id}")
+    @PutMapping("/expenseTypes/{expenseTypeId}")
     public ResponseEntity<EntityModel<ExpenseTypeDto>> replaceExpenseType(@RequestBody final ExpenseTypeDto expenseTypeDto,
-                                                                          @PathVariable final Long id) {
+                                                                          @PathVariable final UUID expenseTypeId) {
         try {
             ExpenseType expenseTypeRequest = modelMapper.map(expenseTypeDto, ExpenseType.class);
-            ExpenseType updatedExpenseType = expenseTypeService.updateExpenseType(id, expenseTypeRequest);
+            ExpenseType updatedExpenseType = expenseTypeService.updateExpenseType(expenseTypeId, expenseTypeRequest);
             EntityModel<ExpenseTypeDto> expenseTypeEntityModel = toModel(modelMapper.map(updatedExpenseType, ExpenseTypeDto.class));
             return ResponseEntity.ok().body(expenseTypeEntityModel);
         } catch (NoSuchElementException e) {
@@ -83,10 +84,10 @@ public class ExpenseTypeController {
         }
     }
 
-    @DeleteMapping("/expenseTypes/{id}")
-    public ResponseEntity<String> deleteExpenseType(@PathVariable final Long id) {
+    @DeleteMapping("/expenseTypes/{expenseTypeId}")
+    public ResponseEntity<String> deleteExpenseType(@PathVariable final UUID expenseTypeId) {
         try {
-            expenseTypeService.deleteExpenseType(id);
+            expenseTypeService.deleteExpenseType(expenseTypeId);
             return ResponseEntity.ok().body("Expense type deleted successfully");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -95,7 +96,7 @@ public class ExpenseTypeController {
 
     public EntityModel<ExpenseTypeDto> toModel(final ExpenseTypeDto assessmentType) {
         return EntityModel.of(assessmentType,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseTypeController.class).getExpenseTypeById(assessmentType.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseTypeController.class).getExpenseTypeById(assessmentType.getExpenseTypeId())).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseTypeController.class).getAllExpenseTypes()).withRel("expenseTypes"));
     }
 

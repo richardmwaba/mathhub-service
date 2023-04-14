@@ -1,21 +1,23 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
 @Entity
+@Table(name = "session_type")
 public class SessionType {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy=GenerationType.UUID)
+    private UUID sessionTypeId;
 
     private String typeName;
 
@@ -34,8 +36,12 @@ public class SessionType {
         this.typeDescription = typeDescription;
     }
 
-    public Long getId() {
-        return this.id;
+    public UUID getSessionTypeId() {
+        return this.sessionTypeId;
+    }
+
+    public void setSessionTypeId(UUID sessionTypeId) {
+        this.sessionTypeId = sessionTypeId;
     }
 
     public String getTypeName() {
@@ -72,25 +78,24 @@ public class SessionType {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof SessionType))
-            return false;
-        SessionType sessionType = (SessionType) o;
-        return Objects.equals(this.id, sessionType.id) && Objects.equals(this.typeName, sessionType.typeName)
-            && Objects.equals(this.typeDescription, sessionType.typeDescription)
-            && Objects.equals(this.createdAt, sessionType.createdAt)
-            && Objects.equals(this.updatedAt, sessionType.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof SessionType that)) return false;
+        return Objects.equals(getSessionTypeId(), that.getSessionTypeId())
+                && Objects.equals(getTypeName(), that.getTypeName())
+                && Objects.equals(getTypeDescription(), that.getTypeDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription, this.createdAt, updatedAt);
+        return Objects.hash(getSessionTypeId(), getTypeName(), getTypeDescription());
     }
 
     @Override
     public String toString() {
-        return "SessionType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" + ", typeDescription='" 
-                + this.typeDescription + ", createdAt='" + this.createdAt + ", updatedAt='" + this.updatedAt + "'}";
+        return "SessionType{" +
+                "sessionTypeId=" + sessionTypeId +
+                ", typeName='" + typeName + '\'' +
+                ", typeDescription='" + typeDescription + '\'' +
+                '}';
     }
 }

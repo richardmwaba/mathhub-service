@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.SessionTypeReposito
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class SessionTypeService {
@@ -19,16 +20,16 @@ public class SessionTypeService {
         return sessionTypeRepository.findAll();
     }
 
-    public SessionType getSessionTypeById(Long id) {
-        return sessionTypeRepository.findById(id).orElseThrow();
+    public SessionType getSessionTypeById(UUID sessionTypeId) {
+        return sessionTypeRepository.findById(sessionTypeId).orElseThrow();
     }
 
     public SessionType createSessionType(SessionType sessionTypeRequest) {
         return sessionTypeRepository.save(sessionTypeRequest);
     }
 
-    public SessionType updateSessionType(Long id, SessionType sessionTypeRequest) {
-        return sessionTypeRepository.findById(id) 
+    public SessionType updateSessionType(UUID sessionTypeId, SessionType sessionTypeRequest) {
+        return sessionTypeRepository.findById(sessionTypeId)
                 .map(sessionType -> {
                     sessionType.setTypeName(sessionTypeRequest.getTypeName());
                     sessionType.setTypeDescription(sessionTypeRequest.getTypeDescription());
@@ -37,8 +38,8 @@ public class SessionTypeService {
                 .orElseThrow();
     }
 
-    public void deleteSessionType(Long id) {
-        SessionType sessionType = sessionTypeRepository.findById(id)
+    public void deleteSessionType(UUID sessionTypeId) {
+        SessionType sessionType = sessionTypeRepository.findById(sessionTypeId)
                 .orElseThrow();
 
         sessionTypeRepository.delete(sessionType);

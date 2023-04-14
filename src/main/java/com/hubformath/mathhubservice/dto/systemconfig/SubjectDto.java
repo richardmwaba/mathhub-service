@@ -4,21 +4,23 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hubformath.mathhubservice.model.systemconfig.SubjectComplexity;
 
+import java.util.UUID;
+
 public class SubjectDto {
 
-    private Long id;
+    private UUID subjectId;
 
     private String subjectName;
 
     private GradeDto subjectGrade;
 
-    private Long subjectGradeId;
+    private UUID subjectGradeId;
 
     private SubjectComplexity subjectComplexity;
 
-    public Long getId() {return id; }
+    public UUID getSubjectId() {return subjectId; }
 
-    public void setId(Long id) {this.id = id;}
+    public void setSubjectId(UUID subjectId) {this.subjectId = subjectId;}
 
 
     public String getSubjectName() {return subjectName;}
@@ -31,12 +33,12 @@ public class SubjectDto {
     public void setSubjectGrade(GradeDto subjectGrade) {this.subjectGrade = subjectGrade;}
 
     @JsonIgnore
-    public Long getSubjectGradeId() {
+    public UUID getSubjectGradeId() {
         return subjectGradeId;
     }
 
     @JsonProperty
-    public void setSubjectGradeId(Long subjectGradeId) {
+    public void setSubjectGradeId(UUID subjectGradeId) {
         this.subjectGradeId = subjectGradeId;
     }
 

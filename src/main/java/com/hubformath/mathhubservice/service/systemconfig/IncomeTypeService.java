@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.IncomeTypeRepositor
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class IncomeTypeService {
@@ -19,16 +20,16 @@ public class IncomeTypeService {
         return incomeTypeRepository.findAll();
     }
 
-    public IncomeType getIncomeTypeById(Long id) {
-        return incomeTypeRepository.findById(id).orElseThrow();
+    public IncomeType getIncomeTypeById(UUID incomeTypeId) {
+        return incomeTypeRepository.findById(incomeTypeId).orElseThrow();
     }
 
     public IncomeType createIncomeType(IncomeType incomeTypeRequest) {
         return incomeTypeRepository.save(incomeTypeRequest);
     }
 
-    public IncomeType updateIncomeType(Long id, IncomeType incomeTypeRequest) {
-        return incomeTypeRepository.findById(id) 
+    public IncomeType updateIncomeType(UUID incomeTypeId, IncomeType incomeTypeRequest) {
+        return incomeTypeRepository.findById(incomeTypeId)
                 .map(incomeType -> {
                     incomeType.setTypeName(incomeTypeRequest.getTypeName());
                     incomeType.setTypeDescription(incomeTypeRequest.getTypeDescription());
@@ -37,8 +38,8 @@ public class IncomeTypeService {
                 .orElseThrow();
     }
 
-    public void deleteIncomeType(Long id) {
-        IncomeType incomeType = incomeTypeRepository.findById(id)
+    public void deleteIncomeType(UUID incomeTypeId) {
+        IncomeType incomeType = incomeTypeRepository.findById(incomeTypeId)
                 .orElseThrow();
 
         incomeTypeRepository.delete(incomeType);

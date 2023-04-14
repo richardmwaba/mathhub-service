@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.LiabilityTypeReposi
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class LiabilityTypeService {
@@ -18,16 +19,16 @@ public class LiabilityTypeService {
         return liabilityTypeRepository.findAll();
     }
 
-    public LiabilityType getLiabilityTypeById(Long id) {
-        return liabilityTypeRepository.findById(id).orElseThrow();
+    public LiabilityType getLiabilityTypeById(UUID liabilityTypeId) {
+        return liabilityTypeRepository.findById(liabilityTypeId).orElseThrow();
     }
 
     public LiabilityType createLiabilityType(LiabilityType liabilityTypeRequest) {
         return liabilityTypeRepository.save(liabilityTypeRequest);
     }
 
-    public LiabilityType updateLiabilityType(Long id, LiabilityType liabilityTypeRequest) {
-        return liabilityTypeRepository.findById(id) 
+    public LiabilityType updateLiabilityType(UUID liabilityTypeId, LiabilityType liabilityTypeRequest) {
+        return liabilityTypeRepository.findById(liabilityTypeId)
                 .map(liabilityType -> {
                     liabilityType.setTypeName(liabilityTypeRequest.getTypeName());
                     liabilityType.setTypeDescription(liabilityTypeRequest.getTypeDescription());
@@ -36,8 +37,8 @@ public class LiabilityTypeService {
                 .orElseThrow();
     }
 
-    public void deleteLiabilityType(Long id) {
-        LiabilityType liabilityType = liabilityTypeRepository.findById(id)
+    public void deleteLiabilityType(UUID liabilityTypeId) {
+        LiabilityType liabilityType = liabilityTypeRepository.findById(liabilityTypeId)
                 .orElseThrow();
 
         liabilityTypeRepository.delete(liabilityType);

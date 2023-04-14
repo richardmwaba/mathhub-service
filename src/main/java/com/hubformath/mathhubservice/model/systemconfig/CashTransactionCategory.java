@@ -79,25 +79,24 @@ public class CashTransactionCategory {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof CashTransactionCategory cashTransactionCategory))
-            return false;
-        return Objects.equals(this.cashTransactionCategoryId, cashTransactionCategory.cashTransactionCategoryId) && Objects.equals(this.categoryName, cashTransactionCategory.categoryName)
-            && Objects.equals(this.categoryDescription, cashTransactionCategory.categoryDescription)
-            && Objects.equals(this.createdAt, cashTransactionCategory.createdAt)
-            && Objects.equals(this.updatedAt, cashTransactionCategory.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof CashTransactionCategory that)) return false;
+        return Objects.equals(getCashTransactionCategoryId(), that.getCashTransactionCategoryId())
+                && Objects.equals(getCategoryName(), that.getCategoryName())
+                && Objects.equals(getCategoryDescription(), that.getCategoryDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.cashTransactionCategoryId, this.categoryName, this.categoryDescription, this.createdAt, this.updatedAt);
+        return Objects.hash(getCashTransactionCategoryId(), getCategoryName(), getCategoryDescription());
     }
 
     @Override
     public String toString() {
-        return "CashTransactionCategory {id=" + cashTransactionCategoryId + ", categoryName=" + categoryName + ", categoryDescription="
-                + categoryDescription + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "}";
+        return "CashTransactionCategory{" +
+                "cashTransactionCategoryId=" + cashTransactionCategoryId +
+                ", categoryName='" + categoryName + '\'' +
+                ", categoryDescription='" + categoryDescription + '\'' +
+                '}';
     }
-    
 }

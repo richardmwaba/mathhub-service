@@ -7,6 +7,7 @@ import com.hubformath.mathhubservice.dto.systemconfig.PaymentMethodDto;
 
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.UUID;
 
 public class TuitionPaymentDto {
     private Long id;
@@ -19,7 +20,7 @@ public class TuitionPaymentDto {
 
     private Set<Long> lessonsIds;
 
-    private Long paymentMethodId;
+    private UUID paymentMethodId;
 
     private PaymentMethodDto paymentMethod;
 
@@ -78,12 +79,12 @@ public class TuitionPaymentDto {
     }
 
     @JsonIgnore
-    public Long getPaymentMethodId() {
+    public UUID getPaymentMethodId() {
         return paymentMethodId;
     }
 
     @JsonProperty
-    public void setPaymentMethodId(Long paymentMethodId) {
+    public void setPaymentMethodId(UUID paymentMethodId) {
         this.paymentMethodId = paymentMethodId;
     }
 

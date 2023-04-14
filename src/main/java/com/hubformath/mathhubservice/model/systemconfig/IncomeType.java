@@ -1,20 +1,23 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
 @Entity
+@Table(name = "income_type")
 public class IncomeType {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy=GenerationType.UUID)
+    private UUID incomeTypeId;
 
     private String typeName;
 
@@ -26,7 +29,6 @@ public class IncomeType {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-
     public IncomeType() {}
 
     public IncomeType(String typeName, String typeDescription) {
@@ -34,8 +36,12 @@ public class IncomeType {
         this.typeDescription = typeDescription;
     }
 
-    public Long getId() {
-        return this.id;
+    public UUID getIncomeTypeId() {
+        return this.incomeTypeId;
+    }
+
+    public void setIncomeTypeId(UUID incomeTypeId) {
+        this.incomeTypeId = incomeTypeId;
     }
     
     public String getTypeName() {
@@ -73,26 +79,24 @@ public class IncomeType {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof IncomeType))
-            return false;
-        IncomeType incomeType = (IncomeType) o;
-        return Objects.equals(this.id, incomeType.id) && Objects.equals(this.typeName, incomeType.typeName)
-            && Objects.equals(this.typeDescription, incomeType.typeDescription)
-            && Objects.equals(this.createdAt, incomeType.createdAt)
-            && Objects.equals(this.updatedAt, incomeType.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof IncomeType that)) return false;
+        return Objects.equals(getIncomeTypeId(), that.getIncomeTypeId())
+                && Objects.equals(getTypeName(), that.getTypeName())
+                && Objects.equals(getTypeDescription(), that.getTypeDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.typeName, this.typeDescription, this.createdAt, updatedAt);
+        return Objects.hash(getIncomeTypeId(), getTypeName(), getTypeDescription());
     }
 
     @Override
     public String toString() {
-        return "IncomeType{" + "id=" + this.id + ", typeName='" + this.typeName + "'" +  ", typeDescription='" 
-                + this.typeDescription + ", income='" + ", createdAt='" + this.createdAt
-                + ", updatedAt='" + this.updatedAt +"'}";
+        return "IncomeType{" +
+                "incomeTypeId=" + incomeTypeId +
+                ", typeName='" + typeName + '\'' +
+                ", typeDescription='" + typeDescription + '\'' +
+                '}';
     }
 }

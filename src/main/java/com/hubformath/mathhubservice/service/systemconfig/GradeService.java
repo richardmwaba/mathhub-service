@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.GradeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class GradeService {
@@ -19,16 +20,16 @@ public class GradeService {
         return gradeRepository.findAll();
     }
 
-    public Grade getGradeById(Long id) {
-        return gradeRepository.findById(id).orElseThrow();
+    public Grade getGradeById(UUID gradeId) {
+        return gradeRepository.findById(gradeId).orElseThrow();
     }
 
     public Grade createGrade(Grade gradeRequest) {
         return gradeRepository.save(gradeRequest);
     }
 
-    public Grade updateGrade(Long id, Grade gradeRequest) {
-        return gradeRepository.findById(id)
+    public Grade updateGrade(UUID gradeId, Grade gradeRequest) {
+        return gradeRepository.findById(gradeId)
                 .map(grade -> {
                     grade.setGradeName(gradeRequest.getGradeName());
                     grade.setGradeDescription(gradeRequest.getGradeDescription());
@@ -38,8 +39,8 @@ public class GradeService {
                 .orElseThrow();
     }
 
-    public void deleteGrade(Long id) {
-        Grade grade = gradeRepository.findById(id)
+    public void deleteGrade(UUID gradeId) {
+        Grade grade = gradeRepository.findById(gradeId)
                 .orElseThrow();
 
         gradeRepository.delete(grade);
