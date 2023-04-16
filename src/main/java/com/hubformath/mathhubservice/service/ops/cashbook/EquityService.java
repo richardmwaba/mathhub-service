@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,10 +34,10 @@ public class EquityService {
     public Equity updateEquity(UUID equityId, Equity equityRequest) {
         return equityRepository.findById(equityId)
                 .map(equity -> {
-                    equity.setPaymentMethod(equityRequest.getPaymentMethod());
-                    equity.setNarration(equityRequest.getNarration());
-                    equity.setEquityType(equityRequest.getEquityType());
-                    equity.setAmount(equityRequest.getAmount());
+                    Optional.ofNullable(equityRequest.getPaymentMethod()).ifPresent(equity::setPaymentMethod);
+                    Optional.ofNullable(equityRequest.getNarration()).ifPresent(equity::setNarration);
+                    Optional.ofNullable(equityRequest.getEquityType()).ifPresent(equity::setEquityType);
+                    Optional.ofNullable(equityRequest.getAmount()).ifPresent(equity::setAmount);
                     return equityRepository.save(equity);
                 })
                 .orElseThrow();

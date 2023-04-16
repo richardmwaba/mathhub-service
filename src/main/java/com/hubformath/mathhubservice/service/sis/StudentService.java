@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -105,17 +106,17 @@ public class StudentService {
     public Student updateStudent(UUID studentId, Student studentRequest) {
         return studentRepository.findById(studentId)
                 .map(student -> {
-                    student.setFirstName(studentRequest.getFirstName());
-                    student.setMiddleName(studentRequest.getMiddleName());
-                    student.setLastName(studentRequest.getLastName());
-                    student.setGender(studentRequest.getGender());
-                    student.setEmail(studentRequest.getEmail());
-                    student.setGrade(studentRequest.getGrade());
-                    student.setLessons(studentRequest.getLessons());
-                    student.setParent(studentRequest.getParent());
-                    student.setAddresses(studentRequest.getAddresses());
-                    student.setPhoneNumbers(studentRequest.getPhoneNumbers());
-                    student.setExamBoard(studentRequest.getExamBoard());
+                    Optional.ofNullable(studentRequest.getFirstName()).ifPresent(student::setFirstName);
+                    Optional.ofNullable(studentRequest.getMiddleName()).ifPresent(student::setMiddleName);
+                    Optional.ofNullable(studentRequest.getLastName()).ifPresent(studentRequest::setLastName);
+                    Optional.ofNullable(studentRequest.getGender()).ifPresent(student::setGender);
+                    Optional.ofNullable(studentRequest.getEmail()).ifPresent(student::setEmail);
+                    Optional.ofNullable(studentRequest.getGrade()).ifPresent(student::setGrade);
+                    Optional.ofNullable(studentRequest.getLessons()).ifPresent(student::setLessons);
+                    Optional.ofNullable(studentRequest.getParent()).ifPresent(student::setParent);
+                    Optional.ofNullable(studentRequest.getAddresses()).ifPresent(student::setAddresses);
+                    Optional.ofNullable(studentRequest.getPhoneNumbers()).ifPresent(student::setPhoneNumbers);
+                    Optional.ofNullable(studentRequest.getExamBoard()).ifPresent(student::setExamBoard);
                     return studentRepository.save(student);
                 })
                 .orElseThrow();

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,9 +34,9 @@ public class LiabilityService{
     public Liability updateLiability(UUID liabilityId, Liability liabilityRequest) {
         return liabilityRepository.findById(liabilityId)
                 .map(liability -> {
-                    liability.setPaymentMethod(liabilityRequest.getPaymentMethod());
-                    liability.setLiabilityType(liabilityRequest.getLiabilityType());
-                    liability.setAmount(liabilityRequest.getAmount());
+                    Optional.ofNullable(liabilityRequest.getPaymentMethod()).ifPresent(liability::setPaymentMethod);
+                    Optional.ofNullable(liabilityRequest.getLiabilityType()).ifPresent(liability::setLiabilityType);
+                    Optional.ofNullable(liabilityRequest.getAmount()).ifPresent(liability::setAmount);
                     return liabilityRepository.save(liability);
                 })
                 .orElseThrow();

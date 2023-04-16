@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -57,10 +58,10 @@ public class IncomeService {
     public Income updateIncome(UUID incomeId, Income incomeRequest) {
         return incomeRepository.findById(incomeId)
                 .map(income -> {
-                    income.setNarration(incomeRequest.getNarration());
-                    income.setPaymentMethod(incomeRequest.getPaymentMethod());
-                    income.setIncomeType(incomeRequest.getIncomeType());
-                    income.setAmount(incomeRequest.getAmount());
+                    Optional.ofNullable(incomeRequest.getNarration()).ifPresent(income::setNarration);
+                    Optional.ofNullable(incomeRequest.getPaymentMethod()).ifPresent(income::setPaymentMethod);
+                    Optional.ofNullable(incomeRequest.getIncomeType()).ifPresent(income::setIncomeType);
+                    Optional.ofNullable(incomeRequest.getAmount()).ifPresent(income::setAmount);
                     return incomeRepository.save(income);
                 })
                 .orElseThrow();

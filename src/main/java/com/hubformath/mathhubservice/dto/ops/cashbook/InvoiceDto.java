@@ -1,6 +1,7 @@
 package com.hubformath.mathhubservice.dto.ops.cashbook;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hubformath.mathhubservice.dto.sis.StudentDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.InvoiceStatus;
 
@@ -14,7 +15,6 @@ public class InvoiceDto {
 
     private StudentDto student;
 
-    @JsonIgnore
     private UUID studentId;
 
     private LocalDate invoiceDate;
@@ -51,10 +51,12 @@ public class InvoiceDto {
         this.student = student;
     }
 
+    @JsonIgnore
     public UUID getStudentId() {
         return studentId;
     }
 
+    @JsonProperty
     public void setStudentId(UUID studentId) {
         this.studentId = studentId;
     }

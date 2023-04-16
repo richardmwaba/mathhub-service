@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -49,7 +50,7 @@ public class ExpenseService {
         final ExpenseType expenseType = expenseTypeService.getExpenseTypeById(expenseTypeId);
         final PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(paymentMethodId);
 
-        // To do: Replace null created by with actual logged in user
+        // To do: Replace null created by with actual logged-in user
         final Expense newExpense = new Expense(narration, expenseStatus, amount, null, null);
         newExpense.setExpenseType(expenseType);
         newExpense.setPaymentMethod(paymentMethod);
@@ -60,11 +61,11 @@ public class ExpenseService {
     public Expense updateExpense(UUID expenseId, Expense expenseRequest) {
         return expenseRepository.findById(expenseId)
                 .map(expense -> {
-                    expense.setPaymentMethod(expenseRequest.getPaymentMethod());
-                    expense.setNarration(expenseRequest.getNarration());
-                    expense.setStatus(expenseRequest.getStatus());
-                    expense.setExpenseType(expenseRequest.getExpenseType());
-                    expense.setAmount(expenseRequest.getAmount());
+                    Optional.ofNullable(expenseRequest.getPaymentMethod()).ifPresent(expense::setPaymentMethod);
+                    Optional.ofNullable(expenseRequest.getNarration()).ifPresent(expense::setNarration);
+                    Optional.ofNullable(expenseRequest.getStatus()).ifPresent(expense::setStatus);
+                    Optional.ofNullable(expenseRequest.getExpenseType()).ifPresent(expense::setExpenseType);
+                    Optional.ofNullable(expenseRequest.getAmount()).ifPresent(expense::setAmount);
                     return expenseRepository.save(expense);
                 })
                 .orElseThrow();
