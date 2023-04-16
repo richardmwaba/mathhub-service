@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,20 +14,25 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "assessment_type")
+@Table(name = "assessment_types")
 public class AssessmentType {
     @Id
     @GeneratedValue(strategy=GenerationType.UUID)
+    @Column(name = "assessment_type_id", updatable = false, nullable = false)
     private UUID assessmentTypeId;
 
+    @Column(name = "type_name", nullable = false)
     private String typeName;
-    
+
+    @Column(name = "type_description", nullable = false)
     private String typeDescription;
 
     @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public AssessmentType() {}

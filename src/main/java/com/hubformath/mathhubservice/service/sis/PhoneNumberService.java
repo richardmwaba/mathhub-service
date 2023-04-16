@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.sis.PhoneNumberRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PhoneNumberService {
@@ -20,16 +21,16 @@ public class PhoneNumberService {
         return phoneNumberRepository.findAll();
     }
 
-    public PhoneNumber getPhoneNumberById(final Long id) {
-        return phoneNumberRepository.findById(id).orElseThrow();
+    public PhoneNumber getPhoneNumberById(final UUID phoneNumberId) {
+        return phoneNumberRepository.findById(phoneNumberId).orElseThrow();
     }
 
     public PhoneNumber createPhoneNumber(final PhoneNumber phoneNumberRequest) {
         return phoneNumberRepository.save(phoneNumberRequest);
     }
 
-    public PhoneNumber updatePhoneNumber(final Long id, final PhoneNumber phoneNumberRequest) {
-        return phoneNumberRepository.findById(id) 
+    public PhoneNumber updatePhoneNumber(final UUID phoneNumberId, final PhoneNumber phoneNumberRequest) {
+        return phoneNumberRepository.findById(phoneNumberId)
                 .map(phoneNumber -> {
                     phoneNumber.setType(phoneNumberRequest.getType());
                     phoneNumber.setCountryCode(phoneNumberRequest.getCountryCode());
@@ -39,8 +40,8 @@ public class PhoneNumberService {
                 .orElseThrow();
     }
 
-    public void deletePhoneNumber(final Long id) {
-        PhoneNumber phoneNumber = phoneNumberRepository.findById(id)
+    public void deletePhoneNumber(final UUID phoneNumberId) {
+        PhoneNumber phoneNumber = phoneNumberRepository.findById(phoneNumberId)
                 .orElseThrow();
 
         phoneNumberRepository.delete(phoneNumber);

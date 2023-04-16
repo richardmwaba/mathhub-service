@@ -3,8 +3,10 @@ package com.hubformath.mathhubservice.dto.ops.cashbook;
 import com.hubformath.mathhubservice.dto.systemconfig.LiabilityTypeDto;
 import com.hubformath.mathhubservice.dto.systemconfig.PaymentMethodDto;
 
+import java.util.UUID;
+
 public class LiabilityDto {
-    private Long id;
+    private UUID liabilityId;
 
     private LiabilityTypeDto liabilityType;
 
@@ -12,12 +14,12 @@ public class LiabilityDto {
 
     private Double amount;
 
-    public Long getId() {
-        return id;
+    public UUID getLiabilityId() {
+        return liabilityId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setLiabilityId(UUID liabilityId) {
+        this.liabilityId = liabilityId;
     }
 
     public LiabilityTypeDto getType() {

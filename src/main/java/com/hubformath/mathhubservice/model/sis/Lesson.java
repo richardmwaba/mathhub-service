@@ -2,6 +2,8 @@ package com.hubformath.mathhubservice.model.sis;
 
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.ReadOnlyProperty;
@@ -17,53 +19,62 @@ import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
+@Table(name = "lessons")
 public class Lesson {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @ReadOnlyProperty
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "lesson_id")
+    private UUID lessonId;
 
     @ManyToOne
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
+    @Column(name = "occurrence")
     private int occurrence;
 
+    @Column(name = "lesson_start_date")
     private LocalDate lessonStartDate;
 
+    @Column(name = "lesson_rate_amount")
     private Double lessonRateAmount;
 
+    @Column(name = "lesson_duration")
     private int lessonDuration;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "lesson_period")
     private LessonPeriod lessonPeriod;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "session_type")
     private SessionType sessionType;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "lesson_payment_status")
     private PaymentStatus lessonPaymentStatus;
 
     @CreationTimestamp
-    @ReadOnlyProperty
+    @ReadOnlyProperty@Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @ReadOnlyProperty
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public Lesson() {
         // Used for hibernate instantiation
     }
 
-    public Long getId() {
-        return id;
+    public UUID getLessonId() {
+        return lessonId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setLessonId(UUID lessonId) {
+        this.lessonId = lessonId;
     }
 
     public Subject getSubject() {
@@ -152,36 +163,32 @@ public class Lesson {
             return true;
         if (!(o instanceof Lesson lesson))
             return false;
-        return Objects.equals(this.id, lesson.id) && Objects.equals(this.occurrence, lesson.occurrence)
+        return Objects.equals(this.lessonId, lesson.lessonId) && Objects.equals(this.occurrence, lesson.occurrence)
                 && Objects.equals(this.lessonStartDate, lesson.lessonStartDate)
                 && Objects.equals(this.lessonRateAmount, lesson.lessonRateAmount)
                 && Objects.equals(this.lessonDuration, lesson.lessonDuration)
                 && Objects.equals(this.lessonPeriod, lesson.lessonPeriod)
                 && Objects.equals(this.sessionType, lesson.sessionType)
-                && Objects.equals(this.lessonPaymentStatus, lesson.lessonPaymentStatus)
-                && Objects.equals(this.createdAt, lesson.createdAt)
-                && Objects.equals(this.updatedAt, lesson.updatedAt);
+                && Objects.equals(this.lessonPaymentStatus, lesson.lessonPaymentStatus);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
-                this.id,
+                this.lessonId,
                 this.occurrence,
                 this.lessonStartDate,
                 this.lessonRateAmount,
                 this.lessonDuration,
                 this.sessionType,
                 this.lessonPaymentStatus,
-                this.lessonPeriod,
-                this.createdAt,
-                this.updatedAt);
+                this.lessonPeriod);
     }
 
     @Override
     public String toString() {
         return "Lesson{" +
-                "id=" + id +
+                "id=" + lessonId +
                 ", subject=" + subject +
                 ", occurrence=" + occurrence +
                 ", lessonStartDate=" + lessonStartDate +
@@ -189,9 +196,6 @@ public class Lesson {
                 ", lessonDuration=" + lessonDuration +
                 ", lessonPeriod=" + lessonPeriod +
                 ", sessionType=" + sessionType +
-                ", lessonPaymentStatus=" + lessonPaymentStatus +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

@@ -3,8 +3,10 @@ package com.hubformath.mathhubservice.dto.ops.cashbook;
 import com.hubformath.mathhubservice.dto.systemconfig.EquityTypeDto;
 import com.hubformath.mathhubservice.dto.systemconfig.PaymentMethodDto;
 
+import java.util.UUID;
+
 public class EquityDto {
-    private Long id;
+    private UUID equityId;
 
     private PaymentMethodDto paymentMethod;
 
@@ -14,12 +16,12 @@ public class EquityDto {
 
     private Double amount;
 
-    public Long getId() {
-        return id;
+    public UUID getEquityId() {
+        return equityId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setEquityId(UUID equityId) {
+        this.equityId = equityId;
     }
 
     public PaymentMethodDto getPaymentMethod() {

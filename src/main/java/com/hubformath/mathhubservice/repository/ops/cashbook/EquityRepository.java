@@ -4,7 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.hubformath.mathhubservice.model.ops.cashbook.Equity;
 
+import java.util.UUID;
 
-public interface EquityRepository extends JpaRepository<Equity, Long> {
+
+public interface EquityRepository extends JpaRepository<Equity, UUID> {
     
 }

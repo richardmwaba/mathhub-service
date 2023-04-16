@@ -12,21 +12,28 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
+@Table(name = "students")
 public class Student {
     @Id
     @ReadOnlyProperty
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    @Column(name = "student_id")
+    private UUID studentId;
 
+    @Column(name = "first_name")
     private String firstName;
 
+    @Column(name = "middle_name")
     private String middleName;
 
+    @Column(name = "last_name")
     private String lastName;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
     private StudentGender gender;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -55,14 +62,17 @@ public class Student {
     @Transient
     private StudentFinancialSummary studentFinancialSummary;
 
+    @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
     @CreationTimestamp
     @ReadOnlyProperty
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @ReadOnlyProperty
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @SuppressWarnings("unused")
@@ -79,12 +89,12 @@ public class Student {
         this.gender = gender;
     }
 
-    public Long getId() {
-        return id;
+    public UUID getStudentId() {
+        return studentId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setStudentId(UUID studentId) {
+        this.studentId = studentId;
     }
 
     public String getFirstName() {
@@ -203,7 +213,7 @@ public class Student {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Student student)) return false;
-        return getId().equals(student.getId())
+        return getStudentId().equals(student.getStudentId())
                 && getFirstName().equals(student.getFirstName())
                 && getMiddleName().equals(student.getMiddleName())
                 && getLastName().equals(student.getLastName())
@@ -216,14 +226,12 @@ public class Student {
                 && getExamBoard().equals(student.getExamBoard())
                 && getPhoneNumbers().equals(student.getPhoneNumbers())
                 && getStudentFinancialSummary().equals(student.getStudentFinancialSummary())
-                && getDateOfBirth().equals(student.getDateOfBirth())
-                && getCreatedAt().equals(student.getCreatedAt())
-                && getUpdatedAt().equals(student.getUpdatedAt());
+                && getDateOfBirth().equals(student.getDateOfBirth());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(),
+        return Objects.hash(getStudentId(),
                 getFirstName(),
                 getMiddleName(),
                 getLastName(),
@@ -236,15 +244,13 @@ public class Student {
                 getExamBoard(),
                 getPhoneNumbers(),
                 getStudentFinancialSummary(),
-                getDateOfBirth(),
-                getCreatedAt(),
-                getUpdatedAt());
+                getDateOfBirth());
     }
 
     @Override
     public String toString() {
         return "Student{" +
-                "id=" + id +
+                "studentId=" + studentId +
                 ", firstName=" + firstName + '\'' +
                 ", middleName=" + middleName + '\'' +
                 ", lastName=" + lastName + '\'' +
@@ -258,8 +264,6 @@ public class Student {
                 ", phoneNumbers=" + phoneNumbers +
                 ", studentFinancialSummary=" + studentFinancialSummary +
                 ", dateOfBirth=" + dateOfBirth +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

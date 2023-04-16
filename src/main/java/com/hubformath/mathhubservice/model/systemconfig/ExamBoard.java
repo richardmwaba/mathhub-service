@@ -1,6 +1,7 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,16 +20,21 @@ public class ExamBoard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "exam_board_id", updatable = false, nullable = false)
     private UUID examBoardId;
 
+    @Column(name = "exam_board_name", nullable = false)
     private String examBoardName;
-    
+
+    @Column(name = "exam_board_description", nullable = false)
     private String examBoardDescription;
 
     @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
     public ExamBoard(){}

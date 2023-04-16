@@ -1,36 +1,45 @@
 package com.hubformath.mathhubservice.model.ops.cashbook;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 @Entity
+@Table(name = "receipts")
 public class Receipt {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "receipt_id")
+    private UUID receiptId;
 
+    @Column(name = "receipt_number")
     private String receiptNumber;
 
+    @Column(name = "transaction_number")
     private String transactionNumber;
 
+    @Column(name = "receipt_date")
     private LocalDate receiptDate;
 
+    @Column(name = "issued_by")
     private Long issuedBy;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public Receipt(String transactionNumber) {
@@ -42,8 +51,12 @@ public class Receipt {
 
     public Receipt() {}
 
-    public Long getId() {
-        return id;
+    public UUID getReceiptId() {
+        return receiptId;
+    }
+
+    public void setReceiptId(UUID receiptId) {
+        this.receiptId = receiptId;
     }
 
     public String getReceiptNumber() {
@@ -96,28 +109,32 @@ public class Receipt {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof Receipt))
-            return false;
-        Receipt receipt = (Receipt) o;
-        return Objects.equals(this.id, receipt.id) && Objects.equals(this.receiptNumber, receipt.receiptNumber)
-                && Objects.equals(this.transactionNumber, receipt.transactionNumber)
-                && Objects.equals(this.receiptDate, receipt.receiptDate)
-                && Objects.equals(this.issuedBy, receipt.issuedBy)
-                && Objects.equals(this.createdAt, receipt.createdAt)
-                && Objects.equals(this.updatedAt, receipt.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof Receipt receipt)) return false;
+        return Objects.equals(getReceiptId(), receipt.getReceiptId())
+                && Objects.equals(getReceiptNumber(), receipt.getReceiptNumber())
+                && Objects.equals(getTransactionNumber(), receipt.getTransactionNumber())
+                && Objects.equals(getReceiptDate(), receipt.getReceiptDate())
+                && Objects.equals(getIssuedBy(), receipt.getIssuedBy());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.receiptNumber, this.transactionNumber, this.receiptDate, this.issuedBy, this.createdAt, this.updatedAt);
+        return Objects.hash(getReceiptId(),
+                getReceiptNumber(),
+                getTransactionNumber(),
+                getReceiptDate(),
+                getIssuedBy());
     }
 
     @Override
     public String toString() {
-        return "Receipt {id=" + this.id + ", receiptNumber=" + this.receiptNumber + ", transactionNumber=" + this.transactionNumber
-                + ", receiptDate="
-                + this.receiptDate + ", issuedBy=" + this.issuedBy + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
+        return "Receipt{" +
+                "receiptId=" + receiptId +
+                ", receiptNumber='" + receiptNumber + '\'' +
+                ", transactionNumber='" + transactionNumber + '\'' +
+                ", receiptDate=" + receiptDate +
+                ", issuedBy=" + issuedBy +
+                '}';
     }
 }

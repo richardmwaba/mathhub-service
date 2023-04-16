@@ -34,8 +34,8 @@ public class ExpenseService {
         return expenseRepository.findAll();
     }
 
-    public Expense getExpenseById(Long id) {
-        return expenseRepository.findById(id).orElseThrow();
+    public Expense getExpenseById(UUID expenseId) {
+        return expenseRepository.findById(expenseId).orElseThrow();
 
     }
 
@@ -57,8 +57,8 @@ public class ExpenseService {
         return expenseRepository.save(newExpense);
     }
 
-    public Expense updateExpense(Long id, Expense expenseRequest) {
-        return expenseRepository.findById(id)
+    public Expense updateExpense(UUID expenseId, Expense expenseRequest) {
+        return expenseRepository.findById(expenseId)
                 .map(expense -> {
                     expense.setPaymentMethod(expenseRequest.getPaymentMethod());
                     expense.setNarration(expenseRequest.getNarration());
@@ -70,8 +70,8 @@ public class ExpenseService {
                 .orElseThrow();
     }
 
-    public void deleteExpense(Long id) {
-        Expense expense = expenseRepository.findById(id)
+    public void deleteExpense(UUID expenseId) {
+        Expense expense = expenseRepository.findById(expenseId)
                 .orElseThrow();
 
         expenseRepository.delete(expense);

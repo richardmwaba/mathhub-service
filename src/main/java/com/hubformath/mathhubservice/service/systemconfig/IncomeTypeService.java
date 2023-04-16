@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.IncomeTypeRepositor
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,8 +32,8 @@ public class IncomeTypeService {
     public IncomeType updateIncomeType(UUID incomeTypeId, IncomeType incomeTypeRequest) {
         return incomeTypeRepository.findById(incomeTypeId)
                 .map(incomeType -> {
-                    incomeType.setTypeName(incomeTypeRequest.getTypeName());
-                    incomeType.setTypeDescription(incomeTypeRequest.getTypeDescription());
+                    Optional.ofNullable(incomeTypeRequest.getTypeName()).ifPresent(incomeType::setTypeName);
+                    Optional.ofNullable(incomeTypeRequest.getTypeDescription()).ifPresent(incomeType::setTypeDescription);
                     return incomeTypeRepository.save(incomeType);
                 }) 
                 .orElseThrow();

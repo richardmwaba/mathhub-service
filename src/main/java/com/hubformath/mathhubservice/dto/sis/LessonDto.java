@@ -1,7 +1,8 @@
-package com.hubformath.mathhubservice.dto.systemconfig;
+package com.hubformath.mathhubservice.dto.sis;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.hubformath.mathhubservice.dto.systemconfig.SubjectDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.sis.LessonPeriod;
 import com.hubformath.mathhubservice.model.sis.SessionType;
@@ -11,7 +12,7 @@ import java.util.UUID;
 
 public class LessonDto {
 
-    private Long id;
+    private UUID lessonId;
 
     private SubjectDto subject;
 
@@ -31,12 +32,12 @@ public class LessonDto {
 
     private PaymentStatus lessonPaymentStatus;
 
-    public Long getId() {
-        return id;
+    public UUID getLessonId() {
+        return lessonId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setLessonId(UUID lessonId) {
+        this.lessonId = lessonId;
     }
 
     @JsonProperty

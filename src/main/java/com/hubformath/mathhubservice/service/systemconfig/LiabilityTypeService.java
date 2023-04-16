@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.LiabilityTypeReposi
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,8 +31,8 @@ public class LiabilityTypeService {
     public LiabilityType updateLiabilityType(UUID liabilityTypeId, LiabilityType liabilityTypeRequest) {
         return liabilityTypeRepository.findById(liabilityTypeId)
                 .map(liabilityType -> {
-                    liabilityType.setTypeName(liabilityTypeRequest.getTypeName());
-                    liabilityType.setTypeDescription(liabilityTypeRequest.getTypeDescription());
+                    Optional.ofNullable(liabilityTypeRequest.getTypeName()).ifPresent(liabilityType::setTypeName);
+                    Optional.ofNullable(liabilityTypeRequest.getTypeDescription()).ifPresent(liabilityType::setTypeDescription);
                     return liabilityTypeRepository.save(liabilityType);
                 }) 
                 .orElseThrow();

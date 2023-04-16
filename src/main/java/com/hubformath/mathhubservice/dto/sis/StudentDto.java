@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hubformath.mathhubservice.dto.systemconfig.ExamBoardDto;
 import com.hubformath.mathhubservice.dto.systemconfig.GradeDto;
-import com.hubformath.mathhubservice.dto.systemconfig.LessonDto;
 import com.hubformath.mathhubservice.model.sis.StudentFinancialSummary;
 import com.hubformath.mathhubservice.model.sis.StudentGender;
 
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class StudentDto {
-    private Long id;
+    private UUID studentId;
 
     private UUID examBoardId;
 
@@ -48,12 +47,12 @@ public class StudentDto {
 
     private ExamBoardDto examBoard;
 
-    public Long getId() {
-        return id;
+    public UUID getStudentId() {
+        return studentId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setStudentId(UUID studentId) {
+        this.studentId = studentId;
     }
 
     @JsonIgnore

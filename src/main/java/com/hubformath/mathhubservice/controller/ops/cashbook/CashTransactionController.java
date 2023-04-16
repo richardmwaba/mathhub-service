@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 
@@ -48,10 +49,10 @@ public class CashTransactionController {
         return ResponseEntity.ok().body(transactionCollectionModel);
     }
 
-    @GetMapping("/transactions/{id}")
-    public ResponseEntity<EntityModel<CashTransactionDto>> getTransactionById(@PathVariable final Long id) {
+    @GetMapping("/transactions/{cashTransactionId}")
+    public ResponseEntity<EntityModel<CashTransactionDto>> getTransactionById(@PathVariable final UUID cashTransactionId) {
         try {
-            CashTransaction transaction = transactionService.getTransactionById(id);
+            CashTransaction transaction = transactionService.getTransactionById(cashTransactionId);
             EntityModel<CashTransactionDto> transactionEntityModel = toModel(modelMapper.map(transaction, CashTransactionDto.class));
             return ResponseEntity.ok().body(transactionEntityModel);
         } catch (NoSuchElementException e) {
@@ -59,12 +60,12 @@ public class CashTransactionController {
         }
     }
 
-    @PatchMapping("/transactions/{id}")
+    @PatchMapping("/transactions/{cashTransactionId}")
     public ResponseEntity<EntityModel<CashTransactionDto>> replaceTransaction(@RequestBody final CashTransactionDto transactionDto,
-                                                                              @PathVariable final Long id) {
+                                                                              @PathVariable final UUID cashTransactionId) {
         try {
             CashTransaction transactionRequest = modelMapper.map(transactionDto, CashTransaction.class);
-            CashTransaction updatedTransaction = transactionService.updateTransaction(id, transactionRequest);
+            CashTransaction updatedTransaction = transactionService.updateTransaction(cashTransactionId, transactionRequest);
             EntityModel<CashTransactionDto> transactionEntityModel = toModel(modelMapper.map(updatedTransaction, CashTransactionDto.class));
             return ResponseEntity.ok().body(transactionEntityModel);
         } catch (NoSuchElementException e) {
@@ -73,10 +74,10 @@ public class CashTransactionController {
 
     }
 
-    @DeleteMapping("/transactions/{id}")
-    public ResponseEntity<String> deleteTransaction(@PathVariable final Long id) {
+    @DeleteMapping("/transactions/{cashTransactionId}")
+    public ResponseEntity<String> deleteTransaction(@PathVariable final UUID cashTransactionId) {
         try {
-            transactionService.deleteTransaction(id);
+            transactionService.deleteTransaction(cashTransactionId);
             return ResponseEntity.ok().body("Transaction deleted successfully");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -84,8 +85,8 @@ public class CashTransactionController {
     }
 
     private EntityModel<CashTransactionDto> toModel(final CashTransactionDto transaction) {
-        return EntityModel.of(transaction, //
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionController.class).getTransactionById(transaction.getId())).withSelfRel(),
+        return EntityModel.of(transaction,
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionController.class).getTransactionById(transaction.getCashTransactionId())).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionController.class).getAllTransactions()).withRel("transactions"));
     }
 

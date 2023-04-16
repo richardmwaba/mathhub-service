@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.sis.ParentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ParentService {
@@ -19,16 +20,16 @@ public class ParentService {
         return parentRepository.findAll();
     }
 
-    public Parent getParentById(final Long id) {
-        return parentRepository.findById(id).orElseThrow();
+    public Parent getParentById(final UUID parentId) {
+        return parentRepository.findById(parentId).orElseThrow();
     }
 
     public Parent createParent(final Parent parentRequest) {
         return parentRepository.save(parentRequest);
     }
 
-    public Parent updateParent(final Long id, final Parent parentRequest) {
-        return parentRepository.findById(id) 
+    public Parent updateParent(final UUID parentId, final Parent parentRequest) {
+        return parentRepository.findById(parentId)
                 .map(parent -> {
                     parent.setFirstName(parentRequest.getFirstName());
                     parent.setMiddleName(parentRequest.getMiddleName());
@@ -42,8 +43,8 @@ public class ParentService {
                 .orElseThrow();
     }
 
-    public void deleteParent(final Long id) {
-        Parent parent = parentRepository.findById(id)
+    public void deleteParent(final UUID parentId) {
+        Parent parent = parentRepository.findById(parentId)
                 .orElseThrow();
 
         parentRepository.delete(parent);

@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.hubformath.mathhubservice.model.sis.Lesson;
 
-public interface LessonsRepository extends JpaRepository<Lesson, Long> {
+import java.util.UUID;
+
+public interface LessonsRepository extends JpaRepository<Lesson, UUID> {
 
 }

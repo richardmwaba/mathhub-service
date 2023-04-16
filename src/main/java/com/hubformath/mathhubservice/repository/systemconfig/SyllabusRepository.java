@@ -4,5 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.hubformath.mathhubservice.model.systemconfig.Syllabus;
 
-public interface SyllabusRepository extends JpaRepository<Syllabus, Long> {
+import java.util.UUID;
+
+public interface SyllabusRepository extends JpaRepository<Syllabus, UUID> {
 }

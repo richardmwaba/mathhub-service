@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -57,10 +58,10 @@ public class InvoiceController {
                 .body(invoiceEntityModel);
     }
 
-    @GetMapping("/invoices/{id}")
-    public ResponseEntity<EntityModel<InvoiceDto>> getInvoiceById(@PathVariable final Long id) {
+    @GetMapping("/invoices/{invoiceId}")
+    public ResponseEntity<EntityModel<InvoiceDto>> getInvoiceById(@PathVariable final UUID invoiceId) {
         try {
-            Invoice invoice = invoiceService.getInvoiceById(id);
+            Invoice invoice = invoiceService.getInvoiceById(invoiceId);
             EntityModel<InvoiceDto> invoiceEntityModel = toModel(modelMapper.map(invoice, InvoiceDto.class));
             return ResponseEntity.ok().body(invoiceEntityModel);
         } catch (NoSuchElementException e) {
@@ -68,12 +69,12 @@ public class InvoiceController {
         }
     }
 
-    @PutMapping("/invoices/{id}")
+    @PutMapping("/invoices/{invoiceId}")
     public ResponseEntity<EntityModel<InvoiceDto>> replaceInvoice(@RequestBody final InvoiceDto invoiceDto,
-                                                                @PathVariable final Long id) {
+                                                                @PathVariable final UUID invoiceId) {
         try {
             Invoice invoiceRequest = modelMapper.map(invoiceDto, Invoice.class);
-            Invoice updatedInvoice = invoiceService.updateInvoice(id, invoiceRequest);
+            Invoice updatedInvoice = invoiceService.updateInvoice(invoiceId, invoiceRequest);
             EntityModel<InvoiceDto> invoiceEntityModel = toModel(modelMapper.map(updatedInvoice, InvoiceDto.class));
             return ResponseEntity.ok().body(invoiceEntityModel);
         } catch (NoSuchElementException e) {
@@ -81,10 +82,10 @@ public class InvoiceController {
         }
     }
 
-    @DeleteMapping("/invoices/{id}")
-    public ResponseEntity<String> deleteInvoice(@PathVariable final Long id) {
+    @DeleteMapping("/invoices/{invoiceId}")
+    public ResponseEntity<String> deleteInvoice(@PathVariable final UUID invoiceId) {
         try {
-            invoiceService.deleteInvoice(id);
+            invoiceService.deleteInvoice(invoiceId);
             return ResponseEntity.ok().body("Invoice deleted successfully");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -93,7 +94,7 @@ public class InvoiceController {
 
     private EntityModel<InvoiceDto> toModel(final InvoiceDto invoice) {
         return EntityModel.of(invoice,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(InvoiceController.class).getInvoiceById(invoice.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(InvoiceController.class).getInvoiceById(invoice.getInvoiceId())).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(InvoiceController.class).getAllInvoices()).withRel("invoices"));
     }
 

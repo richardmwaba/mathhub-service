@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.sis.AddressRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AddressService {
@@ -19,16 +20,16 @@ public class AddressService {
         return addressRepository.findAll();
     }
 
-    public Address getAddressById(final Long id) {
-        return addressRepository.findById(id).orElseThrow();
+    public Address getAddressById(final UUID addressId) {
+        return addressRepository.findById(addressId).orElseThrow();
     }
 
     public Address createAddress(final Address addressRequest) {
         return addressRepository.save(addressRequest);
     }
 
-    public Address updateAddress(final Long id, final Address addressRequest) {
-        return addressRepository.findById(id) 
+    public Address updateAddress(final UUID addressId, final Address addressRequest) {
+        return addressRepository.findById(addressId)
                 .map(address -> {
                     address.setAddressType(addressRequest.getAddressType());
                     address.setAddressLine1(addressRequest.getAddressLine1());
@@ -42,8 +43,8 @@ public class AddressService {
                 .orElseThrow();
     }
 
-    public void deleteAddress(final Long id) {
-        Address address = addressRepository.findById(id)
+    public void deleteAddress(final UUID addressId) {
+        Address address = addressRepository.findById(addressId)
                 .orElseThrow();
 
         addressRepository.delete(address);

@@ -1,6 +1,7 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
 import jakarta.annotation.Nonnull;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +12,7 @@ import jakarta.persistence.UniqueConstraint;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -19,15 +21,20 @@ import java.util.Set;
 })
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "user_id", updatable = false, nullable = false)
+    private UUID userId;
 
+    @Column(name = "username", nullable = false)
     private String username;
 
+    @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
+    @Column(name = "password", nullable = false)
     private String password;
 
     @ManyToMany
@@ -46,12 +53,12 @@ public class User {
         this.password = password;
     }
 
-    public Long getId() {
-        return id;
+    public UUID getUserId() {
+        return userId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
@@ -98,7 +105,7 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User user)) return false;
-        return Objects.equals(getId(), user.getId())
+        return Objects.equals(getUserId(), user.getUserId())
                 && Objects.equals(getUsername(), user.getUsername())
                 && Objects.equals(getEmail(), user.getEmail())
                 && Objects.equals(getPhoneNumber(), user.getPhoneNumber())
@@ -108,13 +115,13 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUsername(), getEmail(), getPhoneNumber(), getPassword(), getUserTypes());
+        return Objects.hash(getUserId(), getUsername(), getEmail(), getPhoneNumber(), getPassword(), getUserTypes());
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "userId=" + userId +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +

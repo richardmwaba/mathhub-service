@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -59,10 +60,10 @@ public class TuitionPaymentController {
                 .body(tuitionPaymentEntityModel);
     }
 
-    @GetMapping("/tuitionPayments/{id}")
-    public ResponseEntity<EntityModel<TuitionPaymentDto>> getTuitionPaymentById(@PathVariable final Long id) {
+    @GetMapping("/tuitionPayments/{tuitionPaymentId}")
+    public ResponseEntity<EntityModel<TuitionPaymentDto>> getTuitionPaymentById(@PathVariable final UUID tuitionPaymentId) {
         try {
-            TuitionPayment tuitionPayment = tuitionPaymentService.getTuitionPaymentById(id);
+            TuitionPayment tuitionPayment = tuitionPaymentService.getTuitionPaymentById(tuitionPaymentId);
             EntityModel<TuitionPaymentDto> tuitionPaymentEntityModel = toModel(modelMapper.map(tuitionPayment, TuitionPaymentDto.class));
             return ResponseEntity.ok().body(tuitionPaymentEntityModel);
         } catch (NoSuchElementException e) {
@@ -72,7 +73,7 @@ public class TuitionPaymentController {
 
     private EntityModel<TuitionPaymentDto> toModel(final TuitionPaymentDto tuitionPayment) {
         return EntityModel.of(tuitionPayment,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TuitionPaymentController.class).getTuitionPaymentById(tuitionPayment.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TuitionPaymentController.class).getTuitionPaymentById(tuitionPayment.getTuitionPaymentId())).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TuitionPaymentController.class).getAllTuitionPayments()).withRel("tuitionPayments"));
     }
 

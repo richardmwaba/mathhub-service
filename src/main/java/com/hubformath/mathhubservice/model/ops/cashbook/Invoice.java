@@ -1,6 +1,7 @@
 package com.hubformath.mathhubservice.model.ops.cashbook;
 
 import com.hubformath.mathhubservice.model.sis.Student;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -9,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -18,34 +20,44 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
+@Table(name = "invoices")
 public class Invoice {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID invoiceId;
 
+    @Column(name = "invoice_number")
     private String invoiceNumber;
 
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student student;
 
+    @Column(name = "invoice_date")
     private LocalDate invoiceDate;
 
+    @Column(name = "amount")
     private Double amount;
 
+    @Column(name = "narration")
     private String narration;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "invoice_status")
     private InvoiceStatus invoiceStatus;
 
+    @Column(name = "due_date")
     private LocalDate dueDate;
 
+    @Column(name = "issued_by")
     private Long issuedBy;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public Invoice() {
@@ -60,12 +72,12 @@ public class Invoice {
         this.dueDate = LocalDate.now().plusDays(14);
     }
 
-    public Long getId() {
-        return id;
+    public UUID getInvoiceId() {
+        return invoiceId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setInvoiceId(UUID invoiceId) {
+        this.invoiceId = invoiceId;
     }
 
     public String getInvoiceNumber() {
@@ -152,7 +164,7 @@ public class Invoice {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Invoice invoice)) return false;
-        return Objects.equals(getId(), invoice.getId())
+        return Objects.equals(getInvoiceId(), invoice.getInvoiceId())
                 && Objects.equals(getInvoiceNumber(), invoice.getInvoiceNumber())
                 && Objects.equals(getInvoiceDate(), invoice.getInvoiceDate())
                 && Objects.equals(getAmount(), invoice.getAmount())
@@ -164,7 +176,7 @@ public class Invoice {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(),
+        return Objects.hash(getInvoiceId(),
                 getInvoiceNumber(),
                 getInvoiceDate(),
                 getAmount(),
@@ -177,7 +189,7 @@ public class Invoice {
     @Override
     public String toString() {
         return "Invoice{" +
-                "id=" + id +
+                "invoiceId=" + invoiceId +
                 ", invoiceNumber='" + invoiceNumber + '\'' +
                 ", student=" + student +
                 ", invoiceDate=" + invoiceDate +
@@ -186,8 +198,6 @@ public class Invoice {
                 ", invoiceStatus=" + invoiceStatus +
                 ", dueDate=" + dueDate +
                 ", issuedBy=" + issuedBy +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

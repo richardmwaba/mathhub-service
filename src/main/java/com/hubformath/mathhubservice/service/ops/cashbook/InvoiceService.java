@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class InvoiceService {
@@ -28,12 +29,12 @@ public class InvoiceService {
         return invoiceRepository.findAll();
     }
 
-    public Invoice getInvoiceById(Long id) {
-        return invoiceRepository.findById(id).orElseThrow();
+    public Invoice getInvoiceById(UUID invoiceId) {
+        return invoiceRepository.findById(invoiceId).orElseThrow();
     }
 
     public Invoice createInvoice(InvoiceDto invoiceRequest) {
-        final Long studentId = invoiceRequest.getStudentId();
+        final UUID studentId = invoiceRequest.getStudentId();
         final String narration = invoiceRequest.getNarration();
 
         final Student student = studentService.getStudentById(studentId);
@@ -43,8 +44,8 @@ public class InvoiceService {
         return invoiceRepository.save(newInvoice);
     }
 
-    public Invoice updateInvoice(Long id, Invoice invoiceRequest) {
-        return invoiceRepository.findById(id)
+    public Invoice updateInvoice(UUID invoiceId, Invoice invoiceRequest) {
+        return invoiceRepository.findById(invoiceId)
                 .map(invoice -> {
                     Optional.ofNullable(invoiceRequest.getNarration()).ifPresent(invoice::setNarration);
                     Optional.ofNullable(invoiceRequest.getAmount()).ifPresent(invoice::setAmount);
@@ -55,8 +56,8 @@ public class InvoiceService {
                 .orElseThrow();
     }
 
-    public void deleteInvoice(Long id) {
-        Invoice invoice = invoiceRepository.findById(id)
+    public void deleteInvoice(UUID invoiceId) {
+        Invoice invoice = invoiceRepository.findById(invoiceId)
                 .orElseThrow();
 
         invoiceRepository.delete(invoice);

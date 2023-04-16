@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.EquityTypeRepositor
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,8 +32,8 @@ public class EquityTypeService {
     public EquityType updateEquityType(UUID equityTypeId, EquityType equityTypeRequest) {
         return equityTypeRepository.findById(equityTypeId) 
                 .map(equityType -> {
-                    equityType.setTypeName(equityTypeRequest.getTypeName());
-                    equityType.setTypeDescription(equityTypeRequest.getTypeDescription());
+                    Optional.ofNullable(equityTypeRequest.getTypeName()).ifPresent(equityType::setTypeName);
+                    Optional.ofNullable(equityTypeRequest.getTypeDescription()).ifPresent(equityType::setTypeDescription);
                     return equityTypeRepository.save(equityType);
                 }) 
                 .orElseThrow();

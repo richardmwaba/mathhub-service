@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AssetService {
@@ -21,16 +22,16 @@ public class AssetService {
         return assetRepository.findAll();
     }
 
-    public Asset getAssetById(Long id) {
-        return assetRepository.findById(id).orElseThrow();
+    public Asset getAssetById(UUID assetId) {
+        return assetRepository.findById(assetId).orElseThrow();
     }
 
     public Asset createAsset(Asset assetRequest) {
         return assetRepository.save(assetRequest);
     }
 
-    public Asset updateAsset(Long id, Asset assetRequest) {
-        return assetRepository.findById(id)
+    public Asset updateAsset(UUID assetId, Asset assetRequest) {
+        return assetRepository.findById(assetId)
                 .map(asset -> {
                     asset.setPaymentMethod(assetRequest.getPaymentMethod());
                     asset.setNarration(assetRequest.getNarration());
@@ -41,8 +42,8 @@ public class AssetService {
                 .orElseThrow();
     }
 
-    public void deleteAsset(Long id) {
-        Asset asset = assetRepository.findById(id)
+    public void deleteAsset(UUID assetId) {
+        Asset asset = assetRepository.findById(assetId)
                 .orElseThrow();
 
         assetRepository.delete(asset);

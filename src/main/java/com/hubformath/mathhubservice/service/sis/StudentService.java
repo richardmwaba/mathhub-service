@@ -2,7 +2,7 @@ package com.hubformath.mathhubservice.service.sis;
 
 import com.hubformath.mathhubservice.config.ModelMapperConfig;
 import com.hubformath.mathhubservice.dto.sis.StudentDto;
-import com.hubformath.mathhubservice.dto.systemconfig.LessonDto;
+import com.hubformath.mathhubservice.dto.sis.LessonDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.sis.Address;
 import com.hubformath.mathhubservice.model.sis.Lesson;
@@ -61,8 +61,8 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public Student getStudentById(Long id) {
-        return studentRepository.findById(id)
+    public Student getStudentById(UUID studentId) {
+        return studentRepository.findById(studentId)
                 .map(student -> {
                     student.setStudentFinancialSummary(computeStudentFinancialSummary(student));
                     return student;
@@ -102,8 +102,8 @@ public class StudentService {
         return studentRepository.save(newStudent);
     }
 
-    public Student updateStudent(Long id, Student studentRequest) {
-        return studentRepository.findById(id)
+    public Student updateStudent(UUID studentId, Student studentRequest) {
+        return studentRepository.findById(studentId)
                 .map(student -> {
                     student.setFirstName(studentRequest.getFirstName());
                     student.setMiddleName(studentRequest.getMiddleName());
@@ -121,7 +121,7 @@ public class StudentService {
                 .orElseThrow();
     }
 
-    public Student addLessonToStudent(final Long studentId, final LessonDto lesson) {
+    public Student addLessonToStudent(final UUID studentId, final LessonDto lesson) {
         Student student = getStudentById(studentId);
         Subject subject = subjectService.getSubjectById(lesson.getSubjectId());
         LessonRate lessonRate = lessonRateService.getLessonRateBySubjectComplexity(subject.getSubjectComplexity());
@@ -145,8 +145,8 @@ public class StudentService {
         return new StudentFinancialSummary(student.isOwingPayment(), amountOwing);
     }
 
-    public void deleteStudent(Long id) {
-        Student student = studentRepository.findById(id)
+    public void deleteStudent(UUID studentId) {
+        Student student = studentRepository.findById(studentId)
                 .orElseThrow();
 
         studentRepository.delete(student);

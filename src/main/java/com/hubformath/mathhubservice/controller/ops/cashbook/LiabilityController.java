@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -59,10 +60,10 @@ public class LiabilityController {
                 .body(liabilityEntityModel);
     }
 
-    @GetMapping("/liabilities/{id}")
-    public ResponseEntity<EntityModel<LiabilityDto>> getLiabilityById(@PathVariable final Long id) {
+    @GetMapping("/liabilities/{liabilityId}")
+    public ResponseEntity<EntityModel<LiabilityDto>> getLiabilityById(@PathVariable final UUID liabilityId) {
         try {
-            Liability liability = liabilityService.getLiabilityById(id);
+            Liability liability = liabilityService.getLiabilityById(liabilityId);
             EntityModel<LiabilityDto> liabilityEntityModel = toModel(modelMapper.map(liability, LiabilityDto.class));
             return ResponseEntity.ok().body(liabilityEntityModel);
         } catch (NoSuchElementException e) {
@@ -70,12 +71,12 @@ public class LiabilityController {
         }
     }
 
-    @PutMapping("/liabilities/{id}")
+    @PutMapping("/liabilities/{liabilityId}")
     public ResponseEntity<EntityModel<LiabilityDto>> replaceLiability(@RequestBody LiabilityDto liabilityDto,
-                                                                      @PathVariable Long id) {
+                                                                      @PathVariable UUID liabilityId) {
         try {
             Liability liabilityRequest = modelMapper.map(liabilityDto, Liability.class);
-            Liability updatedLiability = liabilityService.updateLiability(id, liabilityRequest);
+            Liability updatedLiability = liabilityService.updateLiability(liabilityId, liabilityRequest);
             EntityModel<LiabilityDto> liabilityEntityModel = toModel(modelMapper.map(updatedLiability, LiabilityDto.class));
             return ResponseEntity.ok().body(liabilityEntityModel);
         } catch (NoSuchElementException e) {
@@ -83,10 +84,10 @@ public class LiabilityController {
         }
     }
 
-    @DeleteMapping("/liabilities/{id}")
-    public ResponseEntity<String> deleteLiability(@PathVariable final Long id) {
+    @DeleteMapping("/liabilities/{liabilityId}")
+    public ResponseEntity<String> deleteLiability(@PathVariable final UUID liabilityId) {
         try {
-            liabilityService.deleteLiability(id);
+            liabilityService.deleteLiability(liabilityId);
             return ResponseEntity.ok().body("Liability deleted successfully");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -95,7 +96,7 @@ public class LiabilityController {
 
     private EntityModel<LiabilityDto> toModel(final LiabilityDto liability) {
         return EntityModel.of(liability,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LiabilityController.class).getLiabilityById(liability.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LiabilityController.class).getLiabilityById(liability.getLiabilityId())).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LiabilityController.class).getAllLiabilities()).withRel("liabilities"));
     }
 

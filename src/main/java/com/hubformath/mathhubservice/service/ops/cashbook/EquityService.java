@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class EquityService {
@@ -21,16 +22,16 @@ public class EquityService {
         return equityRepository.findAll();
     }
 
-    public Equity getEquityById(Long id) {
-        return equityRepository.findById(id).orElseThrow();
+    public Equity getEquityById(UUID equityId) {
+        return equityRepository.findById(equityId).orElseThrow();
     }
 
     public Equity createEquity(Equity equityRequest) {
         return equityRepository.save(equityRequest);
     }
 
-    public Equity updateEquity(Long id, Equity equityRequest) {
-        return equityRepository.findById(id)
+    public Equity updateEquity(UUID equityId, Equity equityRequest) {
+        return equityRepository.findById(equityId)
                 .map(equity -> {
                     equity.setPaymentMethod(equityRequest.getPaymentMethod());
                     equity.setNarration(equityRequest.getNarration());
@@ -41,8 +42,8 @@ public class EquityService {
                 .orElseThrow();
     }
 
-    public void deleteEquity(Long id) {
-        Equity equity = equityRepository.findById(id)
+    public void deleteEquity(UUID equityId) {
+        Equity equity = equityRepository.findById(equityId)
                 .orElseThrow();
 
         equityRepository.delete(equity);

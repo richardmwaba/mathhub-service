@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.hubformath.mathhubservice.model.ops.cashbook.Liability;
 
-public interface LiabilityRepository extends JpaRepository<Liability, Long> {
+import java.util.UUID;
+
+public interface LiabilityRepository extends JpaRepository<Liability, UUID> {
     
 }

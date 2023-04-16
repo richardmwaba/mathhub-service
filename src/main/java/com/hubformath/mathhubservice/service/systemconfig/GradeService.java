@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.GradeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,9 +32,9 @@ public class GradeService {
     public Grade updateGrade(UUID gradeId, Grade gradeRequest) {
         return gradeRepository.findById(gradeId)
                 .map(grade -> {
-                    grade.setGradeName(gradeRequest.getGradeName());
-                    grade.setGradeDescription(gradeRequest.getGradeDescription());
-                    grade.setSubjects(gradeRequest.getSubjects());
+                    Optional.ofNullable(gradeRequest.getGradeName()).ifPresent(grade::setGradeName);
+                    Optional.ofNullable(gradeRequest.getGradeDescription()).ifPresent(grade::setGradeDescription);
+                    Optional.ofNullable(gradeRequest.getSubjects()).ifPresent(grade::setSubjects);
                     return gradeRepository.save(grade);
                 })
                 .orElseThrow();

@@ -33,8 +33,8 @@ public class IncomeService {
         return incomeRepository.findAll();
     }
 
-    public Income getIncomeById(Long id) {
-        return incomeRepository.findById(id).orElseThrow();
+    public Income getIncomeById(UUID incomeId) {
+        return incomeRepository.findById(incomeId).orElseThrow();
     }
 
     public Income createIncome(IncomeRequestDto incomeRequest) {
@@ -54,8 +54,8 @@ public class IncomeService {
         return incomeRepository.save(newIncome);
     }
 
-    public Income updateIncome(Long id, Income incomeRequest) {
-        return incomeRepository.findById(id)
+    public Income updateIncome(UUID incomeId, Income incomeRequest) {
+        return incomeRepository.findById(incomeId)
                 .map(income -> {
                     income.setNarration(incomeRequest.getNarration());
                     income.setPaymentMethod(incomeRequest.getPaymentMethod());
@@ -66,8 +66,8 @@ public class IncomeService {
                 .orElseThrow();
     }
 
-    public void deleteIncome(Long id) {
-        Income income = incomeRepository.findById(id)
+    public void deleteIncome(UUID incomeId) {
+        Income income = incomeRepository.findById(incomeId)
                 .orElseThrow();
 
         incomeRepository.delete(income);

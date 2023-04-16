@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class LiabilityService{
@@ -21,16 +22,16 @@ public class LiabilityService{
         return liabilityRepository.findAll();
     }
 
-    public Liability getLiabilityById(Long id) {
-        return liabilityRepository.findById(id).orElseThrow();
+    public Liability getLiabilityById(UUID liabilityId) {
+        return liabilityRepository.findById(liabilityId).orElseThrow();
     }
 
     public Liability createLiability(Liability liabilityRequest) {
         return liabilityRepository.save(liabilityRequest);
     }
 
-    public Liability updateLiability(Long id, Liability liabilityRequest) {
-        return liabilityRepository.findById(id)
+    public Liability updateLiability(UUID liabilityId, Liability liabilityRequest) {
+        return liabilityRepository.findById(liabilityId)
                 .map(liability -> {
                     liability.setPaymentMethod(liabilityRequest.getPaymentMethod());
                     liability.setLiabilityType(liabilityRequest.getLiabilityType());
@@ -40,8 +41,8 @@ public class LiabilityService{
                 .orElseThrow();
     }
 
-    public void deleteLiability(Long id) {
-        Liability liability = liabilityRepository.findById(id)
+    public void deleteLiability(UUID liabilityId) {
+        Liability liability = liabilityRepository.findById(liabilityId)
                 .orElseThrow();
 
         liabilityRepository.delete(liability);

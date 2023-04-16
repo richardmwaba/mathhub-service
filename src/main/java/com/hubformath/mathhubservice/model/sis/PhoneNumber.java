@@ -1,35 +1,44 @@
 package com.hubformath.mathhubservice.model.sis;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
 @Entity
+@Table(name = "phone_numbers")
 public class PhoneNumber {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy=GenerationType.UUID)
+    @Column(name = "phone_number_id")
+    private UUID phoneNumberId;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "phone_number_type")
     private PhoneNumberType type;
 
+    @Column(name = "country_code")
     private String countryCode;
 
+    @Column(name = "number")
     private String number;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
     public PhoneNumber() {
@@ -41,8 +50,12 @@ public class PhoneNumber {
         this.number = number;
     }
 
-    public Long getId() {
-        return id;
+    public UUID getPhoneNumberId() {
+        return phoneNumberId;
+    }
+
+    public void setPhoneNumberId(UUID phoneNumberId) {
+        this.phoneNumberId = phoneNumberId;
     }
 
     public PhoneNumberType getType() {
@@ -87,28 +100,26 @@ public class PhoneNumber {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof PhoneNumber phoneNumber))
-            return false;
-        return Objects.equals(this.id, phoneNumber.id) && Objects.equals(this.type, phoneNumber.type)
-            && Objects.equals(this.countryCode, phoneNumber.countryCode)
-            && Objects.equals(this.number, phoneNumber.number)
-            && Objects.equals(this.createdAt, phoneNumber.createdAt)
-            && Objects.equals(this.updatedAt, phoneNumber.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof PhoneNumber that)) return false;
+        return Objects.equals(getPhoneNumberId(), that.getPhoneNumberId())
+                && getType() == that.getType()
+                && Objects.equals(getCountryCode(), that.getCountryCode())
+                && Objects.equals(getNumber(), that.getNumber());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.type, this.countryCode, this.number,
-                            this.createdAt, this.updatedAt);
+        return Objects.hash(getPhoneNumberId(), getType(), getCountryCode(), getNumber());
     }
 
     @Override
     public String toString() {
-        return "PhoneNumber {id=" + this.id + ", type=" + this.type + ", countryCode=" + this.countryCode 
-                + ", number=" + this.number  + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
+        return "PhoneNumber{" +
+                "phoneNumberId=" + phoneNumberId +
+                ", type=" + type +
+                ", countryCode='" + countryCode + '\'' +
+                ", number='" + number + '\'' +
+                '}';
     }
-
-    
 }

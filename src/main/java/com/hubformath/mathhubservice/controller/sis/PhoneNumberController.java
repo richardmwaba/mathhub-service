@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -58,10 +59,10 @@ public class PhoneNumberController {
                 .body(phoneNumberEntityModel);
     }
 
-    @GetMapping("/phoneNumbers/{id}")
-    public ResponseEntity<EntityModel<PhoneNumberDto>> getPhoneNumberById(@PathVariable final Long id) {
+    @GetMapping("/phoneNumbers/{phoneNumberId}")
+    public ResponseEntity<EntityModel<PhoneNumberDto>> getPhoneNumberById(@PathVariable final UUID phoneNumberId) {
         try {
-            PhoneNumber phoneNumber = phoneNumberService.getPhoneNumberById(id);
+            PhoneNumber phoneNumber = phoneNumberService.getPhoneNumberById(phoneNumberId);
             EntityModel<PhoneNumberDto> phoneNumberEntityModel = toModel(modelMapper.map(phoneNumber, PhoneNumberDto.class));
             return ResponseEntity.ok().body(phoneNumberEntityModel);
         } catch (NoSuchElementException e) {
@@ -69,12 +70,12 @@ public class PhoneNumberController {
         }
     }
 
-    @PutMapping("/phoneNumbers/{id}")
+    @PutMapping("/phoneNumbers/{phoneNumberId}")
     public ResponseEntity<EntityModel<PhoneNumberDto>> replacePhoneNumber(@RequestBody final PhoneNumberDto phoneNumberDto,
-                                                                          @PathVariable final Long id) {
+                                                                          @PathVariable final UUID phoneNumberId) {
         try {
             PhoneNumber phoneNumberRequest = modelMapper.map(phoneNumberDto, PhoneNumber.class);
-            PhoneNumber updatedPhoneNumber = phoneNumberService.updatePhoneNumber(id, phoneNumberRequest);
+            PhoneNumber updatedPhoneNumber = phoneNumberService.updatePhoneNumber(phoneNumberId, phoneNumberRequest);
             EntityModel<PhoneNumberDto> phoneNumberEntityModel = toModel(modelMapper.map(updatedPhoneNumber, PhoneNumberDto.class));
             return ResponseEntity.ok().body(phoneNumberEntityModel);
         } catch (NoSuchElementException e) {
@@ -82,10 +83,10 @@ public class PhoneNumberController {
         }
     }
 
-    @DeleteMapping("/phoneNumbers/{id}")
-    public ResponseEntity<String> deletePhoneNumber(@PathVariable final Long id) {
+    @DeleteMapping("/phoneNumbers/{phoneNumberId}")
+    public ResponseEntity<String> deletePhoneNumber(@PathVariable final UUID phoneNumberId) {
         try {
-            phoneNumberService.deletePhoneNumber(id);
+            phoneNumberService.deletePhoneNumber(phoneNumberId);
             return ResponseEntity.ok().body("PhoneNumber deleted successfully");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -94,7 +95,7 @@ public class PhoneNumberController {
 
     private EntityModel<PhoneNumberDto> toModel(final PhoneNumberDto phoneNumber) {
         return EntityModel.of(phoneNumber,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PhoneNumberController.class).getPhoneNumberById(phoneNumber.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PhoneNumberController.class).getPhoneNumberById(phoneNumber.getPhoneNumberId())).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PhoneNumberController.class).getAllPhoneNumbers()).withRel("phoneNumbers"));
     }
 
@@ -107,5 +108,4 @@ public class PhoneNumberController {
                         .getAllPhoneNumbers())
                 .withSelfRel());
     }
-
 }

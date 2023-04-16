@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.hubformath.mathhubservice.model.ops.cashbook.Expense;
 
-public interface ExpenseRepository extends JpaRepository<Expense, Long> {
+import java.util.UUID;
+
+public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
     
 }
