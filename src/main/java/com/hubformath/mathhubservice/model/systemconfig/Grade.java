@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "grade")
+@Table(name = "grades")
 public class Grade {
 
     @Id

@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.sis.ParentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,13 +32,13 @@ public class ParentService {
     public Parent updateParent(final UUID parentId, final Parent parentRequest) {
         return parentRepository.findById(parentId)
                 .map(parent -> {
-                    parent.setFirstName(parentRequest.getFirstName());
-                    parent.setMiddleName(parentRequest.getMiddleName());
-                    parent.setLastName(parentRequest.getLastName());
-                    parent.setEmail(parentRequest.getEmail());
-                    parent.setStudents(parentRequest.getStudents());
-                    parent.setAddresses(parentRequest.getAddresses());
-                    parent.setPhoneNumbers(parentRequest.getPhoneNumbers());
+                    Optional.ofNullable(parentRequest.getFirstName()).ifPresent(parent::setFirstName);
+                    Optional.ofNullable(parentRequest.getMiddleName()).ifPresent(parent::setMiddleName);
+                    Optional.ofNullable(parentRequest.getLastName()).ifPresent(parent::setLastName);
+                    Optional.ofNullable(parentRequest.getEmail()).ifPresent(parent::setEmail);
+                    Optional.ofNullable(parentRequest.getStudents()).ifPresent(parent::setStudents);
+                    Optional.ofNullable(parentRequest.getAddresses()).ifPresent(parent::setAddresses);
+                    Optional.ofNullable(parentRequest.getPhoneNumbers()).ifPresent(parent::setPhoneNumbers);
                     return parentRepository.save(parent);
                 }) 
                 .orElseThrow();

@@ -40,6 +40,7 @@ public class InvoiceService {
         final Student student = studentService.getStudentById(studentId);
         final Double amount = studentService.computeStudentFinancialSummary(student).getAmountOwing();
         final Invoice newInvoice = new Invoice(amount, narration);
+        newInvoice.setStudent(student);
 
         return invoiceRepository.save(newInvoice);
     }

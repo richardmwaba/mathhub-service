@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.sis.AddressRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,13 +32,13 @@ public class AddressService {
     public Address updateAddress(final UUID addressId, final Address addressRequest) {
         return addressRepository.findById(addressId)
                 .map(address -> {
-                    address.setAddressType(addressRequest.getAddressType());
-                    address.setAddressLine1(addressRequest.getAddressLine1());
-                    address.setAddressLine2(addressRequest.getAddressLine2());
-                    address.setAddressLine3(addressRequest.getAddressLine3());
-                    address.setCity(addressRequest.getCity());
-                    address.setProvince(addressRequest.getProvince());
-                    address.setZipCode(addressRequest.getZipCode());
+                    Optional.ofNullable(addressRequest.getAddressType()).ifPresent(address::setAddressType);
+                    Optional.ofNullable(addressRequest.getAddressLine1()).ifPresent(address::setAddressLine1);
+                    Optional.ofNullable(addressRequest.getAddressLine2()).ifPresent(address::setAddressLine2);
+                    Optional.ofNullable(addressRequest.getAddressLine3()).ifPresent(address::setAddressLine3);
+                    Optional.ofNullable(addressRequest.getCity()).ifPresent(address::setCity);
+                    Optional.ofNullable(addressRequest.getProvince()).ifPresent(address::setProvince);
+                    Optional.ofNullable(addressRequest.getZipCode()).ifPresent(address::setZipCode);
                     return addressRepository.save(address);
                 }) 
                 .orElseThrow();

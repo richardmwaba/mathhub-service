@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "income_type")
+@Table(name = "income_types")
 public class IncomeType {
     @Id
     @GeneratedValue(strategy=GenerationType.UUID)

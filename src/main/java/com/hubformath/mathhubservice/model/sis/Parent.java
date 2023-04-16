@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,9 +42,15 @@ public class Parent {
     private List<Student> students;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "parents_addresses",
+            joinColumns = @JoinColumn(name = "parent_id"),
+            inverseJoinColumns = @JoinColumn(name = "address_id"))
     private List<Address> addresses;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "parents_phone_numbers",
+            joinColumns = @JoinColumn(name = "parent_id"),
+            inverseJoinColumns = @JoinColumn(name = "phone_number_id"))
     private List<PhoneNumber> phoneNumbers;
 
     @CreationTimestamp

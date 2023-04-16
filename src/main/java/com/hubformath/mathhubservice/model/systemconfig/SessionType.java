@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "session_type")
+@Table(name = "session_types")
 public class SessionType {
     @Id
     @GeneratedValue(strategy=GenerationType.UUID)

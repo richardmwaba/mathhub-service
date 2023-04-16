@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "exam_board")
+@Table(name = "exam_boards")
 public class ExamBoard {
 
     @Id

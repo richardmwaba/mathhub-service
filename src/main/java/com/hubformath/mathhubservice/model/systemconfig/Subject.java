@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "subject")
+@Table(name = "subjects")
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "liability_type")
+@Table(name = "liability_types")
 public class LiabilityType {
     @Id
     @GeneratedValue(strategy=GenerationType.UUID)

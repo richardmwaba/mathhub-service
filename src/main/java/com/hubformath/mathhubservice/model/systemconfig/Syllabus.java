@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "syllabus")
+@Table(name = "syllabuses")
 public class Syllabus {
 
     @Id

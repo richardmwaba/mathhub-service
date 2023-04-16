@@ -19,7 +19,7 @@ import java.util.UUID;
 public class Student {
     @Id
     @ReadOnlyProperty
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "student_id")
     private UUID studentId;
 
@@ -45,11 +45,17 @@ public class Student {
     private Grade grade;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "students_lessons",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "lesson_id"))
     private List<Lesson> lessons;
 
     private String email;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "students_addresses",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "address_id"))
     private List<Address> addresses;
 
     @ManyToOne
@@ -57,6 +63,9 @@ public class Student {
     private ExamBoard examBoard;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "students_phone_numbers",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "phone_number_id"))
     private List<PhoneNumber> phoneNumbers;
 
     @Transient
