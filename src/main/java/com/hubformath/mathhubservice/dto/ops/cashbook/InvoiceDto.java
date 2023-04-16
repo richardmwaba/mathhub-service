@@ -5,16 +5,17 @@ import com.hubformath.mathhubservice.dto.sis.StudentDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.InvoiceStatus;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class InvoiceDto {
-    private Long id;
+    private UUID invoiceId;
 
     private String invoiceNumber;
 
     private StudentDto student;
 
     @JsonIgnore
-    private Long studentId;
+    private UUID studentId;
 
     private LocalDate invoiceDate;
 
@@ -26,12 +27,12 @@ public class InvoiceDto {
 
     private LocalDate dueDate;
 
-    public Long getId() {
-        return id;
+    public UUID getInvoiceId() {
+        return invoiceId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setInvoiceId(UUID invoiceId) {
+        this.invoiceId = invoiceId;
     }
 
     public String getInvoiceNumber() {
@@ -50,11 +51,11 @@ public class InvoiceDto {
         this.student = student;
     }
 
-    public Long getStudentId() {
+    public UUID getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(Long studentId) {
+    public void setStudentId(UUID studentId) {
         this.studentId = studentId;
     }
 

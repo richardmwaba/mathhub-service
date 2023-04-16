@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.AssetTypeRepository
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -32,8 +33,8 @@ public class AssetTypeService {
     public AssetType updateAssetType(UUID assetTypeId, AssetType assetTypeRequest) {
         return assetTypeRepository.findById(assetTypeId)
                 .map(assetType -> {
-                    assetType.setTypeName(assetTypeRequest.getTypeName());
-                    assetType.setTypeDescription(assetTypeRequest.getTypeDescription());
+                    Optional.ofNullable(assetTypeRequest.getTypeName()).ifPresent(assetType::setTypeName);
+                    Optional.ofNullable(assetTypeRequest.getTypeDescription()).ifPresent(assetType::setTypeDescription);
                     return assetTypeRepository.save(assetType);
                 }) 
                 .orElseThrow();

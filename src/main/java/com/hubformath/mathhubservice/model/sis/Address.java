@@ -1,43 +1,56 @@
 package com.hubformath.mathhubservice.model.sis;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
 @Entity
+@Table(name = "addresses")
 public class Address {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy=GenerationType.UUID)
+    @Column(name = "address_id")
+    private UUID addressId;
     
     @Enumerated(EnumType.STRING)
+    @Column(name = "address_type")
     private AddressType addressType;
 
+    @Column(name = "address_line1")
     private String addressLine1;
 
+    @Column(name = "address_line2")
     private String addressLine2;
 
+    @Column(name = "address_line3")
     private String addressLine3;
 
+    @Column(name = "city")
     private String city;
 
+    @Column(name = "province")
     private String province;
 
+    @Column(name = "zip_code")
     private String zipCode;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
     public Address() {
@@ -54,8 +67,12 @@ public class Address {
         this.zipCode = zipCode;
     }
 
-    public Long getId() {
-        return id;
+    public UUID getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(UUID addressId) {
+        this.addressId = addressId;
     }
 
     public AddressType getAddressType() {
@@ -132,33 +149,41 @@ public class Address {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof Address))
-            return false;
-        Address address = (Address) o;
-        return Objects.equals(this.id, address.id) && Objects.equals(this.addressType, address.addressType)
-            && Objects.equals(this.addressLine1, address.addressLine1)
-            && Objects.equals(this.addressLine2, address.addressLine2)
-            && Objects.equals(this.addressLine3, address.addressLine3)
-            && Objects.equals(this.city, address.city)
-            && Objects.equals(this.province, address.province)
-            && Objects.equals(this.zipCode, address.zipCode)
-            && Objects.equals(this.createdAt, address.createdAt)
-            && Objects.equals(this.updatedAt, address.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof Address address)) return false;
+        return Objects.equals(getAddressId(), address.getAddressId())
+                && getAddressType() == address.getAddressType()
+                && Objects.equals(getAddressLine1(), address.getAddressLine1())
+                && Objects.equals(getAddressLine2(), address.getAddressLine2())
+                && Objects.equals(getAddressLine3(), address.getAddressLine3())
+                && Objects.equals(getCity(), address.getCity())
+                && Objects.equals(getProvince(), address.getProvince())
+                && Objects.equals(getZipCode(), address.getZipCode());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.addressType, this.addressLine1, this.addressLine2, this.addressLine3,
-                            this.city, this.province, this.zipCode);
+        return Objects.hash(getAddressId(),
+                getAddressType(),
+                getAddressLine1(),
+                getAddressLine2(),
+                getAddressLine3(),
+                getCity(),
+                getProvince(),
+                getZipCode());
     }
 
     @Override
     public String toString() {
-        return "Address{id=" + this.id + ", addressType=" + this.addressType + ", addressLine1=" + this.addressLine1 
-                + ", addressLine2=" + this.addressLine2 + ", addressLine3=" + this.addressLine3 
-                + ", city=" + this.city + ", province=" + this.province + ", zipCode=" + this.zipCode 
-                +  ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt +"}";
+        return "Address{" +
+                "addressId=" + addressId +
+                ", addressType=" + addressType +
+                ", addressLine1='" + addressLine1 + '\'' +
+                ", addressLine2='" + addressLine2 + '\'' +
+                ", addressLine3='" + addressLine3 + '\'' +
+                ", city='" + city + '\'' +
+                ", province='" + province + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                '}';
     }
 }

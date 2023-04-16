@@ -8,6 +8,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.SubjectRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -44,8 +45,8 @@ public class SubjectService {
     public Subject updateSubject(UUID subjectId, Subject subjectRequest) {
         return subjectRepository.findById(subjectId)
                 .map(subject -> {
-                    subject.setSubjectName(subjectRequest.getSubjectName());
-                    subject.setSubjectGrade(subjectRequest.getSubjectGrade());
+                    Optional.ofNullable(subjectRequest.getSubjectName()).ifPresent(subject::setSubjectName);
+                    Optional.ofNullable(subjectRequest.getSubjectComplexity()).ifPresent(subject::setSubjectComplexity);
                     return subjectRepository.save(subject);
                 })
                 .orElseThrow();

@@ -6,6 +6,8 @@ import com.hubformath.mathhubservice.repository.systemconfig.SyllabusRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class SyllabusService {
@@ -20,32 +22,30 @@ public class SyllabusService {
         return syllabusRepository.findAll();
     }
 
-    public Syllabus getSyllabusById(Long id) {
-        return syllabusRepository.findById(id).orElseThrow();
+    public Syllabus getSyllabusById(UUID syllabusId) {
+        return syllabusRepository.findById(syllabusId).orElseThrow();
     }
 
     public Syllabus createSyllabus(Syllabus syllabusRequest) {
         return syllabusRepository.save(syllabusRequest);
     }
 
-    public Syllabus updateSyllabus(Long id, Syllabus syllabusRequest) {
-        return syllabusRepository.findById(id)
+    public Syllabus updateSyllabus(UUID syllabusId, Syllabus syllabusRequest) {
+        return syllabusRepository.findById(syllabusId)
                 .map(syllabus -> {
-                    syllabus.setSyllabusName(syllabusRequest.getSyllabusName());
-                    syllabus.setSyllabusDescription(syllabusRequest.getSyllabusDescription());
+                    Optional.ofNullable(syllabusRequest.getSyllabusName()).ifPresent(syllabus::setSyllabusName);
+                    Optional.ofNullable(syllabusRequest.getSyllabusDescription()).ifPresent(syllabus::setSyllabusDescription);
                     return syllabusRepository.save(syllabus);
                 })
                 .orElseThrow();
     }
 
-    public void deleteSyllabus(Long id) {
-        Syllabus syllabus = syllabusRepository.findById(id)
+    public void deleteSyllabus(UUID syllabusId) {
+        Syllabus syllabus = syllabusRepository.findById(syllabusId)
                 .orElseThrow();
 
         syllabusRepository.delete(syllabus);
     }
-
-
 }
 
 

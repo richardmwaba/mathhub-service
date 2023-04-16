@@ -10,15 +10,15 @@ import java.util.Set;
 import java.util.UUID;
 
 public class TuitionPaymentDto {
-    private Long id;
+    private UUID tuitionPaymentId;
 
     private CashTransactionDto cashTransaction;
 
     private StudentDto student;
 
-    private Long studentId;
+    private UUID studentId;
 
-    private Set<Long> lessonsIds;
+    private Set<UUID> lessonsIds;
 
     private UUID paymentMethodId;
 
@@ -28,18 +28,18 @@ public class TuitionPaymentDto {
 
     private Double amount;
 
-    private Long invoiceId;
+    private UUID invoiceId;
 
     private ReceiptDto receipt;
 
     private String narration;
 
-    public Long getId() {
-        return id;
+    public UUID getTuitionPaymentId() {
+        return tuitionPaymentId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setTuitionPaymentId(UUID tuitionPaymentId) {
+        this.tuitionPaymentId = tuitionPaymentId;
     }
 
     public CashTransactionDto getCashTransaction() {
@@ -59,22 +59,22 @@ public class TuitionPaymentDto {
     }
 
     @JsonIgnore
-    public Long getStudentId() {
+    public UUID getStudentId() {
         return studentId;
     }
 
     @JsonProperty
-    public void setStudentId(Long studentId) {
+    public void setStudentId(UUID studentId) {
         this.studentId = studentId;
     }
 
     @JsonIgnore
-    public Set<Long> getLessonsIds() {
+    public Set<UUID> getLessonsIds() {
         return lessonsIds;
     }
 
     @JsonProperty
-    public void setLessonsIds(Set<Long> lessonsIds) {
+    public void setLessonsIds(Set<UUID> lessonsIds) {
         this.lessonsIds = lessonsIds;
     }
 
@@ -112,11 +112,11 @@ public class TuitionPaymentDto {
         this.amount = amount;
     }
 
-    public Long getInvoiceId() {
+    public UUID getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(Long invoiceId) {
+    public void setInvoiceId(UUID invoiceId) {
         this.invoiceId = invoiceId;
     }
 

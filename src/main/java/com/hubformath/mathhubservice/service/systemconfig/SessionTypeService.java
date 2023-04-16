@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.SessionTypeReposito
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,8 +32,8 @@ public class SessionTypeService {
     public SessionType updateSessionType(UUID sessionTypeId, SessionType sessionTypeRequest) {
         return sessionTypeRepository.findById(sessionTypeId)
                 .map(sessionType -> {
-                    sessionType.setTypeName(sessionTypeRequest.getTypeName());
-                    sessionType.setTypeDescription(sessionTypeRequest.getTypeDescription());
+                    Optional.ofNullable(sessionTypeRequest.getTypeName()).ifPresent(sessionType::setTypeName);
+                    Optional.ofNullable(sessionTypeRequest.getTypeDescription()).ifPresent(sessionType::setTypeDescription);
                     return sessionTypeRepository.save(sessionType);
                 }) 
                 .orElseThrow();

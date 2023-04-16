@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 
@@ -62,9 +63,9 @@ public class SyllabusController {
     }
 
     @GetMapping("/syllabus/{id}")
-    public ResponseEntity<EntityModel<SyllabusDto>> getSyllabusById(@PathVariable final Long id) {
+    public ResponseEntity<EntityModel<SyllabusDto>> getSyllabusById(@PathVariable final UUID syllabusId) {
         try {
-            Syllabus syllabus = syllabusService.getSyllabusById(id);
+            Syllabus syllabus = syllabusService.getSyllabusById(syllabusId);
             EntityModel<SyllabusDto> syllabusEntityModel = toModel(modelMapper.map(syllabus, SyllabusDto.class));
             return ResponseEntity.ok().body(syllabusEntityModel);
         } catch (NoSuchElementException e) {
@@ -74,10 +75,10 @@ public class SyllabusController {
 
     @PutMapping("/syllabus/{id}")
     public ResponseEntity<EntityModel<SyllabusDto>> replaceSyllabus(@RequestBody final SyllabusDto syllabusDto,
-                                                                    @PathVariable final Long id) {
+                                                                    @PathVariable final UUID syllabusId) {
         try {
             Syllabus syllabusRequest = modelMapper.map(syllabusDto, Syllabus.class);
-            Syllabus updatedSyllabus = syllabusService.updateSyllabus(id, syllabusRequest);
+            Syllabus updatedSyllabus = syllabusService.updateSyllabus(syllabusId, syllabusRequest);
             EntityModel<SyllabusDto> syllabusEntityModel = toModel(modelMapper.map(updatedSyllabus, SyllabusDto.class));
             return ResponseEntity.ok().body(syllabusEntityModel);
         } catch (NoSuchElementException e) {
@@ -86,9 +87,9 @@ public class SyllabusController {
     }
 
     @DeleteMapping("/syllabus/{id}")
-    public ResponseEntity<String> deleteSyllabus(@PathVariable final Long id) {
+    public ResponseEntity<String> deleteSyllabus(@PathVariable final UUID syllabusId) {
         try {
-            syllabusService.deleteSyllabus(id);
+            syllabusService.deleteSyllabus(syllabusId);
             return ResponseEntity.ok().body("Syllabus deleted successfully");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -97,7 +98,7 @@ public class SyllabusController {
 
     private EntityModel<SyllabusDto> toModel(final SyllabusDto syllabus) {
         return EntityModel.of(syllabus,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SyllabusController.class).getSyllabusById(syllabus.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SyllabusController.class).getSyllabusById(syllabus.getSyllabusId())).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SyllabusController.class).getAllSyllabi()).withRel("syllabus"));
     }
 

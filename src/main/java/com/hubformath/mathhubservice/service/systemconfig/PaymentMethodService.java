@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.PaymentMethodReposi
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,8 +32,8 @@ public class PaymentMethodService {
     public PaymentMethod updatePaymentMethod(UUID paymentMethodId, PaymentMethod paymentMethodRequest) {
         return paymentMethodRepository.findById(paymentMethodId)
                 .map(paymentMethod -> {
-                    paymentMethod.setTypeName(paymentMethodRequest.getTypeName());
-                    paymentMethod.setTypeDescription(paymentMethodRequest.getTypeDescription());
+                    Optional.ofNullable(paymentMethodRequest.getTypeName()).ifPresent(paymentMethod::setTypeName);
+                    Optional.ofNullable(paymentMethodRequest.getTypeDescription()).ifPresent(paymentMethod::setTypeDescription);
                     return paymentMethodRepository.save(paymentMethod);
                 }) 
                 .orElseThrow();

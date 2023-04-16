@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.hubformath.mathhubservice.model.sis.Address;
 
-public interface AddressRepository extends JpaRepository<Address, Long> {
+import java.util.UUID;
+
+public interface AddressRepository extends JpaRepository<Address, UUID> {
     
 }

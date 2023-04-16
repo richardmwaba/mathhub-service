@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.ExpenseTypeReposito
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,8 +32,8 @@ public class ExpenseTypeService {
     public ExpenseType updateExpenseType(UUID expenseTypeId, ExpenseType expenseTypeRequest) {
         return expenseTypeRepository.findById(expenseTypeId)
                 .map(expenseType -> {
-                    expenseType.setTypeName(expenseTypeRequest.getTypeName());
-                    expenseType.setTypeDescription(expenseTypeRequest.getTypeDescription());
+                    Optional.ofNullable(expenseTypeRequest.getTypeName()).ifPresent(expenseType::setTypeName);
+                    Optional.ofNullable(expenseTypeRequest.getTypeDescription()).ifPresent(expenseType::setTypeDescription);
                     return expenseTypeRepository.save(expenseType);
                 }) 
                 .orElseThrow();

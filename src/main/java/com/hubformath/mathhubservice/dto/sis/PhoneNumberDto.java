@@ -2,8 +2,10 @@ package com.hubformath.mathhubservice.dto.sis;
 
 import com.hubformath.mathhubservice.model.sis.PhoneNumberType;
 
+import java.util.UUID;
+
 public class PhoneNumberDto {
-    private Long id;
+    private UUID phoneNumberId;
 
     private PhoneNumberType type;
 
@@ -11,12 +13,12 @@ public class PhoneNumberDto {
 
     private String number;
 
-    public Long getId() {
-        return id;
+    public UUID getPhoneNumberId() {
+        return phoneNumberId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setPhoneNumberId(UUID phoneNumberId) {
+        this.phoneNumberId = phoneNumberId;
     }
 
     public PhoneNumberType getType() {

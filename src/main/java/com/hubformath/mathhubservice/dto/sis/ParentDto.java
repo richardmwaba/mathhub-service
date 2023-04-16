@@ -1,9 +1,10 @@
 package com.hubformath.mathhubservice.dto.sis;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ParentDto {
-    private Long id;
+    private UUID parentId;
 
     private String firstName;
 
@@ -17,12 +18,12 @@ public class ParentDto {
 
     private List<PhoneNumberDto> phoneNumbers;
 
-    public Long getId() {
-        return id;
+    public UUID getParentId() {
+        return parentId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setParentId(UUID parentId) {
+        this.parentId = parentId;
     }
 
     public String getFirstName() {

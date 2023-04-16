@@ -1,31 +1,39 @@
 package com.hubformath.mathhubservice.model.sis;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
 @Entity
+@Table(name = "parents")
 public class Parent {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy=GenerationType.UUID)
+    @Column(name = "parent_id")
+    private UUID parentId;
 
+    @Column(name = "first_name")
     private String firstName;
 
+    @Column(name = "middle_name")
     private String middleName;
 
+    @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "email")
     private String email;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
@@ -38,9 +46,11 @@ public class Parent {
     private List<PhoneNumber> phoneNumbers;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public Parent() {
@@ -53,8 +63,12 @@ public class Parent {
         this.email = email;
     }
 
-    public Long getId() {
-        return id;
+    public UUID getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(UUID parentId) {
+        this.parentId = parentId;
     }
 
     public String getFirstName() {
@@ -131,31 +145,27 @@ public class Parent {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof Parent parent))
-            return false;
-        return Objects.equals(this.id, parent.id) && Objects.equals(this.firstName, parent.firstName)
-            && Objects.equals(this.middleName, parent.middleName)
-            && Objects.equals(this.lastName, parent.lastName)
-            && Objects.equals(this.email, parent.email)
-            && Objects.equals(this.students, parent.students)
-            && Objects.equals(this.addresses, parent.addresses)
-            && Objects.equals(this.phoneNumbers, parent.phoneNumbers)
-            && Objects.equals(this.createdAt, parent.createdAt)
-            && Objects.equals(this.updatedAt, parent.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof Parent parent)) return false;
+        return Objects.equals(getParentId(), parent.getParentId())
+                && Objects.equals(getFirstName(), parent.getFirstName())
+                && Objects.equals(getMiddleName(), parent.getMiddleName())
+                && Objects.equals(getLastName(), parent.getLastName())
+                && Objects.equals(getEmail(), parent.getEmail())
+                && Objects.equals(getStudents(), parent.getStudents())
+                && Objects.equals(getAddresses(), parent.getAddresses())
+                && Objects.equals(getPhoneNumbers(), parent.getPhoneNumbers());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.firstName, this.middleName, this.lastName, this.email, this.students,
-                            this.addresses, this.phoneNumbers, this.createdAt, this.updatedAt);
-    }
-
-    @Override
-    public String toString() {
-        return "Parent {id=" + this.id + ", firstName=" + this.firstName + ", middleName=" + this.middleName + ", LastName="
-                + this.lastName + ", email=" + this.email + ", addresses=" + this.addresses + ", student=" + this.students 
-                + ", phoneNumbers=" + this.phoneNumbers + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + "}";
+        return Objects.hash(getParentId(),
+                getFirstName(),
+                getMiddleName(),
+                getLastName(),
+                getEmail(),
+                getStudents(),
+                getAddresses(),
+                getPhoneNumbers());
     }
 }

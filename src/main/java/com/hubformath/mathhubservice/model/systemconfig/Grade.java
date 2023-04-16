@@ -3,6 +3,7 @@ package com.hubformath.mathhubservice.model.systemconfig;
 
 import com.hubformath.mathhubservice.model.sis.Student;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,10 +23,13 @@ public class Grade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "grade_id", updatable = false, nullable = false)
     private UUID gradeId;
 
+    @Column(name = "grade_name", nullable = false)
     private String gradeName;
 
+    @Column(name = "grade_description", nullable = false)
     private String gradeDescription;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subjectGrade")
@@ -35,9 +39,11 @@ public class Grade {
     private List<Student> students;
 
     @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @CreationTimestamp
+    @Column(name = "updated_at")
     private  LocalDateTime updatedAt;
 
     public Grade(){}

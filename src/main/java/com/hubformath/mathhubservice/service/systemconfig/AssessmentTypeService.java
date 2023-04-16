@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.AssessmentTypeRepos
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,8 +32,8 @@ public class AssessmentTypeService{
     public AssessmentType updateAssessmentType(UUID assessmentTypeId, AssessmentType assessmentTypeRequest) {
         return assessmentTypeRepository.findById(assessmentTypeId)
                 .map(assessmentType -> {
-                    assessmentType.setTypeName(assessmentTypeRequest.getTypeName());
-                    assessmentType.setTypeDescription(assessmentTypeRequest.getTypeDescription());
+                    Optional.ofNullable(assessmentTypeRequest.getTypeName()).ifPresent(assessmentType::setTypeName);
+                    Optional.ofNullable(assessmentTypeRequest.getTypeDescription()).ifPresent(assessmentType::setTypeDescription);
                     return assessmentTypeRepository.save(assessmentType);
                 }) 
                 .orElseThrow();

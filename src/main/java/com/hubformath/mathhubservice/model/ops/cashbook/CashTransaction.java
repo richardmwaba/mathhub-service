@@ -2,9 +2,7 @@ package com.hubformath.mathhubservice.model.ops.cashbook;
 
 import com.hubformath.mathhubservice.model.systemconfig.CashTransactionCategory;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -13,16 +11,22 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
 @Entity
+@Table(name = "cash_transactions")
 public class CashTransaction {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID cashTransactionId;
 
+    @Column(name = "transaction_number", unique = true)
     private String transactionNumber;
 
     @OneToOne
@@ -30,24 +34,31 @@ public class CashTransaction {
     private PaymentMethod paymentMethod;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "transaction_type")
     private CashTransactionType transactionType;
 
     @OneToOne
     @JoinColumn(name = "transaction_category_id")
     private CashTransactionCategory transactionCategory;
 
+    @Column(name = "narration")
     private String narration;
 
+    @Column(name = "amount")
     private Double amount;
 
+    @Column(name = "transaction_date_time")
     private LocalDateTime transactionDateTime;
 
+    @Column(name = "transacted_by")
     private Long transactedBy;
 
     @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public CashTransaction(final PaymentMethod paymentMethod,
@@ -68,8 +79,12 @@ public class CashTransaction {
     public CashTransaction() {
     }
 
-    public Long getId() {
-        return this.id;
+    public UUID getCashTransactionId() {
+        return this.cashTransactionId;
+    }
+
+    public void setCashTransactionId(UUID cashTransactionId) {
+        this.cashTransactionId = cashTransactionId;
     }
 
     public String getTransactionNumber() {
@@ -156,25 +171,32 @@ public class CashTransaction {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof CashTransaction that)) return false;
-        return getId().equals(that.getId())
-                && getTransactionNumber().equals(that.getTransactionNumber())
-                && getPaymentMethod().equals(that.getPaymentMethod())
+        return Objects.equals(getCashTransactionId(), that.getCashTransactionId())
+                && Objects.equals(getTransactionNumber(), that.getTransactionNumber())
+                && Objects.equals(getPaymentMethod(), that.getPaymentMethod())
                 && getTransactionType() == that.getTransactionType()
-                && getTransactionCategory().equals(that.getTransactionCategory())
+                && Objects.equals(getTransactionCategory(), that.getTransactionCategory())
                 && Objects.equals(getNarration(), that.getNarration())
-                && getAmount().equals(that.getAmount())
-                && getTransactedBy().equals(that.getTransactedBy());
+                && Objects.equals(getAmount(), that.getAmount())
+                && Objects.equals(getTransactedBy(), that.getTransactedBy());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTransactionNumber(), getPaymentMethod(), getTransactionType(), getTransactionCategory(), getNarration(), getAmount(), getTransactedBy());
+        return Objects.hash(getCashTransactionId(),
+                getTransactionNumber(),
+                getPaymentMethod(),
+                getTransactionType(),
+                getTransactionCategory(),
+                getNarration(),
+                getAmount(),
+                getTransactedBy());
     }
 
     @Override
     public String toString() {
         return "CashTransaction{" +
-                "id=" + id +
+                "cashTransactionId=" + cashTransactionId +
                 ", transactionNumber='" + transactionNumber + '\'' +
                 ", paymentMethod=" + paymentMethod +
                 ", transactionType=" + transactionType +
@@ -183,8 +205,6 @@ public class CashTransaction {
                 ", amount=" + amount +
                 ", transactionDateTime=" + transactionDateTime +
                 ", transactedBy=" + transactedBy +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

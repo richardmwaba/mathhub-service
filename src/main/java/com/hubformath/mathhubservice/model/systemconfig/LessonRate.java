@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -20,21 +21,28 @@ import java.util.UUID;
 public class LessonRate {
     @Id
     @GeneratedValue(strategy= GenerationType.UUID)
+    @Column(name = "lesson_rate_id", updatable = false, nullable = false)
     private UUID lessonRateId;
 
+    @Column(name = "amount_per_lesson", nullable = false)
     private Double amountPerLesson;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "subject_complexity", nullable = false)
     private SubjectComplexity subjectComplexity;
 
+    @Column(name = "effective_date", nullable = false)
     private Instant effectiveDate;
 
+    @Column(name = "expired_date", nullable = false)
     private Instant expiredDate;
 
     @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @SuppressWarnings("unused")

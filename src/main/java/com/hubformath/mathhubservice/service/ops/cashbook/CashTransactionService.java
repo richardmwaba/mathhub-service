@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CashTransactionService {
@@ -21,16 +22,16 @@ public class CashTransactionService {
         return transactionRepository.findAll();
     }
 
-    public CashTransaction getTransactionById(Long id) {
-        return transactionRepository.findById(id).orElseThrow();
+    public CashTransaction getTransactionById(UUID cashTransactionId) {
+        return transactionRepository.findById(cashTransactionId).orElseThrow();
     }
 
     public CashTransaction createTransaction(CashTransaction cashTransaction) {
         return transactionRepository.save(cashTransaction);
     }
 
-    public CashTransaction updateTransaction(Long id, CashTransaction transactionRequest) {
-        return transactionRepository.findById(id)
+    public CashTransaction updateTransaction(UUID cashTransactionId, CashTransaction transactionRequest) {
+        return transactionRepository.findById(cashTransactionId)
                 .map(transaction -> {
                     transaction.setPaymentMethod(transactionRequest.getPaymentMethod());
                     transaction.setNarration(transactionRequest.getNarration());
@@ -43,8 +44,8 @@ public class CashTransactionService {
                 .orElseThrow();
     }
 
-    public void deleteTransaction(Long id) {
-        CashTransaction transaction = transactionRepository.findById(id)
+    public void deleteTransaction(UUID cashTransactionId) {
+        CashTransaction transaction = transactionRepository.findById(cashTransactionId)
                 .orElseThrow();
 
         transactionRepository.delete(transaction);

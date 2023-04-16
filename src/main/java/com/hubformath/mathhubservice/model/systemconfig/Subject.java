@@ -1,6 +1,7 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -22,11 +23,14 @@ import java.util.UUID;
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "subject_id", updatable = false, nullable = false)
     private UUID subjectId;
 
+    @Column(name = "subject_name", nullable = false)
     private String subjectName;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "subject_complexity", nullable = false)
     private SubjectComplexity subjectComplexity;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -34,9 +38,11 @@ public class Subject {
     private Grade subjectGrade;
 
     @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public Subject() {

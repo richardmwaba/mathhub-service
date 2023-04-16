@@ -2,44 +2,55 @@ package com.hubformath.mathhubservice.model.ops.cashbook;
 
 import com.hubformath.mathhubservice.model.systemconfig.AssetType;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
+@Table(name = "assets")
 public class Asset {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy=GenerationType.UUID)
+    @Column(name = "asset_id")
+    private UUID assetId;
 
     @OneToOne
     @JoinColumn(name = "payment_method_id")
     private PaymentMethod paymentMethod;
 
+    @Column(name = "narration")
     private String narration;
 
     @OneToOne
     @JoinColumn(name = "asset_type_id")
     private AssetType assetType;
 
+    @Column(name = "amount")
     private Double amount;
 
+    @Column(name = "created_by")
     private Long createdBy;
 
+    @Column(name = "approved_by")
     private Long approvedBy;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public Asset (){}
@@ -51,8 +62,12 @@ public class Asset {
         this.approvedBy = approvedBy;
     }
     
-    public Long getId() {
-        return id;
+    public UUID getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(UUID assetId) {
+        this.assetId = assetId;
     }
 
     public AssetType getAssetType() {
@@ -121,32 +136,38 @@ public class Asset {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof Asset))
-            return false;
-        Asset asset = (Asset) o;
-        return Objects.equals(this.id, asset.id) && Objects.equals(this.assetType, asset.assetType)
-            && Objects.equals(this.paymentMethod, asset.paymentMethod)
-            && Objects.equals(this.narration, asset.narration)
-            && Objects.equals(this.amount, asset.amount)
-            && Objects.equals(this.createdBy, asset.createdBy)
-            && Objects.equals(this.approvedBy, asset.approvedBy)
-            && Objects.equals(this.createdAt, asset.createdAt)
-            && Objects.equals(this.updatedAt, asset.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof Asset asset)) return false;
+        return Objects.equals(getAssetId(), asset.getAssetId())
+                && Objects.equals(getPaymentMethod(), asset.getPaymentMethod())
+                && Objects.equals(getNarration(), asset.getNarration())
+                && Objects.equals(getAssetType(), asset.getAssetType())
+                && Objects.equals(getAmount(), asset.getAmount())
+                && Objects.equals(getCreatedBy(), asset.getCreatedBy())
+                && Objects.equals(getApprovedBy(), asset.getApprovedBy());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.assetType, this.paymentMethod, this.narration,
-                            this.amount, this.createdBy, this.approvedBy, this.createdAt, this.updatedAt);
+        return Objects.hash(getAssetId(),
+                getPaymentMethod(),
+                getNarration(),
+                getAssetType(),
+                getAmount(),
+                getCreatedBy(),
+                getApprovedBy());
     }
 
     @Override
     public String toString() {
-        return "Asset{id=" + this.id + ", assetType=" + this.assetType + ", paymentMethod=" + this.paymentMethod
-                + ", narration=" + this.narration + ", amount=" + this.amount + ", createdBy=" 
-                + this.createdBy + ", approvedBy=" + this.approvedBy + ", createdAt=" + this.createdBy 
-                + ", updatedAt=" + this.updatedAt +"}";
+        return "Asset{" +
+                "assetId=" + assetId +
+                ", paymentMethod=" + paymentMethod +
+                ", narration='" + narration + '\'' +
+                ", assetType=" + assetType +
+                ", amount=" + amount +
+                ", createdBy=" + createdBy +
+                ", approvedBy=" + approvedBy +
+                '}';
     }
 }

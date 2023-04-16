@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -58,10 +59,10 @@ public class ParentController {
                 .body(parentEntityModel);
     }
 
-    @GetMapping("/parents/{id}")
-    public ResponseEntity<EntityModel<ParentDto>> getParentById(@PathVariable final Long id) {
+    @GetMapping("/parents/{parentId}")
+    public ResponseEntity<EntityModel<ParentDto>> getParentById(@PathVariable final UUID parentId) {
         try {
-            Parent parent = parentService.getParentById(id);
+            Parent parent = parentService.getParentById(parentId);
             EntityModel<ParentDto> parentEntityModel = toModel(modelMapper.map(parent, ParentDto.class));
             return ResponseEntity.ok().body(parentEntityModel);
         } catch (NoSuchElementException e) {
@@ -69,12 +70,12 @@ public class ParentController {
         }
     }
 
-    @PutMapping("/parents/{id}")
+    @PutMapping("/parents/{parentId}")
     public ResponseEntity<EntityModel<ParentDto>> replaceParent(@RequestBody final ParentDto parentDto,
-                                                                @PathVariable final Long id) {
+                                                                @PathVariable final UUID parentId) {
         try {
             Parent parentRequest = modelMapper.map(parentDto, Parent.class);
-            Parent updatedParent = parentService.updateParent(id, parentRequest);
+            Parent updatedParent = parentService.updateParent(parentId, parentRequest);
             EntityModel<ParentDto> parentEntityModel = toModel(modelMapper.map(updatedParent, ParentDto.class));
             return ResponseEntity.ok().body(parentEntityModel);
         } catch (NoSuchElementException e) {
@@ -82,10 +83,10 @@ public class ParentController {
         }
     }
 
-    @DeleteMapping("/parents/{id}")
-    public ResponseEntity<String> deleteParent(@PathVariable final Long id) {
+    @DeleteMapping("/parents/{parentId}")
+    public ResponseEntity<String> deleteParent(@PathVariable final UUID parentId) {
         try {
-            parentService.deleteParent(id);
+            parentService.deleteParent(parentId);
             return ResponseEntity.ok().body("Parent deleted successfully");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -94,7 +95,7 @@ public class ParentController {
 
     public EntityModel<ParentDto> toModel(final ParentDto parent) {
         return EntityModel.of(parent,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ParentController.class).getParentById(parent.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ParentController.class).getParentById(parent.getParentId())).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ParentController.class).getAllParents()).withRel("parents"));
     }
 

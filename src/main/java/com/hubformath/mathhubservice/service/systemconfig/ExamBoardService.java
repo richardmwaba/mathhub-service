@@ -6,6 +6,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.ExamBoardRepository
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -32,8 +33,8 @@ public class ExamBoardService {
     public ExamBoard updateExamBoard(UUID examBoardId, ExamBoard examBoardRequest) {
         return examBoardRepository.findById(examBoardId)
                 .map(examBoard -> {
-                    examBoard.setExamBoardName(examBoardRequest.getExamBoardName());
-                    examBoard.setExamBoardDescription(examBoardRequest.getExamBoardDescription());
+                    Optional.ofNullable(examBoardRequest.getExamBoardName()).ifPresent(examBoard::setExamBoardName);
+                    Optional.ofNullable(examBoardRequest.getExamBoardDescription()).ifPresent(examBoard::setExamBoardDescription);
                     return examBoardRepository.save(examBoard);
                 })
                 .orElseThrow();

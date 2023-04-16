@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -60,10 +61,10 @@ public class AssetController {
                 .body(assetEntityModel);
     }
 
-    @GetMapping("/assets/{id}")
-    public ResponseEntity<EntityModel<AssetDto>> getAssetById(@PathVariable final Long id) {
+    @GetMapping("/assets/{assetId}")
+    public ResponseEntity<EntityModel<AssetDto>> getAssetById(@PathVariable final UUID assetId) {
         try {
-            Asset asset = assetService.getAssetById(id);
+            Asset asset = assetService.getAssetById(assetId);
             EntityModel<AssetDto> assetEntityModel = toModel(modelMapper.map(asset, AssetDto.class));
             return ResponseEntity.ok().body(assetEntityModel);
         } catch (NoSuchElementException e) {
@@ -71,11 +72,11 @@ public class AssetController {
         }
     }
 
-    @PutMapping("/assets/{id}")
-    public ResponseEntity<EntityModel<AssetDto>> replaceAsset(@RequestBody final AssetDto assetDto, @PathVariable final Long id) {
+    @PutMapping("/assets/{assetId}")
+    public ResponseEntity<EntityModel<AssetDto>> replaceAsset(@RequestBody final AssetDto assetDto, @PathVariable final UUID assetId) {
         try {
             Asset assetRequest = modelMapper.map(assetDto, Asset.class);
-            Asset updatedAsset = assetService.updateAsset(id, assetRequest);
+            Asset updatedAsset = assetService.updateAsset(assetId, assetRequest);
             EntityModel<AssetDto> assetEntityModel = toModel(modelMapper.map(updatedAsset, AssetDto.class));
             return ResponseEntity.ok().body(assetEntityModel);
         } catch (NoSuchElementException e) {
@@ -83,10 +84,10 @@ public class AssetController {
         }
     }
 
-    @DeleteMapping("/assets/{id}")
-    public ResponseEntity<String> deleteAsset(@PathVariable Long id) {
+    @DeleteMapping("/assets/{assetId}")
+    public ResponseEntity<String> deleteAsset(@PathVariable UUID assetId) {
         try {
-            assetService.deleteAsset(id);
+            assetService.deleteAsset(assetId);
             return ResponseEntity.ok().body("Asset deleted successfully");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -95,7 +96,7 @@ public class AssetController {
 
     private EntityModel<AssetDto> toModel(final AssetDto asset) {
         return EntityModel.of(asset,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class).getAssetById(asset.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class).getAssetById(asset.getAssetId())).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class).getAllAssets()).withRel("assets"));
     }
 

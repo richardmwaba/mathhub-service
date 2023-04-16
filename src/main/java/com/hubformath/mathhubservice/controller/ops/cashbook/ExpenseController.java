@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 
@@ -61,10 +62,10 @@ public class ExpenseController {
                 .body(expenseEntityModel);
     }
 
-    @GetMapping("/expenses/{id}")
-    public ResponseEntity<EntityModel<ExpenseDto>> getExpenseById(@PathVariable final Long id) {
+    @GetMapping("/expenses/{expenseId}")
+    public ResponseEntity<EntityModel<ExpenseDto>> getExpenseById(@PathVariable final UUID expenseId) {
         try {
-            Expense expense = expenseService.getExpenseById(id);
+            Expense expense = expenseService.getExpenseById(expenseId);
             EntityModel<ExpenseDto> expenseEntityModel = toModel(modelMapper.map(expense, ExpenseDto.class));
             return ResponseEntity.ok().body(expenseEntityModel);
         } catch (NoSuchElementException e) {
@@ -72,12 +73,12 @@ public class ExpenseController {
         }
     }
 
-    @PutMapping("/expenses/{id}")
+    @PutMapping("/expenses/{expenseId}")
     public ResponseEntity<EntityModel<ExpenseDto>> replaceExpense(@RequestBody final ExpenseDto expenseDto,
-                                                                  @PathVariable final Long id) {
+                                                                  @PathVariable final UUID expenseId) {
         try {
             Expense expenseRequest = modelMapper.map(expenseDto, Expense.class);
-            Expense updatedExpense = expenseService.updateExpense(id, expenseRequest);
+            Expense updatedExpense = expenseService.updateExpense(expenseId, expenseRequest);
             EntityModel<ExpenseDto> expenseEntityModel = toModel(modelMapper.map(updatedExpense, ExpenseDto.class));
             return ResponseEntity.ok().body(expenseEntityModel);
         } catch (NoSuchElementException e) {
@@ -85,10 +86,10 @@ public class ExpenseController {
         }
     }
 
-    @DeleteMapping("/expenses/{id}")
-    public ResponseEntity<String> deleteExpense(@PathVariable final Long id) {
+    @DeleteMapping("/expenses/{expenseId}")
+    public ResponseEntity<String> deleteExpense(@PathVariable final UUID expenseId) {
         try {
-            expenseService.deleteExpense(id);
+            expenseService.deleteExpense(expenseId);
             return ResponseEntity.ok().body("Expense deleted successfully");
         } catch (NoSuchElementException e) {
             return  ResponseEntity.notFound().build();
@@ -97,7 +98,7 @@ public class ExpenseController {
 
     private EntityModel<ExpenseDto> toModel(final ExpenseDto expense) {
         return EntityModel.of(expense,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class).getExpenseById(expense.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class).getExpenseById(expense.getExpenseId())).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class).getAllExpenses()).withRel("expenses"));
     }
 

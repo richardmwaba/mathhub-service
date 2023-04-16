@@ -1,26 +1,29 @@
 package com.hubformath.mathhubservice.model.ops.cashbook;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
+import com.hubformath.mathhubservice.model.systemconfig.LiabilityType;
+import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.hubformath.mathhubservice.model.systemconfig.LiabilityType;
-import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
 
 @Entity
+@Table(name = "liabilities")
 public class Liability {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE) 
-    private Long id;
+    @GeneratedValue(strategy=GenerationType.UUID)
+    @Column(name = "liability_id")
+    private UUID liabilityId;
 
     @OneToOne
     @JoinColumn(name = "liability_type_id")
@@ -30,16 +33,21 @@ public class Liability {
     @JoinColumn(name = "payment_method_id")
     private PaymentMethod paymentMethod;
 
+    @Column(name = "amount")
     private Double amount;
 
+    @Column(name = "created_by")
     private Long createdBy;
 
+    @Column(name = "approved_by")
     private Long approvedBy;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column
     private LocalDateTime updatedAt;
 
     public Liability(){}
@@ -50,8 +58,12 @@ public class Liability {
         this.approvedBy = approvedBy;
     }
 
-    public Long getId() {
-        return id;
+    public UUID getLiabilityId() {
+        return liabilityId;
+    }
+
+    public void setLiabilityId(UUID liabilityId) {
+        this.liabilityId = liabilityId;
     }
 
     public LiabilityType getLiabilityType() {
@@ -112,31 +124,35 @@ public class Liability {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof Liability))
-            return false;
-        Liability liability = (Liability) o;
-        return Objects.equals(this.id, liability.id) 
-            && Objects.equals(this.liabilityType, liability.liabilityType)
-            && Objects.equals(this.paymentMethod, liability.paymentMethod)
-            && Objects.equals(this.amount, liability.amount)
-            && Objects.equals(this.createdBy, liability.createdBy)
-            && Objects.equals(this.approvedBy, liability.approvedBy)
-            && Objects.equals(this.createdAt, liability.createdAt)
-            && Objects.equals(this.updatedAt, liability.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof Liability liability)) return false;
+        return Objects.equals(getLiabilityId(), liability.getLiabilityId())
+                && Objects.equals(getLiabilityType(), liability.getLiabilityType())
+                && Objects.equals(getPaymentMethod(), liability.getPaymentMethod())
+                && Objects.equals(getAmount(), liability.getAmount())
+                && Objects.equals(getCreatedBy(), liability.getCreatedBy())
+                && Objects.equals(getApprovedBy(), liability.getApprovedBy());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id);
+        return Objects.hash(getLiabilityId(),
+                getLiabilityType(),
+                getPaymentMethod(),
+                getAmount(),
+                getCreatedBy(),
+                getApprovedBy());
     }
 
     @Override
     public String toString() {
-        return "Liability{id=" + this.id + ", liabilityType=" + this.liabilityType + ", paymentMethod=" 
-                + this.paymentMethod + ", amount=" + this.amount + ", createdBy=" + this.createdBy 
-                + ", approvedBy=" + this.approvedBy + ", createdAt=" + this.createdAt + ", updatedAt=" 
-                + this.updatedAt +"}";
+        return "Liability{" +
+                "liabilityId=" + liabilityId +
+                ", liabilityType=" + liabilityType +
+                ", paymentMethod=" + paymentMethod +
+                ", amount=" + amount +
+                ", createdBy=" + createdBy +
+                ", approvedBy=" + approvedBy +
+                '}';
     }
 }

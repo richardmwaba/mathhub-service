@@ -47,8 +47,8 @@ public class TuitionPaymentService {
         return tuitionPaymentRepository.findAll();
     }
 
-    public TuitionPayment getTuitionPaymentById(Long id) {
-        return tuitionPaymentRepository.findById(id).orElseThrow();
+    public TuitionPayment getTuitionPaymentById(UUID tuitionPaymentId) {
+        return tuitionPaymentRepository.findById(tuitionPaymentId).orElseThrow();
     }
 
     @Transactional
@@ -58,18 +58,18 @@ public class TuitionPaymentService {
             return  null;
         }
 
-        final Long invoiceId = tuitionPayment.getInvoiceId();
+        final UUID invoiceId = tuitionPayment.getInvoiceId();
         final Invoice invoice = invoiceService.getInvoiceById(invoiceId);
         final UUID paymentMethodId = tuitionPayment.getPaymentMethodId();
         final String narration = tuitionPayment.getNarration();
         final Double amount = tuitionPayment.getAmount();
-        final Set<Long> lessonsIds = tuitionPayment.getLessonsIds();
+        final Set<UUID> lessonsIds = tuitionPayment.getLessonsIds();
 
         final PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(paymentMethodId);
 
         student.getLessons()
                 .stream()
-                .filter(lesson -> lesson.getLessonPaymentStatus().equals(PaymentStatus.UNPAID) && lessonsIds.contains(lesson.getId()))
+                .filter(lesson -> lesson.getLessonPaymentStatus().equals(PaymentStatus.UNPAID) && lessonsIds.contains(lesson.getLessonId()))
                 .forEach(lesson -> lesson.setLessonPaymentStatus(PaymentStatus.PAID));
 
         final CashTransaction newCashTransaction = new CashTransaction(paymentMethod, CashTransactionType.CASH_IN, narration, amount);
@@ -82,7 +82,7 @@ public class TuitionPaymentService {
         invoice.setInvoiceStatus(InvoiceStatus.PAID);
         invoiceService.updateInvoice(invoiceId, invoice);
 
-        final TuitionPayment newTuitionPayment = new TuitionPayment(newCashTransaction, student, paymentMethod, amount,  invoice.getId(), receipt, narration);
+        final TuitionPayment newTuitionPayment = new TuitionPayment(newCashTransaction, student, paymentMethod, amount,  invoice.getInvoiceId(), receipt, narration);
 
         return tuitionPaymentRepository.save(newTuitionPayment);
     }

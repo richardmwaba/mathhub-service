@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -59,9 +60,9 @@ public class AddressController {
     }
 
     @GetMapping("/addresses/{id}")
-    public ResponseEntity<EntityModel<AddressDto>> getAddressById(@PathVariable final Long id) {
+    public ResponseEntity<EntityModel<AddressDto>> getAddressById(@PathVariable final UUID addressId) {
         try {
-            Address address = addressService.getAddressById(id);
+            Address address = addressService.getAddressById(addressId);
             EntityModel<AddressDto> addressEntityModel = toModel(modelMapper.map(address, AddressDto.class));
             return ResponseEntity.ok().body(addressEntityModel);
         } catch (NoSuchElementException e) {
@@ -71,10 +72,10 @@ public class AddressController {
 
     @PutMapping("/addresses/{id}")
     public ResponseEntity<EntityModel<AddressDto>> replaceAddress(@RequestBody final AddressDto addressDto,
-                                                                  @PathVariable final Long id) {
+                                                                  @PathVariable final UUID addressId) {
         try {
             Address addressRequest = modelMapper.map(addressDto, Address.class);
-            Address updatedAddress = addressService.updateAddress(id, addressRequest);
+            Address updatedAddress = addressService.updateAddress(addressId, addressRequest);
             EntityModel<AddressDto> addressEntityModel = toModel(modelMapper.map(updatedAddress, AddressDto.class));
             return ResponseEntity.ok().body(addressEntityModel);
         } catch (NoSuchElementException e) {
@@ -83,9 +84,9 @@ public class AddressController {
     }
 
     @DeleteMapping("/addresses/{id}")
-    public ResponseEntity<String> deleteAddress(@PathVariable final Long id) {
+    public ResponseEntity<String> deleteAddress(@PathVariable final UUID addressId) {
         try {
-            addressService.deleteAddress(id);
+            addressService.deleteAddress(addressId);
             return ResponseEntity.ok().body("Address deleted successfully");
         } catch (NoSuchElementException e) {
             return  ResponseEntity.notFound().build();
@@ -94,7 +95,7 @@ public class AddressController {
 
     private EntityModel<AddressDto> toModel(final AddressDto address) {
         return EntityModel.of(address,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AddressController.class).getAddressById(address.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AddressController.class).getAddressById(address.getAddressId())).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AddressController.class).getAllAddresses()).withRel("addresses"));
     }
 

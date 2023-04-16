@@ -1,49 +1,59 @@
 package com.hubformath.mathhubservice.model.ops.cashbook;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
+import com.hubformath.mathhubservice.model.systemconfig.ExpenseType;
+import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.hubformath.mathhubservice.model.systemconfig.ExpenseType;
-import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
 
 @Entity
+@Table(name = "expenses")
 public class Expense {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy=GenerationType.UUID)
+    @Column(name = "expense_id")
+    private UUID expenseId;
 
     @OneToOne
     @JoinColumn(name = "payment_method_id")
     private PaymentMethod paymentMethod;
 
+    @Column(name = "narration")
     private String narration;
 
+    @Column(name = "status")
     private ExpenseStatus status;
     
     @OneToOne
     @JoinColumn(name = "expense_type_id")
     private ExpenseType expenseType;
 
+    @Column(name = "amount")
     private Double amount;
 
+    @Column(name = "created_by")
     private Long createdBy;
 
+    @Column(name = "approved_by")
     private Long approvedBy;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public Expense (){}
@@ -56,8 +66,12 @@ public class Expense {
         this.approvedBy = approvedBy;
     }
   
-    public Long getId() {
-        return id;
+    public UUID getExpenseId() {
+        return expenseId;
+    }
+
+    public void setExpenseId(UUID expenseId) {
+        this.expenseId = expenseId;
     }
 
     public ExpenseType getExpenseType() {
@@ -134,33 +148,41 @@ public class Expense {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof Expense))
-            return false;
-        Expense expense = (Expense) o;
-        return Objects.equals(this.id, expense.id) && Objects.equals(this.expenseType, expense.expenseType)
-            && Objects.equals(this.paymentMethod, expense.paymentMethod)
-            && Objects.equals(this.narration, expense.narration)
-            && Objects.equals(this.status, expense.status)
-            && Objects.equals(this.amount, expense.amount)
-            && Objects.equals(this.createdBy, expense.createdBy)
-            && Objects.equals(this.approvedBy, expense.approvedBy)
-            && Objects.equals(this.createdAt, expense.createdAt)
-            && Objects.equals(this.updatedAt, expense.updatedAt);
+        if (this == o) return true;
+        if (!(o instanceof Expense expense)) return false;
+        return Objects.equals(getExpenseId(), expense.getExpenseId())
+                && Objects.equals(getPaymentMethod(), expense.getPaymentMethod())
+                && Objects.equals(getNarration(), expense.getNarration())
+                && getStatus() == expense.getStatus()
+                && Objects.equals(getExpenseType(), expense.getExpenseType())
+                && Objects.equals(getAmount(), expense.getAmount())
+                && Objects.equals(getCreatedBy(), expense.getCreatedBy())
+                && Objects.equals(getApprovedBy(), expense.getApprovedBy());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.expenseType, this.paymentMethod, this.narration,
-                            this.status, this.amount, this.createdBy, this.approvedBy, this.createdAt, this.updatedAt);
+        return Objects.hash(getExpenseId(),
+                getPaymentMethod(),
+                getNarration(),
+                getStatus(),
+                getExpenseType(),
+                getAmount(),
+                getCreatedBy(),
+                getApprovedBy());
     }
 
     @Override
     public String toString() {
-        return "Expense{id=" + this.id + ", expenseType=" + this.expenseType + ", paymentMethod=" + this.paymentMethod
-                + ", narration=" + this.narration + ", status=" + this.status + ", amount=" + this.amount + ", createdBy=" 
-                + this.createdBy + ", approvedBy=" + this.approvedBy + ", createdAt=" + this.createdAt 
-                + ", updatedAt=" + this.updatedAt + "}";
-    } 
+        return "Expense{" +
+                "expenseId=" + expenseId +
+                ", paymentMethod=" + paymentMethod +
+                ", narration='" + narration + '\'' +
+                ", status=" + status +
+                ", expenseType=" + expenseType +
+                ", amount=" + amount +
+                ", createdBy=" + createdBy +
+                ", approvedBy=" + approvedBy +
+                '}';
+    }
 }

@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,16 +18,21 @@ import java.util.UUID;
 public class CashTransactionCategory {
     @Id
     @GeneratedValue(strategy=GenerationType.UUID)
+    @Column(name = "cash_transaction_category_id", updatable = false, nullable = false)
     private UUID cashTransactionCategoryId;
 
+    @Column(name = "category_name", nullable = false)
     private String categoryName;
 
+    @Column(name = "category_description", nullable = false)
     private String categoryDescription;
 
     @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public CashTransactionCategory() {

@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.repository.systemconfig.CashTransactionCate
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -32,8 +33,8 @@ public class CashTransactionCategoryService {
     public CashTransactionCategory updateCashTransactionCategory(UUID cashTransactionCategoryId, CashTransactionCategory cashTransactionCategoryRequest) {
         return cashTransactionCategoryRepository.findById(cashTransactionCategoryId)
                 .map(cashTransactionCategory -> {
-                    cashTransactionCategory.setCategoryName(cashTransactionCategoryRequest.getCategoryName());
-                    cashTransactionCategory.setCategoryDescription(cashTransactionCategoryRequest.getCategoryDescription());
+                    Optional.ofNullable(cashTransactionCategoryRequest.getCategoryName()).ifPresent(cashTransactionCategory::setCategoryName);
+                    Optional.ofNullable(cashTransactionCategoryRequest.getCategoryDescription()).ifPresent(cashTransactionCategory::setCategoryDescription);
                     return cashTransactionCategoryRepository.save(cashTransactionCategory);
                 }) 
                 .orElseThrow();
