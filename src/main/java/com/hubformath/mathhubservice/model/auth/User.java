@@ -1,4 +1,4 @@
-package com.hubformath.mathhubservice.model.systemconfig;
+package com.hubformath.mathhubservice.model.auth;
 
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
@@ -22,6 +22,7 @@ import java.util.UUID;
         @UniqueConstraint(columnNames = {"email"})
 })
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id", updatable = false, nullable = false)
@@ -33,28 +34,24 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "phone_number", nullable = false)
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     @Column(name = "password", nullable = false)
     private String password;
 
     @ManyToMany
-    @JoinTable(name = "users_user_types",
+    @JoinTable(name = "users_user_roles",
              joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_type_id"))
-    private Set<UserType> userTypes;
+            inverseJoinColumns = @JoinColumn(name = "user_role_id"))
+    private Set<UserRole> userRoles;
 
     public User() {
     }
 
-    public User(@Nonnull final String username,
-                @Nonnull final String email,
-                @Nonnull final String phoneNumber,
-                @Nonnull final String password) {
+    public User(@Nonnull final String username, @Nonnull final String email, @Nonnull final String password) {
         this.username = username;
         this.email = email;
-        this.phoneNumber = phoneNumber;
         this.password = password;
     }
 
@@ -98,12 +95,12 @@ public class User {
         this.password = password;
     }
 
-    public Set<UserType> getUserTypes() {
-        return userTypes;
+    public Set<UserRole> getUserRoles() {
+        return userRoles;
     }
 
-    public void setUserTypes(Set<UserType> userTypes) {
-        this.userTypes = userTypes;
+    public void setUserRoles(Set<UserRole> userRoles) {
+        this.userRoles = userRoles;
     }
 
     @Override
@@ -115,12 +112,12 @@ public class User {
                 && Objects.equals(getEmail(), user.getEmail())
                 && Objects.equals(getPhoneNumber(), user.getPhoneNumber())
                 && Objects.equals(getPassword(), user.getPassword())
-                && Objects.equals(getUserTypes(), user.getUserTypes());
+                && Objects.equals(getUserRoles(), user.getUserRoles());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserId(), getUsername(), getEmail(), getPhoneNumber(), getPassword(), getUserTypes());
+        return Objects.hash(getUserId(), getUsername(), getEmail(), getPhoneNumber(), getPassword(), getUserRoles());
     }
 
     @Override
@@ -131,7 +128,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", password='" + password + '\'' +
-                ", userTypes=" + userTypes +
+                ", userRoles=" + userRoles +
                 '}';
     }
 }
