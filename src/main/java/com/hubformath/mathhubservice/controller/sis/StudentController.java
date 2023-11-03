@@ -1,8 +1,8 @@
 package com.hubformath.mathhubservice.controller.sis;
 
 import com.hubformath.mathhubservice.config.ModelMapperConfig;
-import com.hubformath.mathhubservice.dto.sis.StudentDto;
 import com.hubformath.mathhubservice.dto.sis.LessonDto;
+import com.hubformath.mathhubservice.dto.sis.StudentDto;
 import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.sis.StudentActionBase;
 import com.hubformath.mathhubservice.service.sis.StudentService;

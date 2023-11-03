@@ -35,4 +35,3 @@ build/
 ### Maven ###
 .mvn
 mvn*
-application.properties

@@ -44,12 +44,12 @@ public class StudentService {
     private final ModelMapper modelMapper;
 
 
-    public StudentService(final StudentRepository studentRepository,
-                          final GradeService gradeService,
-                          final ExamBoardService examBoardService,
-                          final SubjectService subjectService,
-                          final LessonRateService lessonRateService,
-                          final ModelMapperConfig modelMapperConfig) {
+    public StudentService(StudentRepository studentRepository,
+                          GradeService gradeService,
+                          ExamBoardService examBoardService,
+                          SubjectService subjectService,
+                          LessonRateService lessonRateService,
+                          ModelMapperConfig modelMapperConfig) {
         this.studentRepository = studentRepository;
         this.gradeService = gradeService;
         this.examBoardService = examBoardService;

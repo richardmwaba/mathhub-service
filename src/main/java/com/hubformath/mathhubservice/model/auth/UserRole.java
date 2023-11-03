@@ -1,4 +1,4 @@
-package com.hubformath.mathhubservice.model.systemconfig;
+package com.hubformath.mathhubservice.model.auth;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,22 +10,24 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
-@Table(name = "user_types")
-public class UserType {
+@Table(name = "user_roles")
+public class UserRole {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "user_type_id", updatable = false, nullable = false)
-    private UUID userTypeId;
+    @ReadOnlyProperty
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_role_id", updatable = false, nullable = false)
+    private Long userRoleId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_role", nullable = false)
-    private UserRole userRole;
+    @Column(name = "name", nullable = false)
+    private Role roleName;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -35,27 +37,27 @@ public class UserType {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public UserType() {
+    public UserRole() {
     }
 
-    public UserType(final UserRole userRole) {
-        this.userRole = userRole;
+    public UserRole(final Role roleName) {
+        this.roleName = roleName;
     }
 
-    public UUID getUserTypeId() {
-        return this.userTypeId;
+    public Long getUserRoleId() {
+        return this.userRoleId;
     }
 
-    public void setUserTypeId(UUID userTypeId) {
-        this.userTypeId = userTypeId;
+    public void setUserRoleId(Long userRoleId) {
+        this.userRoleId = userRoleId;
     }
 
-    public UserRole getRole() {
-        return this.userRole;
+    public Role getRoleName() {
+        return this.roleName;
     }
 
-    public void setRole(final UserRole role) {
-        this.userRole = role;
+    public void setRoleName(final Role roleName) {
+        this.roleName = roleName;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -78,21 +80,21 @@ public class UserType {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof UserType userType))
+        if (!(o instanceof UserRole userRole))
             return false;
-        return Objects.equals(this.userTypeId, userType.userTypeId) && Objects.equals(this.userRole, userType.userRole);
+        return Objects.equals(this.userRoleId, userRole.userRoleId) && Objects.equals(this.roleName, userRole.roleName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.userTypeId, this.userRole, this.createdAt, this.updatedAt);
+        return Objects.hash(this.userRoleId, this.roleName, this.createdAt, this.updatedAt);
     }
 
     @Override
     public String toString() {
         return "UserType{" +
-                "userTypeId=" + userTypeId +
-                ", userRole=" + userRole +
+                "userTypeId=" + userRoleId +
+                ", userRole=" + roleName +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
