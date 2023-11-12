@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class AssessmentTypeService{
+public class AssessmentTypeService {
 
     private final AssessmentTypeRepository assessmentTypeRepository;
 
@@ -31,18 +31,20 @@ public class AssessmentTypeService{
 
     public AssessmentType updateAssessmentType(UUID assessmentTypeId, AssessmentType assessmentTypeRequest) {
         return assessmentTypeRepository.findById(assessmentTypeId)
-                .map(assessmentType -> {
-                    Optional.ofNullable(assessmentTypeRequest.getTypeName()).ifPresent(assessmentType::setTypeName);
-                    Optional.ofNullable(assessmentTypeRequest.getTypeDescription()).ifPresent(assessmentType::setTypeDescription);
-                    return assessmentTypeRepository.save(assessmentType);
-                }) 
-                .orElseThrow();
+                                       .map(assessmentType -> {
+                                           Optional.ofNullable(assessmentTypeRequest.getTypeName())
+                                                   .ifPresent(assessmentType::setTypeName);
+                                           Optional.ofNullable(assessmentTypeRequest.getTypeDescription())
+                                                   .ifPresent(assessmentType::setTypeDescription);
+                                           return assessmentTypeRepository.save(assessmentType);
+                                       })
+                                       .orElseThrow();
     }
 
     public void deleteAssessmentType(UUID assessmentTypeId) {
         AssessmentType assessmentType = assessmentTypeRepository.findById(assessmentTypeId)
-                .orElseThrow();
+                                                                .orElseThrow();
 
         assessmentTypeRepository.delete(assessmentType);
-    } 
+    }
 }

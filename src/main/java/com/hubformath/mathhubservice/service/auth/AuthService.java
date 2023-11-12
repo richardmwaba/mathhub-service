@@ -78,7 +78,9 @@ public class AuthService {
             throw new AuthenticationException("Email is already in use!");
         }
 
-        User user = new User(signUpRequest.username(), signUpRequest.email(), passwordEncoder.encode(signUpRequest.password()));
+        User user = new User(signUpRequest.username(),
+                             signUpRequest.email(),
+                             passwordEncoder.encode(signUpRequest.password()));
 
         Set<String> requestRoles = signUpRequest.roles();
         Set<UserRole> userRoles = new HashSet<>();
@@ -97,22 +99,26 @@ public class AuthService {
                     }
                     case "student" -> {
                         UserRole studentRole = userRoleRepository.findByRoleName(Role.ROLE_STUDENT)
-                                                                 .orElseThrow(() -> new RuntimeException(ROLE_IS_NOT_FOUND));
+                                                                 .orElseThrow(() -> new RuntimeException(
+                                                                         ROLE_IS_NOT_FOUND));
                         userRoles.add(studentRole);
                     }
                     case "teacher" -> {
                         UserRole teacherRole = userRoleRepository.findByRoleName(Role.ROLE_TEACHER)
-                                                                 .orElseThrow(() -> new RuntimeException(ROLE_IS_NOT_FOUND));
+                                                                 .orElseThrow(() -> new RuntimeException(
+                                                                         ROLE_IS_NOT_FOUND));
                         userRoles.add(teacherRole);
                     }
                     case "parent" -> {
                         UserRole parentRole = userRoleRepository.findByRoleName(Role.ROLE_PARENT)
-                                                                .orElseThrow(() -> new RuntimeException(ROLE_IS_NOT_FOUND));
+                                                                .orElseThrow(() -> new RuntimeException(
+                                                                        ROLE_IS_NOT_FOUND));
                         userRoles.add(parentRole);
                     }
                     case "cashier" -> {
                         UserRole cashierRole = userRoleRepository.findByRoleName(Role.ROLE_CASHIER)
-                                                                 .orElseThrow(() -> new RuntimeException(ROLE_IS_NOT_FOUND));
+                                                                 .orElseThrow(() -> new RuntimeException(
+                                                                         ROLE_IS_NOT_FOUND));
                         userRoles.add(cashierRole);
                     }
                     default -> {

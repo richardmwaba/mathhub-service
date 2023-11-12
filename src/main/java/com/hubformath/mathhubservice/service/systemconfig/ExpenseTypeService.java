@@ -31,17 +31,19 @@ public class ExpenseTypeService {
 
     public ExpenseType updateExpenseType(UUID expenseTypeId, ExpenseType expenseTypeRequest) {
         return expenseTypeRepository.findById(expenseTypeId)
-                .map(expenseType -> {
-                    Optional.ofNullable(expenseTypeRequest.getTypeName()).ifPresent(expenseType::setTypeName);
-                    Optional.ofNullable(expenseTypeRequest.getTypeDescription()).ifPresent(expenseType::setTypeDescription);
-                    return expenseTypeRepository.save(expenseType);
-                }) 
-                .orElseThrow();
+                                    .map(expenseType -> {
+                                        Optional.ofNullable(expenseTypeRequest.getTypeName())
+                                                .ifPresent(expenseType::setTypeName);
+                                        Optional.ofNullable(expenseTypeRequest.getTypeDescription())
+                                                .ifPresent(expenseType::setTypeDescription);
+                                        return expenseTypeRepository.save(expenseType);
+                                    })
+                                    .orElseThrow();
     }
 
     public void deleteExpenseType(UUID expenseTypeId) {
         ExpenseType expenseType = expenseTypeRepository.findById(expenseTypeId)
-                .orElseThrow();
+                                                       .orElseThrow();
 
         expenseTypeRepository.delete(expenseType);
     }

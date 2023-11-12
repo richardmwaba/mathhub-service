@@ -44,11 +44,12 @@ public class Grade {
 
     @CreationTimestamp
     @Column(name = "updated_at")
-    private  LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
-    public Grade(){}
+    public Grade() {
+    }
 
-    public Grade(String gradeName, String gradeDescription){
+    public Grade(String gradeName, String gradeDescription) {
         this.gradeName = gradeName;
         this.gradeDescription = gradeDescription;
     }
@@ -62,21 +63,33 @@ public class Grade {
         this.gradeId = gradeId;
     }
 
-    public String getGradeName() {return this.gradeName;}
+    public String getGradeName() {
+        return this.gradeName;
+    }
 
     public void setGradeName(String gradeName) {
         this.gradeName = gradeName;
     }
 
-    public String getGradeDescription() {return this.gradeDescription;}
+    public String getGradeDescription() {
+        return this.gradeDescription;
+    }
 
-    public void setGradeDescription(String gradeDescription) {this.gradeDescription = gradeDescription;}
+    public void setGradeDescription(String gradeDescription) {
+        this.gradeDescription = gradeDescription;
+    }
 
-    public List<Student> getStudents() {return students;}
+    public List<Student> getStudents() {
+        return students;
+    }
 
-    public void setStudents(List<Student> students) {this.students = students;}
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
 
-    public List<Subject> getSubjects() {return subjects; }
+    public List<Subject> getSubjects() {
+        return subjects;
+    }
 
     public void setSubjects(List<Subject> subjects) {
         this.subjects = subjects;

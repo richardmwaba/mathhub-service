@@ -10,6 +10,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,31 +38,34 @@ public class SubjectController {
     private final SubjectService subjectService;
 
     @Autowired
-    public SubjectController (final ModelMapperConfig modelMapperConfig, final SubjectService subjectService) {
+    public SubjectController(final ModelMapperConfig modelMapperConfig, final SubjectService subjectService) {
         this.modelMapper = modelMapperConfig.createModelMapper();
         this.subjectService = subjectService;
     }
 
     @GetMapping("/subjects")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER') or hasRole('ROLE_TEACHER')")
     public ResponseEntity<CollectionModel<EntityModel<SubjectDto>>> getAllSubjects() {
         List<SubjectDto> subjects = subjectService.getAllSubjects().stream().
-                map(subject -> modelMapper.map(subject, SubjectDto.class))
-                .toList();
+                                                  map(subject -> modelMapper.map(subject, SubjectDto.class))
+                                                  .toList();
         CollectionModel<EntityModel<SubjectDto>> subjectCollectionModel = toCollectionModel(subjects);
 
         return ResponseEntity.ok().body(subjectCollectionModel);
     }
 
     @PostMapping("/subjects")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
     public ResponseEntity<EntityModel<SubjectDto>> newSubject(@RequestBody final SubjectDto subjectDto) {
         Subject newSubject = subjectService.createSubject(subjectDto);
         EntityModel<SubjectDto> subjectDtoEntityModel = toModel(modelMapper.map(newSubject, SubjectDto.class));
 
         return ResponseEntity.created(subjectDtoEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).
-                body(subjectDtoEntityModel);
+                             body(subjectDtoEntityModel);
     }
 
     @GetMapping("/subjects/{subjectId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER') or hasRole('ROLE_TEACHER')")
     public ResponseEntity<EntityModel<SubjectDto>> getSubjectById(@PathVariable final UUID subjectId) {
         try {
             Subject subject = subjectService.getSubjectById(subjectId);
@@ -73,6 +77,7 @@ public class SubjectController {
     }
 
     @PutMapping("/subjects/{subjectId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
     public ResponseEntity<EntityModel<SubjectDto>> replaceSubject(@RequestBody final SubjectDto subjectDto,
                                                                   @PathVariable final UUID subjectId) {
         try {
@@ -86,6 +91,7 @@ public class SubjectController {
     }
 
     @DeleteMapping("/subjects/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
     public ResponseEntity<String> deleteSubject(@PathVariable final UUID subjectId) {
         try {
             subjectService.deleteSubject(subjectId);
@@ -95,19 +101,19 @@ public class SubjectController {
         }
     }
 
-    private EntityModel<SubjectDto> toModel(final SubjectDto subject){
+    private EntityModel<SubjectDto> toModel(final SubjectDto subject) {
         return EntityModel.of(subject,
-                linkTo(methodOn(SubjectController.class).getSubjectById(subject.getSubjectId())).withSelfRel(),
-                linkTo(methodOn(SubjectController.class).getAllSubjects()).withRel("subjects"));
+                              linkTo(methodOn(SubjectController.class).getSubjectById(subject.getSubjectId())).withSelfRel(),
+                              linkTo(methodOn(SubjectController.class).getAllSubjects()).withRel("subjects"));
     }
 
     private CollectionModel<EntityModel<SubjectDto>> toCollectionModel(final Iterable<? extends SubjectDto> subjects) {
         List<EntityModel<SubjectDto>> subjectList = StreamSupport.stream(subjects.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+                                                                 .map(this::toModel)
+                                                                 .toList();
 
         return CollectionModel.of(subjectList, linkTo(methodOn(SubjectController.class)
-                .getAllSubjects())
+                                                              .getAllSubjects())
                 .withSelfRel());
     }
 }

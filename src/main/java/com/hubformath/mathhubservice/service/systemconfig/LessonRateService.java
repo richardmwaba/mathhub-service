@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Service
 public class LessonRateService {
-    
+
     private final LessonRateRepository lessonRateRepository;
 
     public LessonRateService(final LessonRateRepository lessonRateRepository) {
@@ -21,36 +21,46 @@ public class LessonRateService {
     public List<LessonRate> getAllLessonRates(final Instant effectiveDate, final Instant expiryDate) {
         if (effectiveDate != null && expiryDate != null) {
             return lessonRateRepository.findAll()
-                    .stream()
-                    .filter(lessonRate ->
-                            (lessonRate.getEffectiveDate().equals(effectiveDate) || lessonRate.getEffectiveDate().isAfter(effectiveDate))
-                            && (lessonRate.getExpiredDate().isBefore(expiryDate) || lessonRate.getExpiredDate().equals(expiryDate))
-                    ).toList();
+                                       .stream()
+                                       .filter(lessonRate ->
+                                                       (lessonRate.getEffectiveDate()
+                                                                  .equals(effectiveDate) || lessonRate.getEffectiveDate()
+                                                                                                      .isAfter(
+                                                                                                              effectiveDate))
+                                                               && (lessonRate.getExpiredDate()
+                                                                             .isBefore(expiryDate) || lessonRate.getExpiredDate()
+                                                                                                                .equals(expiryDate))
+                                              ).toList();
         }
 
         final Instant instantNow = Instant.now();
 
         return lessonRateRepository.findAll()
-                .stream()
-                .filter(lessonRate -> lessonRate.getExpiredDate().equals(instantNow) || lessonRate.getExpiredDate().isAfter(instantNow))
-                .toList();
+                                   .stream()
+                                   .filter(lessonRate -> lessonRate.getExpiredDate()
+                                                                   .equals(instantNow) || lessonRate.getExpiredDate()
+                                                                                                    .isAfter(instantNow))
+                                   .toList();
     }
 
-    public LessonRate getLessonRateById(final UUID lessonRateId){
+    public LessonRate getLessonRateById(final UUID lessonRateId) {
         return lessonRateRepository.findById(lessonRateId).orElseThrow();
     }
 
     public LessonRate getLessonRateBySubjectComplexity(final SubjectComplexity subjectComplexity) {
         final Instant instantNow = Instant.now();
         return lessonRateRepository.findAll()
-                .stream()
-                .filter(lessonRate ->
-                        (lessonRate.getExpiredDate().equals(instantNow) || lessonRate.getExpiredDate().isAfter(instantNow))
-                        && lessonRate.getSubjectComplexity().equals(subjectComplexity))
-                .findAny().orElse(null);
+                                   .stream()
+                                   .filter(lessonRate ->
+                                                   (lessonRate.getExpiredDate()
+                                                              .equals(instantNow) || lessonRate.getExpiredDate()
+                                                                                               .isAfter(instantNow))
+                                                           && lessonRate.getSubjectComplexity()
+                                                                        .equals(subjectComplexity))
+                                   .findAny().orElse(null);
     }
 
-    public LessonRate createLessonRate(final LessonRate lessonRate){
+    public LessonRate createLessonRate(final LessonRate lessonRate) {
         return lessonRateRepository.save(lessonRate);
     }
 }

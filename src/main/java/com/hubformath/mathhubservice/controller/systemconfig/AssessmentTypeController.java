@@ -11,6 +11,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/systemconfig/sis")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
 public class AssessmentTypeController {
 
     private final ModelMapper modelMapper;
@@ -34,8 +36,9 @@ public class AssessmentTypeController {
     private final AssessmentTypeService assessmentTypeService;
 
     @Autowired
-    public AssessmentTypeController(final ModelMapperConfig modelMapperConfig, final AssessmentTypeService assessmentTypeService
-    ) {
+    public AssessmentTypeController(final ModelMapperConfig modelMapperConfig,
+                                    final AssessmentTypeService assessmentTypeService
+                                   ) {
         this.modelMapper = modelMapperConfig.createModelMapper();
         this.assessmentTypeService = assessmentTypeService;
     }
@@ -43,9 +46,12 @@ public class AssessmentTypeController {
     @GetMapping("/assessmentTypes")
     public ResponseEntity<CollectionModel<EntityModel<AssessmentTypeDto>>> getAllAssessmentTypes() {
         List<AssessmentTypeDto> assessmentTypes = assessmentTypeService.getAllAssessmentTypes().stream()
-                .map(assessmentType -> modelMapper.map(assessmentType, AssessmentTypeDto.class))
-                .toList();
-        CollectionModel<EntityModel<AssessmentTypeDto>> assessmentTypeCollectionModel = toCollectionModel(assessmentTypes);
+                                                                       .map(assessmentType -> modelMapper.map(
+                                                                               assessmentType,
+                                                                               AssessmentTypeDto.class))
+                                                                       .toList();
+        CollectionModel<EntityModel<AssessmentTypeDto>> assessmentTypeCollectionModel = toCollectionModel(
+                assessmentTypes);
 
         return ResponseEntity.ok().body(assessmentTypeCollectionModel);
     }
@@ -54,17 +60,19 @@ public class AssessmentTypeController {
     public ResponseEntity<EntityModel<AssessmentTypeDto>> newAssessmentType(@RequestBody final AssessmentTypeDto assessmentTypeDto) {
         AssessmentType assessmentTypeRequest = modelMapper.map(assessmentTypeDto, AssessmentType.class);
         AssessmentType newAssessmentType = assessmentTypeService.createAssessmentType(assessmentTypeRequest);
-        EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(newAssessmentType, AssessmentTypeDto.class));
+        EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(newAssessmentType,
+                                                                                           AssessmentTypeDto.class));
 
         return ResponseEntity.created(assessmentTypeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(assessmentTypeEntityModel);
+                             .body(assessmentTypeEntityModel);
     }
 
     @GetMapping("/assessmentTypes/{assessmentTypeId}")
     public ResponseEntity<EntityModel<AssessmentTypeDto>> getAssessmentTypeById(@PathVariable final UUID assessmentTypeId) {
         try {
             AssessmentType assessmentType = assessmentTypeService.getAssessmentTypeById(assessmentTypeId);
-            EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(assessmentType, AssessmentTypeDto.class));
+            EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(assessmentType,
+                                                                                               AssessmentTypeDto.class));
             return ResponseEntity.ok().body(assessmentTypeEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -76,8 +84,10 @@ public class AssessmentTypeController {
                                                                                 @PathVariable final UUID assessmentTypeId) {
         try {
             AssessmentType assessmentTypeRequest = modelMapper.map(assessmentTypeDto, AssessmentType.class);
-            AssessmentType updatedAssessmentType = assessmentTypeService.updateAssessmentType(assessmentTypeId, assessmentTypeRequest);
-            EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(updatedAssessmentType, AssessmentTypeDto.class));
+            AssessmentType updatedAssessmentType = assessmentTypeService.updateAssessmentType(assessmentTypeId,
+                                                                                              assessmentTypeRequest);
+            EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(updatedAssessmentType,
+                                                                                               AssessmentTypeDto.class));
             return ResponseEntity.ok().body(assessmentTypeEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -96,9 +106,12 @@ public class AssessmentTypeController {
 
     private EntityModel<AssessmentTypeDto> toModel(final AssessmentTypeDto assessmentType) {
         return EntityModel.of(assessmentType,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssessmentTypeController.class).getAssessmentTypeById(assessmentType.getAssessmentTypeId()))
-                        .withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssessmentTypeController.class).getAllAssessmentTypes()).withRel("assessmentTypes"));
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssessmentTypeController.class)
+                                                                        .getAssessmentTypeById(assessmentType.getAssessmentTypeId()))
+                                               .withSelfRel(),
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssessmentTypeController.class)
+                                                                        .getAllAssessmentTypes())
+                                               .withRel("assessmentTypes"));
     }
 
     private CollectionModel<EntityModel<AssessmentTypeDto>> toCollectionModel(
@@ -108,8 +121,9 @@ public class AssessmentTypeController {
                 .map(this::toModel)
                 .toList();
 
-        return CollectionModel.of(assessmentTypeList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssessmentTypeController.class)
-                        .getAllAssessmentTypes())
-                .withSelfRel());
+        return CollectionModel.of(assessmentTypeList,
+                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssessmentTypeController.class)
+                                                                            .getAllAssessmentTypes())
+                                                   .withSelfRel());
     }
 }

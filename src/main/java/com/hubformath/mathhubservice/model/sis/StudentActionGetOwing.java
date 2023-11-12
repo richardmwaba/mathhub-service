@@ -2,14 +2,17 @@ package com.hubformath.mathhubservice.model.sis;
 
 import java.util.Objects;
 
-public class StudentActionGetOwing extends StudentActionBase{
+public class StudentActionGetOwing extends StudentActionBase {
     private Long studentId;
 
     private boolean isStudentOwing;
 
     private Double amountOwing;
 
-    public StudentActionGetOwing(StudentActionTypeEnum actionType, Long studentId, boolean isStudentOwing, Double amountOwing) {
+    public StudentActionGetOwing(StudentActionTypeEnum actionType,
+                                 Long studentId,
+                                 boolean isStudentOwing,
+                                 Double amountOwing) {
         super(actionType);
         this.studentId = studentId;
         this.isStudentOwing = isStudentOwing;
@@ -44,7 +47,8 @@ public class StudentActionGetOwing extends StudentActionBase{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof StudentActionGetOwing that)) return false;
-        return isStudentOwing() == that.isStudentOwing() && getStudentId().equals(that.getStudentId()) && getAmountOwing().equals(that.getAmountOwing());
+        return isStudentOwing() == that.isStudentOwing() && getStudentId().equals(that.getStudentId()) && getAmountOwing().equals(
+                that.getAmountOwing());
     }
 
     @Override

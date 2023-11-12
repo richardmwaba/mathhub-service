@@ -17,7 +17,7 @@ import java.util.UUID;
 @Table(name = "expense_types")
 public class ExpenseType {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "expense_type_id", updatable = false, nullable = false)
     private UUID expenseTypeId;
 
@@ -36,7 +36,8 @@ public class ExpenseType {
     private LocalDateTime updatedAt;
 
 
-    public ExpenseType() {}
+    public ExpenseType() {
+    }
 
     public ExpenseType(String typeName, String typeDescription) {
         this.typeName = typeName;

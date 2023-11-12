@@ -3,11 +3,6 @@ package com.hubformath.mathhubservice.model.sis;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import jakarta.persistence.Column;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.ReadOnlyProperty;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -16,6 +11,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.ReadOnlyProperty;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -58,7 +58,8 @@ public class Lesson {
     private PaymentStatus lessonPaymentStatus;
 
     @CreationTimestamp
-    @ReadOnlyProperty@Column(name = "created_at")
+    @ReadOnlyProperty
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp

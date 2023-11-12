@@ -11,6 +11,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,37 +41,45 @@ public class AddressController {
     }
 
     @GetMapping("/addresses")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
+            + "or hasRole('ROLE_STUDENT')")
     public ResponseEntity<CollectionModel<EntityModel<AddressDto>>> getAllAddresses() {
         List<AddressDto> addresses = addressService.getAllAddresses().stream()
-                .map(address -> modelMapper.map(address, AddressDto.class))
-                .toList();
+                                                   .map(address -> modelMapper.map(address, AddressDto.class))
+                                                   .toList();
         CollectionModel<EntityModel<AddressDto>> addressCollectionModel = toCollectionModel(addresses);
 
         return ResponseEntity.ok().body(addressCollectionModel);
     }
 
     @PostMapping("/addresses")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
+            + "or hasRole('ROLE_STUDENT')")
     public ResponseEntity<EntityModel<AddressDto>> newAddress(@RequestBody final AddressDto addressDto) {
         Address addressRequest = modelMapper.map(addressDto, Address.class);
         Address newAddress = addressService.createAddress(addressRequest);
         EntityModel<AddressDto> addressEntityModel = toModel(modelMapper.map(newAddress, AddressDto.class));
 
         return ResponseEntity.created(addressEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(addressEntityModel);
+                             .body(addressEntityModel);
     }
 
     @GetMapping("/addresses/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
+            + "or hasRole('ROLE_STUDENT')")
     public ResponseEntity<EntityModel<AddressDto>> getAddressById(@PathVariable final UUID addressId) {
         try {
             Address address = addressService.getAddressById(addressId);
             EntityModel<AddressDto> addressEntityModel = toModel(modelMapper.map(address, AddressDto.class));
             return ResponseEntity.ok().body(addressEntityModel);
         } catch (NoSuchElementException e) {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/addresses/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
+            + "or hasRole('ROLE_STUDENT')")
     public ResponseEntity<EntityModel<AddressDto>> replaceAddress(@RequestBody final AddressDto addressDto,
                                                                   @PathVariable final UUID addressId) {
         try {
@@ -84,28 +93,33 @@ public class AddressController {
     }
 
     @DeleteMapping("/addresses/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT')")
     public ResponseEntity<String> deleteAddress(@PathVariable final UUID addressId) {
         try {
             addressService.deleteAddress(addressId);
             return ResponseEntity.ok().body("Address deleted successfully");
         } catch (NoSuchElementException e) {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
     private EntityModel<AddressDto> toModel(final AddressDto address) {
         return EntityModel.of(address,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AddressController.class).getAddressById(address.getAddressId())).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AddressController.class).getAllAddresses()).withRel("addresses"));
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AddressController.class)
+                                                                        .getAddressById(address.getAddressId()))
+                                               .withSelfRel(),
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AddressController.class)
+                                                                        .getAllAddresses()).withRel("addresses"));
     }
 
     private CollectionModel<EntityModel<AddressDto>> toCollectionModel(final Iterable<? extends AddressDto> addresses) {
         List<EntityModel<AddressDto>> addressList = StreamSupport.stream(addresses.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+                                                                 .map(this::toModel)
+                                                                 .toList();
 
-        return CollectionModel.of(addressList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AddressController.class)
-                        .getAllAddresses())
-                .withSelfRel());
+        return CollectionModel.of(addressList,
+                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AddressController.class)
+                                                                            .getAllAddresses())
+                                                   .withSelfRel());
     }
 }

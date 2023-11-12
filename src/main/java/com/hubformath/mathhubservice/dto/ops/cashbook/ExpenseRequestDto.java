@@ -53,5 +53,5 @@ public class ExpenseRequestDto {
 
     public void setAmount(Double amount) {
         this.amount = amount;
-    }  
+    }
 }

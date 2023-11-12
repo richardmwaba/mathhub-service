@@ -31,17 +31,19 @@ public class IncomeTypeService {
 
     public IncomeType updateIncomeType(UUID incomeTypeId, IncomeType incomeTypeRequest) {
         return incomeTypeRepository.findById(incomeTypeId)
-                .map(incomeType -> {
-                    Optional.ofNullable(incomeTypeRequest.getTypeName()).ifPresent(incomeType::setTypeName);
-                    Optional.ofNullable(incomeTypeRequest.getTypeDescription()).ifPresent(incomeType::setTypeDescription);
-                    return incomeTypeRepository.save(incomeType);
-                }) 
-                .orElseThrow();
+                                   .map(incomeType -> {
+                                       Optional.ofNullable(incomeTypeRequest.getTypeName())
+                                               .ifPresent(incomeType::setTypeName);
+                                       Optional.ofNullable(incomeTypeRequest.getTypeDescription())
+                                               .ifPresent(incomeType::setTypeDescription);
+                                       return incomeTypeRepository.save(incomeType);
+                                   })
+                                   .orElseThrow();
     }
 
     public void deleteIncomeType(UUID incomeTypeId) {
         IncomeType incomeType = incomeTypeRepository.findById(incomeTypeId)
-                .orElseThrow();
+                                                    .orElseThrow();
 
         incomeTypeRepository.delete(incomeType);
     }

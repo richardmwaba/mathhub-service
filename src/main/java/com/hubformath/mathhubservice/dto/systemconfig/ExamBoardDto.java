@@ -11,20 +11,26 @@ public class ExamBoardDto {
     private String examBoardDescription;
 
     public UUID getExamBoardId() {
-        return examBoardId;}
+        return examBoardId;
+    }
 
     public void setExamBoardId(UUID examBoardId) {
-        this.examBoardId = examBoardId;}
+        this.examBoardId = examBoardId;
+    }
 
     public String getExamBoardName() {
-        return examBoardName;}
+        return examBoardName;
+    }
 
     public void setExamBoardName(String examBoardName) {
-        this.examBoardName = examBoardName;}
+        this.examBoardName = examBoardName;
+    }
 
     public String getExamBoardDescription() {
-        return examBoardDescription;}
+        return examBoardDescription;
+    }
 
     public void setExamBoardDescription(String examBoardDescription) {
-        this.examBoardDescription = examBoardDescription;}
+        this.examBoardDescription = examBoardDescription;
+    }
 }

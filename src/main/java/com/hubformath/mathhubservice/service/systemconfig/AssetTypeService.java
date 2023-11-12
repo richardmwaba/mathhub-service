@@ -32,19 +32,21 @@ public class AssetTypeService {
 
     public AssetType updateAssetType(UUID assetTypeId, AssetType assetTypeRequest) {
         return assetTypeRepository.findById(assetTypeId)
-                .map(assetType -> {
-                    Optional.ofNullable(assetTypeRequest.getTypeName()).ifPresent(assetType::setTypeName);
-                    Optional.ofNullable(assetTypeRequest.getTypeDescription()).ifPresent(assetType::setTypeDescription);
-                    return assetTypeRepository.save(assetType);
-                }) 
-                .orElseThrow();
+                                  .map(assetType -> {
+                                      Optional.ofNullable(assetTypeRequest.getTypeName())
+                                              .ifPresent(assetType::setTypeName);
+                                      Optional.ofNullable(assetTypeRequest.getTypeDescription())
+                                              .ifPresent(assetType::setTypeDescription);
+                                      return assetTypeRepository.save(assetType);
+                                  })
+                                  .orElseThrow();
     }
 
     public void deleteAssetType(UUID assetTypeId) {
         AssetType assetType = assetTypeRepository.findById(assetTypeId)
-                .orElseThrow();
+                                                 .orElseThrow();
 
         assetTypeRepository.delete(assetType);
     }
-    
+
 }

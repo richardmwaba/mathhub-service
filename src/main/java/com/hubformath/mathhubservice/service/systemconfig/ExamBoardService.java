@@ -32,17 +32,19 @@ public class ExamBoardService {
 
     public ExamBoard updateExamBoard(UUID examBoardId, ExamBoard examBoardRequest) {
         return examBoardRepository.findById(examBoardId)
-                .map(examBoard -> {
-                    Optional.ofNullable(examBoardRequest.getExamBoardName()).ifPresent(examBoard::setExamBoardName);
-                    Optional.ofNullable(examBoardRequest.getExamBoardDescription()).ifPresent(examBoard::setExamBoardDescription);
-                    return examBoardRepository.save(examBoard);
-                })
-                .orElseThrow();
+                                  .map(examBoard -> {
+                                      Optional.ofNullable(examBoardRequest.getExamBoardName())
+                                              .ifPresent(examBoard::setExamBoardName);
+                                      Optional.ofNullable(examBoardRequest.getExamBoardDescription())
+                                              .ifPresent(examBoard::setExamBoardDescription);
+                                      return examBoardRepository.save(examBoard);
+                                  })
+                                  .orElseThrow();
     }
 
     public void deleteExamBoard(UUID examBoardId) {
         ExamBoard examBoard = examBoardRepository.findById(examBoardId)
-                .orElseThrow();
+                                                 .orElseThrow();
 
         examBoardRepository.delete(examBoard);
     }

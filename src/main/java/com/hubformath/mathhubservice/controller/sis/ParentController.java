@@ -11,6 +11,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,26 +41,31 @@ public class ParentController {
     }
 
     @GetMapping("/parents")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
+            + "or hasRole('ROLE_STUDENT')")
     public ResponseEntity<CollectionModel<EntityModel<ParentDto>>> getAllParents() {
         List<ParentDto> parents = parentService.getAllParents().stream()
-                .map(parent -> modelMapper.map(parent, ParentDto.class))
-                .toList();
+                                               .map(parent -> modelMapper.map(parent, ParentDto.class))
+                                               .toList();
         CollectionModel<EntityModel<ParentDto>> parentCollectionModel = toCollectionModel(parents);
 
         return ResponseEntity.ok().body(parentCollectionModel);
     }
 
     @PostMapping("/parents")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT')")
     public ResponseEntity<EntityModel<ParentDto>> newParent(@RequestBody final ParentDto parentDto) {
         Parent parentRequest = modelMapper.map(parentDto, Parent.class);
         Parent newParent = parentService.createParent(parentRequest);
         EntityModel<ParentDto> parentEntityModel = toModel(modelMapper.map(newParent, ParentDto.class));
 
         return ResponseEntity.created(parentEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(parentEntityModel);
+                             .body(parentEntityModel);
     }
 
     @GetMapping("/parents/{parentId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT')"
+            + "or hasRole('ROLE_STUDENT')")
     public ResponseEntity<EntityModel<ParentDto>> getParentById(@PathVariable final UUID parentId) {
         try {
             Parent parent = parentService.getParentById(parentId);
@@ -71,6 +77,7 @@ public class ParentController {
     }
 
     @PutMapping("/parents/{parentId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT')")
     public ResponseEntity<EntityModel<ParentDto>> replaceParent(@RequestBody final ParentDto parentDto,
                                                                 @PathVariable final UUID parentId) {
         try {
@@ -84,6 +91,7 @@ public class ParentController {
     }
 
     @DeleteMapping("/parents/{parentId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
     public ResponseEntity<String> deleteParent(@PathVariable final UUID parentId) {
         try {
             parentService.deleteParent(parentId);
@@ -95,17 +103,21 @@ public class ParentController {
 
     public EntityModel<ParentDto> toModel(final ParentDto parent) {
         return EntityModel.of(parent,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ParentController.class).getParentById(parent.getParentId())).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ParentController.class).getAllParents()).withRel("parents"));
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ParentController.class)
+                                                                        .getParentById(parent.getParentId()))
+                                               .withSelfRel(),
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ParentController.class)
+                                                                        .getAllParents()).withRel("parents"));
     }
 
     private CollectionModel<EntityModel<ParentDto>> toCollectionModel(final Iterable<? extends ParentDto> parents) {
         List<EntityModel<ParentDto>> parentList = StreamSupport.stream(parents.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+                                                               .map(this::toModel)
+                                                               .toList();
 
-        return CollectionModel.of(parentList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ParentController.class)
-                        .getAllParents())
-                .withRel("parents"));
+        return CollectionModel.of(parentList,
+                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ParentController.class)
+                                                                            .getAllParents())
+                                                   .withRel("parents"));
     }
 }

@@ -177,13 +177,13 @@ public class Invoice {
     @Override
     public int hashCode() {
         return Objects.hash(getInvoiceId(),
-                getInvoiceNumber(),
-                getInvoiceDate(),
-                getAmount(),
-                getNarration(),
-                getInvoiceStatus(),
-                getDueDate(),
-                getIssuedBy());
+                            getInvoiceNumber(),
+                            getInvoiceDate(),
+                            getAmount(),
+                            getNarration(),
+                            getInvoiceStatus(),
+                            getDueDate(),
+                            getIssuedBy());
     }
 
     @Override

@@ -31,18 +31,19 @@ public class GradeService {
 
     public Grade updateGrade(UUID gradeId, Grade gradeRequest) {
         return gradeRepository.findById(gradeId)
-                .map(grade -> {
-                    Optional.ofNullable(gradeRequest.getGradeName()).ifPresent(grade::setGradeName);
-                    Optional.ofNullable(gradeRequest.getGradeDescription()).ifPresent(grade::setGradeDescription);
-                    Optional.ofNullable(gradeRequest.getSubjects()).ifPresent(grade::setSubjects);
-                    return gradeRepository.save(grade);
-                })
-                .orElseThrow();
+                              .map(grade -> {
+                                  Optional.ofNullable(gradeRequest.getGradeName()).ifPresent(grade::setGradeName);
+                                  Optional.ofNullable(gradeRequest.getGradeDescription())
+                                          .ifPresent(grade::setGradeDescription);
+                                  Optional.ofNullable(gradeRequest.getSubjects()).ifPresent(grade::setSubjects);
+                                  return gradeRepository.save(grade);
+                              })
+                              .orElseThrow();
     }
 
     public void deleteGrade(UUID gradeId) {
         Grade grade = gradeRepository.findById(gradeId)
-                .orElseThrow();
+                                     .orElseThrow();
 
         gradeRepository.delete(grade);
     }

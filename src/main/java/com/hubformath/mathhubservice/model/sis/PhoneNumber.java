@@ -19,7 +19,7 @@ import java.util.UUID;
 @Table(name = "phone_numbers")
 public class PhoneNumber {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "phone_number_id")
     private UUID phoneNumberId;
 
@@ -40,7 +40,7 @@ public class PhoneNumber {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
+
     public PhoneNumber() {
     }
 
@@ -81,7 +81,7 @@ public class PhoneNumber {
     public void setNumber(String number) {
         this.number = number;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

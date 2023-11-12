@@ -31,17 +31,19 @@ public class PaymentMethodService {
 
     public PaymentMethod updatePaymentMethod(UUID paymentMethodId, PaymentMethod paymentMethodRequest) {
         return paymentMethodRepository.findById(paymentMethodId)
-                .map(paymentMethod -> {
-                    Optional.ofNullable(paymentMethodRequest.getTypeName()).ifPresent(paymentMethod::setTypeName);
-                    Optional.ofNullable(paymentMethodRequest.getTypeDescription()).ifPresent(paymentMethod::setTypeDescription);
-                    return paymentMethodRepository.save(paymentMethod);
-                }) 
-                .orElseThrow();
+                                      .map(paymentMethod -> {
+                                          Optional.ofNullable(paymentMethodRequest.getTypeName())
+                                                  .ifPresent(paymentMethod::setTypeName);
+                                          Optional.ofNullable(paymentMethodRequest.getTypeDescription())
+                                                  .ifPresent(paymentMethod::setTypeDescription);
+                                          return paymentMethodRepository.save(paymentMethod);
+                                      })
+                                      .orElseThrow();
     }
 
     public void deletePaymentMethod(UUID paymentMethodId) {
         PaymentMethod paymentMethod = paymentMethodRepository.findById(paymentMethodId)
-                .orElseThrow();
+                                                             .orElseThrow();
 
         paymentMethodRepository.delete(paymentMethod);
     }

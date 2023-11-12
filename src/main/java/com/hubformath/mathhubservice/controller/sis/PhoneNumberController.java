@@ -11,6 +11,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,36 +35,45 @@ public class PhoneNumberController {
     private final PhoneNumberService phoneNumberService;
 
     @Autowired
-    public PhoneNumberController(final ModelMapperConfig modelMapperConfig, final PhoneNumberService phoneNumberService) {
+    public PhoneNumberController(final ModelMapperConfig modelMapperConfig,
+                                 final PhoneNumberService phoneNumberService) {
         this.modelMapper = modelMapperConfig.createModelMapper();
         this.phoneNumberService = phoneNumberService;
     }
 
     @GetMapping("/phoneNumbers")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
+            + "or hasRole('ROLE_STUDENT')")
     public ResponseEntity<CollectionModel<EntityModel<PhoneNumberDto>>> getAllPhoneNumbers() {
         List<PhoneNumberDto> phoneNumbers = phoneNumberService.getAllPhoneNumbers().stream()
-                .map(phoneNumber -> modelMapper.map(phoneNumber, PhoneNumberDto.class))
-                .toList();
+                                                              .map(phoneNumber -> modelMapper.map(phoneNumber,
+                                                                                                  PhoneNumberDto.class))
+                                                              .toList();
         CollectionModel<EntityModel<PhoneNumberDto>> phoneNumberCollectionModel = toCollectionModel(phoneNumbers);
 
         return ResponseEntity.ok().body(phoneNumberCollectionModel);
     }
 
     @PostMapping("/phoneNumbers")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT')")
     public ResponseEntity<EntityModel<PhoneNumberDto>> newPhoneNumber(@RequestBody final PhoneNumberDto phoneNumberDto) {
         PhoneNumber phoneNumberRequest = modelMapper.map(phoneNumberDto, PhoneNumber.class);
         PhoneNumber newPhoneNumber = phoneNumberService.createPhoneNumber(phoneNumberRequest);
-        EntityModel<PhoneNumberDto> phoneNumberEntityModel = toModel(modelMapper.map(newPhoneNumber, PhoneNumberDto.class));
+        EntityModel<PhoneNumberDto> phoneNumberEntityModel = toModel(modelMapper.map(newPhoneNumber,
+                                                                                     PhoneNumberDto.class));
 
         return ResponseEntity.created(phoneNumberEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(phoneNumberEntityModel);
+                             .body(phoneNumberEntityModel);
     }
 
     @GetMapping("/phoneNumbers/{phoneNumberId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
+            + "or hasRole('ROLE_STUDENT')")
     public ResponseEntity<EntityModel<PhoneNumberDto>> getPhoneNumberById(@PathVariable final UUID phoneNumberId) {
         try {
             PhoneNumber phoneNumber = phoneNumberService.getPhoneNumberById(phoneNumberId);
-            EntityModel<PhoneNumberDto> phoneNumberEntityModel = toModel(modelMapper.map(phoneNumber, PhoneNumberDto.class));
+            EntityModel<PhoneNumberDto> phoneNumberEntityModel = toModel(modelMapper.map(phoneNumber,
+                                                                                         PhoneNumberDto.class));
             return ResponseEntity.ok().body(phoneNumberEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -71,12 +81,14 @@ public class PhoneNumberController {
     }
 
     @PutMapping("/phoneNumbers/{phoneNumberId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT')")
     public ResponseEntity<EntityModel<PhoneNumberDto>> replacePhoneNumber(@RequestBody final PhoneNumberDto phoneNumberDto,
                                                                           @PathVariable final UUID phoneNumberId) {
         try {
             PhoneNumber phoneNumberRequest = modelMapper.map(phoneNumberDto, PhoneNumber.class);
             PhoneNumber updatedPhoneNumber = phoneNumberService.updatePhoneNumber(phoneNumberId, phoneNumberRequest);
-            EntityModel<PhoneNumberDto> phoneNumberEntityModel = toModel(modelMapper.map(updatedPhoneNumber, PhoneNumberDto.class));
+            EntityModel<PhoneNumberDto> phoneNumberEntityModel = toModel(modelMapper.map(updatedPhoneNumber,
+                                                                                         PhoneNumberDto.class));
             return ResponseEntity.ok().body(phoneNumberEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -84,6 +96,7 @@ public class PhoneNumberController {
     }
 
     @DeleteMapping("/phoneNumbers/{phoneNumberId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT')")
     public ResponseEntity<String> deletePhoneNumber(@PathVariable final UUID phoneNumberId) {
         try {
             phoneNumberService.deletePhoneNumber(phoneNumberId);
@@ -95,17 +108,21 @@ public class PhoneNumberController {
 
     private EntityModel<PhoneNumberDto> toModel(final PhoneNumberDto phoneNumber) {
         return EntityModel.of(phoneNumber,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PhoneNumberController.class).getPhoneNumberById(phoneNumber.getPhoneNumberId())).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PhoneNumberController.class).getAllPhoneNumbers()).withRel("phoneNumbers"));
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PhoneNumberController.class)
+                                                                        .getPhoneNumberById(phoneNumber.getPhoneNumberId()))
+                                               .withSelfRel(),
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PhoneNumberController.class)
+                                                                        .getAllPhoneNumbers()).withRel("phoneNumbers"));
     }
 
     private CollectionModel<EntityModel<PhoneNumberDto>> toCollectionModel(final Iterable<? extends PhoneNumberDto> phoneNumbers) {
         List<EntityModel<PhoneNumberDto>> phoneNumberList = StreamSupport.stream(phoneNumbers.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+                                                                         .map(this::toModel)
+                                                                         .toList();
 
-        return CollectionModel.of(phoneNumberList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PhoneNumberController.class)
-                        .getAllPhoneNumbers())
-                .withSelfRel());
+        return CollectionModel.of(phoneNumberList,
+                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PhoneNumberController.class)
+                                                                            .getAllPhoneNumbers())
+                                                   .withSelfRel());
     }
 }

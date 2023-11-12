@@ -32,8 +32,8 @@ public abstract class StudentActionBase {
 
         @JsonCreator
         public static StudentActionTypeEnum fromValue(final String value) {
-            for (StudentActionTypeEnum action: StudentActionTypeEnum.values()) {
-                if(action.value.equals(value)) {
+            for (StudentActionTypeEnum action : StudentActionTypeEnum.values()) {
+                if (action.value.equals(value)) {
                     return action;
                 }
             }

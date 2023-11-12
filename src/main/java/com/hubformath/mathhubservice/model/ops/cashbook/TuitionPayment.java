@@ -66,7 +66,8 @@ public class TuitionPayment {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public TuitionPayment(){}
+    public TuitionPayment() {
+    }
 
     public TuitionPayment(final CashTransaction cashTransaction,
                           final Student student,
@@ -138,7 +139,7 @@ public class TuitionPayment {
         return invoiceId;
     }
 
-    public void setInvoiceId(UUID  invoiceId) {
+    public void setInvoiceId(UUID invoiceId) {
         this.invoiceId = invoiceId;
     }
 

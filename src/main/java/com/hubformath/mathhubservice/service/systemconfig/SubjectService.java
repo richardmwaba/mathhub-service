@@ -18,18 +18,20 @@ public class SubjectService {
 
     private final SubjectRepository subjectRepository;
 
-    public SubjectService(final GradeService gradeService, final SubjectRepository subjectRepository){
+    public SubjectService(final GradeService gradeService, final SubjectRepository subjectRepository) {
         this.gradeService = gradeService;
         this.subjectRepository = subjectRepository;
     }
 
-    public List<Subject> getAllSubjects() { return subjectRepository.findAll(); }
+    public List<Subject> getAllSubjects() {
+        return subjectRepository.findAll();
+    }
 
-    public Subject getSubjectById(UUID subjectId){
+    public Subject getSubjectById(UUID subjectId) {
         return subjectRepository.findById(subjectId).orElseThrow();
     }
 
-    public Subject createSubject(SubjectDto subjectRequest){
+    public Subject createSubject(SubjectDto subjectRequest) {
         final UUID subjectGradeId = subjectRequest.getSubjectGradeId();
         final String subjectName = subjectRequest.getSubjectName();
         final SubjectComplexity subjectComplexity = subjectRequest.getSubjectComplexity();
@@ -44,17 +46,19 @@ public class SubjectService {
 
     public Subject updateSubject(UUID subjectId, Subject subjectRequest) {
         return subjectRepository.findById(subjectId)
-                .map(subject -> {
-                    Optional.ofNullable(subjectRequest.getSubjectName()).ifPresent(subject::setSubjectName);
-                    Optional.ofNullable(subjectRequest.getSubjectComplexity()).ifPresent(subject::setSubjectComplexity);
-                    return subjectRepository.save(subject);
-                })
-                .orElseThrow();
+                                .map(subject -> {
+                                    Optional.ofNullable(subjectRequest.getSubjectName())
+                                            .ifPresent(subject::setSubjectName);
+                                    Optional.ofNullable(subjectRequest.getSubjectComplexity())
+                                            .ifPresent(subject::setSubjectComplexity);
+                                    return subjectRepository.save(subject);
+                                })
+                                .orElseThrow();
     }
 
     public void deleteSubject(UUID subjectId) {
         Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow();
+                                           .orElseThrow();
 
         subjectRepository.delete(subject);
     }

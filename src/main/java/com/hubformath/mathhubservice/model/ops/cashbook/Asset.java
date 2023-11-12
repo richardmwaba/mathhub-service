@@ -21,7 +21,7 @@ import java.util.UUID;
 @Table(name = "assets")
 public class Asset {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "asset_id")
     private UUID assetId;
 
@@ -53,7 +53,8 @@ public class Asset {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Asset (){}
+    public Asset() {
+    }
 
     public Asset(String narration, Double amount, Long createdBy, Long approvedBy) {
         this.narration = narration;
@@ -61,7 +62,7 @@ public class Asset {
         this.createdBy = createdBy;
         this.approvedBy = approvedBy;
     }
-    
+
     public UUID getAssetId() {
         return assetId;
     }
@@ -117,7 +118,7 @@ public class Asset {
     public void setApprovedBy(Long approvedBy) {
         this.approvedBy = approvedBy;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -150,12 +151,12 @@ public class Asset {
     @Override
     public int hashCode() {
         return Objects.hash(getAssetId(),
-                getPaymentMethod(),
-                getNarration(),
-                getAssetType(),
-                getAmount(),
-                getCreatedBy(),
-                getApprovedBy());
+                            getPaymentMethod(),
+                            getNarration(),
+                            getAssetType(),
+                            getAmount(),
+                            getCreatedBy(),
+                            getApprovedBy());
     }
 
     @Override

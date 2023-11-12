@@ -30,7 +30,9 @@ public class WebSecurityConfig {
     private final JwtUtils jwtUtils;
 
     @Autowired
-    public WebSecurityConfig(UserAuthDetailsService userAuthDetailsService, AuthEntryPoint unauthorizedHandler, JwtUtils jwtUtils) {
+    public WebSecurityConfig(UserAuthDetailsService userAuthDetailsService,
+                             AuthEntryPoint unauthorizedHandler,
+                             JwtUtils jwtUtils) {
         this.userAuthDetailsService = userAuthDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
         this.jwtUtils = jwtUtils;

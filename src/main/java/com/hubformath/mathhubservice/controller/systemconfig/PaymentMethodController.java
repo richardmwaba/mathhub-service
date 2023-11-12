@@ -11,6 +11,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,15 +27,17 @@ import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
-@RequestMapping(path="/api/v1/systemconfig/ops")
+@RequestMapping(path = "/api/v1/systemconfig/ops")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER')")
 public class PaymentMethodController {
 
     private final ModelMapper modelMapper;
 
     private final PaymentMethodService paymentMethodService;
 
-@Autowired
-    public PaymentMethodController (final ModelMapperConfig modelMapperConfig, final PaymentMethodService paymentMethodService) {
+    @Autowired
+    public PaymentMethodController(final ModelMapperConfig modelMapperConfig,
+                                   final PaymentMethodService paymentMethodService) {
         this.modelMapper = modelMapperConfig.createModelMapper();
         this.paymentMethodService = paymentMethodService;
     }
@@ -42,8 +45,9 @@ public class PaymentMethodController {
     @GetMapping("/paymentMethods")
     public ResponseEntity<CollectionModel<EntityModel<PaymentMethodDto>>> getAllPaymentMethods() {
         List<PaymentMethodDto> paymentMethods = paymentMethodService.getAllPaymentMethods().stream()
-                .map(paymentMethod -> modelMapper.map(paymentMethod, PaymentMethodDto.class))
-                .toList();
+                                                                    .map(paymentMethod -> modelMapper.map(paymentMethod,
+                                                                                                          PaymentMethodDto.class))
+                                                                    .toList();
 
         CollectionModel<EntityModel<PaymentMethodDto>> paymentMethodCollectionModel = toCollectionModel(paymentMethods);
 
@@ -55,17 +59,19 @@ public class PaymentMethodController {
         PaymentMethod paymentMethodRequest = modelMapper.map(paymentMethodDto, PaymentMethod.class);
         PaymentMethod newPaymentMethod = paymentMethodService.createPaymentMethod(paymentMethodRequest);
 
-        EntityModel<PaymentMethodDto> paymentMethodEntityModel = toModel(modelMapper.map(newPaymentMethod, PaymentMethodDto.class));
+        EntityModel<PaymentMethodDto> paymentMethodEntityModel = toModel(modelMapper.map(newPaymentMethod,
+                                                                                         PaymentMethodDto.class));
 
         return ResponseEntity.created(paymentMethodEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(paymentMethodEntityModel);
+                             .body(paymentMethodEntityModel);
     }
 
     @GetMapping("/paymentMethods/{paymentMethodId}")
     public ResponseEntity<EntityModel<PaymentMethodDto>> getPaymentMethodById(@PathVariable final UUID paymentMethodId) {
         try {
             PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(paymentMethodId);
-            EntityModel<PaymentMethodDto> paymentMethodEntityModel = toModel(modelMapper.map(paymentMethod, PaymentMethodDto.class));
+            EntityModel<PaymentMethodDto> paymentMethodEntityModel = toModel(modelMapper.map(paymentMethod,
+                                                                                             PaymentMethodDto.class));
             return ResponseEntity.ok().body(paymentMethodEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -77,11 +83,13 @@ public class PaymentMethodController {
                                                                               @PathVariable final UUID paymentMethodId) {
         try {
             PaymentMethod paymentMethodRequest = modelMapper.map(paymentMethodDto, PaymentMethod.class);
-            PaymentMethod updatedPaymentMethod = paymentMethodService.updatePaymentMethod(paymentMethodId, paymentMethodRequest);
-            EntityModel<PaymentMethodDto> paymentMethodEntityModel = toModel(modelMapper.map(updatedPaymentMethod, PaymentMethodDto.class));
+            PaymentMethod updatedPaymentMethod = paymentMethodService.updatePaymentMethod(paymentMethodId,
+                                                                                          paymentMethodRequest);
+            EntityModel<PaymentMethodDto> paymentMethodEntityModel = toModel(modelMapper.map(updatedPaymentMethod,
+                                                                                             PaymentMethodDto.class));
             return ResponseEntity.ok().body(paymentMethodEntityModel);
         } catch (NoSuchElementException e) {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -97,9 +105,12 @@ public class PaymentMethodController {
 
     private EntityModel<PaymentMethodDto> toModel(final PaymentMethodDto paymentMethod) {
         return EntityModel.of(paymentMethod,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PaymentMethodController.class).getPaymentMethodById(paymentMethod.getPaymentMethodId()))
-                        .withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PaymentMethodController.class).getAllPaymentMethods()).withRel("paymentMethods"));
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PaymentMethodController.class)
+                                                                        .getPaymentMethodById(paymentMethod.getPaymentMethodId()))
+                                               .withSelfRel(),
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PaymentMethodController.class)
+                                                                        .getAllPaymentMethods())
+                                               .withRel("paymentMethods"));
     }
 
     private CollectionModel<EntityModel<PaymentMethodDto>> toCollectionModel(final Iterable<? extends PaymentMethodDto> paymentMethods) {
@@ -108,8 +119,9 @@ public class PaymentMethodController {
                 .map(this::toModel)
                 .toList();
 
-        return CollectionModel.of(paymentMethodList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PaymentMethodController.class)
-                        .getAllPaymentMethods())
-                .withSelfRel());
+        return CollectionModel.of(paymentMethodList,
+                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PaymentMethodController.class)
+                                                                            .getAllPaymentMethods())
+                                                   .withSelfRel());
     }
 }

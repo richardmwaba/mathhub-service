@@ -11,6 +11,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/ops")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER')")
 public class AssetController {
 
     private final ModelMapper modelMapper;
@@ -42,8 +44,8 @@ public class AssetController {
     @GetMapping("/assets")
     public ResponseEntity<CollectionModel<EntityModel<AssetDto>>> getAllAssets() {
         List<AssetDto> assets = assetService.getAllAssets().stream()
-                .map(asset -> modelMapper.map(asset, AssetDto.class))
-                .toList();
+                                            .map(asset -> modelMapper.map(asset, AssetDto.class))
+                                            .toList();
 
         CollectionModel<EntityModel<AssetDto>> assetCollectionModel = toCollectionModel(assets);
 
@@ -58,7 +60,7 @@ public class AssetController {
         EntityModel<AssetDto> assetEntityModel = toModel(modelMapper.map(newAsset, AssetDto.class));
 
         return ResponseEntity.created(assetEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(assetEntityModel);
+                             .body(assetEntityModel);
     }
 
     @GetMapping("/assets/{assetId}")
@@ -73,7 +75,8 @@ public class AssetController {
     }
 
     @PutMapping("/assets/{assetId}")
-    public ResponseEntity<EntityModel<AssetDto>> replaceAsset(@RequestBody final AssetDto assetDto, @PathVariable final UUID assetId) {
+    public ResponseEntity<EntityModel<AssetDto>> replaceAsset(@RequestBody final AssetDto assetDto,
+                                                              @PathVariable final UUID assetId) {
         try {
             Asset assetRequest = modelMapper.map(assetDto, Asset.class);
             Asset updatedAsset = assetService.updateAsset(assetId, assetRequest);
@@ -96,17 +99,20 @@ public class AssetController {
 
     private EntityModel<AssetDto> toModel(final AssetDto asset) {
         return EntityModel.of(asset,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class).getAssetById(asset.getAssetId())).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class).getAllAssets()).withRel("assets"));
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class)
+                                                                        .getAssetById(asset.getAssetId()))
+                                               .withSelfRel(),
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class).getAllAssets())
+                                               .withRel("assets"));
     }
 
     private CollectionModel<EntityModel<AssetDto>> toCollectionModel(final Iterable<? extends AssetDto> assets) {
         List<EntityModel<AssetDto>> assetList = StreamSupport.stream(assets.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+                                                             .map(this::toModel)
+                                                             .toList();
 
         return CollectionModel.of(assetList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class)
-                        .getAllAssets())
-                .withSelfRel());
+                                                                                       .getAllAssets())
+                                                              .withSelfRel());
     }
 }

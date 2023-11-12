@@ -107,13 +107,21 @@ public class StudentDto {
         this.email = email;
     }
 
-    public GradeDto getGrade() { return grade; }
+    public GradeDto getGrade() {
+        return grade;
+    }
 
-    public void setGrade(GradeDto grade) { this.grade = grade; }
+    public void setGrade(GradeDto grade) {
+        this.grade = grade;
+    }
 
-    public StudentGender getGender() { return gender;}
+    public StudentGender getGender() {
+        return gender;
+    }
 
-    public void setGender(StudentGender gender) {this.gender = gender;}
+    public void setGender(StudentGender gender) {
+        this.gender = gender;
+    }
 
     public List<LessonDto> getLessons() {
         return lessons;
@@ -163,7 +171,11 @@ public class StudentDto {
         this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormatter);
     }
 
-    public ExamBoardDto getExamBoard() {return this.examBoard;}
+    public ExamBoardDto getExamBoard() {
+        return this.examBoard;
+    }
 
-    public void setExamBoard(ExamBoardDto syllabus) {this.examBoard = syllabus;}
+    public void setExamBoard(ExamBoardDto syllabus) {
+        this.examBoard = syllabus;
+    }
 }

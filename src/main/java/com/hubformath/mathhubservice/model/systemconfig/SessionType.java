@@ -17,7 +17,7 @@ import java.util.UUID;
 @Table(name = "session_types")
 public class SessionType {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "session_type_id", updatable = false, nullable = false)
     private UUID sessionTypeId;
 
@@ -26,7 +26,7 @@ public class SessionType {
 
     @Column(name = "type_description", nullable = false)
     private String typeDescription;
-    
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -35,7 +35,8 @@ public class SessionType {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public SessionType() {}
+    public SessionType() {
+    }
 
     public SessionType(String typeName, String typeDescription) {
         this.typeName = typeName;
@@ -65,7 +66,7 @@ public class SessionType {
     public void setTypeDescription(String typeDescription) {
         this.typeDescription = typeDescription;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

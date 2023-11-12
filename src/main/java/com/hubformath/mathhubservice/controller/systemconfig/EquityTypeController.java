@@ -11,6 +11,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +27,8 @@ import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
-@RequestMapping(path="/api/v1/systemconfig/ops")
+@RequestMapping(path = "/api/v1/systemconfig/ops")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER')")
 public class EquityTypeController {
 
     private final ModelMapper modelMapper;
@@ -34,7 +36,7 @@ public class EquityTypeController {
     private final EquityTypeService equityTypeService;
 
     @Autowired
-    public EquityTypeController (final ModelMapperConfig modelMapperConfig, final EquityTypeService equityTypeService) {
+    public EquityTypeController(final ModelMapperConfig modelMapperConfig, final EquityTypeService equityTypeService) {
         this.modelMapper = modelMapperConfig.createModelMapper();
         this.equityTypeService = equityTypeService;
     }
@@ -42,8 +44,9 @@ public class EquityTypeController {
     @GetMapping("/equityTypes")
     public ResponseEntity<CollectionModel<EntityModel<EquityTypeDto>>> getAllEquityTypes() {
         List<EquityTypeDto> equityTypes = equityTypeService.getAllEquityTypes().stream()
-                .map(equityType -> modelMapper.map(equityType, EquityTypeDto.class))
-                .toList();
+                                                           .map(equityType -> modelMapper.map(equityType,
+                                                                                              EquityTypeDto.class))
+                                                           .toList();
 
         CollectionModel<EntityModel<EquityTypeDto>> equityTypeCollectionModel = toCollectionModel(equityTypes);
 
@@ -57,14 +60,15 @@ public class EquityTypeController {
         EntityModel<EquityTypeDto> equityTypeEntityModel = toModel(modelMapper.map(newEquityType, EquityTypeDto.class));
 
         return ResponseEntity.created(equityTypeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(equityTypeEntityModel);
+                             .body(equityTypeEntityModel);
     }
 
     @GetMapping("/equityTypes/{equityTypeId}")
     public ResponseEntity<EntityModel<EquityTypeDto>> getEquityTypeById(@PathVariable final UUID equityTypeId) {
         try {
             EquityType equityType = equityTypeService.getEquityTypeById(equityTypeId);
-            EntityModel<EquityTypeDto> equityTypeEntityModel = toModel(modelMapper.map(equityType, EquityTypeDto.class));
+            EntityModel<EquityTypeDto> equityTypeEntityModel = toModel(modelMapper.map(equityType,
+                                                                                       EquityTypeDto.class));
             return ResponseEntity.ok().body(equityTypeEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -77,7 +81,8 @@ public class EquityTypeController {
         try {
             EquityType equityTypeRequest = modelMapper.map(equityTypeDto, EquityType.class);
             EquityType updatedEquityType = equityTypeService.updateEquityType(equityTypeId, equityTypeRequest);
-            EntityModel<EquityTypeDto> equityTypeEntityModel = toModel(modelMapper.map(updatedEquityType, EquityTypeDto.class));
+            EntityModel<EquityTypeDto> equityTypeEntityModel = toModel(modelMapper.map(updatedEquityType,
+                                                                                       EquityTypeDto.class));
             return ResponseEntity.ok().body(equityTypeEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -97,17 +102,21 @@ public class EquityTypeController {
 
     private EntityModel<EquityTypeDto> toModel(final EquityTypeDto assessmentType) {
         return EntityModel.of(assessmentType,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityTypeController.class).getEquityTypeById(assessmentType.getEquityTypeId())).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityTypeController.class).getAllEquityTypes()).withRel("equityTypes"));
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityTypeController.class)
+                                                                        .getEquityTypeById(assessmentType.getEquityTypeId()))
+                                               .withSelfRel(),
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityTypeController.class)
+                                                                        .getAllEquityTypes()).withRel("equityTypes"));
     }
 
     private CollectionModel<EntityModel<EquityTypeDto>> toCollectionModel(final Iterable<? extends EquityTypeDto> assessmentTypes) {
         List<EntityModel<EquityTypeDto>> assessmentTypeList = StreamSupport.stream(assessmentTypes.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+                                                                           .map(this::toModel)
+                                                                           .toList();
 
-        return CollectionModel.of(assessmentTypeList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityTypeController.class)
-                        .getAllEquityTypes())
-                .withSelfRel());
+        return CollectionModel.of(assessmentTypeList,
+                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityTypeController.class)
+                                                                            .getAllEquityTypes())
+                                                   .withSelfRel());
     }
 }

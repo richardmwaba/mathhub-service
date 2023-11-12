@@ -17,7 +17,7 @@ import java.util.UUID;
 @Table(name = "income_types")
 public class IncomeType {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "income_type_id", updatable = false, nullable = false)
     private UUID incomeTypeId;
 
@@ -35,7 +35,8 @@ public class IncomeType {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public IncomeType() {}
+    public IncomeType() {
+    }
 
     public IncomeType(String typeName, String typeDescription) {
         this.typeName = typeName;
@@ -49,7 +50,7 @@ public class IncomeType {
     public void setIncomeTypeId(UUID incomeTypeId) {
         this.incomeTypeId = incomeTypeId;
     }
-    
+
     public String getTypeName() {
         return this.typeName;
     }
@@ -66,7 +67,7 @@ public class IncomeType {
         this.typeDescription = typeDescription;
     }
 
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

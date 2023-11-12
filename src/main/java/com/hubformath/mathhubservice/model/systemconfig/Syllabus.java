@@ -36,25 +36,38 @@ public class Syllabus {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
-    public Syllabus(){}
+
+    public Syllabus() {
+    }
 
     public Syllabus(String syllabusName, String syllabusDescription) {
         this.syllabusName = syllabusName;
         this.syllabusDescription = syllabusDescription;
     }
 
-    public UUID getSyllabusId() {return this.syllabusId;}
+    public UUID getSyllabusId() {
+        return this.syllabusId;
+    }
 
-    public void setSyllabusId(UUID syllabusId) {this.syllabusId = syllabusId;}
+    public void setSyllabusId(UUID syllabusId) {
+        this.syllabusId = syllabusId;
+    }
 
-    public String getSyllabusName() {return this.syllabusName;}
+    public String getSyllabusName() {
+        return this.syllabusName;
+    }
 
-    public void setSyllabusName(String syllabusName) {this.syllabusName = syllabusName;}
+    public void setSyllabusName(String syllabusName) {
+        this.syllabusName = syllabusName;
+    }
 
-    public String getSyllabusDescription() {return this.syllabusDescription;}
+    public String getSyllabusDescription() {
+        return this.syllabusDescription;
+    }
 
-    public void setSyllabusDescription(String syllabusDescription) {this.syllabusDescription = syllabusDescription;}
+    public void setSyllabusDescription(String syllabusDescription) {
+        this.syllabusDescription = syllabusDescription;
+    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

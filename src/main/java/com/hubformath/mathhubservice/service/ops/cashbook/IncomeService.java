@@ -24,7 +24,9 @@ public class IncomeService {
     private final IncomeRepository incomeRepository;
 
     @Autowired
-    public IncomeService(final PaymentMethodService paymentMethodService, final IncomeTypeService incomeTypeService, final IncomeRepository incomeRepository) {
+    public IncomeService(final PaymentMethodService paymentMethodService,
+                         final IncomeTypeService incomeTypeService,
+                         final IncomeRepository incomeRepository) {
         this.paymentMethodService = paymentMethodService;
         this.incomeTypeService = incomeTypeService;
         this.incomeRepository = incomeRepository;
@@ -57,19 +59,20 @@ public class IncomeService {
 
     public Income updateIncome(UUID incomeId, Income incomeRequest) {
         return incomeRepository.findById(incomeId)
-                .map(income -> {
-                    Optional.ofNullable(incomeRequest.getNarration()).ifPresent(income::setNarration);
-                    Optional.ofNullable(incomeRequest.getPaymentMethod()).ifPresent(income::setPaymentMethod);
-                    Optional.ofNullable(incomeRequest.getIncomeType()).ifPresent(income::setIncomeType);
-                    Optional.ofNullable(incomeRequest.getAmount()).ifPresent(income::setAmount);
-                    return incomeRepository.save(income);
-                })
-                .orElseThrow();
+                               .map(income -> {
+                                   Optional.ofNullable(incomeRequest.getNarration()).ifPresent(income::setNarration);
+                                   Optional.ofNullable(incomeRequest.getPaymentMethod())
+                                           .ifPresent(income::setPaymentMethod);
+                                   Optional.ofNullable(incomeRequest.getIncomeType()).ifPresent(income::setIncomeType);
+                                   Optional.ofNullable(incomeRequest.getAmount()).ifPresent(income::setAmount);
+                                   return incomeRepository.save(income);
+                               })
+                               .orElseThrow();
     }
 
     public void deleteIncome(UUID incomeId) {
         Income income = incomeRepository.findById(incomeId)
-                .orElseThrow();
+                                        .orElseThrow();
 
         incomeRepository.delete(income);
     }

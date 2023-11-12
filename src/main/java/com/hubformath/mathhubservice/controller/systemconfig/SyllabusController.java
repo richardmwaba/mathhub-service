@@ -3,7 +3,6 @@ package com.hubformath.mathhubservice.controller.systemconfig;
 import com.hubformath.mathhubservice.config.ModelMapperConfig;
 import com.hubformath.mathhubservice.dto.systemconfig.SyllabusDto;
 import com.hubformath.mathhubservice.model.systemconfig.Syllabus;
-
 import com.hubformath.mathhubservice.service.systemconfig.SyllabusService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +28,8 @@ import java.util.stream.StreamSupport;
 
 
 @RestController
-@RequestMapping(path="/api/v1/systemconfig/ops")
+@RequestMapping(path = "/api/v1/systemconfig/ops")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
 public class SyllabusController {
 
     private final ModelMapper modelMapper;
@@ -44,8 +45,8 @@ public class SyllabusController {
     @GetMapping("/syllabus")
     public ResponseEntity<CollectionModel<EntityModel<SyllabusDto>>> getAllSyllabi() {
         List<SyllabusDto> syllabus = syllabusService.getAllSyllabi().stream()
-                .map(syllabi -> modelMapper.map(syllabi, SyllabusDto.class))
-                .toList();
+                                                    .map(syllabi -> modelMapper.map(syllabi, SyllabusDto.class))
+                                                    .toList();
 
         CollectionModel<EntityModel<SyllabusDto>> syllabusCollectionModel = toCollectionModel(syllabus);
 
@@ -59,7 +60,7 @@ public class SyllabusController {
         EntityModel<SyllabusDto> syllabusEntityModel = toModel(modelMapper.map(newSyllabus, SyllabusDto.class));
 
         return ResponseEntity.created(syllabusEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(syllabusEntityModel);
+                             .body(syllabusEntityModel);
     }
 
     @GetMapping("/syllabus/{id}")
@@ -98,17 +99,21 @@ public class SyllabusController {
 
     private EntityModel<SyllabusDto> toModel(final SyllabusDto syllabus) {
         return EntityModel.of(syllabus,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SyllabusController.class).getSyllabusById(syllabus.getSyllabusId())).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SyllabusController.class).getAllSyllabi()).withRel("syllabus"));
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SyllabusController.class)
+                                                                        .getSyllabusById(syllabus.getSyllabusId()))
+                                               .withSelfRel(),
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SyllabusController.class)
+                                                                        .getAllSyllabi()).withRel("syllabus"));
     }
 
     private CollectionModel<EntityModel<SyllabusDto>> toCollectionModel(final Iterable<? extends SyllabusDto> syllabus) {
         List<EntityModel<SyllabusDto>> syllabusList = StreamSupport.stream(syllabus.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+                                                                   .map(this::toModel)
+                                                                   .toList();
 
-        return CollectionModel.of(syllabusList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SyllabusController.class)
-                        .getAllSyllabi())
-                .withSelfRel());
+        return CollectionModel.of(syllabusList,
+                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SyllabusController.class)
+                                                                            .getAllSyllabi())
+                                                   .withSelfRel());
     }
 }

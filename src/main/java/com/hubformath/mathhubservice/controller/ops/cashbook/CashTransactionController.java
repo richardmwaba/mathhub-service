@@ -10,6 +10,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,7 +26,8 @@ import java.util.stream.StreamSupport;
 
 
 @RestController
-@RequestMapping(path="/api/v1/ops")
+@RequestMapping(path = "/api/v1/ops")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER')")
 public class CashTransactionController {
 
     private final ModelMapper modelMapper;
@@ -33,7 +35,8 @@ public class CashTransactionController {
     private final CashTransactionService transactionService;
 
     @Autowired
-    public CashTransactionController(final ModelMapperConfig modelMapperConfig, final CashTransactionService transactionService) {
+    public CashTransactionController(final ModelMapperConfig modelMapperConfig,
+                                     final CashTransactionService transactionService) {
         this.modelMapper = modelMapperConfig.createModelMapper();
         this.transactionService = transactionService;
     }
@@ -41,8 +44,9 @@ public class CashTransactionController {
     @GetMapping("/transactions")
     public ResponseEntity<CollectionModel<EntityModel<CashTransactionDto>>> getAllTransactions() {
         List<CashTransactionDto> transactions = transactionService.getAllTransactions().stream()
-                .map(transaction -> modelMapper.map(transaction, CashTransactionDto.class))
-                .toList();
+                                                                  .map(transaction -> modelMapper.map(transaction,
+                                                                                                      CashTransactionDto.class))
+                                                                  .toList();
 
         CollectionModel<EntityModel<CashTransactionDto>> transactionCollectionModel = toCollectionModel(transactions);
 
@@ -53,7 +57,8 @@ public class CashTransactionController {
     public ResponseEntity<EntityModel<CashTransactionDto>> getTransactionById(@PathVariable final UUID cashTransactionId) {
         try {
             CashTransaction transaction = transactionService.getTransactionById(cashTransactionId);
-            EntityModel<CashTransactionDto> transactionEntityModel = toModel(modelMapper.map(transaction, CashTransactionDto.class));
+            EntityModel<CashTransactionDto> transactionEntityModel = toModel(modelMapper.map(transaction,
+                                                                                             CashTransactionDto.class));
             return ResponseEntity.ok().body(transactionEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -65,11 +70,13 @@ public class CashTransactionController {
                                                                               @PathVariable final UUID cashTransactionId) {
         try {
             CashTransaction transactionRequest = modelMapper.map(transactionDto, CashTransaction.class);
-            CashTransaction updatedTransaction = transactionService.updateTransaction(cashTransactionId, transactionRequest);
-            EntityModel<CashTransactionDto> transactionEntityModel = toModel(modelMapper.map(updatedTransaction, CashTransactionDto.class));
+            CashTransaction updatedTransaction = transactionService.updateTransaction(cashTransactionId,
+                                                                                      transactionRequest);
+            EntityModel<CashTransactionDto> transactionEntityModel = toModel(modelMapper.map(updatedTransaction,
+                                                                                             CashTransactionDto.class));
             return ResponseEntity.ok().body(transactionEntityModel);
         } catch (NoSuchElementException e) {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
 
     }
@@ -86,17 +93,21 @@ public class CashTransactionController {
 
     private EntityModel<CashTransactionDto> toModel(final CashTransactionDto transaction) {
         return EntityModel.of(transaction,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionController.class).getTransactionById(transaction.getCashTransactionId())).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionController.class).getAllTransactions()).withRel("transactions"));
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionController.class)
+                                                                        .getTransactionById(transaction.getCashTransactionId()))
+                                               .withSelfRel(),
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionController.class)
+                                                                        .getAllTransactions()).withRel("transactions"));
     }
 
     private CollectionModel<EntityModel<CashTransactionDto>> toCollectionModel(final Iterable<? extends CashTransactionDto> transactions) {
         List<EntityModel<CashTransactionDto>> transactionList = StreamSupport.stream(transactions.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+                                                                             .map(this::toModel)
+                                                                             .toList();
 
-        return CollectionModel.of(transactionList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionController.class)
-                        .getAllTransactions())
-                .withSelfRel());
+        return CollectionModel.of(transactionList,
+                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionController.class)
+                                                                            .getAllTransactions())
+                                                   .withSelfRel());
     }
 }

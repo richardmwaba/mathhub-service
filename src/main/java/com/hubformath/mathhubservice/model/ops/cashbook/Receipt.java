@@ -49,7 +49,8 @@ public class Receipt {
         this.issuedBy = null;
     }
 
-    public Receipt() {}
+    public Receipt() {
+    }
 
     public UUID getReceiptId() {
         return receiptId;
@@ -121,10 +122,10 @@ public class Receipt {
     @Override
     public int hashCode() {
         return Objects.hash(getReceiptId(),
-                getReceiptNumber(),
-                getTransactionNumber(),
-                getReceiptDate(),
-                getIssuedBy());
+                            getReceiptNumber(),
+                            getTransactionNumber(),
+                            getReceiptDate(),
+                            getIssuedBy());
     }
 
     @Override

@@ -22,7 +22,7 @@ import java.util.UUID;
 @Table(name = "parents")
 public class Parent {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "parent_id")
     private UUID parentId;
 
@@ -134,7 +134,7 @@ public class Parent {
     public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -168,12 +168,12 @@ public class Parent {
     @Override
     public int hashCode() {
         return Objects.hash(getParentId(),
-                getFirstName(),
-                getMiddleName(),
-                getLastName(),
-                getEmail(),
-                getStudents(),
-                getAddresses(),
-                getPhoneNumbers());
+                            getFirstName(),
+                            getMiddleName(),
+                            getLastName(),
+                            getEmail(),
+                            getStudents(),
+                            getAddresses(),
+                            getPhoneNumbers());
     }
 }
