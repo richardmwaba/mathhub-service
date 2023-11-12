@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class LiabilityService{
+public class LiabilityService {
 
     private final LiabilityRepository liabilityRepository;
 
@@ -33,18 +33,20 @@ public class LiabilityService{
 
     public Liability updateLiability(UUID liabilityId, Liability liabilityRequest) {
         return liabilityRepository.findById(liabilityId)
-                .map(liability -> {
-                    Optional.ofNullable(liabilityRequest.getPaymentMethod()).ifPresent(liability::setPaymentMethod);
-                    Optional.ofNullable(liabilityRequest.getLiabilityType()).ifPresent(liability::setLiabilityType);
-                    Optional.ofNullable(liabilityRequest.getAmount()).ifPresent(liability::setAmount);
-                    return liabilityRepository.save(liability);
-                })
-                .orElseThrow();
+                                  .map(liability -> {
+                                      Optional.ofNullable(liabilityRequest.getPaymentMethod())
+                                              .ifPresent(liability::setPaymentMethod);
+                                      Optional.ofNullable(liabilityRequest.getLiabilityType())
+                                              .ifPresent(liability::setLiabilityType);
+                                      Optional.ofNullable(liabilityRequest.getAmount()).ifPresent(liability::setAmount);
+                                      return liabilityRepository.save(liability);
+                                  })
+                                  .orElseThrow();
     }
 
     public void deleteLiability(UUID liabilityId) {
         Liability liability = liabilityRepository.findById(liabilityId)
-                .orElseThrow();
+                                                 .orElseThrow();
 
         liabilityRepository.delete(liability);
     }

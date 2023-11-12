@@ -3,11 +3,24 @@ package com.hubformath.mathhubservice.model.sis;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -89,7 +102,12 @@ public class Student {
         // Used by hibernate instantiation
     }
 
-    public Student(final String firstName, final String middleName, final String lastName, final String email, final LocalDate dateOfBirth, final StudentGender gender) {
+    public Student(final String firstName,
+                   final String middleName,
+                   final String lastName,
+                   final String email,
+                   final LocalDate dateOfBirth,
+                   final StudentGender gender) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -130,13 +148,21 @@ public class Student {
         this.lastName = lastName;
     }
 
-    public StudentGender getGender() {return gender; }
+    public StudentGender getGender() {
+        return gender;
+    }
 
-    public void setGender(StudentGender gender) {this.gender = gender; }
+    public void setGender(StudentGender gender) {
+        this.gender = gender;
+    }
 
-    public Grade getGrade() { return grade; }
+    public Grade getGrade() {
+        return grade;
+    }
 
-    public void setGrade(Grade grade) { this.grade = grade; }
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
 
     public List<Lesson> getLessons() {
         return lessons;
@@ -198,9 +224,13 @@ public class Student {
         return getLessons().stream().anyMatch(lesson -> lesson.getLessonPaymentStatus() == PaymentStatus.UNPAID);
     }
 
-    public ExamBoard getExamBoard() {return examBoard;}
+    public ExamBoard getExamBoard() {
+        return examBoard;
+    }
 
-    public void setExamBoard(ExamBoard examBoard) {this.examBoard = examBoard;}
+    public void setExamBoard(ExamBoard examBoard) {
+        this.examBoard = examBoard;
+    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -241,19 +271,19 @@ public class Student {
     @Override
     public int hashCode() {
         return Objects.hash(getStudentId(),
-                getFirstName(),
-                getMiddleName(),
-                getLastName(),
-                getGender(),
-                getParent(),
-                getGrade(),
-                getLessons(),
-                getEmail(),
-                getAddresses(),
-                getExamBoard(),
-                getPhoneNumbers(),
-                getStudentFinancialSummary(),
-                getDateOfBirth());
+                            getFirstName(),
+                            getMiddleName(),
+                            getLastName(),
+                            getGender(),
+                            getParent(),
+                            getGrade(),
+                            getLessons(),
+                            getEmail(),
+                            getAddresses(),
+                            getExamBoard(),
+                            getPhoneNumbers(),
+                            getStudentFinancialSummary(),
+                            getDateOfBirth());
     }
 
     @Override

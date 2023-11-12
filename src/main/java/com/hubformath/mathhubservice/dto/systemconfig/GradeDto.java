@@ -6,7 +6,7 @@ public class GradeDto {
 
     private UUID gradeId;
 
-    private  String gradeName;
+    private String gradeName;
 
     private String gradeDescription;
 
@@ -26,7 +26,11 @@ public class GradeDto {
         this.gradeName = gradeName;
     }
 
-    public String getGradeDescription() {return gradeDescription;}
+    public String getGradeDescription() {
+        return gradeDescription;
+    }
 
-    public void setGradeDescription(String gradeDescription) {this.gradeDescription = gradeDescription;}
+    public void setGradeDescription(String gradeDescription) {
+        this.gradeDescription = gradeDescription;
+    }
 }

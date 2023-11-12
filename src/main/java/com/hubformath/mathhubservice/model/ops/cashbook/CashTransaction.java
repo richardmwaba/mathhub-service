@@ -184,13 +184,13 @@ public class CashTransaction {
     @Override
     public int hashCode() {
         return Objects.hash(getCashTransactionId(),
-                getTransactionNumber(),
-                getPaymentMethod(),
-                getTransactionType(),
-                getTransactionCategory(),
-                getNarration(),
-                getAmount(),
-                getTransactedBy());
+                            getTransactionNumber(),
+                            getPaymentMethod(),
+                            getTransactionType(),
+                            getTransactionCategory(),
+                            getNarration(),
+                            getAmount(),
+                            getTransactedBy());
     }
 
     @Override

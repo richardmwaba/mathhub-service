@@ -21,7 +21,7 @@ import java.util.UUID;
 @Table(name = "incomes")
 public class Income {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID incomeId;
 
     @OneToOne
@@ -52,7 +52,8 @@ public class Income {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Income (){}
+    public Income() {
+    }
 
     public Income(String narration, Double amount, Long createdBy, Long approvedBy) {
         this.narration = narration;
@@ -116,7 +117,7 @@ public class Income {
     public void setApprovedBy(Long approvedBy) {
         this.approvedBy = approvedBy;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -149,12 +150,12 @@ public class Income {
     @Override
     public int hashCode() {
         return Objects.hash(getIncomeId(),
-                getPaymentMethod(),
-                getNarration(),
-                getIncomeType(),
-                getAmount(),
-                getCreatedBy(),
-                getApprovedBy());
+                            getPaymentMethod(),
+                            getNarration(),
+                            getIncomeType(),
+                            getAmount(),
+                            getCreatedBy(),
+                            getApprovedBy());
     }
 
     @Override

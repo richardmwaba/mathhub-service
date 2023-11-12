@@ -17,7 +17,7 @@ import java.util.UUID;
 @Table(name = "equity_types")
 public class EquityType {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "equity_type_id", updatable = false, nullable = false)
     private UUID equityTypeId;
 
@@ -36,7 +36,8 @@ public class EquityType {
     private LocalDateTime updatedAt;
 
 
-    public EquityType() {}
+    public EquityType() {
+    }
 
     public EquityType(String typeName, String typeDescription) {
         this.typeName = typeName;
@@ -50,7 +51,7 @@ public class EquityType {
     public void setEquityTypeId(UUID equityTypeId) {
         this.equityTypeId = equityTypeId;
     }
-    
+
     public String getTypeName() {
         return this.typeName;
     }
@@ -67,7 +68,7 @@ public class EquityType {
         this.typeDescription = typeDescription;
     }
 
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

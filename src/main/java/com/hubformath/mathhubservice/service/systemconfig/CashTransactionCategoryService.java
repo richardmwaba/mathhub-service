@@ -30,19 +30,24 @@ public class CashTransactionCategoryService {
         return cashTransactionCategoryRepository.save(cashTransactionCategoryRequest);
     }
 
-    public CashTransactionCategory updateCashTransactionCategory(UUID cashTransactionCategoryId, CashTransactionCategory cashTransactionCategoryRequest) {
+    public CashTransactionCategory updateCashTransactionCategory(UUID cashTransactionCategoryId,
+                                                                 CashTransactionCategory cashTransactionCategoryRequest) {
         return cashTransactionCategoryRepository.findById(cashTransactionCategoryId)
-                .map(cashTransactionCategory -> {
-                    Optional.ofNullable(cashTransactionCategoryRequest.getCategoryName()).ifPresent(cashTransactionCategory::setCategoryName);
-                    Optional.ofNullable(cashTransactionCategoryRequest.getCategoryDescription()).ifPresent(cashTransactionCategory::setCategoryDescription);
-                    return cashTransactionCategoryRepository.save(cashTransactionCategory);
-                }) 
-                .orElseThrow();
+                                                .map(cashTransactionCategory -> {
+                                                    Optional.ofNullable(cashTransactionCategoryRequest.getCategoryName())
+                                                            .ifPresent(cashTransactionCategory::setCategoryName);
+                                                    Optional.ofNullable(cashTransactionCategoryRequest.getCategoryDescription())
+                                                            .ifPresent(cashTransactionCategory::setCategoryDescription);
+                                                    return cashTransactionCategoryRepository.save(
+                                                            cashTransactionCategory);
+                                                })
+                                                .orElseThrow();
     }
 
     public void deleteCashTransactionCategory(UUID cashTransactionCategoryId) {
-        CashTransactionCategory cashTransactionCategory = cashTransactionCategoryRepository.findById(cashTransactionCategoryId)
-                .orElseThrow();
+        CashTransactionCategory cashTransactionCategory = cashTransactionCategoryRepository.findById(
+                                                                                                   cashTransactionCategoryId)
+                                                                                           .orElseThrow();
 
         cashTransactionCategoryRepository.delete(cashTransactionCategory);
     }

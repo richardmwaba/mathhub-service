@@ -31,17 +31,19 @@ public class SessionTypeService {
 
     public SessionType updateSessionType(UUID sessionTypeId, SessionType sessionTypeRequest) {
         return sessionTypeRepository.findById(sessionTypeId)
-                .map(sessionType -> {
-                    Optional.ofNullable(sessionTypeRequest.getTypeName()).ifPresent(sessionType::setTypeName);
-                    Optional.ofNullable(sessionTypeRequest.getTypeDescription()).ifPresent(sessionType::setTypeDescription);
-                    return sessionTypeRepository.save(sessionType);
-                }) 
-                .orElseThrow();
+                                    .map(sessionType -> {
+                                        Optional.ofNullable(sessionTypeRequest.getTypeName())
+                                                .ifPresent(sessionType::setTypeName);
+                                        Optional.ofNullable(sessionTypeRequest.getTypeDescription())
+                                                .ifPresent(sessionType::setTypeDescription);
+                                        return sessionTypeRepository.save(sessionType);
+                                    })
+                                    .orElseThrow();
     }
 
     public void deleteSessionType(UUID sessionTypeId) {
         SessionType sessionType = sessionTypeRepository.findById(sessionTypeId)
-                .orElseThrow();
+                                                       .orElseThrow();
 
         sessionTypeRepository.delete(sessionType);
     }

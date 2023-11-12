@@ -30,18 +30,20 @@ public class EquityTypeService {
     }
 
     public EquityType updateEquityType(UUID equityTypeId, EquityType equityTypeRequest) {
-        return equityTypeRepository.findById(equityTypeId) 
-                .map(equityType -> {
-                    Optional.ofNullable(equityTypeRequest.getTypeName()).ifPresent(equityType::setTypeName);
-                    Optional.ofNullable(equityTypeRequest.getTypeDescription()).ifPresent(equityType::setTypeDescription);
-                    return equityTypeRepository.save(equityType);
-                }) 
-                .orElseThrow();
+        return equityTypeRepository.findById(equityTypeId)
+                                   .map(equityType -> {
+                                       Optional.ofNullable(equityTypeRequest.getTypeName())
+                                               .ifPresent(equityType::setTypeName);
+                                       Optional.ofNullable(equityTypeRequest.getTypeDescription())
+                                               .ifPresent(equityType::setTypeDescription);
+                                       return equityTypeRepository.save(equityType);
+                                   })
+                                   .orElseThrow();
     }
 
     public void deleteEquityType(UUID equityTypeId) {
         EquityType equityType = equityTypeRepository.findById(equityTypeId)
-                .orElseThrow();
+                                                    .orElseThrow();
 
         equityTypeRepository.delete(equityType);
     }

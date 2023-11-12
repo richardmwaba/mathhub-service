@@ -25,7 +25,9 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
 
     @Autowired
-    public ExpenseService(final PaymentMethodService paymentMethodService, ExpenseTypeService expenseTypeService, final ExpenseRepository expenseRepository) {
+    public ExpenseService(final PaymentMethodService paymentMethodService,
+                          ExpenseTypeService expenseTypeService,
+                          final ExpenseRepository expenseRepository) {
         this.paymentMethodService = paymentMethodService;
         this.expenseTypeService = expenseTypeService;
         this.expenseRepository = expenseRepository;
@@ -60,20 +62,22 @@ public class ExpenseService {
 
     public Expense updateExpense(UUID expenseId, Expense expenseRequest) {
         return expenseRepository.findById(expenseId)
-                .map(expense -> {
-                    Optional.ofNullable(expenseRequest.getPaymentMethod()).ifPresent(expense::setPaymentMethod);
-                    Optional.ofNullable(expenseRequest.getNarration()).ifPresent(expense::setNarration);
-                    Optional.ofNullable(expenseRequest.getStatus()).ifPresent(expense::setStatus);
-                    Optional.ofNullable(expenseRequest.getExpenseType()).ifPresent(expense::setExpenseType);
-                    Optional.ofNullable(expenseRequest.getAmount()).ifPresent(expense::setAmount);
-                    return expenseRepository.save(expense);
-                })
-                .orElseThrow();
+                                .map(expense -> {
+                                    Optional.ofNullable(expenseRequest.getPaymentMethod())
+                                            .ifPresent(expense::setPaymentMethod);
+                                    Optional.ofNullable(expenseRequest.getNarration()).ifPresent(expense::setNarration);
+                                    Optional.ofNullable(expenseRequest.getStatus()).ifPresent(expense::setStatus);
+                                    Optional.ofNullable(expenseRequest.getExpenseType())
+                                            .ifPresent(expense::setExpenseType);
+                                    Optional.ofNullable(expenseRequest.getAmount()).ifPresent(expense::setAmount);
+                                    return expenseRepository.save(expense);
+                                })
+                                .orElseThrow();
     }
 
     public void deleteExpense(UUID expenseId) {
         Expense expense = expenseRepository.findById(expenseId)
-                .orElseThrow();
+                                           .orElseThrow();
 
         expenseRepository.delete(expense);
     }

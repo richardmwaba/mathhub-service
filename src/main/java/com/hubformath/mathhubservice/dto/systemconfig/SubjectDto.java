@@ -18,19 +18,31 @@ public class SubjectDto {
 
     private SubjectComplexity subjectComplexity;
 
-    public UUID getSubjectId() {return subjectId; }
+    public UUID getSubjectId() {
+        return subjectId;
+    }
 
-    public void setSubjectId(UUID subjectId) {this.subjectId = subjectId;}
+    public void setSubjectId(UUID subjectId) {
+        this.subjectId = subjectId;
+    }
 
 
-    public String getSubjectName() {return subjectName;}
+    public String getSubjectName() {
+        return subjectName;
+    }
 
-    public void setSubjectName(String subjectName) {this.subjectName = subjectName;}
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
 
 
-    public GradeDto getSubjectGrade() {return subjectGrade;}
+    public GradeDto getSubjectGrade() {
+        return subjectGrade;
+    }
 
-    public void setSubjectGrade(GradeDto subjectGrade) {this.subjectGrade = subjectGrade;}
+    public void setSubjectGrade(GradeDto subjectGrade) {
+        this.subjectGrade = subjectGrade;
+    }
 
     @JsonIgnore
     public UUID getSubjectGradeId() {

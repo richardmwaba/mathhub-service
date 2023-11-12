@@ -17,7 +17,7 @@ import java.util.UUID;
 @Table(name = "assessment_types")
 public class AssessmentType {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "assessment_type_id", updatable = false, nullable = false)
     private UUID assessmentTypeId;
 
@@ -35,7 +35,8 @@ public class AssessmentType {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public AssessmentType() {}
+    public AssessmentType() {
+    }
 
     public AssessmentType(String typeName, String typeDescription) {
         this.typeName = typeName;
@@ -49,7 +50,7 @@ public class AssessmentType {
     public void setAssessmentTypeId(UUID assessmentTypeId) {
         this.assessmentTypeId = assessmentTypeId;
     }
-    
+
     public String getTypeName() {
         return this.typeName;
     }
@@ -65,7 +66,7 @@ public class AssessmentType {
     public void setTypeDescription(String typeDescription) {
         this.typeDescription = typeDescription;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

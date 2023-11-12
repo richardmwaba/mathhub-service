@@ -11,6 +11,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/ops")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER')")
 public class InvoiceController {
 
     private final ModelMapper modelMapper;
@@ -42,8 +44,8 @@ public class InvoiceController {
     @GetMapping("/invoices")
     public ResponseEntity<CollectionModel<EntityModel<InvoiceDto>>> getAllInvoices() {
         List<InvoiceDto> invoices = invoiceService.getAllInvoices().stream()
-                .map(invoice -> modelMapper.map(invoice, InvoiceDto.class))
-                .toList();
+                                                  .map(invoice -> modelMapper.map(invoice, InvoiceDto.class))
+                                                  .toList();
 
         CollectionModel<EntityModel<InvoiceDto>> invoiceCollectionModel = toCollectionModel(invoices);
 
@@ -55,7 +57,7 @@ public class InvoiceController {
         Invoice newInvoice = invoiceService.createInvoice(invoiceRequestDto);
         EntityModel<InvoiceDto> invoiceEntityModel = toModel(modelMapper.map(newInvoice, InvoiceDto.class));
         return ResponseEntity.created(invoiceEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(invoiceEntityModel);
+                             .body(invoiceEntityModel);
     }
 
     @GetMapping("/invoices/{invoiceId}")
@@ -65,13 +67,13 @@ public class InvoiceController {
             EntityModel<InvoiceDto> invoiceEntityModel = toModel(modelMapper.map(invoice, InvoiceDto.class));
             return ResponseEntity.ok().body(invoiceEntityModel);
         } catch (NoSuchElementException e) {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/invoices/{invoiceId}")
     public ResponseEntity<EntityModel<InvoiceDto>> replaceInvoice(@RequestBody final InvoiceDto invoiceDto,
-                                                                @PathVariable final UUID invoiceId) {
+                                                                  @PathVariable final UUID invoiceId) {
         try {
             Invoice invoiceRequest = modelMapper.map(invoiceDto, Invoice.class);
             Invoice updatedInvoice = invoiceService.updateInvoice(invoiceId, invoiceRequest);
@@ -94,17 +96,21 @@ public class InvoiceController {
 
     private EntityModel<InvoiceDto> toModel(final InvoiceDto invoice) {
         return EntityModel.of(invoice,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(InvoiceController.class).getInvoiceById(invoice.getInvoiceId())).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(InvoiceController.class).getAllInvoices()).withRel("invoices"));
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(InvoiceController.class)
+                                                                        .getInvoiceById(invoice.getInvoiceId()))
+                                               .withSelfRel(),
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(InvoiceController.class)
+                                                                        .getAllInvoices()).withRel("invoices"));
     }
 
     private CollectionModel<EntityModel<InvoiceDto>> toCollectionModel(final Iterable<? extends InvoiceDto> invoices) {
         List<EntityModel<InvoiceDto>> invoiceList = StreamSupport.stream(invoices.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+                                                                 .map(this::toModel)
+                                                                 .toList();
 
-        return CollectionModel.of(invoiceList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(InvoiceController.class)
-                        .getAllInvoices())
-                .withSelfRel());
-    } 
+        return CollectionModel.of(invoiceList,
+                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(InvoiceController.class)
+                                                                            .getAllInvoices())
+                                                   .withSelfRel());
+    }
 }

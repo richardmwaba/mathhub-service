@@ -1,8 +1,8 @@
 package com.hubformath.mathhubservice.service.sis;
 
 import com.hubformath.mathhubservice.config.ModelMapperConfig;
-import com.hubformath.mathhubservice.dto.sis.StudentDto;
 import com.hubformath.mathhubservice.dto.sis.LessonDto;
+import com.hubformath.mathhubservice.dto.sis.StudentDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.sis.Address;
 import com.hubformath.mathhubservice.model.sis.Lesson;
@@ -64,11 +64,11 @@ public class StudentService {
 
     public Student getStudentById(UUID studentId) {
         return studentRepository.findById(studentId)
-                .map(student -> {
-                    student.setStudentFinancialSummary(computeStudentFinancialSummary(student));
-                    return student;
-                })
-                .orElseThrow();
+                                .map(student -> {
+                                    student.setStudentFinancialSummary(computeStudentFinancialSummary(student));
+                                    return student;
+                                })
+                                .orElseThrow();
     }
 
     public Student createStudent(StudentDto studentRequest) {
@@ -82,13 +82,14 @@ public class StudentService {
         final LocalDate dateOfBirth = studentRequest.getDateOfBirth();
         final Parent parent = modelMapper.map(studentRequest.getParent(), Parent.class);
         final List<Address> addresses = studentRequest.getAddresses()
-                .stream()
-                .map(address -> modelMapper.map(address, Address.class))
-                .toList();
+                                                      .stream()
+                                                      .map(address -> modelMapper.map(address, Address.class))
+                                                      .toList();
         final List<PhoneNumber> phoneNumbers = studentRequest.getPhoneNumbers()
-                .stream()
-                .map(phoneNumber -> modelMapper.map(phoneNumber, PhoneNumber.class))
-                .toList();
+                                                             .stream()
+                                                             .map(phoneNumber -> modelMapper.map(phoneNumber,
+                                                                                                 PhoneNumber.class))
+                                                             .toList();
 
         final Grade grade = gradeService.getGradeById(gradeId);
         final ExamBoard examBoard = examBoardService.getExamBoardById(examBoardId);
@@ -105,21 +106,24 @@ public class StudentService {
 
     public Student updateStudent(UUID studentId, Student studentRequest) {
         return studentRepository.findById(studentId)
-                .map(student -> {
-                    Optional.ofNullable(studentRequest.getFirstName()).ifPresent(student::setFirstName);
-                    Optional.ofNullable(studentRequest.getMiddleName()).ifPresent(student::setMiddleName);
-                    Optional.ofNullable(studentRequest.getLastName()).ifPresent(studentRequest::setLastName);
-                    Optional.ofNullable(studentRequest.getGender()).ifPresent(student::setGender);
-                    Optional.ofNullable(studentRequest.getEmail()).ifPresent(student::setEmail);
-                    Optional.ofNullable(studentRequest.getGrade()).ifPresent(student::setGrade);
-                    Optional.ofNullable(studentRequest.getLessons()).ifPresent(student::setLessons);
-                    Optional.ofNullable(studentRequest.getParent()).ifPresent(student::setParent);
-                    Optional.ofNullable(studentRequest.getAddresses()).ifPresent(student::setAddresses);
-                    Optional.ofNullable(studentRequest.getPhoneNumbers()).ifPresent(student::setPhoneNumbers);
-                    Optional.ofNullable(studentRequest.getExamBoard()).ifPresent(student::setExamBoard);
-                    return studentRepository.save(student);
-                })
-                .orElseThrow();
+                                .map(student -> {
+                                    Optional.ofNullable(studentRequest.getFirstName()).ifPresent(student::setFirstName);
+                                    Optional.ofNullable(studentRequest.getMiddleName())
+                                            .ifPresent(student::setMiddleName);
+                                    Optional.ofNullable(studentRequest.getLastName())
+                                            .ifPresent(studentRequest::setLastName);
+                                    Optional.ofNullable(studentRequest.getGender()).ifPresent(student::setGender);
+                                    Optional.ofNullable(studentRequest.getEmail()).ifPresent(student::setEmail);
+                                    Optional.ofNullable(studentRequest.getGrade()).ifPresent(student::setGrade);
+                                    Optional.ofNullable(studentRequest.getLessons()).ifPresent(student::setLessons);
+                                    Optional.ofNullable(studentRequest.getParent()).ifPresent(student::setParent);
+                                    Optional.ofNullable(studentRequest.getAddresses()).ifPresent(student::setAddresses);
+                                    Optional.ofNullable(studentRequest.getPhoneNumbers())
+                                            .ifPresent(student::setPhoneNumbers);
+                                    Optional.ofNullable(studentRequest.getExamBoard()).ifPresent(student::setExamBoard);
+                                    return studentRepository.save(student);
+                                })
+                                .orElseThrow();
     }
 
     public Student addLessonToStudent(final UUID studentId, final LessonDto lesson) {
@@ -136,19 +140,19 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public StudentFinancialSummary computeStudentFinancialSummary(final Student student ) {
+    public StudentFinancialSummary computeStudentFinancialSummary(final Student student) {
         Double amountOwing = student.getLessons()
-                .stream()
-                .filter(lesson -> lesson.getLessonPaymentStatus() == PaymentStatus.UNPAID)
-                .map(lesson -> lesson.getLessonRateAmount() * lesson.getOccurrence())
-                .reduce(Double::sum)
-                .orElse(0d);
+                                    .stream()
+                                    .filter(lesson -> lesson.getLessonPaymentStatus() == PaymentStatus.UNPAID)
+                                    .map(lesson -> lesson.getLessonRateAmount() * lesson.getOccurrence())
+                                    .reduce(Double::sum)
+                                    .orElse(0d);
         return new StudentFinancialSummary(student.isOwingPayment(), amountOwing);
     }
 
     public void deleteStudent(UUID studentId) {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow();
+                                           .orElseThrow();
 
         studentRepository.delete(student);
     }

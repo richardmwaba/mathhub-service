@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class AddressDto {
     private UUID addressId;
-    
+
     private AddressType addressType;
 
     private String addressLine1;

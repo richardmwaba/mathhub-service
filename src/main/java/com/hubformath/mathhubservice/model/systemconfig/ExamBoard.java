@@ -36,25 +36,38 @@ public class ExamBoard {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
-    public ExamBoard(){}
+
+    public ExamBoard() {
+    }
 
     public ExamBoard(final String examBoardName, final String examBoardDescription) {
         this.examBoardName = examBoardName;
         this.examBoardDescription = examBoardDescription;
     }
 
-    public UUID getExamBoardId() {return this.examBoardId;}
+    public UUID getExamBoardId() {
+        return this.examBoardId;
+    }
 
-    public void setExamBoardId(UUID examBoardId) {this.examBoardId = examBoardId;}
+    public void setExamBoardId(UUID examBoardId) {
+        this.examBoardId = examBoardId;
+    }
 
-    public String getExamBoardName() {return this.examBoardName;}
+    public String getExamBoardName() {
+        return this.examBoardName;
+    }
 
-    public void setExamBoardName(String examBoardName) {this.examBoardName = examBoardName;}
+    public void setExamBoardName(String examBoardName) {
+        this.examBoardName = examBoardName;
+    }
 
-    public String getExamBoardDescription() {return this.examBoardDescription;}
+    public String getExamBoardDescription() {
+        return this.examBoardDescription;
+    }
 
-    public void setExamBoardDescription(String examBoardDescription) {this.examBoardDescription = examBoardDescription;}
+    public void setExamBoardDescription(String examBoardDescription) {
+        this.examBoardDescription = examBoardDescription;
+    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

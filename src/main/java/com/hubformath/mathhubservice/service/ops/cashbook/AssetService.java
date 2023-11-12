@@ -33,19 +33,20 @@ public class AssetService {
 
     public Asset updateAsset(UUID assetId, Asset assetRequest) {
         return assetRepository.findById(assetId)
-                .map(asset -> {
-                    Optional.ofNullable(assetRequest.getPaymentMethod()).ifPresent(asset::setPaymentMethod);
-                    Optional.ofNullable(assetRequest.getNarration()).ifPresent(asset::setNarration);
-                    Optional.ofNullable(assetRequest.getAssetType()).ifPresent(asset::setAssetType);
-                    Optional.ofNullable(assetRequest.getAmount()).ifPresent(asset::setAmount);
-                    return assetRepository.save(asset);
-                })
-                .orElseThrow();
+                              .map(asset -> {
+                                  Optional.ofNullable(assetRequest.getPaymentMethod())
+                                          .ifPresent(asset::setPaymentMethod);
+                                  Optional.ofNullable(assetRequest.getNarration()).ifPresent(asset::setNarration);
+                                  Optional.ofNullable(assetRequest.getAssetType()).ifPresent(asset::setAssetType);
+                                  Optional.ofNullable(assetRequest.getAmount()).ifPresent(asset::setAmount);
+                                  return assetRepository.save(asset);
+                              })
+                              .orElseThrow();
     }
 
     public void deleteAsset(UUID assetId) {
         Asset asset = assetRepository.findById(assetId)
-                .orElseThrow();
+                                     .orElseThrow();
 
         assetRepository.delete(asset);
     }

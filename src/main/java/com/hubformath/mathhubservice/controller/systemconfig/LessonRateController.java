@@ -10,6 +10,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,13 +31,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(path = "/api/v1/systemconfig/sis")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER')")
 public class LessonRateController {
     private final ModelMapper modelMapper;
 
     private final LessonRateService lessonRateService;
 
     @Autowired
-    public LessonRateController (final ModelMapperConfig modelMapperConfig, final LessonRateService lessonRateService) {
+    public LessonRateController(final ModelMapperConfig modelMapperConfig, final LessonRateService lessonRateService) {
         this.modelMapper = modelMapperConfig.createModelMapper();
         this.lessonRateService = lessonRateService;
     }
@@ -44,11 +46,15 @@ public class LessonRateController {
     @GetMapping("/lessonRates")
     public ResponseEntity<CollectionModel<EntityModel<LessonRateDto>>> getAllLessonRates(@RequestParam final Optional<Instant> effectiveDate,
                                                                                          @RequestParam final Optional<Instant> expiryDate) {
-        List<LessonRateDto> lessonRates = lessonRateService.getAllLessonRates(effectiveDate.orElse(null), expiryDate.orElse(null))
-                .stream()
-                .map(lessonRate -> modelMapper.map(lessonRate, LessonRateDto.class))
-                .toList();
-        CollectionModel<EntityModel<LessonRateDto>> lessonRateCollectionModel = toCollectionModel(lessonRates, effectiveDate, expiryDate);
+        List<LessonRateDto> lessonRates = lessonRateService.getAllLessonRates(effectiveDate.orElse(null),
+                                                                              expiryDate.orElse(null))
+                                                           .stream()
+                                                           .map(lessonRate -> modelMapper.map(lessonRate,
+                                                                                              LessonRateDto.class))
+                                                           .toList();
+        CollectionModel<EntityModel<LessonRateDto>> lessonRateCollectionModel = toCollectionModel(lessonRates,
+                                                                                                  effectiveDate,
+                                                                                                  expiryDate);
 
         return ResponseEntity.ok().body(lessonRateCollectionModel);
     }
@@ -61,7 +67,7 @@ public class LessonRateController {
                 toModel(modelMapper.map(newLessonRate, LessonRateDto.class), Optional.empty(), Optional.empty());
 
         return ResponseEntity.created(lessonRateDtoEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).
-                body(lessonRateDtoEntityModel);
+                             body(lessonRateDtoEntityModel);
     }
 
     @GetMapping("/lessonRates/{lessonRateId}")
@@ -76,19 +82,27 @@ public class LessonRateController {
         }
     }
 
-    private EntityModel<LessonRateDto> toModel(final LessonRateDto lessonRate, final Optional<Instant> effectiveDate, final Optional<Instant> expiryDate) {
+    private EntityModel<LessonRateDto> toModel(final LessonRateDto lessonRate,
+                                               final Optional<Instant> effectiveDate,
+                                               final Optional<Instant> expiryDate) {
         return EntityModel.of(lessonRate,
-                linkTo(methodOn(LessonRateController.class).getLessonRateById(lessonRate.getLessonRateId())).withSelfRel(),
-                linkTo(methodOn(LessonRateController.class).getAllLessonRates(effectiveDate, expiryDate)).withRel("lessonRates"));
+                              linkTo(methodOn(LessonRateController.class).getLessonRateById(lessonRate.getLessonRateId())).withSelfRel(),
+                              linkTo(methodOn(LessonRateController.class).getAllLessonRates(effectiveDate,
+                                                                                            expiryDate)).withRel(
+                                      "lessonRates"));
     }
 
-    private CollectionModel<EntityModel<LessonRateDto>> toCollectionModel(final Iterable<? extends LessonRateDto> lessonRates, final Optional<Instant> effectiveDate, final Optional<Instant> expiryDate) {
+    private CollectionModel<EntityModel<LessonRateDto>> toCollectionModel(final Iterable<? extends LessonRateDto> lessonRates,
+                                                                          final Optional<Instant> effectiveDate,
+                                                                          final Optional<Instant> expiryDate) {
         List<EntityModel<LessonRateDto>> lessonRateList = StreamSupport.stream(lessonRates.spliterator(), false)
-                .map(lessonRate -> this.toModel(lessonRate, effectiveDate, expiryDate))
-                .toList();
+                                                                       .map(lessonRate -> this.toModel(lessonRate,
+                                                                                                       effectiveDate,
+                                                                                                       expiryDate))
+                                                                       .toList();
 
         return CollectionModel.of(lessonRateList, linkTo(methodOn(LessonRateController.class)
-                .getAllLessonRates(effectiveDate, expiryDate))
+                                                                 .getAllLessonRates(effectiveDate, expiryDate))
                 .withSelfRel());
     }
 }

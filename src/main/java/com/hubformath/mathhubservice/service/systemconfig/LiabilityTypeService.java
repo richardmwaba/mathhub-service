@@ -30,17 +30,19 @@ public class LiabilityTypeService {
 
     public LiabilityType updateLiabilityType(UUID liabilityTypeId, LiabilityType liabilityTypeRequest) {
         return liabilityTypeRepository.findById(liabilityTypeId)
-                .map(liabilityType -> {
-                    Optional.ofNullable(liabilityTypeRequest.getTypeName()).ifPresent(liabilityType::setTypeName);
-                    Optional.ofNullable(liabilityTypeRequest.getTypeDescription()).ifPresent(liabilityType::setTypeDescription);
-                    return liabilityTypeRepository.save(liabilityType);
-                }) 
-                .orElseThrow();
+                                      .map(liabilityType -> {
+                                          Optional.ofNullable(liabilityTypeRequest.getTypeName())
+                                                  .ifPresent(liabilityType::setTypeName);
+                                          Optional.ofNullable(liabilityTypeRequest.getTypeDescription())
+                                                  .ifPresent(liabilityType::setTypeDescription);
+                                          return liabilityTypeRepository.save(liabilityType);
+                                      })
+                                      .orElseThrow();
     }
 
     public void deleteLiabilityType(UUID liabilityTypeId) {
         LiabilityType liabilityType = liabilityTypeRepository.findById(liabilityTypeId)
-                .orElseThrow();
+                                                             .orElseThrow();
 
         liabilityTypeRepository.delete(liabilityType);
     }

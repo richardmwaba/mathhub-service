@@ -21,7 +21,7 @@ import java.util.UUID;
 @Table(name = "liabilities")
 public class Liability {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "liability_id")
     private UUID liabilityId;
 
@@ -50,7 +50,8 @@ public class Liability {
     @Column
     private LocalDateTime updatedAt;
 
-    public Liability(){}
+    public Liability() {
+    }
 
     public Liability(Double amount, Long createdBy, Long approvedBy) {
         this.amount = amount;
@@ -105,7 +106,7 @@ public class Liability {
     public void setApprovedBy(Long approvedBy) {
         this.approvedBy = approvedBy;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -137,11 +138,11 @@ public class Liability {
     @Override
     public int hashCode() {
         return Objects.hash(getLiabilityId(),
-                getLiabilityType(),
-                getPaymentMethod(),
-                getAmount(),
-                getCreatedBy(),
-                getApprovedBy());
+                            getLiabilityType(),
+                            getPaymentMethod(),
+                            getAmount(),
+                            getCreatedBy(),
+                            getApprovedBy());
     }
 
     @Override

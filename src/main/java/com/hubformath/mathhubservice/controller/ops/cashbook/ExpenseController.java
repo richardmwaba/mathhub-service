@@ -12,6 +12,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,11 +29,12 @@ import java.util.stream.StreamSupport;
 
 
 @RestController
-@RequestMapping(path="/api/v1/ops")
+@RequestMapping(path = "/api/v1/ops")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER')")
 public class ExpenseController {
 
     private final ExpenseService expenseService;
-    
+
     private final ModelMapper modelMapper;
 
     @Autowired
@@ -44,8 +46,8 @@ public class ExpenseController {
     @GetMapping("/expenses")
     public ResponseEntity<CollectionModel<EntityModel<ExpenseDto>>> getAllExpenses() {
         List<ExpenseDto> expenses = expenseService.getAllExpenses().stream()
-                .map(expense -> modelMapper.map(expense, ExpenseDto.class))
-                .toList();
+                                                  .map(expense -> modelMapper.map(expense, ExpenseDto.class))
+                                                  .toList();
 
         CollectionModel<EntityModel<ExpenseDto>> expenseCollectionModel = toCollectionModel(expenses);
 
@@ -59,7 +61,7 @@ public class ExpenseController {
         EntityModel<ExpenseDto> expenseEntityModel = toModel(modelMapper.map(newExpense, ExpenseDto.class));
 
         return ResponseEntity.created(expenseEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(expenseEntityModel);
+                             .body(expenseEntityModel);
     }
 
     @GetMapping("/expenses/{expenseId}")
@@ -69,7 +71,7 @@ public class ExpenseController {
             EntityModel<ExpenseDto> expenseEntityModel = toModel(modelMapper.map(expense, ExpenseDto.class));
             return ResponseEntity.ok().body(expenseEntityModel);
         } catch (NoSuchElementException e) {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -92,23 +94,27 @@ public class ExpenseController {
             expenseService.deleteExpense(expenseId);
             return ResponseEntity.ok().body("Expense deleted successfully");
         } catch (NoSuchElementException e) {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
     private EntityModel<ExpenseDto> toModel(final ExpenseDto expense) {
         return EntityModel.of(expense,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class).getExpenseById(expense.getExpenseId())).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class).getAllExpenses()).withRel("expenses"));
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class)
+                                                                        .getExpenseById(expense.getExpenseId()))
+                                               .withSelfRel(),
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class)
+                                                                        .getAllExpenses()).withRel("expenses"));
     }
 
     private CollectionModel<EntityModel<ExpenseDto>> toCollectionModel(final Iterable<? extends ExpenseDto> expenses) {
         List<EntityModel<ExpenseDto>> expenseList = StreamSupport.stream(expenses.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+                                                                 .map(this::toModel)
+                                                                 .toList();
 
-        return CollectionModel.of(expenseList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class)
-                        .getAllExpenses())
-                .withSelfRel());
+        return CollectionModel.of(expenseList,
+                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class)
+                                                                            .getAllExpenses())
+                                                   .withSelfRel());
     }
 }

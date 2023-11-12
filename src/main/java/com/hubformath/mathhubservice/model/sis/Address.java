@@ -19,10 +19,10 @@ import java.util.UUID;
 @Table(name = "addresses")
 public class Address {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "address_id")
     private UUID addressId;
-    
+
     @Enumerated(EnumType.STRING)
     @Column(name = "address_type")
     private AddressType addressType;
@@ -52,12 +52,12 @@ public class Address {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
+
     public Address() {
     }
 
     public Address(AddressType addressType, String addressLine1, String addressLine2, String addressLine3, String city,
-            String province, String zipCode) {
+                   String province, String zipCode) {
         this.addressType = addressType;
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
@@ -129,7 +129,7 @@ public class Address {
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
-    }  
+    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -164,13 +164,13 @@ public class Address {
     @Override
     public int hashCode() {
         return Objects.hash(getAddressId(),
-                getAddressType(),
-                getAddressLine1(),
-                getAddressLine2(),
-                getAddressLine3(),
-                getCity(),
-                getProvince(),
-                getZipCode());
+                            getAddressType(),
+                            getAddressLine1(),
+                            getAddressLine2(),
+                            getAddressLine3(),
+                            getCity(),
+                            getProvince(),
+                            getZipCode());
     }
 
     @Override

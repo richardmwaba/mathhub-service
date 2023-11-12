@@ -13,6 +13,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,25 +43,28 @@ public class StudentController {
     }
 
     @GetMapping("/students")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER')")
     public ResponseEntity<CollectionModel<EntityModel<StudentDto>>> getAllStudents() {
         List<StudentDto> students = studentService.getAllStudents().stream()
-                .map(student -> modelMapper.map(student, StudentDto.class))
-                .toList();
+                                                  .map(student -> modelMapper.map(student, StudentDto.class))
+                                                  .toList();
         CollectionModel<EntityModel<StudentDto>> studentCollectionModel = toCollectionModel(students);
 
         return ResponseEntity.ok().body(studentCollectionModel);
     }
 
     @PostMapping("/students")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER')")
     public ResponseEntity<EntityModel<StudentDto>> newStudent(@RequestBody final StudentDto studentRequest) {
         Student newStudent = studentService.createStudent(studentRequest);
         EntityModel<StudentDto> studentEntityModel = toModel(modelMapper.map(newStudent, StudentDto.class));
 
         return ResponseEntity.created(studentEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(studentEntityModel);
+                             .body(studentEntityModel);
     }
 
     @GetMapping("/students/{studentId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT')")
     public ResponseEntity<EntityModel<StudentDto>> getStudentById(@PathVariable final UUID studentId) {
         try {
             Student student = studentService.getStudentById(studentId);
@@ -72,6 +76,7 @@ public class StudentController {
     }
 
     @PutMapping("/students/{studentId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT')")
     public ResponseEntity<EntityModel<StudentDto>> replaceStudent(@RequestBody final StudentDto studentDto,
                                                                   @PathVariable final UUID studentId) {
         try {
@@ -85,6 +90,7 @@ public class StudentController {
     }
 
     @DeleteMapping("/students/{studentId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
     public ResponseEntity<String> deleteStudent(@PathVariable final UUID studentId) {
         try {
             studentService.deleteStudent(studentId);
@@ -95,7 +101,9 @@ public class StudentController {
     }
 
     @PostMapping("/students/{studentId}/lessons")
-    public ResponseEntity<EntityModel<StudentDto>> addStudentLesson(@PathVariable final UUID studentId, @RequestBody final LessonDto lessonRequest) {
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT')")
+    public ResponseEntity<EntityModel<StudentDto>> addStudentLesson(@PathVariable final UUID studentId,
+                                                                    @RequestBody final LessonDto lessonRequest) {
         try {
             Student student = studentService.addLessonToStudent(studentId, lessonRequest);
             EntityModel<StudentDto> studentEntityModel = toModel(modelMapper.map(student, StudentDto.class));
@@ -106,6 +114,7 @@ public class StudentController {
     }
 
     @PostMapping("students/{studentId}/actions")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT')")
     public ResponseEntity<EntityModel<StudentActionBase>> executeStudentAction(@PathVariable final UUID studentId,
                                                                                @RequestBody final StudentActionBase studentActionBase) {
         return ResponseEntity.noContent().build();
@@ -113,17 +122,21 @@ public class StudentController {
 
     private EntityModel<StudentDto> toModel(final StudentDto student) {
         return EntityModel.of(student,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(StudentController.class).getStudentById(student.getStudentId())).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(StudentController.class).getAllStudents()).withRel("students"));
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(StudentController.class)
+                                                                        .getStudentById(student.getStudentId()))
+                                               .withSelfRel(),
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(StudentController.class)
+                                                                        .getAllStudents()).withRel("students"));
     }
 
     private CollectionModel<EntityModel<StudentDto>> toCollectionModel(final Iterable<? extends StudentDto> students) {
         List<EntityModel<StudentDto>> studentList = StreamSupport.stream(students.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+                                                                 .map(this::toModel)
+                                                                 .toList();
 
-        return CollectionModel.of(studentList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(StudentController.class)
-                        .getAllStudents())
-                .withSelfRel());
+        return CollectionModel.of(studentList,
+                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(StudentController.class)
+                                                                            .getAllStudents())
+                                                   .withSelfRel());
     }
 }

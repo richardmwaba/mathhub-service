@@ -32,17 +32,19 @@ public class SyllabusService {
 
     public Syllabus updateSyllabus(UUID syllabusId, Syllabus syllabusRequest) {
         return syllabusRepository.findById(syllabusId)
-                .map(syllabus -> {
-                    Optional.ofNullable(syllabusRequest.getSyllabusName()).ifPresent(syllabus::setSyllabusName);
-                    Optional.ofNullable(syllabusRequest.getSyllabusDescription()).ifPresent(syllabus::setSyllabusDescription);
-                    return syllabusRepository.save(syllabus);
-                })
-                .orElseThrow();
+                                 .map(syllabus -> {
+                                     Optional.ofNullable(syllabusRequest.getSyllabusName())
+                                             .ifPresent(syllabus::setSyllabusName);
+                                     Optional.ofNullable(syllabusRequest.getSyllabusDescription())
+                                             .ifPresent(syllabus::setSyllabusDescription);
+                                     return syllabusRepository.save(syllabus);
+                                 })
+                                 .orElseThrow();
     }
 
     public void deleteSyllabus(UUID syllabusId) {
         Syllabus syllabus = syllabusRepository.findById(syllabusId)
-                .orElseThrow();
+                                              .orElseThrow();
 
         syllabusRepository.delete(syllabus);
     }

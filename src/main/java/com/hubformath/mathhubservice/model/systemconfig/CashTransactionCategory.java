@@ -17,7 +17,7 @@ import java.util.UUID;
 @Table(name = "cash_transaction_categories")
 public class CashTransactionCategory {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "cash_transaction_category_id", updatable = false, nullable = false)
     private UUID cashTransactionCategoryId;
 

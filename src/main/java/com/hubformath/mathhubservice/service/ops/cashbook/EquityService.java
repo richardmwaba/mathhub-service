@@ -33,19 +33,20 @@ public class EquityService {
 
     public Equity updateEquity(UUID equityId, Equity equityRequest) {
         return equityRepository.findById(equityId)
-                .map(equity -> {
-                    Optional.ofNullable(equityRequest.getPaymentMethod()).ifPresent(equity::setPaymentMethod);
-                    Optional.ofNullable(equityRequest.getNarration()).ifPresent(equity::setNarration);
-                    Optional.ofNullable(equityRequest.getEquityType()).ifPresent(equity::setEquityType);
-                    Optional.ofNullable(equityRequest.getAmount()).ifPresent(equity::setAmount);
-                    return equityRepository.save(equity);
-                })
-                .orElseThrow();
+                               .map(equity -> {
+                                   Optional.ofNullable(equityRequest.getPaymentMethod())
+                                           .ifPresent(equity::setPaymentMethod);
+                                   Optional.ofNullable(equityRequest.getNarration()).ifPresent(equity::setNarration);
+                                   Optional.ofNullable(equityRequest.getEquityType()).ifPresent(equity::setEquityType);
+                                   Optional.ofNullable(equityRequest.getAmount()).ifPresent(equity::setAmount);
+                                   return equityRepository.save(equity);
+                               })
+                               .orElseThrow();
     }
 
     public void deleteEquity(UUID equityId) {
         Equity equity = equityRepository.findById(equityId)
-                .orElseThrow();
+                                        .orElseThrow();
 
         equityRepository.delete(equity);
     }

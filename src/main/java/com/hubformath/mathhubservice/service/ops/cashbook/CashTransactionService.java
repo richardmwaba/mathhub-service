@@ -33,21 +33,27 @@ public class CashTransactionService {
 
     public CashTransaction updateTransaction(UUID cashTransactionId, CashTransaction transactionRequest) {
         return transactionRepository.findById(cashTransactionId)
-                .map(transaction -> {
-                    Optional.ofNullable(transactionRequest.getPaymentMethod()).ifPresent(transaction::setPaymentMethod);
-                    Optional.ofNullable(transactionRequest.getNarration()).ifPresent(transaction::setNarration);
-                    Optional.ofNullable(transactionRequest.getTransactionType()).ifPresent(transaction::setTransactionType);
-                    Optional.ofNullable(transactionRequest.getAmount()).ifPresent(transaction::setAmount);
-                    Optional.ofNullable(transactionRequest.getTransactionNumber()).ifPresent(transaction::setTransactionNumber);
-                    Optional.ofNullable(transactionRequest.getTransactionDateTime()).ifPresent(transaction::setTransactionDateTime);
-                    return transactionRepository.save(transaction);
-                })
-                .orElseThrow();
+                                    .map(transaction -> {
+                                        Optional.ofNullable(transactionRequest.getPaymentMethod())
+                                                .ifPresent(transaction::setPaymentMethod);
+                                        Optional.ofNullable(transactionRequest.getNarration())
+                                                .ifPresent(transaction::setNarration);
+                                        Optional.ofNullable(transactionRequest.getTransactionType())
+                                                .ifPresent(transaction::setTransactionType);
+                                        Optional.ofNullable(transactionRequest.getAmount())
+                                                .ifPresent(transaction::setAmount);
+                                        Optional.ofNullable(transactionRequest.getTransactionNumber())
+                                                .ifPresent(transaction::setTransactionNumber);
+                                        Optional.ofNullable(transactionRequest.getTransactionDateTime())
+                                                .ifPresent(transaction::setTransactionDateTime);
+                                        return transactionRepository.save(transaction);
+                                    })
+                                    .orElseThrow();
     }
 
     public void deleteTransaction(UUID cashTransactionId) {
         CashTransaction transaction = transactionRepository.findById(cashTransactionId)
-                .orElseThrow();
+                                                           .orElseThrow();
 
         transactionRepository.delete(transaction);
     }

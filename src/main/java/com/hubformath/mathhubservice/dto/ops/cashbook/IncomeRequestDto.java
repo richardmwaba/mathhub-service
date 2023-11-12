@@ -43,5 +43,5 @@ public class IncomeRequestDto {
     public void setAmount(Double amount) {
         this.amount = amount;
     }
-    
+
 }

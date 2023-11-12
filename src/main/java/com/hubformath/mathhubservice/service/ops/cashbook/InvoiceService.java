@@ -14,11 +14,11 @@ import java.util.UUID;
 
 @Service
 public class InvoiceService {
-    
+
     private final InvoiceRepository invoiceRepository;
 
     private final StudentService studentService;
-    
+
     @Autowired
     public InvoiceService(final InvoiceRepository invoiceRepository, final StudentService studentService) {
         this.invoiceRepository = invoiceRepository;
@@ -47,19 +47,20 @@ public class InvoiceService {
 
     public Invoice updateInvoice(UUID invoiceId, Invoice invoiceRequest) {
         return invoiceRepository.findById(invoiceId)
-                .map(invoice -> {
-                    Optional.ofNullable(invoiceRequest.getNarration()).ifPresent(invoice::setNarration);
-                    Optional.ofNullable(invoiceRequest.getAmount()).ifPresent(invoice::setAmount);
-                    Optional.ofNullable(invoiceRequest.getInvoiceStatus()).ifPresent(invoice::setInvoiceStatus);
-                    Optional.ofNullable(invoiceRequest.getDueDate()).ifPresent(invoice::setDueDate);
-                    return invoiceRepository.save(invoice);
-                })
-                .orElseThrow();
+                                .map(invoice -> {
+                                    Optional.ofNullable(invoiceRequest.getNarration()).ifPresent(invoice::setNarration);
+                                    Optional.ofNullable(invoiceRequest.getAmount()).ifPresent(invoice::setAmount);
+                                    Optional.ofNullable(invoiceRequest.getInvoiceStatus())
+                                            .ifPresent(invoice::setInvoiceStatus);
+                                    Optional.ofNullable(invoiceRequest.getDueDate()).ifPresent(invoice::setDueDate);
+                                    return invoiceRepository.save(invoice);
+                                })
+                                .orElseThrow();
     }
 
     public void deleteInvoice(UUID invoiceId) {
         Invoice invoice = invoiceRepository.findById(invoiceId)
-                .orElseThrow();
+                                           .orElseThrow();
 
         invoiceRepository.delete(invoice);
     }

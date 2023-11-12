@@ -21,7 +21,7 @@ import java.util.UUID;
 @Table(name = "expenses")
 public class Expense {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "expense_id")
     private UUID expenseId;
 
@@ -34,7 +34,7 @@ public class Expense {
 
     @Column(name = "status")
     private ExpenseStatus status;
-    
+
     @OneToOne
     @JoinColumn(name = "expense_type_id")
     private ExpenseType expenseType;
@@ -56,7 +56,8 @@ public class Expense {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Expense (){}
+    public Expense() {
+    }
 
     public Expense(String narration, ExpenseStatus status, Double amount, Long createdBy, Long approvedBy) {
         this.narration = narration;
@@ -65,7 +66,7 @@ public class Expense {
         this.createdBy = createdBy;
         this.approvedBy = approvedBy;
     }
-  
+
     public UUID getExpenseId() {
         return expenseId;
     }
@@ -129,7 +130,7 @@ public class Expense {
     public void setApprovedBy(Long approvedBy) {
         this.approvedBy = approvedBy;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -163,13 +164,13 @@ public class Expense {
     @Override
     public int hashCode() {
         return Objects.hash(getExpenseId(),
-                getPaymentMethod(),
-                getNarration(),
-                getStatus(),
-                getExpenseType(),
-                getAmount(),
-                getCreatedBy(),
-                getApprovedBy());
+                            getPaymentMethod(),
+                            getNarration(),
+                            getStatus(),
+                            getExpenseType(),
+                            getAmount(),
+                            getCreatedBy(),
+                            getApprovedBy());
     }
 
     @Override

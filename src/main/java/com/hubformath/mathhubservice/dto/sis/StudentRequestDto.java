@@ -1,11 +1,11 @@
 package com.hubformath.mathhubservice.dto.sis;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import com.hubformath.mathhubservice.model.sis.Address;
 import com.hubformath.mathhubservice.model.sis.Parent;
 import com.hubformath.mathhubservice.model.sis.PhoneNumber;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public class StudentRequestDto {
 
@@ -30,46 +30,60 @@ public class StudentRequestDto {
     private List<PhoneNumber> phoneNumbers;
 
     public long getGradeId() {
-        return gradeId;}
+        return gradeId;
+    }
 
     public void setGradeId(long gradeId) {
-        this.gradeId = gradeId;}
+        this.gradeId = gradeId;
+    }
 
     public String getFirstName() {
-        return firstName;}
+        return firstName;
+    }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;}
+        this.firstName = firstName;
+    }
 
     public String getMiddleName() {
-        return middleName;}
+        return middleName;
+    }
 
     public void setMiddleName(String middleName) {
-        this.middleName = middleName;}
+        this.middleName = middleName;
+    }
 
     public String getLastName() {
-        return lastName;}
+        return lastName;
+    }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;}
+        this.lastName = lastName;
+    }
 
     public String getEmail() {
-        return email;}
+        return email;
+    }
 
     public void setEmail(String email) {
-        this.email = email;}
+        this.email = email;
+    }
 
     public LocalDate getDateOfBirth() {
-        return dateOfBirth;}
+        return dateOfBirth;
+    }
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;}
+        this.dateOfBirth = dateOfBirth;
+    }
 
     public long getExamBoardId() {
-        return examBoardId;}
+        return examBoardId;
+    }
 
     public void setExamBoardId(long examBoardId) {
-        this.examBoardId = examBoardId;}
+        this.examBoardId = examBoardId;
+    }
 
     public Parent getParent() {
         return parent;

@@ -54,8 +54,8 @@ public class TuitionPaymentService {
     @Transactional
     public TuitionPayment createTuitionPayment(TuitionPaymentDto tuitionPayment) {
         final Student student = studentService.getStudentById(tuitionPayment.getStudentId());
-        if(!student.isOwingPayment()) {
-            return  null;
+        if (!student.isOwingPayment()) {
+            return null;
         }
 
         final UUID invoiceId = tuitionPayment.getInvoiceId();
@@ -68,11 +68,15 @@ public class TuitionPaymentService {
         final PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(paymentMethodId);
 
         student.getLessons()
-                .stream()
-                .filter(lesson -> lesson.getLessonPaymentStatus().equals(PaymentStatus.UNPAID) && lessonsIds.contains(lesson.getLessonId()))
-                .forEach(lesson -> lesson.setLessonPaymentStatus(PaymentStatus.PAID));
+               .stream()
+               .filter(lesson -> lesson.getLessonPaymentStatus().equals(PaymentStatus.UNPAID) && lessonsIds.contains(
+                       lesson.getLessonId()))
+               .forEach(lesson -> lesson.setLessonPaymentStatus(PaymentStatus.PAID));
 
-        final CashTransaction newCashTransaction = new CashTransaction(paymentMethod, CashTransactionType.CASH_IN, narration, amount);
+        final CashTransaction newCashTransaction = new CashTransaction(paymentMethod,
+                                                                       CashTransactionType.CASH_IN,
+                                                                       narration,
+                                                                       amount);
         final Receipt receipt = new Receipt(newCashTransaction.getTransactionNumber());
 
         // Update student financial summary
@@ -82,7 +86,13 @@ public class TuitionPaymentService {
         invoice.setInvoiceStatus(InvoiceStatus.PAID);
         invoiceService.updateInvoice(invoiceId, invoice);
 
-        final TuitionPayment newTuitionPayment = new TuitionPayment(newCashTransaction, student, paymentMethod, amount,  invoice.getInvoiceId(), receipt, narration);
+        final TuitionPayment newTuitionPayment = new TuitionPayment(newCashTransaction,
+                                                                    student,
+                                                                    paymentMethod,
+                                                                    amount,
+                                                                    invoice.getInvoiceId(),
+                                                                    receipt,
+                                                                    narration);
 
         return tuitionPaymentRepository.save(newTuitionPayment);
     }

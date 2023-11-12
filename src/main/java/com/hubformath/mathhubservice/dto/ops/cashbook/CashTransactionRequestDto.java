@@ -1,9 +1,9 @@
 package com.hubformath.mathhubservice.dto.ops.cashbook;
 
+import com.hubformath.mathhubservice.model.ops.cashbook.CashTransactionType;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import com.hubformath.mathhubservice.model.ops.cashbook.CashTransactionType;
 
 public class CashTransactionRequestDto {
 
@@ -58,5 +58,5 @@ public class CashTransactionRequestDto {
     public void setTransactionDateTime(String transactionDate) {
         this.transactionDateTime = LocalDateTime.parse(transactionDate, dateFormatter);
     }
-    
+
 }

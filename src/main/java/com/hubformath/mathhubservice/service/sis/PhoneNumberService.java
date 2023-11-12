@@ -32,18 +32,21 @@ public class PhoneNumberService {
 
     public PhoneNumber updatePhoneNumber(final UUID phoneNumberId, final PhoneNumber phoneNumberRequest) {
         return phoneNumberRepository.findById(phoneNumberId)
-                .map(phoneNumber -> {
-                    Optional.ofNullable(phoneNumberRequest.getType()).ifPresent(phoneNumber::setType);
-                    Optional.ofNullable(phoneNumberRequest.getCountryCode()).ifPresent(phoneNumber::setCountryCode);
-                    Optional.ofNullable(phoneNumberRequest.getNumber()).ifPresent(phoneNumber::setNumber);
-                    return phoneNumberRepository.save(phoneNumber);
-                }) 
-                .orElseThrow();
+                                    .map(phoneNumber -> {
+                                        Optional.ofNullable(phoneNumberRequest.getType())
+                                                .ifPresent(phoneNumber::setType);
+                                        Optional.ofNullable(phoneNumberRequest.getCountryCode())
+                                                .ifPresent(phoneNumber::setCountryCode);
+                                        Optional.ofNullable(phoneNumberRequest.getNumber())
+                                                .ifPresent(phoneNumber::setNumber);
+                                        return phoneNumberRepository.save(phoneNumber);
+                                    })
+                                    .orElseThrow();
     }
 
     public void deletePhoneNumber(final UUID phoneNumberId) {
         PhoneNumber phoneNumber = phoneNumberRepository.findById(phoneNumberId)
-                .orElseThrow();
+                                                       .orElseThrow();
 
         phoneNumberRepository.delete(phoneNumber);
     }

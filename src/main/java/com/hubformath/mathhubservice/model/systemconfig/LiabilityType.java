@@ -17,7 +17,7 @@ import java.util.UUID;
 @Table(name = "liability_types")
 public class LiabilityType {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "liability_type_id", updatable = false, nullable = false)
     private UUID liabilityTypeId;
 
@@ -35,7 +35,8 @@ public class LiabilityType {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public LiabilityType() {}
+    public LiabilityType() {
+    }
 
     public LiabilityType(String typeName, String typeDescription) {
         this.typeName = typeName;
@@ -49,7 +50,7 @@ public class LiabilityType {
     public void setLiabilityTypeId(UUID liabilityTypeId) {
         this.liabilityTypeId = liabilityTypeId;
     }
-    
+
     public String getTypeName() {
         return this.typeName;
     }
@@ -65,7 +66,7 @@ public class LiabilityType {
     public void setTypeDescription(String typeDescription) {
         this.typeDescription = typeDescription;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

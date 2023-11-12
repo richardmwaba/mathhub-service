@@ -20,7 +20,7 @@ import java.util.UUID;
 @Table(name = "lesson_rates")
 public class LessonRate {
     @Id
-    @GeneratedValue(strategy= GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "lesson_rate_id", updatable = false, nullable = false)
     private UUID lessonRateId;
 
@@ -46,7 +46,7 @@ public class LessonRate {
     private LocalDateTime updatedAt;
 
     @SuppressWarnings("unused")
-    public LessonRate(){
+    public LessonRate() {
         // Used by hibernate instantiation
     }
 
@@ -135,10 +135,10 @@ public class LessonRate {
     @Override
     public int hashCode() {
         return Objects.hash(getLessonRateId(),
-                getAmountPerLesson(),
-                getSubjectComplexity(),
-                getEffectiveDate(),
-                getExpiredDate());
+                            getAmountPerLesson(),
+                            getSubjectComplexity(),
+                            getEffectiveDate(),
+                            getExpiredDate());
     }
 
     @Override

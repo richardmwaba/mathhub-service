@@ -10,6 +10,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,26 +44,31 @@ public class GradeController {
     }
 
     @GetMapping("/grades")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
+            + "or hasRole('ROLE_STUDENT')")
     public ResponseEntity<CollectionModel<EntityModel<GradeDto>>> getAllGrades() {
         List<GradeDto> grades = gradeService.getAllGrades().stream().
-                map(grade -> modelMapper.map(grade, GradeDto.class))
-                .toList();
+                                            map(grade -> modelMapper.map(grade, GradeDto.class))
+                                            .toList();
         CollectionModel<EntityModel<GradeDto>> gradeCollectionModel = toCollectionModel(grades);
 
         return ResponseEntity.ok().body(gradeCollectionModel);
     }
 
     @PostMapping("/grades")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<GradeDto>> newGrade(@RequestBody final GradeDto gradeDto) {
         Grade gradeRequest = modelMapper.map(gradeDto, Grade.class);
         Grade newGrade = gradeService.createGrade(gradeRequest);
         EntityModel<GradeDto> gradeDtoEntityModel = toModel(modelMapper.map(newGrade, GradeDto.class));
 
         return ResponseEntity.created(gradeDtoEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).
-                body(gradeDtoEntityModel);
+                             body(gradeDtoEntityModel);
     }
 
     @GetMapping("/grades/{gradeId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
+            + "or hasRole('ROLE_STUDENT')")
     public ResponseEntity<EntityModel<GradeDto>> getGradeById(@PathVariable final UUID gradeId) {
         try {
             Grade grade = gradeService.getGradeById(gradeId);
@@ -74,6 +80,7 @@ public class GradeController {
     }
 
     @PutMapping("/grades/{gradeId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<GradeDto>> replaceGrade(@RequestBody final GradeDto gradeDto,
                                                               @PathVariable final UUID gradeId) {
         try {
@@ -87,6 +94,7 @@ public class GradeController {
     }
 
     @DeleteMapping("/grades/{gradeId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteGrade(@PathVariable final UUID gradeId) {
         try {
             gradeService.deleteGrade(gradeId);
@@ -96,18 +104,19 @@ public class GradeController {
         }
     }
 
-    private EntityModel<GradeDto> toModel(final GradeDto grade){
-        return EntityModel.of(grade, linkTo(methodOn(GradeController.class).getGradeById(grade.getGradeId())).withSelfRel(),
-                linkTo(methodOn(GradeController.class).getAllGrades()).withRel("grades"));
+    private EntityModel<GradeDto> toModel(final GradeDto grade) {
+        return EntityModel.of(grade,
+                              linkTo(methodOn(GradeController.class).getGradeById(grade.getGradeId())).withSelfRel(),
+                              linkTo(methodOn(GradeController.class).getAllGrades()).withRel("grades"));
     }
 
     private CollectionModel<EntityModel<GradeDto>> toCollectionModel(final Iterable<? extends GradeDto> grades) {
         List<EntityModel<GradeDto>> gradeList = StreamSupport.stream(grades.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+                                                             .map(this::toModel)
+                                                             .toList();
 
         return CollectionModel.of(gradeList, linkTo(methodOn(GradeController.class)
-                .getAllGrades())
+                                                            .getAllGrades())
                 .withSelfRel());
     }
 }

@@ -17,7 +17,7 @@ import java.util.UUID;
 @Table(name = "asset_types")
 public class AssetType {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "asset_type_id", updatable = false, nullable = false)
     private UUID assetTypeId;
 
@@ -35,7 +35,8 @@ public class AssetType {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public AssetType() {}
+    public AssetType() {
+    }
 
     public AssetType(String typeName, String typeDescription) {
         this.typeName = typeName;
@@ -65,7 +66,7 @@ public class AssetType {
     public void setTypeDescription(String typeDescription) {
         this.typeDescription = typeDescription;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

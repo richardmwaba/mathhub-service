@@ -12,6 +12,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,6 +29,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/ops")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER')")
 public class EquityController {
 
     private final ModelMapper modelMapper;
@@ -43,8 +45,8 @@ public class EquityController {
     @GetMapping("/equity")
     public ResponseEntity<CollectionModel<EntityModel<EquityDto>>> getAllEquity() {
         List<EquityDto> equityList = equityService.getAllEquity().stream()
-                .map(equity -> modelMapper.map(equity, EquityDto.class))
-                .toList();
+                                                  .map(equity -> modelMapper.map(equity, EquityDto.class))
+                                                  .toList();
 
         CollectionModel<EntityModel<EquityDto>> equityCollectionModel = toCollectionModel(equityList);
 
@@ -52,14 +54,14 @@ public class EquityController {
     }
 
     @PostMapping("/equity")
-    public ResponseEntity<EntityModel<EquityDto>> createEquity( @RequestBody final EquityDto equityDto) {
+    public ResponseEntity<EntityModel<EquityDto>> createEquity(@RequestBody final EquityDto equityDto) {
         Equity equityRequest = modelMapper.map(equityDto, Equity.class);
         Equity newEquity = equityService.createEquity(equityRequest);
 
         EntityModel<EquityDto> equityEntityModel = toModel(modelMapper.map(newEquity, EquityDto.class));
 
         return ResponseEntity.created(equityEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(equityEntityModel);
+                             .body(equityEntityModel);
     }
 
     @GetMapping("/equity/{equityId}")
@@ -69,7 +71,7 @@ public class EquityController {
             EntityModel<EquityDto> equityEntityModel = toModel(modelMapper.map(equity, EquityDto.class));
             return ResponseEntity.ok().body(equityEntityModel);
         } catch (NoSuchElementException e) {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -82,7 +84,7 @@ public class EquityController {
             EntityModel<EquityDto> equityEntityModel = toModel(modelMapper.map(updatedEquity, EquityDto.class));
             return ResponseEntity.ok().body(equityEntityModel);
         } catch (NoSuchElementException e) {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
 
     }
@@ -93,24 +95,28 @@ public class EquityController {
             equityService.deleteEquity(equityId);
             return ResponseEntity.ok().body("Equity deleted successfully");
         } catch (NoSuchElementException e) {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
     private EntityModel<EquityDto> toModel(final EquityDto equity) {
         return EntityModel.of(equity,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityController.class).getEquityById(equity.getEquityId())).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityController.class).getAllEquity()).withRel("equity"));
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityController.class)
+                                                                        .getEquityById(equity.getEquityId()))
+                                               .withSelfRel(),
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityController.class)
+                                                                        .getAllEquity()).withRel("equity"));
     }
 
     private CollectionModel<EntityModel<EquityDto>> toCollectionModel(final Iterable<? extends EquityDto> equity) {
         List<EntityModel<EquityDto>> equityList = StreamSupport.stream(equity.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+                                                               .map(this::toModel)
+                                                               .toList();
 
-        return CollectionModel.of(equityList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityController.class)
-                        .getAllEquity())
-                .withSelfRel());
+        return CollectionModel.of(equityList,
+                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityController.class)
+                                                                            .getAllEquity())
+                                                   .withSelfRel());
     }
-    
+
 }

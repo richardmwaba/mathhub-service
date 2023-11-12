@@ -31,22 +31,23 @@ public class ParentService {
 
     public Parent updateParent(final UUID parentId, final Parent parentRequest) {
         return parentRepository.findById(parentId)
-                .map(parent -> {
-                    Optional.ofNullable(parentRequest.getFirstName()).ifPresent(parent::setFirstName);
-                    Optional.ofNullable(parentRequest.getMiddleName()).ifPresent(parent::setMiddleName);
-                    Optional.ofNullable(parentRequest.getLastName()).ifPresent(parent::setLastName);
-                    Optional.ofNullable(parentRequest.getEmail()).ifPresent(parent::setEmail);
-                    Optional.ofNullable(parentRequest.getStudents()).ifPresent(parent::setStudents);
-                    Optional.ofNullable(parentRequest.getAddresses()).ifPresent(parent::setAddresses);
-                    Optional.ofNullable(parentRequest.getPhoneNumbers()).ifPresent(parent::setPhoneNumbers);
-                    return parentRepository.save(parent);
-                }) 
-                .orElseThrow();
+                               .map(parent -> {
+                                   Optional.ofNullable(parentRequest.getFirstName()).ifPresent(parent::setFirstName);
+                                   Optional.ofNullable(parentRequest.getMiddleName()).ifPresent(parent::setMiddleName);
+                                   Optional.ofNullable(parentRequest.getLastName()).ifPresent(parent::setLastName);
+                                   Optional.ofNullable(parentRequest.getEmail()).ifPresent(parent::setEmail);
+                                   Optional.ofNullable(parentRequest.getStudents()).ifPresent(parent::setStudents);
+                                   Optional.ofNullable(parentRequest.getAddresses()).ifPresent(parent::setAddresses);
+                                   Optional.ofNullable(parentRequest.getPhoneNumbers())
+                                           .ifPresent(parent::setPhoneNumbers);
+                                   return parentRepository.save(parent);
+                               })
+                               .orElseThrow();
     }
 
     public void deleteParent(final UUID parentId) {
         Parent parent = parentRepository.findById(parentId)
-                .orElseThrow();
+                                        .orElseThrow();
 
         parentRepository.delete(parent);
     }

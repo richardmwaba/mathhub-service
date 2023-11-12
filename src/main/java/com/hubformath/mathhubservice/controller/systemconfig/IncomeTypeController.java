@@ -11,6 +11,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +27,8 @@ import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
-@RequestMapping(path="/api/v1/systemconfig/ops")
+@RequestMapping(path = "/api/v1/systemconfig/ops")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER')")
 public class IncomeTypeController {
 
     private final ModelMapper modelMapper;
@@ -42,8 +44,9 @@ public class IncomeTypeController {
     @GetMapping("/incomeTypes")
     public ResponseEntity<CollectionModel<EntityModel<IncomeTypeDto>>> getAllIncomeTypes() {
         List<IncomeTypeDto> incomeTypes = incomeTypeService.getAllIncomeTypes().stream()
-                .map(incomeType -> modelMapper.map(incomeType, IncomeTypeDto.class))
-                .toList();
+                                                           .map(incomeType -> modelMapper.map(incomeType,
+                                                                                              IncomeTypeDto.class))
+                                                           .toList();
 
         CollectionModel<EntityModel<IncomeTypeDto>> incomeTypeCollectionModel = toCollectionModel(incomeTypes);
 
@@ -57,14 +60,15 @@ public class IncomeTypeController {
         EntityModel<IncomeTypeDto> incomeTypeEntityModel = toModel(modelMapper.map(newIncomeType, IncomeTypeDto.class));
 
         return ResponseEntity.created(incomeTypeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(incomeTypeEntityModel);
+                             .body(incomeTypeEntityModel);
     }
 
     @GetMapping("/incomeTypes/{incomeTypeId}")
     public ResponseEntity<EntityModel<IncomeTypeDto>> getIncomeTypeById(@PathVariable final UUID incomeTypeId) {
         try {
             IncomeType incomeType = incomeTypeService.getIncomeTypeById(incomeTypeId);
-            EntityModel<IncomeTypeDto> incomeTypeEntityModel = toModel(modelMapper.map(incomeType, IncomeTypeDto.class));
+            EntityModel<IncomeTypeDto> incomeTypeEntityModel = toModel(modelMapper.map(incomeType,
+                                                                                       IncomeTypeDto.class));
             return ResponseEntity.ok().body(incomeTypeEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -77,7 +81,8 @@ public class IncomeTypeController {
         try {
             IncomeType incomeTypeRequest = modelMapper.map(incomeTypeDto, IncomeType.class);
             IncomeType updatedIncomeType = incomeTypeService.updateIncomeType(incomeTypeId, incomeTypeRequest);
-            EntityModel<IncomeTypeDto> incomeTypeEntityModel = toModel(modelMapper.map(updatedIncomeType, IncomeTypeDto.class));
+            EntityModel<IncomeTypeDto> incomeTypeEntityModel = toModel(modelMapper.map(updatedIncomeType,
+                                                                                       IncomeTypeDto.class));
             return ResponseEntity.ok().body(incomeTypeEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -96,17 +101,21 @@ public class IncomeTypeController {
 
     public EntityModel<IncomeTypeDto> toModel(final IncomeTypeDto incomeType) {
         return EntityModel.of(incomeType,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeTypeController.class).getIncomeTypeById(incomeType.getIncomeTypeId())).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeTypeController.class).getAllIncomeTypes()).withRel("incomeTypes"));
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeTypeController.class)
+                                                                        .getIncomeTypeById(incomeType.getIncomeTypeId()))
+                                               .withSelfRel(),
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeTypeController.class)
+                                                                        .getAllIncomeTypes()).withRel("incomeTypes"));
     }
 
     private CollectionModel<EntityModel<IncomeTypeDto>> toCollectionModel(final Iterable<? extends IncomeTypeDto> incomeTypes) {
         List<EntityModel<IncomeTypeDto>> incomeTypeList = StreamSupport.stream(incomeTypes.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+                                                                       .map(this::toModel)
+                                                                       .toList();
 
-        return CollectionModel.of(incomeTypeList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeTypeController.class)
-                        .getAllIncomeTypes())
-                .withSelfRel());
+        return CollectionModel.of(incomeTypeList,
+                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeTypeController.class)
+                                                                            .getAllIncomeTypes())
+                                                   .withSelfRel());
     }
 }
