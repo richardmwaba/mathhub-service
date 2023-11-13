@@ -44,8 +44,7 @@ public class GradeController {
     }
 
     @GetMapping("/grades")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
-            + "or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<CollectionModel<EntityModel<GradeDto>>> getAllGrades() {
         List<GradeDto> grades = gradeService.getAllGrades().stream().
                                             map(grade -> modelMapper.map(grade, GradeDto.class))
@@ -56,7 +55,7 @@ public class GradeController {
     }
 
     @PostMapping("/grades")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EntityModel<GradeDto>> newGrade(@RequestBody final GradeDto gradeDto) {
         Grade gradeRequest = modelMapper.map(gradeDto, Grade.class);
         Grade newGrade = gradeService.createGrade(gradeRequest);
@@ -67,8 +66,7 @@ public class GradeController {
     }
 
     @GetMapping("/grades/{gradeId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
-            + "or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<GradeDto>> getGradeById(@PathVariable final UUID gradeId) {
         try {
             Grade grade = gradeService.getGradeById(gradeId);
@@ -80,7 +78,7 @@ public class GradeController {
     }
 
     @PutMapping("/grades/{gradeId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EntityModel<GradeDto>> replaceGrade(@RequestBody final GradeDto gradeDto,
                                                               @PathVariable final UUID gradeId) {
         try {
@@ -94,7 +92,7 @@ public class GradeController {
     }
 
     @DeleteMapping("/grades/{gradeId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteGrade(@PathVariable final UUID gradeId) {
         try {
             gradeService.deleteGrade(gradeId);

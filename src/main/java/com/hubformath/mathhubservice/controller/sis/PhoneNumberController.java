@@ -42,8 +42,7 @@ public class PhoneNumberController {
     }
 
     @GetMapping("/phoneNumbers")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
-            + "or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<CollectionModel<EntityModel<PhoneNumberDto>>> getAllPhoneNumbers() {
         List<PhoneNumberDto> phoneNumbers = phoneNumberService.getAllPhoneNumbers().stream()
                                                               .map(phoneNumber -> modelMapper.map(phoneNumber,
@@ -55,7 +54,7 @@ public class PhoneNumberController {
     }
 
     @PostMapping("/phoneNumbers")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<PhoneNumberDto>> newPhoneNumber(@RequestBody final PhoneNumberDto phoneNumberDto) {
         PhoneNumber phoneNumberRequest = modelMapper.map(phoneNumberDto, PhoneNumber.class);
         PhoneNumber newPhoneNumber = phoneNumberService.createPhoneNumber(phoneNumberRequest);
@@ -67,8 +66,7 @@ public class PhoneNumberController {
     }
 
     @GetMapping("/phoneNumbers/{phoneNumberId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
-            + "or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<PhoneNumberDto>> getPhoneNumberById(@PathVariable final UUID phoneNumberId) {
         try {
             PhoneNumber phoneNumber = phoneNumberService.getPhoneNumberById(phoneNumberId);
@@ -81,7 +79,7 @@ public class PhoneNumberController {
     }
 
     @PutMapping("/phoneNumbers/{phoneNumberId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<PhoneNumberDto>> replacePhoneNumber(@RequestBody final PhoneNumberDto phoneNumberDto,
                                                                           @PathVariable final UUID phoneNumberId) {
         try {
@@ -96,7 +94,7 @@ public class PhoneNumberController {
     }
 
     @DeleteMapping("/phoneNumbers/{phoneNumberId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<String> deletePhoneNumber(@PathVariable final UUID phoneNumberId) {
         try {
             phoneNumberService.deletePhoneNumber(phoneNumberId);

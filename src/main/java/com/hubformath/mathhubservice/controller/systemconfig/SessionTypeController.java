@@ -28,7 +28,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/v1/sis/systemconfig/ops")
-@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER') or hasRole('ROLE_TEACHER')")
+@PreAuthorize("hasRole('ADMIN') or hasRole('CASHIER') or hasRole('TEACHER')")
 public class SessionTypeController {
 
     private final ModelMapper modelMapper;
