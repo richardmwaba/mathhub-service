@@ -28,13 +28,16 @@ public class JwtUtils {
     private int jwtExpirationMs;
 
     public String generateJwtToken(Authentication authentication) {
-
         UserAuthDetails userPrincipal = (UserAuthDetails) authentication.getPrincipal();
+        return generateJwtToken(userPrincipal.getUsername());
+    }
+
+    public String generateJwtToken(String username) {
         Date now = new Date();
 
         return Jwts.builder()
-                   .subject((userPrincipal.getUsername()))
-                   .issuedAt(new Date())
+                   .subject(username)
+                   .issuedAt(now)
                    .expiration(new Date(now.getTime() + jwtExpirationMs))
                    .signWith(key())
                    .compact();
@@ -45,7 +48,12 @@ public class JwtUtils {
     }
 
     public String getUserNameFromJwtToken(String token) {
-        return Jwts.parser().verifyWith(key()).build().parseSignedClaims(token).getPayload().getSubject();
+        return Jwts.parser()
+                   .verifyWith(key())
+                   .build()
+                   .parseSignedClaims(token)
+                   .getPayload()
+                   .getSubject();
     }
 
     public boolean validateJwtToken(String authToken) {

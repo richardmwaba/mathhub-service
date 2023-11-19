@@ -44,7 +44,7 @@ public class SubjectController {
     }
 
     @GetMapping("/subjects")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER') or hasRole('ROLE_TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CASHIER') or hasRole('TEACHER')")
     public ResponseEntity<CollectionModel<EntityModel<SubjectDto>>> getAllSubjects() {
         List<SubjectDto> subjects = subjectService.getAllSubjects().stream().
                                                   map(subject -> modelMapper.map(subject, SubjectDto.class))
@@ -55,7 +55,7 @@ public class SubjectController {
     }
 
     @PostMapping("/subjects")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<EntityModel<SubjectDto>> newSubject(@RequestBody final SubjectDto subjectDto) {
         Subject newSubject = subjectService.createSubject(subjectDto);
         EntityModel<SubjectDto> subjectDtoEntityModel = toModel(modelMapper.map(newSubject, SubjectDto.class));
@@ -65,7 +65,7 @@ public class SubjectController {
     }
 
     @GetMapping("/subjects/{subjectId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER') or hasRole('ROLE_TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CASHIER') or hasRole('TEACHER')")
     public ResponseEntity<EntityModel<SubjectDto>> getSubjectById(@PathVariable final UUID subjectId) {
         try {
             Subject subject = subjectService.getSubjectById(subjectId);
@@ -77,7 +77,7 @@ public class SubjectController {
     }
 
     @PutMapping("/subjects/{subjectId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<EntityModel<SubjectDto>> replaceSubject(@RequestBody final SubjectDto subjectDto,
                                                                   @PathVariable final UUID subjectId) {
         try {
@@ -91,7 +91,7 @@ public class SubjectController {
     }
 
     @DeleteMapping("/subjects/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<String> deleteSubject(@PathVariable final UUID subjectId) {
         try {
             subjectService.deleteSubject(subjectId);

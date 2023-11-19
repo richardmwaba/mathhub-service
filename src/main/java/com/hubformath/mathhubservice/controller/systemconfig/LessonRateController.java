@@ -31,7 +31,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(path = "/api/v1/systemconfig/sis")
-@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER')")
+@PreAuthorize("hasRole('ADMIN') or hasRole('CASHIER')")
 public class LessonRateController {
     private final ModelMapper modelMapper;
 

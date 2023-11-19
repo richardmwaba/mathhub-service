@@ -1,8 +1,10 @@
 package com.hubformath.mathhubservice.service.auth;
 
 import com.hubformath.mathhubservice.jwt_auth.JwtUtils;
+import com.hubformath.mathhubservice.model.auth.AuthRefreshToken;
 import com.hubformath.mathhubservice.model.auth.AuthenticatedUser;
 import com.hubformath.mathhubservice.model.auth.Login;
+import com.hubformath.mathhubservice.model.auth.RefreshToken;
 import com.hubformath.mathhubservice.model.auth.Role;
 import com.hubformath.mathhubservice.model.auth.Signup;
 import com.hubformath.mathhubservice.model.auth.User;
@@ -38,16 +40,20 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final AuthRefreshTokenService authRefreshTokenService;
+
     public AuthService(UserRepository userRepository,
                        UserRoleRepository userRoleRepository,
                        AuthenticationManager authenticationManager,
                        JwtUtils jwtUtils,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       AuthRefreshTokenService authRefreshTokenService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
         this.jwtUtils = jwtUtils;
         this.passwordEncoder = passwordEncoder;
+        this.authRefreshTokenService = authRefreshTokenService;
     }
 
     public AuthenticatedUser authenticateUser(Login loginRequest) {
@@ -62,7 +68,10 @@ public class AuthService {
                                        .map(GrantedAuthority::getAuthority)
                                        .collect(Collectors.toSet());
 
+        AuthRefreshToken authRefreshToken = authRefreshTokenService.createRefreshToken(userDetails.getUserId());
+
         return new AuthenticatedUser(jwt,
+                                     authRefreshToken.getToken(),
                                      userDetails.getUserId(),
                                      userDetails.getUsername(),
                                      userDetails.getEmail(),
@@ -135,4 +144,9 @@ public class AuthService {
 
         return "User registered successfully!";
     }
+
+    public RefreshToken refreshToken(RefreshToken requestRefreshToken) {
+        return authRefreshTokenService.refreshToken(requestRefreshToken.refreshToken());
+    }
+
 }

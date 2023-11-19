@@ -41,8 +41,7 @@ public class AddressController {
     }
 
     @GetMapping("/addresses")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
-            + "or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<CollectionModel<EntityModel<AddressDto>>> getAllAddresses() {
         List<AddressDto> addresses = addressService.getAllAddresses().stream()
                                                    .map(address -> modelMapper.map(address, AddressDto.class))
@@ -53,8 +52,7 @@ public class AddressController {
     }
 
     @PostMapping("/addresses")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
-            + "or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<AddressDto>> newAddress(@RequestBody final AddressDto addressDto) {
         Address addressRequest = modelMapper.map(addressDto, Address.class);
         Address newAddress = addressService.createAddress(addressRequest);
@@ -65,8 +63,7 @@ public class AddressController {
     }
 
     @GetMapping("/addresses/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
-            + "or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<AddressDto>> getAddressById(@PathVariable final UUID addressId) {
         try {
             Address address = addressService.getAddressById(addressId);
@@ -78,8 +75,7 @@ public class AddressController {
     }
 
     @PutMapping("/addresses/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') "
-            + "or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<AddressDto>> replaceAddress(@RequestBody final AddressDto addressDto,
                                                                   @PathVariable final UUID addressId) {
         try {
@@ -93,7 +89,7 @@ public class AddressController {
     }
 
     @DeleteMapping("/addresses/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<String> deleteAddress(@PathVariable final UUID addressId) {
         try {
             addressService.deleteAddress(addressId);

@@ -28,7 +28,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/systemconfig/ops")
-@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER')")
+@PreAuthorize("hasRole('ADMIN') or hasRole('CASHIER')")
 public class LiabilityTypeController {
 
     private final ModelMapper modelMapper;

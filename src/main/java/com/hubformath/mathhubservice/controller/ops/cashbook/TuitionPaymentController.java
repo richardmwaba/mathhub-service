@@ -40,8 +40,7 @@ public class TuitionPaymentController {
     }
 
     @GetMapping("/tuitionPayments")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT') "
-            + "or hasRole('ROLE_TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT') or hasRole('TEACHER')")
     public ResponseEntity<CollectionModel<EntityModel<TuitionPaymentDto>>> getAllTuitionPayments() {
         List<TuitionPaymentDto> tuitionPayments = tuitionPaymentService.getAllTuitionPayments().stream()
                                                                        .map(tuitionPayment -> modelMapper.map(
@@ -56,7 +55,7 @@ public class TuitionPaymentController {
     }
 
     @PostMapping("/tuitionPayments")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<TuitionPaymentDto>> newTuitionPayment(@RequestBody final TuitionPaymentDto tuitionPayment) {
         final TuitionPayment newTuitionPayment = tuitionPaymentService.createTuitionPayment(tuitionPayment);
         if (newTuitionPayment == null) {
@@ -70,8 +69,7 @@ public class TuitionPaymentController {
     }
 
     @GetMapping("/tuitionPayments/{tuitionPaymentId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CASHIER') or hasRole('ROLE_PARENT') or hasRole('ROLE_STUDENT') "
-            + "or hasRole('ROLE_TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT') or hasRole('TEACHER')")
     public ResponseEntity<EntityModel<TuitionPaymentDto>> getTuitionPaymentById(@PathVariable final UUID tuitionPaymentId) {
         try {
             TuitionPayment tuitionPayment = tuitionPaymentService.getTuitionPaymentById(tuitionPaymentId);
