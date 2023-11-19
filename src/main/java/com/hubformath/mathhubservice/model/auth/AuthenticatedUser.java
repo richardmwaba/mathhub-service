@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public record AuthenticatedUser(String token,
+                                String refreshToken,
                                 UUID userId,
                                 String username,
                                 String email,
@@ -11,10 +12,11 @@ public record AuthenticatedUser(String token,
                                 String type) {
 
     public AuthenticatedUser(String token,
+                             String refreshToken,
                              UUID userId,
                              String username,
                              String email,
                              Set<String> roles) {
-        this(token, userId, username, email, roles, "Bearer");
+        this(token, refreshToken, userId, username, email, roles, "Bearer");
     }
 }
