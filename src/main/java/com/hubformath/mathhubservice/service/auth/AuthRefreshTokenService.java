@@ -3,6 +3,7 @@ package com.hubformath.mathhubservice.service.auth;
 import com.hubformath.mathhubservice.jwt_auth.JwtUtils;
 import com.hubformath.mathhubservice.model.auth.AuthRefreshToken;
 import com.hubformath.mathhubservice.model.auth.RefreshToken;
+import com.hubformath.mathhubservice.model.auth.User;
 import com.hubformath.mathhubservice.repository.auth.AuthRefreshTokenRepository;
 import com.hubformath.mathhubservice.repository.auth.UserRepository;
 import org.slf4j.Logger;
@@ -38,6 +39,15 @@ public class AuthRefreshTokenService {
     }
 
     public AuthRefreshToken createRefreshToken(UUID userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        return authRefreshTokenRepository.findByUser(user)
+                                         .map(authRefreshToken -> {
+                                             authRefreshTokenRepository.delete(authRefreshToken);
+                                             return createNewRefreshToken(userId);
+                                         }).orElseGet(() -> createNewRefreshToken(userId));
+    }
+
+    private AuthRefreshToken createNewRefreshToken(UUID userId) {
         AuthRefreshToken authRefreshToken = new AuthRefreshToken();
 
         authRefreshToken.setUser(userRepository.findById(userId).orElseThrow());
