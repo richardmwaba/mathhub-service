@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserAuthDetailsService implements UserDetailsService {
 
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserAuthDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -22,7 +22,7 @@ public class UserAuthDetailsService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
-                                  .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+                                  .orElseThrow(() -> new UsernameNotFoundException("User with username '%s' not found.".formatted(username)));
 
         return UserAuthDetails.build(user);
     }
