@@ -3,7 +3,7 @@ package com.hubformath.mathhubservice.model.auth;
 import java.util.Set;
 import java.util.UUID;
 
-public record AuthenticatedUser(String token,
+public record AuthenticatedUser(String accessToken,
                                 String refreshToken,
                                 UUID userId,
                                 String username,
@@ -11,12 +11,12 @@ public record AuthenticatedUser(String token,
                                 Set<String> roles,
                                 String type) {
 
-    public AuthenticatedUser(String token,
+    public AuthenticatedUser(String accessToken,
                              String refreshToken,
                              UUID userId,
                              String username,
                              String email,
                              Set<String> roles) {
-        this(token, refreshToken, userId, username, email, roles, "Bearer");
+        this(accessToken, refreshToken, userId, username, email, roles, "Bearer");
     }
 }

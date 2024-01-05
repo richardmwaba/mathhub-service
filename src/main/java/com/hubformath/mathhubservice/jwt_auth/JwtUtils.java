@@ -27,12 +27,12 @@ public class JwtUtils {
     @Value("${mathhub.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-    public String generateJwtToken(Authentication authentication) {
+    public String generateJwtAccessToken(Authentication authentication) {
         UserAuthDetails userPrincipal = (UserAuthDetails) authentication.getPrincipal();
-        return generateJwtToken(userPrincipal.getUsername());
+        return generateJwtAccessToken(userPrincipal.getUsername());
     }
 
-    public String generateJwtToken(String username) {
+    public String generateJwtAccessToken(String username) {
         Date now = new Date();
 
         return Jwts.builder()
@@ -47,7 +47,7 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
-    public String getUserNameFromJwtToken(String token) {
+    public String getUserNameFromJwtAccessToken(String token) {
         return Jwts.parser()
                    .verifyWith(key())
                    .build()
@@ -56,7 +56,7 @@ public class JwtUtils {
                    .getSubject();
     }
 
-    public boolean validateJwtToken(String authToken) {
+    public boolean validateJwtAccessToken(String authToken) {
         try {
             Jwts.parser().verifyWith(key()).build().parse(authToken);
             return true;
