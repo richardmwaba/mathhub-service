@@ -62,7 +62,7 @@ public class AuthRefreshTokenService {
                                   .map(this::verifyExpiration)
                                   .map(AuthRefreshToken::getUser)
                                   .map(user -> {
-                                      String authToken = jwtUtils.generateJwtToken(user.getUsername());
+                                      String authToken = jwtUtils.generateJwtAccessToken(user.getUsername());
                                       return new RefreshToken(authToken, refreshToken);
                                   }).orElseThrow();
     }
