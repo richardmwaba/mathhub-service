@@ -5,16 +5,15 @@ import com.hubformath.mathhubservice.model.auth.Login;
 import com.hubformath.mathhubservice.model.auth.RefreshToken;
 import com.hubformath.mathhubservice.model.auth.Signup;
 import com.hubformath.mathhubservice.service.auth.AuthService;
+import jakarta.security.auth.message.AuthException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.naming.AuthenticationException;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -36,7 +35,7 @@ public class AuthController {
     public ResponseEntity<String> registerUser(@Valid @RequestBody Signup signUpRequest) {
         try {
             return ResponseEntity.ok(authService.registerUser(signUpRequest));
-        } catch (AuthenticationException e) {
+        } catch (AuthException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -45,8 +44,8 @@ public class AuthController {
     public ResponseEntity<RefreshToken> refreshToken(@Valid @RequestBody RefreshToken requestRefreshToken) {
         try {
             return ResponseEntity.ok(authService.refreshToken(requestRefreshToken));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().build();
+        } catch (AuthException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 }
