@@ -50,14 +50,13 @@ public class AuthRefreshTokenService {
                                          }).orElseGet(() -> createNewRefreshToken(userId));
     }
 
-    private AuthRefreshToken createNewRefreshToken(UUID userId) {
-        AuthRefreshToken authRefreshToken = new AuthRefreshToken();
-
-        authRefreshToken.setUser(userRepository.findById(userId).orElseThrow());
-        authRefreshToken.setExpiryDateTime(Instant.now().plusMillis(refreshTokenDurationMs));
-        authRefreshToken.setToken(UUID.randomUUID().toString());
-
-        return authRefreshTokenRepository.save(authRefreshToken);
+    public boolean deleteRefreshToken(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow();
+        return authRefreshTokenRepository.findByUser(user)
+                                         .map(authRefreshToken -> {
+                                             authRefreshTokenRepository.delete(authRefreshToken);
+                                             return true;
+                                         }).orElse(false);
     }
 
     public RefreshToken refreshToken(String refreshToken) {
@@ -68,6 +67,16 @@ public class AuthRefreshTokenService {
                                              String authToken = jwtUtils.generateJwtAccessToken(user.getUsername());
                                              return new RefreshToken(authToken, refreshToken);
                                          }).orElseThrow();
+    }
+
+    private AuthRefreshToken createNewRefreshToken(UUID userId) {
+        AuthRefreshToken authRefreshToken = new AuthRefreshToken();
+
+        authRefreshToken.setUser(userRepository.findById(userId).orElseThrow());
+        authRefreshToken.setExpiryDateTime(Instant.now().plusMillis(refreshTokenDurationMs));
+        authRefreshToken.setToken(UUID.randomUUID().toString());
+
+        return authRefreshTokenRepository.save(authRefreshToken);
     }
 
     private AuthRefreshToken verifyExpiration(AuthRefreshToken authRefreshToken) throws AuthException {

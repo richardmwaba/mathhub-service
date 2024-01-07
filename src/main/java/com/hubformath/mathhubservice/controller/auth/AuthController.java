@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -29,6 +31,19 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthenticatedUser> authenticateUser(@Valid @RequestBody Login loginRequest) {
         return ResponseEntity.ok(authService.authenticateUser(loginRequest));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logoutUser(@Valid @RequestBody Login loginRequest) {
+        try {
+            if (!authService.logoutUser(loginRequest.username())) {
+                return ResponseEntity.badRequest()
+                                     .body("Failed to logout user due to non-existent user or refresh token not found.");
+            }
+            return ResponseEntity.noContent().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/register")
