@@ -92,6 +92,11 @@
 			<version>${jwtt.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>me.qoomon</groupId>
+			<artifactId>unchecked-exceptions</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 		<!-- Test -->
 		<dependency>

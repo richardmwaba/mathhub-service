@@ -6,6 +6,7 @@ import com.hubformath.mathhubservice.model.auth.RefreshToken;
 import com.hubformath.mathhubservice.model.auth.User;
 import com.hubformath.mathhubservice.repository.auth.AuthRefreshTokenRepository;
 import com.hubformath.mathhubservice.repository.auth.UserRepository;
+import jakarta.security.auth.message.AuthException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.UUID;
+
+import static me.qoomon.UncheckedExceptions.unchecked;
 
 @Service
 public class AuthRefreshTokenService {
@@ -59,18 +62,19 @@ public class AuthRefreshTokenService {
 
     public RefreshToken refreshToken(String refreshToken) {
         return authRefreshTokenRepository.findByToken(refreshToken)
-                                  .map(this::verifyExpiration)
-                                  .map(AuthRefreshToken::getUser)
-                                  .map(user -> {
-                                      String authToken = jwtUtils.generateJwtAccessToken(user.getUsername());
-                                      return new RefreshToken(authToken, refreshToken);
-                                  }).orElseThrow();
+                                         .map(authRefreshToken -> unchecked(() -> verifyExpiration(authRefreshToken)))
+                                         .map(AuthRefreshToken::getUser)
+                                         .map(user -> {
+                                             String authToken = jwtUtils.generateJwtAccessToken(user.getUsername());
+                                             return new RefreshToken(authToken, refreshToken);
+                                         }).orElseThrow();
     }
 
-    private AuthRefreshToken verifyExpiration(AuthRefreshToken authRefreshToken) {
+    private AuthRefreshToken verifyExpiration(AuthRefreshToken authRefreshToken) throws AuthException {
         if (authRefreshToken.getExpiryDateTime().compareTo(Instant.now()) < 0) {
             authRefreshTokenRepository.delete(authRefreshToken);
             LOGGER.info("Refresh token {} is expired and has been deleted.", authRefreshToken.getToken());
+            throw new AuthException("Refresh token is expired. Please make a new sign in request.");
         }
 
         return authRefreshToken;

@@ -12,6 +12,7 @@ import com.hubformath.mathhubservice.model.auth.UserAuthDetails;
 import com.hubformath.mathhubservice.model.auth.UserRole;
 import com.hubformath.mathhubservice.repository.auth.UserRepository;
 import com.hubformath.mathhubservice.repository.auth.UserRoleRepository;
+import jakarta.security.auth.message.AuthException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,8 +21,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.naming.AuthenticationException;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -78,13 +79,13 @@ public class AuthService {
                                      roles);
     }
 
-    public String registerUser(Signup signUpRequest) throws AuthenticationException {
+    public String registerUser(Signup signUpRequest) throws AuthException {
         if (userRepository.existsByUsername(signUpRequest.username())) {
-            throw new AuthenticationException("Username is already taken!");
+            throw new AuthException("Username is already taken!");
         }
 
         if (userRepository.existsByEmail(signUpRequest.email())) {
-            throw new AuthenticationException("Email is already in use!");
+            throw new AuthException("Email is already in use!");
         }
 
         User user = new User(signUpRequest.username(),
@@ -96,7 +97,7 @@ public class AuthService {
 
         if (requestRoles == null) {
             UserRole guestRole = userRoleRepository.findByRoleName(Role.ROLE_GUEST)
-                                                   .orElseThrow(() -> new AuthenticationException(ROLE_IS_NOT_FOUND));
+                                                   .orElseThrow(() -> new RuntimeException(ROLE_IS_NOT_FOUND));
             userRoles.add(guestRole);
         } else {
             requestRoles.forEach(role -> {
@@ -145,8 +146,12 @@ public class AuthService {
         return "User registered successfully!";
     }
 
-    public RefreshToken refreshToken(RefreshToken requestRefreshToken) {
-        return authRefreshTokenService.refreshToken(requestRefreshToken.refreshToken());
+    public RefreshToken refreshToken(RefreshToken requestRefreshToken) throws AuthException {
+        try {
+            return authRefreshTokenService.refreshToken(requestRefreshToken.refreshToken());
+        } catch (NoSuchElementException e) {
+            throw new AuthException("Invalid refresh token. Please make a new sign in request.");
+        }
     }
 
 }
