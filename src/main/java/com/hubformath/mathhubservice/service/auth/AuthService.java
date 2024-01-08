@@ -13,12 +13,10 @@ import com.hubformath.mathhubservice.model.auth.UserRole;
 import com.hubformath.mathhubservice.repository.auth.UserRepository;
 import com.hubformath.mathhubservice.repository.auth.UserRoleRepository;
 import jakarta.security.auth.message.AuthException;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -82,12 +80,8 @@ public class AuthService {
                                      roles);
     }
 
-    public boolean logoutUser(String refreshToken) {
-        Authentication authentication = new AnonymousAuthenticationToken("anonymousUser",
-                                                                         "anonymousUser",
-                                                                         Set.of(new SimpleGrantedAuthority(Role.ROLE_ANONYMOUS.name())));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return authRefreshTokenService.deleteRefreshToken(refreshToken);
+    public boolean logoutUser(String username) {
+        return authRefreshTokenService.deleteRefreshToken(username);
     }
 
     public String registerUser(Signup signUpRequest) throws AuthException {
