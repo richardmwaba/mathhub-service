@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static me.qoomon.UncheckedExceptions.unchecked;
 
@@ -65,7 +67,10 @@ public class AuthRefreshTokenService {
                                          .map(AuthRefreshToken::getUser)
                                          .map(user -> {
                                              String authToken = jwtUtils.generateJwtAccessToken(user.getUsername());
-                                             return new RefreshToken(authToken, refreshToken);
+                                             Set<String> roles = user.getUserRoles().stream()
+                                                                     .map(userRole -> userRole.getRoleName().name())
+                                                                     .collect(Collectors.toSet());
+                                             return new RefreshToken(authToken, refreshToken, user.getUsername(), roles);
                                          }).orElseThrow();
     }
 
