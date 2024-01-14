@@ -30,7 +30,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController
-@RequestMapping(path = "/api/v1/systemconfig/ops")
+@RequestMapping(path = "/api/v1/sis")
 @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
 public class ExamBoardController {
 
@@ -44,7 +44,7 @@ public class ExamBoardController {
         this.examBoardService = examBoardService;
     }
 
-    @GetMapping("/examBoard")
+    @GetMapping("/examBoards")
     public ResponseEntity<CollectionModel<EntityModel<ExamBoardDto>>> getAllExamBoard() {
         List<ExamBoardDto> examBoardList = examBoardService.getAllExamBoards().stream()
                                                            .map(examBoard -> modelMapper.map(examBoard,
@@ -56,7 +56,7 @@ public class ExamBoardController {
         return ResponseEntity.ok().body(examBoardCollectionModel);
     }
 
-    @PostMapping("/examBoard")
+    @PostMapping("/examBoards")
     public ResponseEntity<EntityModel<ExamBoardDto>> newExamBoard(@RequestBody final ExamBoardDto examBoardDto) {
         ExamBoard examBoardRequest = modelMapper.map(examBoardDto, ExamBoard.class);
         ExamBoard newExamBoard = examBoardService.createExamBoard(examBoardRequest);
@@ -66,7 +66,7 @@ public class ExamBoardController {
                              .body(examBoardEntityModel);
     }
 
-    @GetMapping("/examBoard/{examBoardId}")
+    @GetMapping("/examBoards/{examBoardId}")
     public ResponseEntity<EntityModel<ExamBoardDto>> getExamBoardById(@PathVariable final UUID examBoardId) {
         try {
             ExamBoard examBoard = examBoardService.getExamBoardById(examBoardId);
@@ -77,7 +77,7 @@ public class ExamBoardController {
         }
     }
 
-    @PutMapping("/examBoard/{examBoardId}")
+    @PutMapping("/examBoards/{examBoardId}")
     public ResponseEntity<EntityModel<ExamBoardDto>> replaceExamBoard(@RequestBody final ExamBoardDto examBoardDto,
                                                                       @PathVariable final UUID examBoardId) {
         try {
@@ -91,7 +91,7 @@ public class ExamBoardController {
         }
     }
 
-    @DeleteMapping("/examBoard/{examBoardId}")
+    @DeleteMapping("/examBoards/{examBoardId}")
     public ResponseEntity<String> deleteExamBoard(@PathVariable final UUID examBoardId) {
         try {
             examBoardService.deleteExamBoard(examBoardId);
