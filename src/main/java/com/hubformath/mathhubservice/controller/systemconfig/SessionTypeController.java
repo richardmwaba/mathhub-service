@@ -27,7 +27,7 @@ import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
-@RequestMapping(path = "/v1/sis/systemconfig/ops")
+@RequestMapping(path = "/api/v1/systemconfig/sis")
 @PreAuthorize("hasRole('ADMIN') or hasRole('CASHIER') or hasRole('TEACHER')")
 public class SessionTypeController {
 
