@@ -14,7 +14,6 @@ public class CashTransactionCategoryService {
     private final CashTransactionCategoryRepository cashTransactionCategoryRepository;
 
     public CashTransactionCategoryService(final CashTransactionCategoryRepository cashTransactionCategoryRepository) {
-        super();
         this.cashTransactionCategoryRepository = cashTransactionCategoryRepository;
     }
 

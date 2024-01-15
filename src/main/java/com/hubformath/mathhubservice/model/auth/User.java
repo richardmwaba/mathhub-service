@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.model.auth;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,6 +32,15 @@ public class User {
     @Column(name = "username", nullable = false)
     private String username;
 
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    @Column(name = "middle_name", nullable = false)
+    private String middleName;
+
     @Column(name = "email", nullable = false)
     private String email;
 
@@ -38,6 +48,7 @@ public class User {
     private String phoneNumber;
 
     @Column(name = "password", nullable = false)
+    @JsonIgnore
     private String password;
 
     @ManyToMany
@@ -69,6 +80,30 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
     }
 
     public String getEmail() {
@@ -109,6 +144,9 @@ public class User {
         if (!(o instanceof User user)) return false;
         return Objects.equals(getUserId(), user.getUserId())
                 && Objects.equals(getUsername(), user.getUsername())
+                && Objects.equals(getFirstName(), user.getFirstName())
+                && Objects.equals(getLastName(), user.getLastName())
+                && Objects.equals(getMiddleName(), user.getMiddleName())
                 && Objects.equals(getEmail(), user.getEmail())
                 && Objects.equals(getPhoneNumber(), user.getPhoneNumber())
                 && Objects.equals(getPassword(), user.getPassword())
@@ -117,7 +155,15 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserId(), getUsername(), getEmail(), getPhoneNumber(), getPassword(), getUserRoles());
+        return Objects.hash(getUserId(),
+                            getUsername(),
+                            getFirstName(),
+                            getLastName(),
+                            getMiddleName(),
+                            getEmail(),
+                            getPhoneNumber(),
+                            getPassword(),
+                            getUserRoles());
     }
 
     @Override
@@ -125,6 +171,9 @@ public class User {
         return "User{" +
                 "userId=" + userId +
                 ", username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", middleName='" + middleName + '\'' +
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", password='" + password + '\'' +

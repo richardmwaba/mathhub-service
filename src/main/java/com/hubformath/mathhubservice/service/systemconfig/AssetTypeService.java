@@ -14,7 +14,6 @@ public class AssetTypeService {
     private final AssetTypeRepository assetTypeRepository;
 
     public AssetTypeService(AssetTypeRepository assetTypeRepository) {
-        super();
         this.assetTypeRepository = assetTypeRepository;
     }
 
