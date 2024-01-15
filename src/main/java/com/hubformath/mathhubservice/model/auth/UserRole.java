@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.model.auth;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,10 +32,12 @@ public class UserRole {
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
+    @JsonIgnore
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
     public UserRole() {
@@ -78,16 +81,17 @@ public class UserRole {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof UserRole userRole))
-            return false;
-        return Objects.equals(this.userRoleId, userRole.userRoleId) && Objects.equals(this.roleName, userRole.roleName);
+        if (this == o) return true;
+        if (!(o instanceof UserRole userRole)) return false;
+        return Objects.equals(getUserRoleId(), userRole.getUserRoleId())
+                && Objects.equals(getRoleName(), userRole.getRoleName())
+                && Objects.equals(getCreatedAt(), userRole.getCreatedAt())
+                && Objects.equals(getUpdatedAt(), userRole.getUpdatedAt());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.userRoleId, this.roleName, this.createdAt, this.updatedAt);
+        return Objects.hash(getUserRoleId(), getRoleName(), getCreatedAt(), getUpdatedAt());
     }
 
     @Override

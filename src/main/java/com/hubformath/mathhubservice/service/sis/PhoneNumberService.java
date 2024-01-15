@@ -14,7 +14,6 @@ public class PhoneNumberService {
     private final PhoneNumberRepository phoneNumberRepository;
 
     public PhoneNumberService(final PhoneNumberRepository phoneNumberRepository) {
-        super();
         this.phoneNumberRepository = phoneNumberRepository;
     }
 
