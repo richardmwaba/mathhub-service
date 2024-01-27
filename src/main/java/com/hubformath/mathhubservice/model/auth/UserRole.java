@@ -17,18 +17,18 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "user_roles")
+@Table(name = "roles")
 public class UserRole {
 
     @Id
     @ReadOnlyProperty
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_role_id", updatable = false, nullable = false)
-    private Long userRoleId;
+    @Column(name = "role_id", updatable = false, nullable = false)
+    private Long roleId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false)
-    private Role roleName;
+    private Role role;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -43,24 +43,24 @@ public class UserRole {
     public UserRole() {
     }
 
-    public UserRole(final Role roleName) {
-        this.roleName = roleName;
+    public UserRole(Role role) {
+        this.role = role;
     }
 
-    public Long getUserRoleId() {
-        return this.userRoleId;
+    public Long getRoleId() {
+        return this.roleId;
     }
 
-    public void setUserRoleId(Long userRoleId) {
-        this.userRoleId = userRoleId;
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
     }
 
-    public Role getRoleName() {
-        return this.roleName;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoleName(final Role roleName) {
-        this.roleName = roleName;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -83,22 +83,22 @@ public class UserRole {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UserRole userRole)) return false;
-        return Objects.equals(getUserRoleId(), userRole.getUserRoleId())
-                && Objects.equals(getRoleName(), userRole.getRoleName())
+        return Objects.equals(getRoleId(), userRole.getRoleId())
+                && Objects.equals(getRole(), userRole.getRole())
                 && Objects.equals(getCreatedAt(), userRole.getCreatedAt())
                 && Objects.equals(getUpdatedAt(), userRole.getUpdatedAt());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserRoleId(), getRoleName(), getCreatedAt(), getUpdatedAt());
+        return Objects.hash(getRoleId(), getRole(), getCreatedAt(), getUpdatedAt());
     }
 
     @Override
     public String toString() {
-        return "UserType{" +
-                "userTypeId=" + userRoleId +
-                ", userRole=" + roleName +
+        return "UserRole{" +
+                "roleId=" + roleId +
+                ", role=" + role +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';

@@ -1,16 +1,20 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
 import com.hubformath.mathhubservice.model.auth.User;
+import com.hubformath.mathhubservice.model.auth.UserRegistration;
 import com.hubformath.mathhubservice.service.systemconfig.UsersService;
+import jakarta.security.auth.message.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +36,23 @@ public class UserController {
         this.usersService = usersService;
     }
 
+    @PostMapping("/users")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ResponseEntity<EntityModel<User>> newUser(@RequestBody final UserRegistration userRegistration) {
+        try {
+            User newUser = usersService.createUser(userRegistration);
+            EntityModel<User> userEntityModel = toModel(newUser);
+
+            return ResponseEntity.created(userEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                                 .body(userEntityModel);
+        } catch (AuthException | NoSuchElementException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
+
     @GetMapping("/users")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('CASHIER')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER')")
     public ResponseEntity<CollectionModel<EntityModel<User>>> getAllUsers() {
         List<User> users = usersService.getAllUsers().stream().toList();
         CollectionModel<EntityModel<User>> userCollectionModel = toCollectionModel(users);
@@ -42,7 +61,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('CASHIER')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER')")
     public ResponseEntity<EntityModel<User>> getUserById(@PathVariable final UUID userId) {
         try {
             User user = usersService.getUserById(userId);
@@ -55,8 +74,9 @@ public class UserController {
     }
 
     @PutMapping("/users/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<EntityModel<User>> updateUser(@PathVariable final UUID userId, @RequestBody final User userRequest) {
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ResponseEntity<EntityModel<User>> updateUser(@PathVariable final UUID userId,
+                                                        @RequestBody final User userRequest) {
         try {
             User updatedUser = usersService.updateUser(userId, userRequest);
             EntityModel<User> userEntityModel = toModel(updatedUser);
@@ -68,7 +88,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<String> deleteUser(@PathVariable final UUID userId) {
         try {
             usersService.deleteUser(userId);

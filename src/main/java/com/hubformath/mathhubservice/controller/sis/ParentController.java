@@ -41,7 +41,7 @@ public class ParentController {
     }
 
     @GetMapping("/parents")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<CollectionModel<EntityModel<ParentDto>>> getAllParents() {
         List<ParentDto> parents = parentService.getAllParents().stream()
                                                .map(parent -> modelMapper.map(parent, ParentDto.class))
@@ -52,7 +52,7 @@ public class ParentController {
     }
 
     @PostMapping("/parents")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('PARENT') or hasRole('STUDENT')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<ParentDto>> newParent(@RequestBody final ParentDto parentDto) {
         Parent parentRequest = modelMapper.map(parentDto, Parent.class);
         Parent newParent = parentService.createParent(parentRequest);
@@ -63,7 +63,7 @@ public class ParentController {
     }
 
     @GetMapping("/parents/{parentId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<ParentDto>> getParentById(@PathVariable final UUID parentId) {
         try {
             Parent parent = parentService.getParentById(parentId);
@@ -75,7 +75,7 @@ public class ParentController {
     }
 
     @PutMapping("/parents/{parentId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('PARENT') or hasRole('STUDENT')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<ParentDto>> replaceParent(@RequestBody final ParentDto parentDto,
                                                                 @PathVariable final UUID parentId) {
         try {
@@ -89,7 +89,7 @@ public class ParentController {
     }
 
     @DeleteMapping("/parents/{parentId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('STUDENT')")
     public ResponseEntity<String> deleteParent(@PathVariable final UUID parentId) {
         try {
             parentService.deleteParent(parentId);

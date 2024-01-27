@@ -28,7 +28,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/systemconfig/sis")
-@PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
+@PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER')")
 public class AssessmentTypeController {
 
     private final ModelMapper modelMapper;

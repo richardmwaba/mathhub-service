@@ -43,7 +43,7 @@ public class StudentController {
     }
 
     @GetMapping("/students")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER')")
     public ResponseEntity<CollectionModel<EntityModel<StudentDto>>> getAllStudents() {
         List<StudentDto> students = studentService.getAllStudents().stream()
                                                   .map(student -> modelMapper.map(student, StudentDto.class))
@@ -54,7 +54,7 @@ public class StudentController {
     }
 
     @PostMapping("/students")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER')")
     public ResponseEntity<EntityModel<StudentDto>> newStudent(@RequestBody final StudentDto studentRequest) {
         Student newStudent = studentService.createStudent(studentRequest);
         EntityModel<StudentDto> studentEntityModel = toModel(modelMapper.map(newStudent, StudentDto.class));
@@ -64,7 +64,7 @@ public class StudentController {
     }
 
     @GetMapping("/students/{studentId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<StudentDto>> getStudentById(@PathVariable final UUID studentId) {
         try {
             Student student = studentService.getStudentById(studentId);
@@ -76,7 +76,7 @@ public class StudentController {
     }
 
     @PutMapping("/students/{studentId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<StudentDto>> replaceStudent(@RequestBody final StudentDto studentDto,
                                                                   @PathVariable final UUID studentId) {
         try {
@@ -90,7 +90,7 @@ public class StudentController {
     }
 
     @DeleteMapping("/students/{studentId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER')")
     public ResponseEntity<String> deleteStudent(@PathVariable final UUID studentId) {
         try {
             studentService.deleteStudent(studentId);
@@ -101,7 +101,7 @@ public class StudentController {
     }
 
     @PostMapping("/students/{studentId}/lessons")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<StudentDto>> addStudentLesson(@PathVariable final UUID studentId,
                                                                     @RequestBody final LessonDto lessonRequest) {
         try {
@@ -114,7 +114,7 @@ public class StudentController {
     }
 
     @PostMapping("students/{studentId}/actions")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<StudentActionBase>> executeStudentAction(@PathVariable final UUID studentId,
                                                                                @RequestBody final StudentActionBase studentActionBase) {
         return ResponseEntity.noContent().build();

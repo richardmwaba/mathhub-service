@@ -3,7 +3,6 @@ package com.hubformath.mathhubservice.controller.auth;
 import com.hubformath.mathhubservice.model.auth.AuthenticatedUser;
 import com.hubformath.mathhubservice.model.auth.Login;
 import com.hubformath.mathhubservice.model.auth.RefreshToken;
-import com.hubformath.mathhubservice.model.auth.Signup;
 import com.hubformath.mathhubservice.service.auth.AuthService;
 import jakarta.security.auth.message.AuthException;
 import jakarta.validation.Valid;
@@ -42,15 +41,6 @@ public class AuthController {
             }
             return ResponseEntity.noContent().build();
         } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody Signup signUpRequest) {
-        try {
-            return ResponseEntity.ok(authService.registerUser(signUpRequest));
-        } catch (AuthException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

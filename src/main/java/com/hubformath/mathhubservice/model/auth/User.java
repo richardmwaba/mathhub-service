@@ -38,7 +38,7 @@ public class User {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "middle_name", nullable = false)
+    @Column(name = "middle_name")
     private String middleName;
 
     @Column(name = "email", nullable = false)
@@ -52,7 +52,7 @@ public class User {
     private String password;
 
     @ManyToMany
-    @JoinTable(name = "users_user_roles",
+    @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "user_role_id"))
     private Set<UserRole> userRoles;
@@ -60,8 +60,14 @@ public class User {
     public User() {
     }
 
-    public User(@Nonnull final String username, @Nonnull final String email, @Nonnull final String password) {
+    public User(@Nonnull final String username,
+                @Nonnull String firstName,
+                @Nonnull String lastName,
+                @Nonnull final String email,
+                @Nonnull final String password) {
         this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
     }
