@@ -29,7 +29,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/systemconfig/ops")
-@PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
+@PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER')")
 public class SyllabusController {
 
     private final ModelMapper modelMapper;
@@ -63,7 +63,7 @@ public class SyllabusController {
                              .body(syllabusEntityModel);
     }
 
-    @GetMapping("/syllabus/{id}")
+    @GetMapping("/syllabus/{syllabusId}")
     public ResponseEntity<EntityModel<SyllabusDto>> getSyllabusById(@PathVariable final UUID syllabusId) {
         try {
             Syllabus syllabus = syllabusService.getSyllabusById(syllabusId);
@@ -74,7 +74,7 @@ public class SyllabusController {
         }
     }
 
-    @PutMapping("/syllabus/{id}")
+    @PutMapping("/syllabus/{syllabusId}")
     public ResponseEntity<EntityModel<SyllabusDto>> replaceSyllabus(@RequestBody final SyllabusDto syllabusDto,
                                                                     @PathVariable final UUID syllabusId) {
         try {
@@ -87,7 +87,7 @@ public class SyllabusController {
         }
     }
 
-    @DeleteMapping("/syllabus/{id}")
+    @DeleteMapping("/syllabus/{syllabusId}")
     public ResponseEntity<String> deleteSyllabus(@PathVariable final UUID syllabusId) {
         try {
             syllabusService.deleteSyllabus(syllabusId);

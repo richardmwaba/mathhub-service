@@ -28,7 +28,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/ops")
-@PreAuthorize("hasRole('ADMIN') or hasRole('CASHIER')")
+@PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER')")
 public class InvoiceController {
 
     private final ModelMapper modelMapper;

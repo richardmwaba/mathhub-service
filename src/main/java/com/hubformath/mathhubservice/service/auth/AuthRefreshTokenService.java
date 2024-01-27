@@ -68,7 +68,7 @@ public class AuthRefreshTokenService {
                                          .map(user -> {
                                              String authToken = jwtUtils.generateJwtAccessToken(user.getUsername());
                                              Set<String> roles = user.getUserRoles().stream()
-                                                                     .map(userRole -> userRole.getRoleName().name())
+                                                                     .map(userRole -> userRole.getRole().name())
                                                                      .collect(Collectors.toSet());
                                              return new RefreshToken(authToken, refreshToken, user.getUsername(), roles);
                                          }).orElseThrow();
