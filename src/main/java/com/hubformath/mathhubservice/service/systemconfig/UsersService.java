@@ -2,7 +2,7 @@ package com.hubformath.mathhubservice.service.systemconfig;
 
 import com.hubformath.mathhubservice.model.auth.Role;
 import com.hubformath.mathhubservice.model.auth.User;
-import com.hubformath.mathhubservice.model.auth.UserRegistration;
+import com.hubformath.mathhubservice.model.auth.UserRequest;
 import com.hubformath.mathhubservice.model.auth.UserRole;
 import com.hubformath.mathhubservice.repository.auth.UserRepository;
 import com.hubformath.mathhubservice.repository.auth.UserRoleRepository;
@@ -43,71 +43,22 @@ public class UsersService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User createUser(UserRegistration userRegistration) throws AuthException {
-        if (userRepository.existsByUsername(userRegistration.username())) {
+    public User createUser(UserRequest userRequest) throws AuthException {
+        if (userRepository.existsByUsername(userRequest.username())) {
             throw new AuthException("Username is already taken!");
         }
 
-        if (userRepository.existsByEmail(userRegistration.email())) {
+        if (userRepository.existsByEmail(userRequest.email())) {
             throw new AuthException("Email is already in use!");
         }
 
-        User user = new User(userRegistration.username(),
-                             userRegistration.firstName(),
-                             userRegistration.lastName(),
-                             userRegistration.email(),
-                             passwordEncoder.encode(userRegistration.password()));
+        User user = new User(userRequest.username(),
+                             userRequest.firstName(),
+                             userRequest.lastName(),
+                             userRequest.email(),
+                             passwordEncoder.encode(userRequest.password()));
 
-        Set<String> requestRoles = userRegistration.roles();
-        Set<UserRole> userRoles = new HashSet<>();
-
-        if (requestRoles == null) {
-            UserRole guestRole = userRoleRepository.findByRole(ROLE_GUEST)
-                                                   .orElseThrow(() -> new RuntimeException(ROLE_IS_NOT_FOUND));
-            userRoles.add(guestRole);
-        } else {
-            requestRoles.forEach(role -> {
-                Role roleEnum = Objects.requireNonNull(Role.fromDescription(role));
-                switch (roleEnum) {
-                    case ROLE_ADMINISTRATOR -> {
-                        UserRole adminRole = userRoleRepository.findByRole(ROLE_ADMINISTRATOR)
-                                                               .orElseThrow(() -> new NoSuchElementException(
-                                                                       ROLE_IS_NOT_FOUND));
-                        userRoles.add(adminRole);
-                    }
-                    case ROLE_STUDENT -> {
-                        UserRole studentRole = userRoleRepository.findByRole(ROLE_STUDENT)
-                                                                 .orElseThrow(() -> new NoSuchElementException(
-                                                                         ROLE_IS_NOT_FOUND));
-                        userRoles.add(studentRole);
-                    }
-                    case ROLE_TEACHER -> {
-                        UserRole teacherRole = userRoleRepository.findByRole(ROLE_TEACHER)
-                                                                 .orElseThrow(() -> new NoSuchElementException(
-                                                                         ROLE_IS_NOT_FOUND));
-                        userRoles.add(teacherRole);
-                    }
-                    case ROLE_PARENT -> {
-                        UserRole parentRole = userRoleRepository.findByRole(ROLE_PARENT)
-                                                                .orElseThrow(() -> new NoSuchElementException(
-                                                                        ROLE_IS_NOT_FOUND));
-                        userRoles.add(parentRole);
-                    }
-                    case ROLE_CASHIER -> {
-                        UserRole cashierRole = userRoleRepository.findByRole(ROLE_CASHIER)
-                                                                 .orElseThrow(() -> new NoSuchElementException(
-                                                                         ROLE_IS_NOT_FOUND));
-                        userRoles.add(cashierRole);
-                    }
-                    default -> {
-                        UserRole guestRole = userRoleRepository.findByRole(ROLE_GUEST)
-                                                               .orElseThrow(() -> new NoSuchElementException(
-                                                                       ROLE_IS_NOT_FOUND));
-                        userRoles.add(guestRole);
-                    }
-                }
-            });
-        }
+        Set<UserRole> userRoles = extractUserRoles(userRequest.roles());
 
         user.setUserRoles(userRoles);
         return userRepository.save(user);
@@ -121,23 +72,25 @@ public class UsersService {
         return userRepository.findById(userId).orElseThrow();
     }
 
-    public User updateUser(UUID userId, User userRequest) {
+    public User updateUser(UUID userId, UserRequest userRequest) {
         return userRepository.findById(userId)
                              .map(user -> {
-                                 Optional.ofNullable(userRequest.getUsername())
+                                 Optional.ofNullable(userRequest.username())
                                          .ifPresent(user::setUsername);
-                                 Optional.ofNullable(userRequest.getFirstName())
+                                 Optional.ofNullable(userRequest.firstName())
                                          .ifPresent(user::setFirstName);
-                                 Optional.ofNullable(userRequest.getLastName())
+                                 Optional.ofNullable(userRequest.lastName())
                                          .ifPresent(user::setLastName);
-                                 Optional.ofNullable(userRequest.getMiddleName())
+                                 Optional.ofNullable(userRequest.middleName())
                                          .ifPresent(user::setMiddleName);
-                                 Optional.ofNullable(userRequest.getEmail())
+                                 Optional.ofNullable(userRequest.email())
                                          .ifPresent(user::setEmail);
-                                 Optional.ofNullable(userRequest.getPhoneNumber())
+                                 Optional.ofNullable(userRequest.phoneNumber())
                                          .ifPresent(user::setPhoneNumber);
-                                 Optional.ofNullable(userRequest.getPassword())
+                                 Optional.ofNullable(userRequest.password())
                                          .ifPresent(user::setPassword);
+                                 Optional.ofNullable(userRequest.roles())
+                                         .ifPresent(userRoles -> user.setUserRoles(extractUserRoles(userRoles)));
                                  return userRepository.save(user);
                              })
                              .orElseThrow();
@@ -148,6 +101,32 @@ public class UsersService {
                                   .orElseThrow();
 
         userRepository.delete(user);
+    }
+
+    private Set<UserRole> extractUserRoles(Set<String> requestRoles) {
+        Set<UserRole> userRoles = new HashSet<>();
+        if (requestRoles == null) {
+            userRoles.add(getUserRole(ROLE_GUEST));
+        } else {
+            requestRoles.forEach(role -> {
+                Role roleEnum = Objects.requireNonNull(Role.fromDescription(role));
+                switch (roleEnum) {
+                    case ROLE_ADMINISTRATOR -> userRoles.add(getUserRole(ROLE_ADMINISTRATOR));
+                    case ROLE_STUDENT -> userRoles.add(getUserRole(ROLE_STUDENT));
+                    case ROLE_TEACHER -> userRoles.add(getUserRole(ROLE_TEACHER));
+                    case ROLE_PARENT -> userRoles.add(getUserRole(ROLE_PARENT));
+                    case ROLE_CASHIER -> userRoles.add(getUserRole(ROLE_CASHIER));
+                    default -> userRoles.add(getUserRole(ROLE_GUEST));
+                }
+            });
+        }
+
+        return userRoles;
+    }
+
+    private UserRole getUserRole(Role role) {
+        return userRoleRepository.findByRole(role)
+                                 .orElseThrow(() -> new NoSuchElementException(ROLE_IS_NOT_FOUND));
     }
 
 }

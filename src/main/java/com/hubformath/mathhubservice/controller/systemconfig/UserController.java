@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
 import com.hubformath.mathhubservice.model.auth.User;
-import com.hubformath.mathhubservice.model.auth.UserRegistration;
+import com.hubformath.mathhubservice.model.auth.UserRequest;
 import com.hubformath.mathhubservice.service.systemconfig.UsersService;
 import jakarta.security.auth.message.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +38,9 @@ public class UserController {
 
     @PostMapping("/users")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    public ResponseEntity<EntityModel<User>> newUser(@RequestBody final UserRegistration userRegistration) {
+    public ResponseEntity<EntityModel<User>> newUser(@RequestBody final UserRequest userRequest) {
         try {
-            User newUser = usersService.createUser(userRegistration);
+            User newUser = usersService.createUser(userRequest);
             EntityModel<User> userEntityModel = toModel(newUser);
 
             return ResponseEntity.created(userEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -76,7 +76,7 @@ public class UserController {
     @PutMapping("/users/{userId}")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<EntityModel<User>> updateUser(@PathVariable final UUID userId,
-                                                        @RequestBody final User userRequest) {
+                                                        @RequestBody final UserRequest userRequest) {
         try {
             User updatedUser = usersService.updateUser(userId, userRequest);
             EntityModel<User> userEntityModel = toModel(updatedUser);
