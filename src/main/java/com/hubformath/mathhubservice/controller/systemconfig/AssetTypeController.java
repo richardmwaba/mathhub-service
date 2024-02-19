@@ -53,7 +53,7 @@ public class AssetTypeController {
     }
 
     @PostMapping("/assetTypes")
-    public ResponseEntity<EntityModel<AssetTypeDto>> newAssetType(@RequestBody final AssetTypeDto assetTypeDto) {
+    public ResponseEntity<EntityModel<AssetTypeDto>> createAssetType(@RequestBody final AssetTypeDto assetTypeDto) {
         AssetType assetTypeRequest = modelMapper.map(assetTypeDto, AssetType.class);
         AssetType newAssetType = assetTypeService.createAssetType(assetTypeRequest);
         EntityModel<AssetTypeDto> assetTypeEntityModel = toModel(modelMapper.map(newAssetType, AssetTypeDto.class));
@@ -74,7 +74,7 @@ public class AssetTypeController {
     }
 
     @PutMapping("/assetTypes/{assetTypeId}")
-    public ResponseEntity<EntityModel<AssetTypeDto>> replaceAssetType(@RequestBody final AssetTypeDto assetTypeDto,
+    public ResponseEntity<EntityModel<AssetTypeDto>> updateAssetType(@RequestBody final AssetTypeDto assetTypeDto,
                                                                       @PathVariable final UUID assetTypeId) {
         try {
             AssetType assetTypeRequest = modelMapper.map(assetTypeDto, AssetType.class);
