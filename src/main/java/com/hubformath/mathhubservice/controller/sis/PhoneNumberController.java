@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -67,7 +66,7 @@ public class PhoneNumberController {
 
     @GetMapping("/phoneNumbers/{phoneNumberId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<EntityModel<PhoneNumberDto>> getPhoneNumberById(@PathVariable final UUID phoneNumberId) {
+    public ResponseEntity<EntityModel<PhoneNumberDto>> getPhoneNumberById(@PathVariable final String phoneNumberId) {
         try {
             PhoneNumber phoneNumber = phoneNumberService.getPhoneNumberById(phoneNumberId);
             EntityModel<PhoneNumberDto> phoneNumberEntityModel = toModel(modelMapper.map(phoneNumber,
@@ -81,7 +80,7 @@ public class PhoneNumberController {
     @PutMapping("/phoneNumbers/{phoneNumberId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<PhoneNumberDto>> replacePhoneNumber(@RequestBody final PhoneNumberDto phoneNumberDto,
-                                                                          @PathVariable final UUID phoneNumberId) {
+                                                                          @PathVariable final String phoneNumberId) {
         try {
             PhoneNumber phoneNumberRequest = modelMapper.map(phoneNumberDto, PhoneNumber.class);
             PhoneNumber updatedPhoneNumber = phoneNumberService.updatePhoneNumber(phoneNumberId, phoneNumberRequest);
@@ -95,7 +94,7 @@ public class PhoneNumberController {
 
     @DeleteMapping("/phoneNumbers/{phoneNumberId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<String> deletePhoneNumber(@PathVariable final UUID phoneNumberId) {
+    public ResponseEntity<String> deletePhoneNumber(@PathVariable final String phoneNumberId) {
         try {
             phoneNumberService.deletePhoneNumber(phoneNumberId);
             return ResponseEntity.ok().body("PhoneNumber deleted successfully");

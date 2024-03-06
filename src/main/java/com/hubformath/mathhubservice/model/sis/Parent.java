@@ -16,7 +16,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "parents")
@@ -24,7 +23,7 @@ public class Parent {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "parent_id")
-    private UUID parentId;
+    private String parentId;
 
     @Column(name = "first_name")
     private String firstName;
@@ -71,11 +70,11 @@ public class Parent {
         this.email = email;
     }
 
-    public UUID getParentId() {
+    public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(UUID parentId) {
+    public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 

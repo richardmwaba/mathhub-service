@@ -19,7 +19,6 @@ import org.springframework.data.annotation.ReadOnlyProperty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "lessons")
@@ -27,7 +26,7 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "lesson_id")
-    private UUID lessonId;
+    private String lessonId;
 
     @ManyToOne
     @JoinColumn(name = "subject_id")
@@ -70,11 +69,11 @@ public class Lesson {
         // Used for hibernate instantiation
     }
 
-    public UUID getLessonId() {
+    public String getLessonId() {
         return lessonId;
     }
 
-    public void setLessonId(UUID lessonId) {
+    public void setLessonId(String lessonId) {
         this.lessonId = lessonId;
     }
 

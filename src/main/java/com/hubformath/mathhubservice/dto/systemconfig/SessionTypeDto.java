@@ -1,19 +1,18 @@
 package com.hubformath.mathhubservice.dto.systemconfig;
 
-import java.util.UUID;
-
 public class SessionTypeDto {
-    private UUID sessionTypeId;
+
+    private String sessionTypeId;
 
     private String typeName;
 
     private String typeDescription;
 
-    public UUID getSessionTypeId() {
+    public String getSessionTypeId() {
         return sessionTypeId;
     }
 
-    public void setSessionTypeId(UUID sessionTypeId) {
+    public void setSessionTypeId(String sessionTypeId) {
         this.sessionTypeId = sessionTypeId;
     }
 

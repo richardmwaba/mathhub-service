@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -66,7 +65,7 @@ public class SessionTypeController {
     }
 
     @GetMapping("/sessionTypes/{sessionTypeId}")
-    public ResponseEntity<EntityModel<SessionTypeDto>> getSessionTypeById(@PathVariable final UUID sessionTypeId) {
+    public ResponseEntity<EntityModel<SessionTypeDto>> getSessionTypeById(@PathVariable final String sessionTypeId) {
         try {
             SessionType sessionType = sessionTypeService.getSessionTypeById(sessionTypeId);
             EntityModel<SessionTypeDto> sessionTypeEntityModel = toModel(modelMapper.map(sessionType,
@@ -79,7 +78,7 @@ public class SessionTypeController {
 
     @PutMapping("/sessionTypes/{sessionTypeId}")
     public ResponseEntity<EntityModel<SessionTypeDto>> replaceSessionType(@RequestBody final SessionTypeDto sessionTypeDto,
-                                                                          @PathVariable final UUID sessionTypeId) {
+                                                                          @PathVariable final String sessionTypeId) {
         try {
             SessionType sessionTypeRequest = modelMapper.map(sessionTypeDto, SessionType.class);
             SessionType updatedSessionType = sessionTypeService.updateSessionType(sessionTypeId, sessionTypeRequest);
@@ -92,7 +91,7 @@ public class SessionTypeController {
     }
 
     @DeleteMapping("/sessionTypes/{sessionTypeId}")
-    public ResponseEntity<String> deleteSessionType(@PathVariable final UUID sessionTypeId) {
+    public ResponseEntity<String> deleteSessionType(@PathVariable final String sessionTypeId) {
         try {
             sessionTypeService.deleteSessionType(sessionTypeId);
             return ResponseEntity.ok().body("Session type deleted successfully");

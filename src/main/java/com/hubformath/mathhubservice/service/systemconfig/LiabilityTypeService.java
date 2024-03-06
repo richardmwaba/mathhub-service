@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class LiabilityTypeService {
@@ -20,7 +19,7 @@ public class LiabilityTypeService {
         return liabilityTypeRepository.findAll();
     }
 
-    public LiabilityType getLiabilityTypeById(UUID liabilityTypeId) {
+    public LiabilityType getLiabilityTypeById(String liabilityTypeId) {
         return liabilityTypeRepository.findById(liabilityTypeId).orElseThrow();
     }
 
@@ -28,7 +27,7 @@ public class LiabilityTypeService {
         return liabilityTypeRepository.save(liabilityTypeRequest);
     }
 
-    public LiabilityType updateLiabilityType(UUID liabilityTypeId, LiabilityType liabilityTypeRequest) {
+    public LiabilityType updateLiabilityType(String liabilityTypeId, LiabilityType liabilityTypeRequest) {
         return liabilityTypeRepository.findById(liabilityTypeId)
                                       .map(liabilityType -> {
                                           Optional.ofNullable(liabilityTypeRequest.getTypeName())
@@ -40,7 +39,7 @@ public class LiabilityTypeService {
                                       .orElseThrow();
     }
 
-    public void deleteLiabilityType(UUID liabilityTypeId) {
+    public void deleteLiabilityType(String liabilityTypeId) {
         LiabilityType liabilityType = liabilityTypeRepository.findById(liabilityTypeId)
                                                              .orElseThrow();
 

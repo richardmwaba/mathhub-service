@@ -24,7 +24,7 @@ import java.util.UUID;
 public class CashTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID cashTransactionId;
+    private String cashTransactionId;
 
     @Column(name = "transaction_number", unique = true)
     private String transactionNumber;
@@ -79,11 +79,11 @@ public class CashTransaction {
     public CashTransaction() {
     }
 
-    public UUID getCashTransactionId() {
+    public String getCashTransactionId() {
         return this.cashTransactionId;
     }
 
-    public void setCashTransactionId(UUID cashTransactionId) {
+    public void setCashTransactionId(String cashTransactionId) {
         this.cashTransactionId = cashTransactionId;
     }
 

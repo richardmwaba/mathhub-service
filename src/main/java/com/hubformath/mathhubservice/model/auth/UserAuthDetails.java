@@ -9,14 +9,13 @@ import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 public class UserAuthDetails implements UserDetails {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final UUID userId;
+    private final String userId;
 
     private final String username;
 
@@ -27,7 +26,7 @@ public class UserAuthDetails implements UserDetails {
 
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public UserAuthDetails(UUID userId,
+    public UserAuthDetails(String userId,
                            String username,
                            String email,
                            String password,
@@ -58,7 +57,7 @@ public class UserAuthDetails implements UserDetails {
         return authorities;
     }
 
-    public UUID getUserId() {
+    public String getUserId() {
         return userId;
     }
 

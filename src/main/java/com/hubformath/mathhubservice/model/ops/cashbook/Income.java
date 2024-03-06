@@ -15,14 +15,13 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "incomes")
 public class Income {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID incomeId;
+    private String incomeId;
 
     @OneToOne
     @JoinColumn(name = "payment_method_id")
@@ -62,11 +61,11 @@ public class Income {
         this.approvedBy = approvedBy;
     }
 
-    public UUID getIncomeId() {
+    public String getIncomeId() {
         return incomeId;
     }
 
-    public void setIncomeId(UUID incomeId) {
+    public void setIncomeId(String incomeId) {
         this.incomeId = incomeId;
     }
 

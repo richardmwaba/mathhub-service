@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -67,7 +66,7 @@ public class ExamBoardController {
     }
 
     @GetMapping("/examBoards/{examBoardId}")
-    public ResponseEntity<EntityModel<ExamBoardDto>> getExamBoardById(@PathVariable final UUID examBoardId) {
+    public ResponseEntity<EntityModel<ExamBoardDto>> getExamBoardById(@PathVariable final String examBoardId) {
         try {
             ExamBoard examBoard = examBoardService.getExamBoardById(examBoardId);
             EntityModel<ExamBoardDto> examBoardEntityModel = toModel(modelMapper.map(examBoard, ExamBoardDto.class));
@@ -79,7 +78,7 @@ public class ExamBoardController {
 
     @PutMapping("/examBoards/{examBoardId}")
     public ResponseEntity<EntityModel<ExamBoardDto>> replaceExamBoard(@RequestBody final ExamBoardDto examBoardDto,
-                                                                      @PathVariable final UUID examBoardId) {
+                                                                      @PathVariable final String examBoardId) {
         try {
             ExamBoard examBoardRequest = modelMapper.map(examBoardDto, ExamBoard.class);
             ExamBoard updatedExamBoard = examBoardService.updateExamBoard(examBoardId, examBoardRequest);
@@ -92,7 +91,7 @@ public class ExamBoardController {
     }
 
     @DeleteMapping("/examBoards/{examBoardId}")
-    public ResponseEntity<String> deleteExamBoard(@PathVariable final UUID examBoardId) {
+    public ResponseEntity<String> deleteExamBoard(@PathVariable final String examBoardId) {
         try {
             examBoardService.deleteExamBoard(examBoardId);
             return ResponseEntity.ok().body("Exam Board deleted successfully");

@@ -12,7 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "exam_boards")
@@ -21,7 +20,7 @@ public class ExamBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "exam_board_id", updatable = false, nullable = false)
-    private UUID examBoardId;
+    private String examBoardId;
 
     @Column(name = "exam_board_name", nullable = false)
     private String examBoardName;
@@ -45,11 +44,11 @@ public class ExamBoard {
         this.examBoardDescription = examBoardDescription;
     }
 
-    public UUID getExamBoardId() {
+    public String getExamBoardId() {
         return this.examBoardId;
     }
 
-    public void setExamBoardId(UUID examBoardId) {
+    public void setExamBoardId(String examBoardId) {
         this.examBoardId = examBoardId;
     }
 

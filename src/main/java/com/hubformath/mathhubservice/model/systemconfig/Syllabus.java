@@ -12,7 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "syllabuses")
@@ -21,7 +20,7 @@ public class Syllabus {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "syllabus_id", updatable = false, nullable = false)
-    private UUID syllabusId;
+    private String syllabusId;
 
     @Column(name = "syllabus_name", nullable = false)
     private String syllabusName;
@@ -45,11 +44,11 @@ public class Syllabus {
         this.syllabusDescription = syllabusDescription;
     }
 
-    public UUID getSyllabusId() {
+    public String getSyllabusId() {
         return this.syllabusId;
     }
 
-    public void setSyllabusId(UUID syllabusId) {
+    public void setSyllabusId(String syllabusId) {
         this.syllabusId = syllabusId;
     }
 

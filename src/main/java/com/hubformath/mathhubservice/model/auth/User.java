@@ -17,7 +17,6 @@ import jakarta.persistence.UniqueConstraint;
 
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -29,7 +28,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id", updatable = false, nullable = false)
-    private UUID userId;
+    private String userId;
 
     @Column(name = "username", nullable = false)
     private String username;
@@ -80,11 +79,11 @@ public class User {
         this.password = password;
     }
 
-    public UUID getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

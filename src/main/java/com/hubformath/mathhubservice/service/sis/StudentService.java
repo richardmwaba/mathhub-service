@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class StudentService {
@@ -62,7 +61,7 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public Student getStudentById(UUID studentId) {
+    public Student getStudentById(String studentId) {
         return studentRepository.findById(studentId)
                                 .map(student -> {
                                     student.setStudentFinancialSummary(computeStudentFinancialSummary(student));
@@ -73,7 +72,7 @@ public class StudentService {
 
     public Student createStudent(StudentDto studentRequest) {
         final String gradeId = studentRequest.getGradeId();
-        final UUID examBoardId = studentRequest.getExamBoardId();
+        final String examBoardId = studentRequest.getExamBoardId();
         final String firstName = studentRequest.getFirstName();
         final String middleName = studentRequest.getMiddleName();
         final String lastName = studentRequest.getLastName();
@@ -104,7 +103,7 @@ public class StudentService {
         return studentRepository.save(newStudent);
     }
 
-    public Student updateStudent(UUID studentId, Student studentRequest) {
+    public Student updateStudent(String studentId, Student studentRequest) {
         return studentRepository.findById(studentId)
                                 .map(student -> {
                                     Optional.ofNullable(studentRequest.getFirstName()).ifPresent(student::setFirstName);
@@ -126,7 +125,7 @@ public class StudentService {
                                 .orElseThrow();
     }
 
-    public Student addLessonToStudent(final UUID studentId, final LessonDto lesson) {
+    public Student addLessonToStudent(final String studentId, final LessonDto lesson) {
         Student student = getStudentById(studentId);
         Subject subject = subjectService.getSubjectById(lesson.getSubjectId());
         LessonRate lessonRate = lessonRateService.getLessonRateBySubjectComplexity(subject.getSubjectComplexity());
@@ -150,7 +149,7 @@ public class StudentService {
         return new StudentFinancialSummary(student.isOwingPayment(), amountOwing);
     }
 
-    public void deleteStudent(UUID studentId) {
+    public void deleteStudent(String studentId) {
         Student student = studentRepository.findById(studentId)
                                            .orElseThrow();
 

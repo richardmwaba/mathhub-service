@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class PhoneNumberService {
@@ -21,7 +20,7 @@ public class PhoneNumberService {
         return phoneNumberRepository.findAll();
     }
 
-    public PhoneNumber getPhoneNumberById(final UUID phoneNumberId) {
+    public PhoneNumber getPhoneNumberById(final String phoneNumberId) {
         return phoneNumberRepository.findById(phoneNumberId).orElseThrow();
     }
 
@@ -29,7 +28,7 @@ public class PhoneNumberService {
         return phoneNumberRepository.save(phoneNumberRequest);
     }
 
-    public PhoneNumber updatePhoneNumber(final UUID phoneNumberId, final PhoneNumber phoneNumberRequest) {
+    public PhoneNumber updatePhoneNumber(final String phoneNumberId, final PhoneNumber phoneNumberRequest) {
         return phoneNumberRepository.findById(phoneNumberId)
                                     .map(phoneNumber -> {
                                         Optional.ofNullable(phoneNumberRequest.getType())
@@ -43,7 +42,7 @@ public class PhoneNumberService {
                                     .orElseThrow();
     }
 
-    public void deletePhoneNumber(final UUID phoneNumberId) {
+    public void deletePhoneNumber(final String phoneNumberId) {
         PhoneNumber phoneNumber = phoneNumberRepository.findById(phoneNumberId)
                                                        .orElseThrow();
 

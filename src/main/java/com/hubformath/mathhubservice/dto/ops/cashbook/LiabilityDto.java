@@ -3,10 +3,9 @@ package com.hubformath.mathhubservice.dto.ops.cashbook;
 import com.hubformath.mathhubservice.dto.systemconfig.LiabilityTypeDto;
 import com.hubformath.mathhubservice.dto.systemconfig.PaymentMethodDto;
 
-import java.util.UUID;
-
 public class LiabilityDto {
-    private UUID liabilityId;
+
+    private String liabilityId;
 
     private LiabilityTypeDto liabilityType;
 
@@ -14,11 +13,11 @@ public class LiabilityDto {
 
     private Double amount;
 
-    public UUID getLiabilityId() {
+    public String getLiabilityId() {
         return liabilityId;
     }
 
-    public void setLiabilityId(UUID liabilityId) {
+    public void setLiabilityId(String liabilityId) {
         this.liabilityId = liabilityId;
     }
 

@@ -11,7 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "income_types")
@@ -19,7 +18,7 @@ public class IncomeType {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "income_type_id", updatable = false, nullable = false)
-    private UUID incomeTypeId;
+    private String incomeTypeId;
 
     @Column(name = "type_name", nullable = false)
     private String typeName;
@@ -43,11 +42,11 @@ public class IncomeType {
         this.typeDescription = typeDescription;
     }
 
-    public UUID getIncomeTypeId() {
+    public String getIncomeTypeId() {
         return this.incomeTypeId;
     }
 
-    public void setIncomeTypeId(UUID incomeTypeId) {
+    public void setIncomeTypeId(String incomeTypeId) {
         this.incomeTypeId = incomeTypeId;
     }
 

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AddressService {
@@ -21,7 +20,7 @@ public class AddressService {
         return addressRepository.findAll();
     }
 
-    public Address getAddressById(final UUID addressId) {
+    public Address getAddressById(final String addressId) {
         return addressRepository.findById(addressId).orElseThrow();
     }
 
@@ -29,7 +28,7 @@ public class AddressService {
         return addressRepository.save(addressRequest);
     }
 
-    public Address updateAddress(final UUID addressId, final Address addressRequest) {
+    public Address updateAddress(final String addressId, final Address addressRequest) {
         return addressRepository.findById(addressId)
                                 .map(address -> {
                                     Optional.ofNullable(addressRequest.getAddressType())
@@ -48,7 +47,7 @@ public class AddressService {
                                 .orElseThrow();
     }
 
-    public void deleteAddress(final UUID addressId) {
+    public void deleteAddress(final String addressId) {
         Address address = addressRepository.findById(addressId)
                                            .orElseThrow();
 

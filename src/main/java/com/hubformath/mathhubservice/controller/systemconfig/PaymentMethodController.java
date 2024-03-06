@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -67,7 +66,7 @@ public class PaymentMethodController {
     }
 
     @GetMapping("/paymentMethods/{paymentMethodId}")
-    public ResponseEntity<EntityModel<PaymentMethodDto>> getPaymentMethodById(@PathVariable final UUID paymentMethodId) {
+    public ResponseEntity<EntityModel<PaymentMethodDto>> getPaymentMethodById(@PathVariable final String paymentMethodId) {
         try {
             PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(paymentMethodId);
             EntityModel<PaymentMethodDto> paymentMethodEntityModel = toModel(modelMapper.map(paymentMethod,
@@ -80,7 +79,7 @@ public class PaymentMethodController {
 
     @PutMapping("/paymentMethods/{paymentMethodId}")
     public ResponseEntity<EntityModel<PaymentMethodDto>> replacePaymentMethod(@RequestBody final PaymentMethodDto paymentMethodDto,
-                                                                              @PathVariable final UUID paymentMethodId) {
+                                                                              @PathVariable final String paymentMethodId) {
         try {
             PaymentMethod paymentMethodRequest = modelMapper.map(paymentMethodDto, PaymentMethod.class);
             PaymentMethod updatedPaymentMethod = paymentMethodService.updatePaymentMethod(paymentMethodId,
@@ -94,7 +93,7 @@ public class PaymentMethodController {
     }
 
     @DeleteMapping("/paymentMethods/{paymentMethodId}")
-    public ResponseEntity<String> deletePaymentMethod(@PathVariable final UUID paymentMethodId) {
+    public ResponseEntity<String> deletePaymentMethod(@PathVariable final String paymentMethodId) {
         try {
             paymentMethodService.deletePaymentMethod(paymentMethodId);
             return ResponseEntity.ok().body("Payment method deleted successfully");

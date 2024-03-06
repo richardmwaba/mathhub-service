@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 @Service
 public class TuitionPaymentService {
@@ -47,7 +46,7 @@ public class TuitionPaymentService {
         return tuitionPaymentRepository.findAll();
     }
 
-    public TuitionPayment getTuitionPaymentById(UUID tuitionPaymentId) {
+    public TuitionPayment getTuitionPaymentById(String tuitionPaymentId) {
         return tuitionPaymentRepository.findById(tuitionPaymentId).orElseThrow();
     }
 
@@ -58,12 +57,12 @@ public class TuitionPaymentService {
             return null;
         }
 
-        final UUID invoiceId = tuitionPayment.getInvoiceId();
+        final String invoiceId = tuitionPayment.getInvoiceId();
         final Invoice invoice = invoiceService.getInvoiceById(invoiceId);
-        final UUID paymentMethodId = tuitionPayment.getPaymentMethodId();
+        final String paymentMethodId = tuitionPayment.getPaymentMethodId();
         final String narration = tuitionPayment.getNarration();
         final Double amount = tuitionPayment.getAmount();
-        final Set<UUID> lessonsIds = tuitionPayment.getLessonsIds();
+        final Set<String> lessonsIds = tuitionPayment.getLessonsIds();
 
         final PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(paymentMethodId);
 

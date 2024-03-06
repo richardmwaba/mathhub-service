@@ -4,10 +4,10 @@ import com.hubformath.mathhubservice.dto.systemconfig.PaymentMethodDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.CashTransactionType;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public class CashTransactionDto {
-    private UUID cashTransactionId;
+
+    private String cashTransactionId;
 
     private String transactionNumber;
 
@@ -21,11 +21,11 @@ public class CashTransactionDto {
 
     private LocalDateTime transactionDateTime;
 
-    public UUID getCashTransactionId() {
+    public String getCashTransactionId() {
         return cashTransactionId;
     }
 
-    public void setCashTransactionId(UUID cashTransactionId) {
+    public void setCashTransactionId(String cashTransactionId) {
         this.cashTransactionId = cashTransactionId;
     }
 

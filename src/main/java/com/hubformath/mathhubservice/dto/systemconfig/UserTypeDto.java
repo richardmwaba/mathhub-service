@@ -1,6 +1,7 @@
 package com.hubformath.mathhubservice.dto.systemconfig;
 
 public class UserTypeDto {
+
     private Long id;
 
     private String typeName;

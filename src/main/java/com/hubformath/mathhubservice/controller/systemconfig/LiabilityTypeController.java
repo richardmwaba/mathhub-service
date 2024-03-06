@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -66,7 +65,7 @@ public class LiabilityTypeController {
     }
 
     @GetMapping("/liabilityTypes/{liabilityTypeId}")
-    public ResponseEntity<EntityModel<LiabilityTypeDto>> getLiabilityTypeById(@PathVariable final UUID liabilityTypeId) {
+    public ResponseEntity<EntityModel<LiabilityTypeDto>> getLiabilityTypeById(@PathVariable final String liabilityTypeId) {
         try {
             LiabilityType liabilityType = liabilityTypeService.getLiabilityTypeById(liabilityTypeId);
             EntityModel<LiabilityTypeDto> liabilityTypeEntityModel = toModel(modelMapper.map(liabilityType,
@@ -79,7 +78,7 @@ public class LiabilityTypeController {
 
     @PutMapping("/liabilityTypes/{liabilityTypeId}")
     public ResponseEntity<EntityModel<LiabilityTypeDto>> replaceLiabilityType(@RequestBody final LiabilityTypeDto liabilityTypeDto,
-                                                                              @PathVariable final UUID liabilityTypeId) {
+                                                                              @PathVariable final String liabilityTypeId) {
         try {
             LiabilityType liabilityTypeRequest = modelMapper.map(liabilityTypeDto, LiabilityType.class);
             LiabilityType updatedLiabilityType = liabilityTypeService.updateLiabilityType(liabilityTypeId,
@@ -93,7 +92,7 @@ public class LiabilityTypeController {
     }
 
     @DeleteMapping("/liabilityTypes/{liabilityTypeId}")
-    public ResponseEntity<String> deleteLiabilityType(@PathVariable final UUID liabilityTypeId) {
+    public ResponseEntity<String> deleteLiabilityType(@PathVariable final String liabilityTypeId) {
         try {
             liabilityTypeService.deleteLiabilityType(liabilityTypeId);
             return ResponseEntity.ok().body("Liability type deleted successfully");

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ParentService {
@@ -21,7 +20,7 @@ public class ParentService {
         return parentRepository.findAll();
     }
 
-    public Parent getParentById(final UUID parentId) {
+    public Parent getParentById(final String parentId) {
         return parentRepository.findById(parentId).orElseThrow();
     }
 
@@ -29,7 +28,7 @@ public class ParentService {
         return parentRepository.save(parentRequest);
     }
 
-    public Parent updateParent(final UUID parentId, final Parent parentRequest) {
+    public Parent updateParent(final String parentId, final Parent parentRequest) {
         return parentRepository.findById(parentId)
                                .map(parent -> {
                                    Optional.ofNullable(parentRequest.getFirstName()).ifPresent(parent::setFirstName);
@@ -45,7 +44,7 @@ public class ParentService {
                                .orElseThrow();
     }
 
-    public void deleteParent(final UUID parentId) {
+    public void deleteParent(final String parentId) {
         Parent parent = parentRepository.findById(parentId)
                                         .orElseThrow();
 

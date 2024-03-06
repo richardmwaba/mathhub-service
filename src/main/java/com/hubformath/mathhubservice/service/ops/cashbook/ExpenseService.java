@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ExpenseService {
@@ -37,14 +36,14 @@ public class ExpenseService {
         return expenseRepository.findAll();
     }
 
-    public Expense getExpenseById(UUID expenseId) {
+    public Expense getExpenseById(String expenseId) {
         return expenseRepository.findById(expenseId).orElseThrow();
 
     }
 
     public Expense createExpense(ExpenseRequestDto expenseRequest) {
-        final UUID expenseTypeId = expenseRequest.getExpenseTypeId();
-        final UUID paymentMethodId = expenseRequest.getPaymentMethodId();
+        final String expenseTypeId = expenseRequest.getExpenseTypeId();
+        final String paymentMethodId = expenseRequest.getPaymentMethodId();
         final Double amount = expenseRequest.getAmount();
         final String narration = expenseRequest.getNarration();
         final ExpenseStatus expenseStatus = expenseRequest.getStatus();
@@ -60,7 +59,7 @@ public class ExpenseService {
         return expenseRepository.save(newExpense);
     }
 
-    public Expense updateExpense(UUID expenseId, Expense expenseRequest) {
+    public Expense updateExpense(String expenseId, Expense expenseRequest) {
         return expenseRepository.findById(expenseId)
                                 .map(expense -> {
                                     Optional.ofNullable(expenseRequest.getPaymentMethod())
@@ -75,7 +74,7 @@ public class ExpenseService {
                                 .orElseThrow();
     }
 
-    public void deleteExpense(UUID expenseId) {
+    public void deleteExpense(String expenseId) {
         Expense expense = expenseRepository.findById(expenseId)
                                            .orElseThrow();
 

@@ -10,12 +10,12 @@ import com.hubformath.mathhubservice.model.sis.StudentGender;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
 
 public class StudentDto {
-    private UUID studentId;
 
-    private UUID examBoardId;
+    private String studentId;
+
+    private String examBoardId;
 
     private String gradeId;
 
@@ -47,21 +47,21 @@ public class StudentDto {
 
     private ExamBoardDto examBoard;
 
-    public UUID getStudentId() {
+    public String getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(UUID studentId) {
+    public void setStudentId(String studentId) {
         this.studentId = studentId;
     }
 
     @JsonIgnore
-    public UUID getExamBoardId() {
+    public String getExamBoardId() {
         return examBoardId;
     }
 
     @JsonProperty
-    public void setExamBoardId(UUID examBoardId) {
+    public void setExamBoardId(String examBoardId) {
         this.examBoardId = examBoardId;
     }
 

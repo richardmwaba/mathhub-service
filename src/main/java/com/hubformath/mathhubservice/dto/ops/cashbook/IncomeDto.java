@@ -3,10 +3,9 @@ package com.hubformath.mathhubservice.dto.ops.cashbook;
 import com.hubformath.mathhubservice.dto.systemconfig.IncomeTypeDto;
 import com.hubformath.mathhubservice.dto.systemconfig.PaymentMethodDto;
 
-import java.util.UUID;
-
 public class IncomeDto {
-    private UUID incomeId;
+
+    private String incomeId;
 
     private PaymentMethodDto paymentMethod;
 
@@ -16,11 +15,11 @@ public class IncomeDto {
 
     private Double amount;
 
-    public UUID getIncomeId() {
+    public String getIncomeId() {
         return incomeId;
     }
 
-    public void setIncomeId(UUID incomeId) {
+    public void setIncomeId(String incomeId) {
         this.incomeId = incomeId;
     }
 

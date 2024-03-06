@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -64,7 +63,7 @@ public class AddressController {
 
     @GetMapping("/addresses/{addressId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<EntityModel<AddressDto>> getAddressById(@PathVariable final UUID addressId) {
+    public ResponseEntity<EntityModel<AddressDto>> getAddressById(@PathVariable final String addressId) {
         try {
             Address address = addressService.getAddressById(addressId);
             EntityModel<AddressDto> addressEntityModel = toModel(modelMapper.map(address, AddressDto.class));
@@ -77,7 +76,7 @@ public class AddressController {
     @PutMapping("/addresses/{addressId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<AddressDto>> replaceAddress(@RequestBody final AddressDto addressDto,
-                                                                  @PathVariable final UUID addressId) {
+                                                                  @PathVariable final String addressId) {
         try {
             Address addressRequest = modelMapper.map(addressDto, Address.class);
             Address updatedAddress = addressService.updateAddress(addressId, addressRequest);
@@ -90,7 +89,7 @@ public class AddressController {
 
     @DeleteMapping("/addresses/{addressId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<String> deleteAddress(@PathVariable final UUID addressId) {
+    public ResponseEntity<String> deleteAddress(@PathVariable final String addressId) {
         try {
             addressService.deleteAddress(addressId);
             return ResponseEntity.ok().body("Address deleted successfully");

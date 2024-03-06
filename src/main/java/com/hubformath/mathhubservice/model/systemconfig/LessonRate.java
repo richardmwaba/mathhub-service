@@ -14,7 +14,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "lesson_rates")
@@ -22,7 +21,7 @@ public class LessonRate {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "lesson_rate_id", updatable = false, nullable = false)
-    private UUID lessonRateId;
+    private String lessonRateId;
 
     @Column(name = "amount_per_lesson", nullable = false)
     private Double amountPerLesson;
@@ -65,11 +64,11 @@ public class LessonRate {
         this.updatedAt = updatedAt;
     }
 
-    public UUID getLessonRateId() {
+    public String getLessonRateId() {
         return lessonRateId;
     }
 
-    public void setLessonRateId(UUID lessonRateId) {
+    public void setLessonRateId(String lessonRateId) {
         this.lessonRateId = lessonRateId;
     }
 

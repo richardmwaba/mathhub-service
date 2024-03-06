@@ -4,10 +4,9 @@ import com.hubformath.mathhubservice.dto.systemconfig.ExpenseTypeDto;
 import com.hubformath.mathhubservice.dto.systemconfig.PaymentMethodDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.ExpenseStatus;
 
-import java.util.UUID;
-
 public class ExpenseDto {
-    private UUID expenseId;
+
+    private String expenseId;
 
     private PaymentMethodDto paymentMethod;
 
@@ -19,11 +18,11 @@ public class ExpenseDto {
 
     private Double amount;
 
-    public UUID getExpenseId() {
+    public String getExpenseId() {
         return expenseId;
     }
 
-    public void setExpenseId(UUID expenseId) {
+    public void setExpenseId(String expenseId) {
         this.expenseId = expenseId;
     }
 

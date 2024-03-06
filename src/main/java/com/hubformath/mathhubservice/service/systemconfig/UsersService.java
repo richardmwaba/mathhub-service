@@ -16,7 +16,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import static com.hubformath.mathhubservice.model.auth.Role.ROLE_ADMINISTRATOR;
 import static com.hubformath.mathhubservice.model.auth.Role.ROLE_CASHIER;
@@ -68,11 +67,11 @@ public class UsersService {
         return userRepository.findAll();
     }
 
-    public User getUserById(UUID userId) {
+    public User getUserById(String userId) {
         return userRepository.findById(userId).orElseThrow();
     }
 
-    public User updateUser(UUID userId, UserRequest userRequest) {
+    public User updateUser(String userId, UserRequest userRequest) {
         return userRepository.findById(userId)
                              .map(user -> {
                                  Optional.ofNullable(userRequest.username())
@@ -96,7 +95,7 @@ public class UsersService {
                              .orElseThrow();
     }
 
-    public void deleteUser(UUID userId) {
+    public void deleteUser(String userId) {
         User user = userRepository.findById(userId)
                                   .orElseThrow();
 

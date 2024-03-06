@@ -25,7 +25,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "students")
@@ -34,7 +33,7 @@ public class Student {
     @ReadOnlyProperty
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "student_id")
-    private UUID studentId;
+    private String studentId;
 
     @Column(name = "first_name")
     private String firstName;
@@ -116,11 +115,11 @@ public class Student {
         this.gender = gender;
     }
 
-    public UUID getStudentId() {
+    public String getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(UUID studentId) {
+    public void setStudentId(String studentId) {
         this.studentId = studentId;
     }
 

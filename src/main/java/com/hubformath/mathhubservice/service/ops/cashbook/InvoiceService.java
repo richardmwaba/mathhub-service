@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class InvoiceService {
@@ -29,12 +28,12 @@ public class InvoiceService {
         return invoiceRepository.findAll();
     }
 
-    public Invoice getInvoiceById(UUID invoiceId) {
+    public Invoice getInvoiceById(String invoiceId) {
         return invoiceRepository.findById(invoiceId).orElseThrow();
     }
 
     public Invoice createInvoice(InvoiceDto invoiceRequest) {
-        final UUID studentId = invoiceRequest.getStudentId();
+        final String studentId = invoiceRequest.getStudentId();
         final String narration = invoiceRequest.getNarration();
 
         final Student student = studentService.getStudentById(studentId);
@@ -45,7 +44,7 @@ public class InvoiceService {
         return invoiceRepository.save(newInvoice);
     }
 
-    public Invoice updateInvoice(UUID invoiceId, Invoice invoiceRequest) {
+    public Invoice updateInvoice(String invoiceId, Invoice invoiceRequest) {
         return invoiceRepository.findById(invoiceId)
                                 .map(invoice -> {
                                     Optional.ofNullable(invoiceRequest.getNarration()).ifPresent(invoice::setNarration);
@@ -58,7 +57,7 @@ public class InvoiceService {
                                 .orElseThrow();
     }
 
-    public void deleteInvoice(UUID invoiceId) {
+    public void deleteInvoice(String invoiceId) {
         Invoice invoice = invoiceRepository.findById(invoiceId)
                                            .orElseThrow();
 

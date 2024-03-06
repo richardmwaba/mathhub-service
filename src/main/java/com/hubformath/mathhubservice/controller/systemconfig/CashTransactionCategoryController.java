@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -73,7 +72,7 @@ public class CashTransactionCategoryController {
     }
 
     @GetMapping("/cashTransactionCategories/{cashTransactionCategoryId}")
-    public ResponseEntity<EntityModel<CashTransactionCategoryDto>> getCashTransactionCategoryById(@PathVariable final UUID cashTransactionCategoryId) {
+    public ResponseEntity<EntityModel<CashTransactionCategoryDto>> getCashTransactionCategoryById(@PathVariable final String cashTransactionCategoryId) {
         try {
             CashTransactionCategory cashTransactionCategory = cashTransactionCategoryService.getCashTransactionCategoryById(
                     cashTransactionCategoryId);
@@ -88,7 +87,7 @@ public class CashTransactionCategoryController {
 
     @PutMapping("/cashTransactionCategories/{cashTransactionCategoryId}")
     public ResponseEntity<EntityModel<CashTransactionCategoryDto>> replaceCashTransactionCategory(@RequestBody final CashTransactionCategoryDto cashTransactionCategoryDto,
-                                                                                                  @PathVariable final UUID cashTransactionCategoryId) {
+                                                                                                  @PathVariable final String cashTransactionCategoryId) {
         try {
             CashTransactionCategory cashTransactionCategoryRequest = modelMapper.map(cashTransactionCategoryDto,
                                                                                      CashTransactionCategory.class);
@@ -105,7 +104,7 @@ public class CashTransactionCategoryController {
     }
 
     @DeleteMapping("/cashTransactionCategories/{cashTransactionCategoryId}")
-    public ResponseEntity<String> deleteCashTransactionCategory(@PathVariable final UUID cashTransactionCategoryId) {
+    public ResponseEntity<String> deleteCashTransactionCategory(@PathVariable final String cashTransactionCategoryId) {
         try {
             cashTransactionCategoryService.deleteCashTransactionCategory(cashTransactionCategoryId);
             return ResponseEntity.ok().body("Cash Transaction Category deleted successfully");

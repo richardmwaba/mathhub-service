@@ -10,7 +10,6 @@ import jakarta.persistence.OneToOne;
 
 import java.time.Instant;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity(name = "refresh_tokens")
 public class AuthRefreshToken {
@@ -18,7 +17,7 @@ public class AuthRefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "refresh_token_id", updatable = false, nullable = false)
-    private UUID refreshTokenId;
+    private String refreshTokenId;
 
     @OneToOne
     @JoinColumn(name = "user_id", unique = true, nullable = false)
@@ -34,11 +33,11 @@ public class AuthRefreshToken {
         // Default constructor for Hibernate
     }
 
-    public UUID getRefreshTokenId() {
+    public String getRefreshTokenId() {
         return refreshTokenId;
     }
 
-    public void setRefreshTokenId(UUID refreshTokenId) {
+    public void setRefreshTokenId(String refreshTokenId) {
         this.refreshTokenId = refreshTokenId;
     }
 

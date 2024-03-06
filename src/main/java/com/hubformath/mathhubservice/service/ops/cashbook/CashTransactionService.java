@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class CashTransactionService {
@@ -23,7 +22,7 @@ public class CashTransactionService {
         return transactionRepository.findAll();
     }
 
-    public CashTransaction getTransactionById(UUID cashTransactionId) {
+    public CashTransaction getTransactionById(String cashTransactionId) {
         return transactionRepository.findById(cashTransactionId).orElseThrow();
     }
 
@@ -31,7 +30,7 @@ public class CashTransactionService {
         return transactionRepository.save(cashTransaction);
     }
 
-    public CashTransaction updateTransaction(UUID cashTransactionId, CashTransaction transactionRequest) {
+    public CashTransaction updateTransaction(String cashTransactionId, CashTransaction transactionRequest) {
         return transactionRepository.findById(cashTransactionId)
                                     .map(transaction -> {
                                         Optional.ofNullable(transactionRequest.getPaymentMethod())
@@ -51,7 +50,7 @@ public class CashTransactionService {
                                     .orElseThrow();
     }
 
-    public void deleteTransaction(UUID cashTransactionId) {
+    public void deleteTransaction(String cashTransactionId) {
         CashTransaction transaction = transactionRepository.findById(cashTransactionId)
                                                            .orElseThrow();
 

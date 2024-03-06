@@ -17,7 +17,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "tuition_payments")
@@ -25,7 +24,7 @@ public class TuitionPayment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "tuition_payment_id")
-    private UUID tuitionPaymentId;
+    private String tuitionPaymentId;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cash_transaction_id")
@@ -46,7 +45,7 @@ public class TuitionPayment {
     private Double amount;
 
     @Column(name = "invoice_id")
-    private UUID invoiceId;
+    private String invoiceId;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "receipt_id")
@@ -73,7 +72,7 @@ public class TuitionPayment {
                           final Student student,
                           final PaymentMethod paymentMethod,
                           final Double amount,
-                          final UUID invoiceId,
+                          final String invoiceId,
                           final Receipt receipt,
                           final String narration) {
         this.cashTransaction = cashTransaction;
@@ -87,11 +86,11 @@ public class TuitionPayment {
         this.createdBy = null;
     }
 
-    public UUID getTuitionPaymentId() {
+    public String getTuitionPaymentId() {
         return tuitionPaymentId;
     }
 
-    public void setTuitionPaymentId(UUID tuitionPaymentId) {
+    public void setTuitionPaymentId(String tuitionPaymentId) {
         this.tuitionPaymentId = tuitionPaymentId;
     }
 
@@ -135,11 +134,11 @@ public class TuitionPayment {
         this.amount = amount;
     }
 
-    public UUID getInvoiceId() {
+    public String getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(UUID invoiceId) {
+    public void setInvoiceId(String invoiceId) {
         this.invoiceId = invoiceId;
     }
 

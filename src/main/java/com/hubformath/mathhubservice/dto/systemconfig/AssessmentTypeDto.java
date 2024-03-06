@@ -1,19 +1,18 @@
 package com.hubformath.mathhubservice.dto.systemconfig;
 
-import java.util.UUID;
-
 public class AssessmentTypeDto {
-    private UUID assessmentTypeId;
+
+    private String assessmentTypeId;
 
     private String typeName;
 
     private String typeDescription;
 
-    public UUID getAssessmentTypeId() {
+    public String getAssessmentTypeId() {
         return assessmentTypeId;
     }
 
-    public void setAssessmentTypeId(UUID assessmentTypeId) {
+    public void setAssessmentTypeId(String assessmentTypeId) {
         this.assessmentTypeId = assessmentTypeId;
     }
 

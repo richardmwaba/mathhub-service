@@ -20,7 +20,7 @@ public class Receipt {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "receipt_id")
-    private UUID receiptId;
+    private String receiptId;
 
     @Column(name = "receipt_number")
     private String receiptNumber;
@@ -52,11 +52,11 @@ public class Receipt {
     public Receipt() {
     }
 
-    public UUID getReceiptId() {
+    public String getReceiptId() {
         return receiptId;
     }
 
-    public void setReceiptId(UUID receiptId) {
+    public void setReceiptId(String receiptId) {
         this.receiptId = receiptId;
     }
 

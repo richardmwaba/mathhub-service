@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class EquityTypeService {
@@ -21,7 +20,7 @@ public class EquityTypeService {
         return equityTypeRepository.findAll();
     }
 
-    public EquityType getEquityTypeById(UUID equityTypeId) {
+    public EquityType getEquityTypeById(String equityTypeId) {
         return equityTypeRepository.findById(equityTypeId).orElseThrow();
     }
 
@@ -29,7 +28,7 @@ public class EquityTypeService {
         return equityTypeRepository.save(equityTypeRequest);
     }
 
-    public EquityType updateEquityType(UUID equityTypeId, EquityType equityTypeRequest) {
+    public EquityType updateEquityType(String equityTypeId, EquityType equityTypeRequest) {
         return equityTypeRepository.findById(equityTypeId)
                                    .map(equityType -> {
                                        Optional.ofNullable(equityTypeRequest.getTypeName())
@@ -41,7 +40,7 @@ public class EquityTypeService {
                                    .orElseThrow();
     }
 
-    public void deleteEquityType(UUID equityTypeId) {
+    public void deleteEquityType(String equityTypeId) {
         EquityType equityType = equityTypeRepository.findById(equityTypeId)
                                                     .orElseThrow();
 

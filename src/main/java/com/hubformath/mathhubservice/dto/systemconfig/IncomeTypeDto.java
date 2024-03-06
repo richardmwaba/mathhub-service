@@ -1,19 +1,18 @@
 package com.hubformath.mathhubservice.dto.systemconfig;
 
-import java.util.UUID;
-
 public class IncomeTypeDto {
-    private UUID incomeTypeId;
+
+    private String incomeTypeId;
 
     private String typeName;
 
     private String typeDescription;
 
-    public UUID getIncomeTypeId() {
+    public String getIncomeTypeId() {
         return incomeTypeId;
     }
 
-    public void setIncomeTypeId(UUID incomeTypeId) {
+    public void setIncomeTypeId(String incomeTypeId) {
         this.incomeTypeId = incomeTypeId;
     }
 
