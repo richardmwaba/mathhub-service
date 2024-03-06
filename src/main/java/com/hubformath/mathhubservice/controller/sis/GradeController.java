@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -67,7 +66,7 @@ public class GradeController {
 
     @GetMapping("/grades/{gradeId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<EntityModel<GradeDto>> getGradeById(@PathVariable final UUID gradeId) {
+    public ResponseEntity<EntityModel<GradeDto>> getGradeById(@PathVariable final String gradeId) {
         try {
             Grade grade = gradeService.getGradeById(gradeId);
             EntityModel<GradeDto> gradeEntityModel = toModel(modelMapper.map(grade, GradeDto.class));
@@ -80,7 +79,7 @@ public class GradeController {
     @PutMapping("/grades/{gradeId}")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<EntityModel<GradeDto>> replaceGrade(@RequestBody final GradeDto gradeDto,
-                                                              @PathVariable final UUID gradeId) {
+                                                              @PathVariable final String gradeId) {
         try {
             Grade gradeRequest = modelMapper.map(gradeDto, Grade.class);
             Grade updatedGrade = gradeService.updateGrade(gradeId, gradeRequest);
@@ -93,7 +92,7 @@ public class GradeController {
 
     @DeleteMapping("/grades/{gradeId}")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    public ResponseEntity<String> deleteGrade(@PathVariable final UUID gradeId) {
+    public ResponseEntity<String> deleteGrade(@PathVariable final String gradeId) {
         try {
             gradeService.deleteGrade(gradeId);
             return ResponseEntity.ok().body("Grade deleted successfully");

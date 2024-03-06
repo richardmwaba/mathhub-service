@@ -17,7 +17,7 @@ public class StudentDto {
 
     private UUID examBoardId;
 
-    private UUID gradeId;
+    private String gradeId;
 
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -66,12 +66,12 @@ public class StudentDto {
     }
 
     @JsonIgnore
-    public UUID getGradeId() {
+    public String getGradeId() {
         return gradeId;
     }
 
     @JsonProperty
-    public void setGradeId(UUID gradeId) {
+    public void setGradeId(String gradeId) {
         this.gradeId = gradeId;
     }
 

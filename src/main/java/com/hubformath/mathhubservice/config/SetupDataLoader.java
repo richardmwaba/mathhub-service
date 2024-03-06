@@ -11,12 +11,13 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Component
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SetupDataLoader.class);
-
-    private boolean alreadySetup = false;
 
     private final UserRoleRepository userRoleRepository;
 
@@ -28,9 +29,16 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Override
     @Transactional
     public void onApplicationEvent(@Nonnull ContextRefreshedEvent event) {
+        LOGGER.info("Seeding user roles into the database...");
+        Set<Role> currentRoles = userRoleRepository.findAll()
+                                                   .stream()
+                                                   .map(UserRole::getRole)
+                                                   .collect(Collectors.toSet());
 
-        if (alreadySetup)
+        if (currentRoles.containsAll(Set.of(Role.values()))) {
+            LOGGER.info("User roles already seeded into the database, nothing to do.");
             return;
+        }
 
         createRoleIfNotFound(Role.ROLE_ADMINISTRATOR);
         createRoleIfNotFound(Role.ROLE_CASHIER);
@@ -39,9 +47,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         createRoleIfNotFound(Role.ROLE_STUDENT);
         createRoleIfNotFound(Role.ROLE_TEACHER);
 
-        LOGGER.info("User roles seeded into the database successfully");
-
-        alreadySetup = true;
+        LOGGER.info("User roles seeded into the database successfully.");
     }
 
     private void createRoleIfNotFound(Role role) {
