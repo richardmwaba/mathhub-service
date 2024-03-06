@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -63,7 +62,7 @@ public class AssetTypeController {
     }
 
     @GetMapping("/assetTypes/{assetTypeId}")
-    public ResponseEntity<EntityModel<AssetTypeDto>> getAssetTypeById(@PathVariable final UUID assetTypeId) {
+    public ResponseEntity<EntityModel<AssetTypeDto>> getAssetTypeById(@PathVariable final String assetTypeId) {
         try {
             AssetType assetType = assetTypeService.getAssetTypeById(assetTypeId);
             EntityModel<AssetTypeDto> assetTypeEntityModel = toModel(modelMapper.map(assetType, AssetTypeDto.class));
@@ -75,7 +74,7 @@ public class AssetTypeController {
 
     @PutMapping("/assetTypes/{assetTypeId}")
     public ResponseEntity<EntityModel<AssetTypeDto>> updateAssetType(@RequestBody final AssetTypeDto assetTypeDto,
-                                                                      @PathVariable final UUID assetTypeId) {
+                                                                      @PathVariable final String assetTypeId) {
         try {
             AssetType assetTypeRequest = modelMapper.map(assetTypeDto, AssetType.class);
             AssetType updatedAssetType = assetTypeService.updateAssetType(assetTypeId, assetTypeRequest);
@@ -88,7 +87,7 @@ public class AssetTypeController {
     }
 
     @DeleteMapping("/assetTypes/{assetTypeId}")
-    public ResponseEntity<String> deleteAssetType(@PathVariable final UUID assetTypeId) {
+    public ResponseEntity<String> deleteAssetType(@PathVariable final String assetTypeId) {
         try {
             assetTypeService.deleteAssetType(assetTypeId);
             return ResponseEntity.ok().body("Asset type deleted successfully");

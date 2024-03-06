@@ -14,7 +14,7 @@ public abstract class StudentActionBase {
 
         SEND_INVOICE("SEND_INVOICE");
 
-        private String value;
+        private final String value;
 
         StudentActionTypeEnum(final String value) {
             this.value = value;

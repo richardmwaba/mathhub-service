@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class CashTransactionCategoryService {
@@ -21,7 +20,7 @@ public class CashTransactionCategoryService {
         return cashTransactionCategoryRepository.findAll();
     }
 
-    public CashTransactionCategory getCashTransactionCategoryById(UUID cashTransactionCategoryId) {
+    public CashTransactionCategory getCashTransactionCategoryById(String cashTransactionCategoryId) {
         return cashTransactionCategoryRepository.findById(cashTransactionCategoryId).orElseThrow();
     }
 
@@ -29,7 +28,7 @@ public class CashTransactionCategoryService {
         return cashTransactionCategoryRepository.save(cashTransactionCategoryRequest);
     }
 
-    public CashTransactionCategory updateCashTransactionCategory(UUID cashTransactionCategoryId,
+    public CashTransactionCategory updateCashTransactionCategory(String cashTransactionCategoryId,
                                                                  CashTransactionCategory cashTransactionCategoryRequest) {
         return cashTransactionCategoryRepository.findById(cashTransactionCategoryId)
                                                 .map(cashTransactionCategory -> {
@@ -43,7 +42,7 @@ public class CashTransactionCategoryService {
                                                 .orElseThrow();
     }
 
-    public void deleteCashTransactionCategory(UUID cashTransactionCategoryId) {
+    public void deleteCashTransactionCategory(String cashTransactionCategoryId) {
         CashTransactionCategory cashTransactionCategory = cashTransactionCategoryRepository.findById(
                                                                                                    cashTransactionCategoryId)
                                                                                            .orElseThrow();

@@ -3,11 +3,11 @@ package com.hubformath.mathhubservice.dto.systemconfig;
 import com.hubformath.mathhubservice.model.systemconfig.SubjectComplexity;
 
 import java.time.Instant;
-import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class LessonRateDto {
-    private UUID lessonRateId;
+
+    private String lessonRateId;
 
     private Double amountPerLesson;
 
@@ -17,11 +17,11 @@ public class LessonRateDto {
 
     private Instant expiredDate;
 
-    public UUID getLessonRateId() {
+    public String getLessonRateId() {
         return lessonRateId;
     }
 
-    public void setLessonRateId(UUID lessonRateId) {
+    public void setLessonRateId(String lessonRateId) {
         this.lessonRateId = lessonRateId;
     }
 

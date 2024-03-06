@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 public class CashTransactionRequestDto {
 
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private Long paymentMethodId;
 

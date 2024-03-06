@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class IncomeTypeService {
@@ -21,7 +20,7 @@ public class IncomeTypeService {
         return incomeTypeRepository.findAll();
     }
 
-    public IncomeType getIncomeTypeById(UUID incomeTypeId) {
+    public IncomeType getIncomeTypeById(String incomeTypeId) {
         return incomeTypeRepository.findById(incomeTypeId).orElseThrow();
     }
 
@@ -29,7 +28,7 @@ public class IncomeTypeService {
         return incomeTypeRepository.save(incomeTypeRequest);
     }
 
-    public IncomeType updateIncomeType(UUID incomeTypeId, IncomeType incomeTypeRequest) {
+    public IncomeType updateIncomeType(String incomeTypeId, IncomeType incomeTypeRequest) {
         return incomeTypeRepository.findById(incomeTypeId)
                                    .map(incomeType -> {
                                        Optional.ofNullable(incomeTypeRequest.getTypeName())
@@ -41,7 +40,7 @@ public class IncomeTypeService {
                                    .orElseThrow();
     }
 
-    public void deleteIncomeType(UUID incomeTypeId) {
+    public void deleteIncomeType(String incomeTypeId) {
         IncomeType incomeType = incomeTypeRepository.findById(incomeTypeId)
                                                     .orElseThrow();
 

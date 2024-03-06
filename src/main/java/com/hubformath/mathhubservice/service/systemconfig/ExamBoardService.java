@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ExamBoardService {
@@ -22,7 +21,7 @@ public class ExamBoardService {
         return examBoardRepository.findAll();
     }
 
-    public ExamBoard getExamBoardById(UUID examBoardId) {
+    public ExamBoard getExamBoardById(String examBoardId) {
         return examBoardRepository.findById(examBoardId).orElseThrow();
     }
 
@@ -30,7 +29,7 @@ public class ExamBoardService {
         return examBoardRepository.save(examBoardRequest);
     }
 
-    public ExamBoard updateExamBoard(UUID examBoardId, ExamBoard examBoardRequest) {
+    public ExamBoard updateExamBoard(String examBoardId, ExamBoard examBoardRequest) {
         return examBoardRepository.findById(examBoardId)
                                   .map(examBoard -> {
                                       Optional.ofNullable(examBoardRequest.getExamBoardName())
@@ -42,7 +41,7 @@ public class ExamBoardService {
                                   .orElseThrow();
     }
 
-    public void deleteExamBoard(UUID examBoardId) {
+    public void deleteExamBoard(String examBoardId) {
         ExamBoard examBoard = examBoardRepository.findById(examBoardId)
                                                  .orElseThrow();
 

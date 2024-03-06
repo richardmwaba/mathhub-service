@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -70,7 +69,7 @@ public class TuitionPaymentController {
 
     @GetMapping("/tuitionPayments/{tuitionPaymentId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT') or hasRole('TEACHER')")
-    public ResponseEntity<EntityModel<TuitionPaymentDto>> getTuitionPaymentById(@PathVariable final UUID tuitionPaymentId) {
+    public ResponseEntity<EntityModel<TuitionPaymentDto>> getTuitionPaymentById(@PathVariable final String tuitionPaymentId) {
         try {
             TuitionPayment tuitionPayment = tuitionPaymentService.getTuitionPaymentById(tuitionPaymentId);
             EntityModel<TuitionPaymentDto> tuitionPaymentEntityModel = toModel(modelMapper.map(tuitionPayment,

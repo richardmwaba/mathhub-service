@@ -15,7 +15,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "liabilities")
@@ -23,7 +22,7 @@ public class Liability {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "liability_id")
-    private UUID liabilityId;
+    private String liabilityId;
 
     @OneToOne
     @JoinColumn(name = "liability_type_id")
@@ -59,11 +58,11 @@ public class Liability {
         this.approvedBy = approvedBy;
     }
 
-    public UUID getLiabilityId() {
+    public String getLiabilityId() {
         return liabilityId;
     }
 
-    public void setLiabilityId(UUID liabilityId) {
+    public void setLiabilityId(String liabilityId) {
         this.liabilityId = liabilityId;
     }
 

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class SessionTypeService {
@@ -21,7 +20,7 @@ public class SessionTypeService {
         return sessionTypeRepository.findAll();
     }
 
-    public SessionType getSessionTypeById(UUID sessionTypeId) {
+    public SessionType getSessionTypeById(String sessionTypeId) {
         return sessionTypeRepository.findById(sessionTypeId).orElseThrow();
     }
 
@@ -29,7 +28,7 @@ public class SessionTypeService {
         return sessionTypeRepository.save(sessionTypeRequest);
     }
 
-    public SessionType updateSessionType(UUID sessionTypeId, SessionType sessionTypeRequest) {
+    public SessionType updateSessionType(String sessionTypeId, SessionType sessionTypeRequest) {
         return sessionTypeRepository.findById(sessionTypeId)
                                     .map(sessionType -> {
                                         Optional.ofNullable(sessionTypeRequest.getTypeName())
@@ -41,7 +40,7 @@ public class SessionTypeService {
                                     .orElseThrow();
     }
 
-    public void deleteSessionType(UUID sessionTypeId) {
+    public void deleteSessionType(String sessionTypeId) {
         SessionType sessionType = sessionTypeRepository.findById(sessionTypeId)
                                                        .orElseThrow();
 

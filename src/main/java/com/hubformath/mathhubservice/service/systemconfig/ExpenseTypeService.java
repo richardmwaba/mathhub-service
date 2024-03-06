@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ExpenseTypeService {
@@ -21,7 +20,7 @@ public class ExpenseTypeService {
         return expenseTypeRepository.findAll();
     }
 
-    public ExpenseType getExpenseTypeById(UUID expenseTypeId) {
+    public ExpenseType getExpenseTypeById(String expenseTypeId) {
         return expenseTypeRepository.findById(expenseTypeId).orElseThrow();
     }
 
@@ -29,7 +28,7 @@ public class ExpenseTypeService {
         return expenseTypeRepository.save(expenseTypeRequest);
     }
 
-    public ExpenseType updateExpenseType(UUID expenseTypeId, ExpenseType expenseTypeRequest) {
+    public ExpenseType updateExpenseType(String expenseTypeId, ExpenseType expenseTypeRequest) {
         return expenseTypeRepository.findById(expenseTypeId)
                                     .map(expenseType -> {
                                         Optional.ofNullable(expenseTypeRequest.getTypeName())
@@ -41,7 +40,7 @@ public class ExpenseTypeService {
                                     .orElseThrow();
     }
 
-    public void deleteExpenseType(UUID expenseTypeId) {
+    public void deleteExpenseType(String expenseTypeId) {
         ExpenseType expenseType = expenseTypeRepository.findById(expenseTypeId)
                                                        .orElseThrow();
 

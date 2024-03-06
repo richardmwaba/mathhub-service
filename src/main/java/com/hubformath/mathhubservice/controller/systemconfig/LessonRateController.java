@@ -23,7 +23,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -71,7 +70,7 @@ public class LessonRateController {
     }
 
     @GetMapping("/lessonRates/{lessonRateId}")
-    public ResponseEntity<EntityModel<LessonRateDto>> getLessonRateById(@PathVariable final UUID lessonRateId) {
+    public ResponseEntity<EntityModel<LessonRateDto>> getLessonRateById(@PathVariable final String lessonRateId) {
         try {
             LessonRate lessonRate = lessonRateService.getLessonRateById(lessonRateId);
             EntityModel<LessonRateDto> lessonRateEntityModel =

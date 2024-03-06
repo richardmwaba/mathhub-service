@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AssessmentTypeService {
@@ -21,7 +20,7 @@ public class AssessmentTypeService {
         return assessmentTypeRepository.findAll();
     }
 
-    public AssessmentType getAssessmentTypeById(UUID assessmentTypeId) {
+    public AssessmentType getAssessmentTypeById(String assessmentTypeId) {
         return assessmentTypeRepository.findById(assessmentTypeId).orElseThrow();
     }
 
@@ -29,7 +28,7 @@ public class AssessmentTypeService {
         return assessmentTypeRepository.save(assessmentTypeRequest);
     }
 
-    public AssessmentType updateAssessmentType(UUID assessmentTypeId, AssessmentType assessmentTypeRequest) {
+    public AssessmentType updateAssessmentType(String assessmentTypeId, AssessmentType assessmentTypeRequest) {
         return assessmentTypeRepository.findById(assessmentTypeId)
                                        .map(assessmentType -> {
                                            Optional.ofNullable(assessmentTypeRequest.getTypeName())
@@ -41,7 +40,7 @@ public class AssessmentTypeService {
                                        .orElseThrow();
     }
 
-    public void deleteAssessmentType(UUID assessmentTypeId) {
+    public void deleteAssessmentType(String assessmentTypeId) {
         AssessmentType assessmentType = assessmentTypeRepository.findById(assessmentTypeId)
                                                                 .orElseThrow();
 

@@ -1,11 +1,10 @@
 package com.hubformath.mathhubservice.dto.ops.cashbook;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 public class ReceiptDto {
 
-    private UUID liabilityId;
+    private String liabilityId;
 
     private String receiptNumber;
 
@@ -15,11 +14,11 @@ public class ReceiptDto {
 
     private Long issuedBy;
 
-    public UUID getLiabilityId() {
+    public String getLiabilityId() {
         return liabilityId;
     }
 
-    public void setLiabilityId(UUID liabilityId) {
+    public void setLiabilityId(String liabilityId) {
         this.liabilityId = liabilityId;
     }
 

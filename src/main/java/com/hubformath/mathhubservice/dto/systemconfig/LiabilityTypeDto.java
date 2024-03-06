@@ -1,19 +1,18 @@
 package com.hubformath.mathhubservice.dto.systemconfig;
 
-import java.util.UUID;
-
 public class LiabilityTypeDto {
-    private UUID liabilityTypeId;
+
+    private String liabilityTypeId;
 
     private String typeName;
 
     private String typeDescription;
 
-    public UUID getLiabilityTypeId() {
+    public String getLiabilityTypeId() {
         return liabilityTypeId;
     }
 
-    public void setLiabilityTypeId(UUID liabilityTypeId) {
+    public void setLiabilityTypeId(String liabilityTypeId) {
         this.liabilityTypeId = liabilityTypeId;
     }
 

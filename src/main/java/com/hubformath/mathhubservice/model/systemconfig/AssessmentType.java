@@ -11,7 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "assessment_types")
@@ -19,7 +18,7 @@ public class AssessmentType {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "assessment_type_id", updatable = false, nullable = false)
-    private UUID assessmentTypeId;
+    private String assessmentTypeId;
 
     @Column(name = "type_name", nullable = false)
     private String typeName;
@@ -43,11 +42,11 @@ public class AssessmentType {
         this.typeDescription = typeDescription;
     }
 
-    public UUID getAssessmentTypeId() {
+    public String getAssessmentTypeId() {
         return this.assessmentTypeId;
     }
 
-    public void setAssessmentTypeId(UUID assessmentTypeId) {
+    public void setAssessmentTypeId(String assessmentTypeId) {
         this.assessmentTypeId = assessmentTypeId;
     }
 

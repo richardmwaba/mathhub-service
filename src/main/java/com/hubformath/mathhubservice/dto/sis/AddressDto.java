@@ -2,10 +2,9 @@ package com.hubformath.mathhubservice.dto.sis;
 
 import com.hubformath.mathhubservice.model.sis.AddressType;
 
-import java.util.UUID;
-
 public class AddressDto {
-    private UUID addressId;
+
+    private String addressId;
 
     private AddressType addressType;
 
@@ -21,11 +20,11 @@ public class AddressDto {
 
     private String zipCode;
 
-    public UUID getAddressId() {
+    public String getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(UUID addressId) {
+    public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 

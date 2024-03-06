@@ -24,7 +24,7 @@ import java.util.UUID;
 public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID invoiceId;
+    private String invoiceId;
 
     @Column(name = "invoice_number")
     private String invoiceNumber;
@@ -72,11 +72,11 @@ public class Invoice {
         this.dueDate = LocalDate.now().plusDays(14);
     }
 
-    public UUID getInvoiceId() {
+    public String getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(UUID invoiceId) {
+    public void setInvoiceId(String invoiceId) {
         this.invoiceId = invoiceId;
     }
 

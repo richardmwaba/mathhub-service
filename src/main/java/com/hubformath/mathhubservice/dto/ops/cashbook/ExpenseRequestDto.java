@@ -2,24 +2,23 @@ package com.hubformath.mathhubservice.dto.ops.cashbook;
 
 import com.hubformath.mathhubservice.model.ops.cashbook.ExpenseStatus;
 
-import java.util.UUID;
-
 public class ExpenseRequestDto {
-    private UUID paymentMethodId;
+
+    private String paymentMethodId;
 
     private String narration;
 
     private ExpenseStatus status;
 
-    private UUID expenseTypeId;
+    private String expenseTypeId;
 
     private Double amount;
 
-    public UUID getPaymentMethodId() {
+    public String getPaymentMethodId() {
         return paymentMethodId;
     }
 
-    public void setPaymentMethodId(UUID paymentMethodId) {
+    public void setPaymentMethodId(String paymentMethodId) {
         this.paymentMethodId = paymentMethodId;
     }
 
@@ -39,11 +38,11 @@ public class ExpenseRequestDto {
         this.status = status;
     }
 
-    public UUID getExpenseTypeId() {
+    public String getExpenseTypeId() {
         return expenseTypeId;
     }
 
-    public void setExpenseTypeId(UUID expenseTypeId) {
+    public void setExpenseTypeId(String expenseTypeId) {
         this.expenseTypeId = expenseTypeId;
     }
 

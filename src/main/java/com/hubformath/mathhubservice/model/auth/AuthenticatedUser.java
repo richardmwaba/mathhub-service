@@ -1,11 +1,10 @@
 package com.hubformath.mathhubservice.model.auth;
 
 import java.util.Set;
-import java.util.UUID;
 
 public record AuthenticatedUser(String accessToken,
                                 String refreshToken,
-                                UUID userId,
+                                String userId,
                                 String username,
                                 String email,
                                 Set<String> roles,
@@ -13,7 +12,7 @@ public record AuthenticatedUser(String accessToken,
 
     public AuthenticatedUser(String accessToken,
                              String refreshToken,
-                             UUID userId,
+                             String userId,
                              String username,
                              String email,
                              Set<String> roles) {

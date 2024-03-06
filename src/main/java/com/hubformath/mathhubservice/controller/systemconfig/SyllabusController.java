@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 
@@ -64,7 +63,7 @@ public class SyllabusController {
     }
 
     @GetMapping("/syllabus/{syllabusId}")
-    public ResponseEntity<EntityModel<SyllabusDto>> getSyllabusById(@PathVariable final UUID syllabusId) {
+    public ResponseEntity<EntityModel<SyllabusDto>> getSyllabusById(@PathVariable final String syllabusId) {
         try {
             Syllabus syllabus = syllabusService.getSyllabusById(syllabusId);
             EntityModel<SyllabusDto> syllabusEntityModel = toModel(modelMapper.map(syllabus, SyllabusDto.class));
@@ -76,7 +75,7 @@ public class SyllabusController {
 
     @PutMapping("/syllabus/{syllabusId}")
     public ResponseEntity<EntityModel<SyllabusDto>> replaceSyllabus(@RequestBody final SyllabusDto syllabusDto,
-                                                                    @PathVariable final UUID syllabusId) {
+                                                                    @PathVariable final String syllabusId) {
         try {
             Syllabus syllabusRequest = modelMapper.map(syllabusDto, Syllabus.class);
             Syllabus updatedSyllabus = syllabusService.updateSyllabus(syllabusId, syllabusRequest);
@@ -88,7 +87,7 @@ public class SyllabusController {
     }
 
     @DeleteMapping("/syllabus/{syllabusId}")
-    public ResponseEntity<String> deleteSyllabus(@PathVariable final UUID syllabusId) {
+    public ResponseEntity<String> deleteSyllabus(@PathVariable final String syllabusId) {
         try {
             syllabusService.deleteSyllabus(syllabusId);
             return ResponseEntity.ok().body("Syllabus deleted successfully");

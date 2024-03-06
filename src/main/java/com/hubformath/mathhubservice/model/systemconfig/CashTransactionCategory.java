@@ -11,7 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "cash_transaction_categories")
@@ -19,7 +18,7 @@ public class CashTransactionCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "cash_transaction_category_id", updatable = false, nullable = false)
-    private UUID cashTransactionCategoryId;
+    private String cashTransactionCategoryId;
 
     @Column(name = "category_name", nullable = false)
     private String categoryName;
@@ -43,11 +42,11 @@ public class CashTransactionCategory {
         this.categoryDescription = categoryDescription;
     }
 
-    public UUID getCashTransactionCategoryId() {
+    public String getCashTransactionCategoryId() {
         return cashTransactionCategoryId;
     }
 
-    public void setCashTransactionCategoryId(UUID cashTransactionCategoryId) {
+    public void setCashTransactionCategoryId(String cashTransactionCategoryId) {
         this.cashTransactionCategoryId = cashTransactionCategoryId;
     }
 

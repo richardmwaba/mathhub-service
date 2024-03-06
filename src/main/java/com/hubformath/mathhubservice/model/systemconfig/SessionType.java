@@ -11,7 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "session_types")
@@ -19,7 +18,7 @@ public class SessionType {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "session_type_id", updatable = false, nullable = false)
-    private UUID sessionTypeId;
+    private String sessionTypeId;
 
     @Column(name = "type_name", nullable = false)
     private String typeName;
@@ -43,11 +42,11 @@ public class SessionType {
         this.typeDescription = typeDescription;
     }
 
-    public UUID getSessionTypeId() {
+    public String getSessionTypeId() {
         return this.sessionTypeId;
     }
 
-    public void setSessionTypeId(UUID sessionTypeId) {
+    public void setSessionTypeId(String sessionTypeId) {
         this.sessionTypeId = sessionTypeId;
     }
 

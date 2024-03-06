@@ -15,7 +15,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "equities")
@@ -23,7 +22,7 @@ public class Equity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "equity_id")
-    private UUID equityId;
+    private String equityId;
 
     @OneToOne
     @JoinColumn(name = "payment_method_id")
@@ -64,11 +63,11 @@ public class Equity {
     }
 
 
-    public UUID getEquityId() {
+    public String getEquityId() {
         return equityId;
     }
 
-    public void setEquityId(UUID equityId) {
+    public void setEquityId(String equityId) {
         this.equityId = equityId;
     }
 

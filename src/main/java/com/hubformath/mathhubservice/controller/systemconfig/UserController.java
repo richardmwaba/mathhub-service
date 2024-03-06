@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -62,7 +61,7 @@ public class UserController {
 
     @GetMapping("/users/{userId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER')")
-    public ResponseEntity<EntityModel<User>> getUserById(@PathVariable final UUID userId) {
+    public ResponseEntity<EntityModel<User>> getUserById(@PathVariable final String userId) {
         try {
             User user = usersService.getUserById(userId);
             EntityModel<User> userEntityModel = toModel(user);
@@ -75,7 +74,7 @@ public class UserController {
 
     @PutMapping("/users/{userId}")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    public ResponseEntity<EntityModel<User>> updateUser(@PathVariable final UUID userId,
+    public ResponseEntity<EntityModel<User>> updateUser(@PathVariable final String userId,
                                                         @RequestBody final UserRequest userRequest) {
         try {
             User updatedUser = usersService.updateUser(userId, userRequest);
@@ -89,7 +88,7 @@ public class UserController {
 
     @DeleteMapping("/users/{userId}")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    public ResponseEntity<String> deleteUser(@PathVariable final UUID userId) {
+    public ResponseEntity<String> deleteUser(@PathVariable final String userId) {
         try {
             usersService.deleteUser(userId);
             return ResponseEntity.ok().body("User deleted successfully");

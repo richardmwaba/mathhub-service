@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class SyllabusService {
@@ -22,7 +21,7 @@ public class SyllabusService {
         return syllabusRepository.findAll();
     }
 
-    public Syllabus getSyllabusById(UUID syllabusId) {
+    public Syllabus getSyllabusById(String syllabusId) {
         return syllabusRepository.findById(syllabusId).orElseThrow();
     }
 
@@ -30,7 +29,7 @@ public class SyllabusService {
         return syllabusRepository.save(syllabusRequest);
     }
 
-    public Syllabus updateSyllabus(UUID syllabusId, Syllabus syllabusRequest) {
+    public Syllabus updateSyllabus(String syllabusId, Syllabus syllabusRequest) {
         return syllabusRepository.findById(syllabusId)
                                  .map(syllabus -> {
                                      Optional.ofNullable(syllabusRequest.getSyllabusName())
@@ -42,7 +41,7 @@ public class SyllabusService {
                                  .orElseThrow();
     }
 
-    public void deleteSyllabus(UUID syllabusId) {
+    public void deleteSyllabus(String syllabusId) {
         Syllabus syllabus = syllabusRepository.findById(syllabusId)
                                               .orElseThrow();
 

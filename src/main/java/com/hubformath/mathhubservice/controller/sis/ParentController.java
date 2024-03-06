@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -64,7 +63,7 @@ public class ParentController {
 
     @GetMapping("/parents/{parentId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<EntityModel<ParentDto>> getParentById(@PathVariable final UUID parentId) {
+    public ResponseEntity<EntityModel<ParentDto>> getParentById(@PathVariable final String parentId) {
         try {
             Parent parent = parentService.getParentById(parentId);
             EntityModel<ParentDto> parentEntityModel = toModel(modelMapper.map(parent, ParentDto.class));
@@ -77,7 +76,7 @@ public class ParentController {
     @PutMapping("/parents/{parentId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<ParentDto>> replaceParent(@RequestBody final ParentDto parentDto,
-                                                                @PathVariable final UUID parentId) {
+                                                                @PathVariable final String parentId) {
         try {
             Parent parentRequest = modelMapper.map(parentDto, Parent.class);
             Parent updatedParent = parentService.updateParent(parentId, parentRequest);
@@ -90,7 +89,7 @@ public class ParentController {
 
     @DeleteMapping("/parents/{parentId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('STUDENT')")
-    public ResponseEntity<String> deleteParent(@PathVariable final UUID parentId) {
+    public ResponseEntity<String> deleteParent(@PathVariable final String parentId) {
         try {
             parentService.deleteParent(parentId);
             return ResponseEntity.ok().body("Parent deleted successfully");

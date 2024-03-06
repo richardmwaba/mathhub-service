@@ -1,22 +1,20 @@
 package com.hubformath.mathhubservice.dto.ops.cashbook;
 
-import java.util.UUID;
-
 public class IncomeRequestDto {
 
-    private UUID paymentMethodId;
+    private String paymentMethodId;
 
     private String narration;
 
-    private UUID incomeTypeId;
+    private String incomeTypeId;
 
     private Double amount;
 
-    public UUID getPaymentMethodId() {
+    public String getPaymentMethodId() {
         return paymentMethodId;
     }
 
-    public void setPaymentMethodId(UUID paymentMethodId) {
+    public void setPaymentMethodId(String paymentMethodId) {
         this.paymentMethodId = paymentMethodId;
     }
 
@@ -28,11 +26,11 @@ public class IncomeRequestDto {
         this.narration = narration;
     }
 
-    public UUID getIncomeTypeId() {
+    public String getIncomeTypeId() {
         return incomeTypeId;
     }
 
-    public void setIncomeTypeId(UUID incomeTypeId) {
+    public void setIncomeTypeId(String incomeTypeId) {
         this.incomeTypeId = incomeTypeId;
     }
 

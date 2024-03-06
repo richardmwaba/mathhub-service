@@ -7,20 +7,20 @@ import com.hubformath.mathhubservice.dto.systemconfig.PaymentMethodDto;
 
 import java.time.LocalDate;
 import java.util.Set;
-import java.util.UUID;
 
 public class TuitionPaymentDto {
-    private UUID tuitionPaymentId;
+
+    private String tuitionPaymentId;
 
     private CashTransactionDto cashTransaction;
 
     private StudentDto student;
 
-    private UUID studentId;
+    private String studentId;
 
-    private Set<UUID> lessonsIds;
+    private Set<String> lessonsIds;
 
-    private UUID paymentMethodId;
+    private String paymentMethodId;
 
     private PaymentMethodDto paymentMethod;
 
@@ -28,17 +28,17 @@ public class TuitionPaymentDto {
 
     private Double amount;
 
-    private UUID invoiceId;
+    private String invoiceId;
 
     private ReceiptDto receipt;
 
     private String narration;
 
-    public UUID getTuitionPaymentId() {
+    public String getTuitionPaymentId() {
         return tuitionPaymentId;
     }
 
-    public void setTuitionPaymentId(UUID tuitionPaymentId) {
+    public void setTuitionPaymentId(String tuitionPaymentId) {
         this.tuitionPaymentId = tuitionPaymentId;
     }
 
@@ -59,32 +59,32 @@ public class TuitionPaymentDto {
     }
 
     @JsonIgnore
-    public UUID getStudentId() {
+    public String getStudentId() {
         return studentId;
     }
 
     @JsonProperty
-    public void setStudentId(UUID studentId) {
+    public void setStudentId(String studentId) {
         this.studentId = studentId;
     }
 
     @JsonIgnore
-    public Set<UUID> getLessonsIds() {
+    public Set<String> getLessonsIds() {
         return lessonsIds;
     }
 
     @JsonProperty
-    public void setLessonsIds(Set<UUID> lessonsIds) {
+    public void setLessonsIds(Set<String> lessonsIds) {
         this.lessonsIds = lessonsIds;
     }
 
     @JsonIgnore
-    public UUID getPaymentMethodId() {
+    public String getPaymentMethodId() {
         return paymentMethodId;
     }
 
     @JsonProperty
-    public void setPaymentMethodId(UUID paymentMethodId) {
+    public void setPaymentMethodId(String paymentMethodId) {
         this.paymentMethodId = paymentMethodId;
     }
 
@@ -112,11 +112,11 @@ public class TuitionPaymentDto {
         this.amount = amount;
     }
 
-    public UUID getInvoiceId() {
+    public String getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(UUID invoiceId) {
+    public void setInvoiceId(String invoiceId) {
         this.invoiceId = invoiceId;
     }
 

@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -68,7 +67,7 @@ public class AssessmentTypeController {
     }
 
     @GetMapping("/assessmentTypes/{assessmentTypeId}")
-    public ResponseEntity<EntityModel<AssessmentTypeDto>> getAssessmentTypeById(@PathVariable final UUID assessmentTypeId) {
+    public ResponseEntity<EntityModel<AssessmentTypeDto>> getAssessmentTypeById(@PathVariable final String assessmentTypeId) {
         try {
             AssessmentType assessmentType = assessmentTypeService.getAssessmentTypeById(assessmentTypeId);
             EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(assessmentType,
@@ -81,7 +80,7 @@ public class AssessmentTypeController {
 
     @PutMapping("/assessmentTypes/{assessmentTypeId}")
     public ResponseEntity<EntityModel<AssessmentTypeDto>> replaceAssessmentType(@RequestBody final AssessmentTypeDto assessmentTypeDto,
-                                                                                @PathVariable final UUID assessmentTypeId) {
+                                                                                @PathVariable final String assessmentTypeId) {
         try {
             AssessmentType assessmentTypeRequest = modelMapper.map(assessmentTypeDto, AssessmentType.class);
             AssessmentType updatedAssessmentType = assessmentTypeService.updateAssessmentType(assessmentTypeId,
@@ -95,7 +94,7 @@ public class AssessmentTypeController {
     }
 
     @DeleteMapping("/assessmentTypes/{assessmentTypeId}")
-    public ResponseEntity<String> deleteAssessmentType(@PathVariable final UUID assessmentTypeId) {
+    public ResponseEntity<String> deleteAssessmentType(@PathVariable final String assessmentTypeId) {
         try {
             assessmentTypeService.deleteAssessmentType(assessmentTypeId);
             return ResponseEntity.ok().body("Assessment type deleted successfully");

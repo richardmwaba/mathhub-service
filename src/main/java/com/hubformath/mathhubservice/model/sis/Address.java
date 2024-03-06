@@ -13,7 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "addresses")
@@ -21,7 +20,7 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "address_id")
-    private UUID addressId;
+    private String addressId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "address_type")
@@ -67,11 +66,11 @@ public class Address {
         this.zipCode = zipCode;
     }
 
-    public UUID getAddressId() {
+    public String getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(UUID addressId) {
+    public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 

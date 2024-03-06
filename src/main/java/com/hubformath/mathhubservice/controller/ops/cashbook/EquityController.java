@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -65,7 +64,7 @@ public class EquityController {
     }
 
     @GetMapping("/equity/{equityId}")
-    public ResponseEntity<EntityModel<EquityDto>> getEquityById(@PathVariable final UUID equityId) {
+    public ResponseEntity<EntityModel<EquityDto>> getEquityById(@PathVariable final String equityId) {
         try {
             Equity equity = equityService.getEquityById(equityId);
             EntityModel<EquityDto> equityEntityModel = toModel(modelMapper.map(equity, EquityDto.class));
@@ -77,7 +76,7 @@ public class EquityController {
 
     @PatchMapping("/equity/{equityId}")
     public ResponseEntity<EntityModel<EquityDto>> updateEquity(@RequestBody final EquityDto equityDto,
-                                                               @PathVariable final UUID equityId) {
+                                                               @PathVariable final String equityId) {
         try {
             Equity equityRequest = modelMapper.map(equityDto, Equity.class);
             Equity updatedEquity = equityService.updateEquity(equityId, equityRequest);
@@ -90,7 +89,7 @@ public class EquityController {
     }
 
     @DeleteMapping("/equity/{equityId}")
-    public ResponseEntity<String> deleteEquity(@PathVariable UUID equityId) {
+    public ResponseEntity<String> deleteEquity(@PathVariable String equityId) {
         try {
             equityService.deleteEquity(equityId);
             return ResponseEntity.ok().body("Equity deleted successfully");

@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -64,7 +63,7 @@ public class AssetController {
     }
 
     @GetMapping("/assets/{assetId}")
-    public ResponseEntity<EntityModel<AssetDto>> getAssetById(@PathVariable final UUID assetId) {
+    public ResponseEntity<EntityModel<AssetDto>> getAssetById(@PathVariable final String assetId) {
         try {
             Asset asset = assetService.getAssetById(assetId);
             EntityModel<AssetDto> assetEntityModel = toModel(modelMapper.map(asset, AssetDto.class));
@@ -76,7 +75,7 @@ public class AssetController {
 
     @PutMapping("/assets/{assetId}")
     public ResponseEntity<EntityModel<AssetDto>> replaceAsset(@RequestBody final AssetDto assetDto,
-                                                              @PathVariable final UUID assetId) {
+                                                              @PathVariable final String assetId) {
         try {
             Asset assetRequest = modelMapper.map(assetDto, Asset.class);
             Asset updatedAsset = assetService.updateAsset(assetId, assetRequest);
@@ -88,7 +87,7 @@ public class AssetController {
     }
 
     @DeleteMapping("/assets/{assetId}")
-    public ResponseEntity<String> deleteAsset(@PathVariable UUID assetId) {
+    public ResponseEntity<String> deleteAsset(@PathVariable String assetId) {
         try {
             assetService.deleteAsset(assetId);
             return ResponseEntity.ok().body("Asset deleted successfully");

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class EquityService {
@@ -23,7 +22,7 @@ public class EquityService {
         return equityRepository.findAll();
     }
 
-    public Equity getEquityById(UUID equityId) {
+    public Equity getEquityById(String equityId) {
         return equityRepository.findById(equityId).orElseThrow();
     }
 
@@ -31,7 +30,7 @@ public class EquityService {
         return equityRepository.save(equityRequest);
     }
 
-    public Equity updateEquity(UUID equityId, Equity equityRequest) {
+    public Equity updateEquity(String equityId, Equity equityRequest) {
         return equityRepository.findById(equityId)
                                .map(equity -> {
                                    Optional.ofNullable(equityRequest.getPaymentMethod())
@@ -44,7 +43,7 @@ public class EquityService {
                                .orElseThrow();
     }
 
-    public void deleteEquity(UUID equityId) {
+    public void deleteEquity(String equityId) {
         Equity equity = equityRepository.findById(equityId)
                                         .orElseThrow();
 

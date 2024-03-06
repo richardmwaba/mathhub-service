@@ -6,16 +6,16 @@ import com.hubformath.mathhubservice.dto.sis.StudentDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.InvoiceStatus;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 public class InvoiceDto {
-    private UUID invoiceId;
+
+    private String invoiceId;
 
     private String invoiceNumber;
 
     private StudentDto student;
 
-    private UUID studentId;
+    private String studentId;
 
     private LocalDate invoiceDate;
 
@@ -27,11 +27,11 @@ public class InvoiceDto {
 
     private LocalDate dueDate;
 
-    public UUID getInvoiceId() {
+    public String getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(UUID invoiceId) {
+    public void setInvoiceId(String invoiceId) {
         this.invoiceId = invoiceId;
     }
 
@@ -52,12 +52,12 @@ public class InvoiceDto {
     }
 
     @JsonIgnore
-    public UUID getStudentId() {
+    public String getStudentId() {
         return studentId;
     }
 
     @JsonProperty
-    public void setStudentId(UUID studentId) {
+    public void setStudentId(String studentId) {
         this.studentId = studentId;
     }
 

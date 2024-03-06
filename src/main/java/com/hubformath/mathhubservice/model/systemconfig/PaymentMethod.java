@@ -11,7 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "payment_methods")
@@ -19,7 +18,7 @@ public class PaymentMethod {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "payment_method_id", updatable = false, nullable = false)
-    private UUID paymentMethodId;
+    private String paymentMethodId;
 
     @Column(name = "type_name", nullable = false)
     private String typeName;
@@ -43,11 +42,11 @@ public class PaymentMethod {
         this.typeDescription = typeDescription;
     }
 
-    public UUID getPaymentMethodId() {
+    public String getPaymentMethodId() {
         return this.paymentMethodId;
     }
 
-    public void setPaymentMethodId(UUID paymentMethodId) {
+    public void setPaymentMethodId(String paymentMethodId) {
         this.paymentMethodId = paymentMethodId;
     }
 

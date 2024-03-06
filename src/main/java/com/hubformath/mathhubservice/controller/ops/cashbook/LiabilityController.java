@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -64,7 +63,7 @@ public class LiabilityController {
     }
 
     @GetMapping("/liabilities/{liabilityId}")
-    public ResponseEntity<EntityModel<LiabilityDto>> getLiabilityById(@PathVariable final UUID liabilityId) {
+    public ResponseEntity<EntityModel<LiabilityDto>> getLiabilityById(@PathVariable final String liabilityId) {
         try {
             Liability liability = liabilityService.getLiabilityById(liabilityId);
             EntityModel<LiabilityDto> liabilityEntityModel = toModel(modelMapper.map(liability, LiabilityDto.class));
@@ -76,7 +75,7 @@ public class LiabilityController {
 
     @PutMapping("/liabilities/{liabilityId}")
     public ResponseEntity<EntityModel<LiabilityDto>> replaceLiability(@RequestBody LiabilityDto liabilityDto,
-                                                                      @PathVariable UUID liabilityId) {
+                                                                      @PathVariable String liabilityId) {
         try {
             Liability liabilityRequest = modelMapper.map(liabilityDto, Liability.class);
             Liability updatedLiability = liabilityService.updateLiability(liabilityId, liabilityRequest);
@@ -89,7 +88,7 @@ public class LiabilityController {
     }
 
     @DeleteMapping("/liabilities/{liabilityId}")
-    public ResponseEntity<String> deleteLiability(@PathVariable final UUID liabilityId) {
+    public ResponseEntity<String> deleteLiability(@PathVariable final String liabilityId) {
         try {
             liabilityService.deleteLiability(liabilityId);
             return ResponseEntity.ok().body("Liability deleted successfully");

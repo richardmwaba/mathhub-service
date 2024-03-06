@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 
@@ -65,7 +64,7 @@ public class ExpenseController {
     }
 
     @GetMapping("/expenses/{expenseId}")
-    public ResponseEntity<EntityModel<ExpenseDto>> getExpenseById(@PathVariable final UUID expenseId) {
+    public ResponseEntity<EntityModel<ExpenseDto>> getExpenseById(@PathVariable final String expenseId) {
         try {
             Expense expense = expenseService.getExpenseById(expenseId);
             EntityModel<ExpenseDto> expenseEntityModel = toModel(modelMapper.map(expense, ExpenseDto.class));
@@ -77,7 +76,7 @@ public class ExpenseController {
 
     @PutMapping("/expenses/{expenseId}")
     public ResponseEntity<EntityModel<ExpenseDto>> replaceExpense(@RequestBody final ExpenseDto expenseDto,
-                                                                  @PathVariable final UUID expenseId) {
+                                                                  @PathVariable final String expenseId) {
         try {
             Expense expenseRequest = modelMapper.map(expenseDto, Expense.class);
             Expense updatedExpense = expenseService.updateExpense(expenseId, expenseRequest);
@@ -89,7 +88,7 @@ public class ExpenseController {
     }
 
     @DeleteMapping("/expenses/{expenseId}")
-    public ResponseEntity<String> deleteExpense(@PathVariable final UUID expenseId) {
+    public ResponseEntity<String> deleteExpense(@PathVariable final String expenseId) {
         try {
             expenseService.deleteExpense(expenseId);
             return ResponseEntity.ok().body("Expense deleted successfully");

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AssetTypeService {
@@ -21,7 +20,7 @@ public class AssetTypeService {
         return assetTypeRepository.findAll();
     }
 
-    public AssetType getAssetTypeById(UUID assetTypeId) {
+    public AssetType getAssetTypeById(String assetTypeId) {
         return assetTypeRepository.findById(assetTypeId).orElseThrow();
     }
 
@@ -29,7 +28,7 @@ public class AssetTypeService {
         return assetTypeRepository.save(assetTypeRequest);
     }
 
-    public AssetType updateAssetType(UUID assetTypeId, AssetType assetTypeRequest) {
+    public AssetType updateAssetType(String assetTypeId, AssetType assetTypeRequest) {
         return assetTypeRepository.findById(assetTypeId)
                                   .map(assetType -> {
                                       Optional.ofNullable(assetTypeRequest.getTypeName())
@@ -41,7 +40,7 @@ public class AssetTypeService {
                                   .orElseThrow();
     }
 
-    public void deleteAssetType(UUID assetTypeId) {
+    public void deleteAssetType(String assetTypeId) {
         AssetType assetType = assetTypeRepository.findById(assetTypeId)
                                                  .orElseThrow();
 

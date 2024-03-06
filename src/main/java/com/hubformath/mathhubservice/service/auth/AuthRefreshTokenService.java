@@ -45,7 +45,7 @@ public class AuthRefreshTokenService {
     }
 
     @Transactional
-    public AuthRefreshToken createRefreshToken(UUID userId) {
+    public AuthRefreshToken createRefreshToken(String userId) {
         User user = userRepository.findById(userId).orElseThrow();
         AuthRefreshToken authRefreshToken =  authRefreshTokenRepository.findByUser(user).orElse(null);
 
@@ -79,7 +79,7 @@ public class AuthRefreshTokenService {
                                          }).orElseThrow();
     }
 
-    private AuthRefreshToken createNewRefreshToken(UUID userId) {
+    private AuthRefreshToken createNewRefreshToken(String userId) {
         AuthRefreshToken authRefreshToken = new AuthRefreshToken();
 
         authRefreshToken.setUser(userRepository.findById(userId).orElseThrow());

@@ -1,20 +1,18 @@
 package com.hubformath.mathhubservice.dto.systemconfig;
 
-import java.util.UUID;
-
 public class SyllabusDto {
 
-    private UUID syllabusId;
+    private String syllabusId;
 
     private String syllabusName;
 
     private String syllabusDescription;
 
-    public UUID getSyllabusId() {
+    public String getSyllabusId() {
         return syllabusId;
     }
 
-    public void setSyllabusId(UUID syllabusId) {
+    public void setSyllabusId(String syllabusId) {
         this.syllabusId = syllabusId;
     }
 

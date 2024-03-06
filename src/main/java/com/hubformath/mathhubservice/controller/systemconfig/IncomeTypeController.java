@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -64,7 +63,7 @@ public class IncomeTypeController {
     }
 
     @GetMapping("/incomeTypes/{incomeTypeId}")
-    public ResponseEntity<EntityModel<IncomeTypeDto>> getIncomeTypeById(@PathVariable final UUID incomeTypeId) {
+    public ResponseEntity<EntityModel<IncomeTypeDto>> getIncomeTypeById(@PathVariable final String incomeTypeId) {
         try {
             IncomeType incomeType = incomeTypeService.getIncomeTypeById(incomeTypeId);
             EntityModel<IncomeTypeDto> incomeTypeEntityModel = toModel(modelMapper.map(incomeType,
@@ -77,7 +76,7 @@ public class IncomeTypeController {
 
     @PutMapping("/incomeTypes/{incomeTypeId}")
     public ResponseEntity<EntityModel<IncomeTypeDto>> replaceIncomeType(@RequestBody final IncomeTypeDto incomeTypeDto,
-                                                                        @PathVariable final UUID incomeTypeId) {
+                                                                        @PathVariable final String incomeTypeId) {
         try {
             IncomeType incomeTypeRequest = modelMapper.map(incomeTypeDto, IncomeType.class);
             IncomeType updatedIncomeType = incomeTypeService.updateIncomeType(incomeTypeId, incomeTypeRequest);
@@ -90,7 +89,7 @@ public class IncomeTypeController {
     }
 
     @DeleteMapping("/incomeTypes/{incomeTypeId}")
-    public ResponseEntity<String> deleteIncomeType(@PathVariable final UUID incomeTypeId) {
+    public ResponseEntity<String> deleteIncomeType(@PathVariable final String incomeTypeId) {
         try {
             incomeTypeService.deleteIncomeType(incomeTypeId);
             return ResponseEntity.ok().body("Income type deleted successfully");

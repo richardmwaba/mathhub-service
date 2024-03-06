@@ -65,7 +65,7 @@ public class StudentController {
 
     @GetMapping("/students/{studentId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<EntityModel<StudentDto>> getStudentById(@PathVariable final UUID studentId) {
+    public ResponseEntity<EntityModel<StudentDto>> getStudentById(@PathVariable final String studentId) {
         try {
             Student student = studentService.getStudentById(studentId);
             EntityModel<StudentDto> studentEntityModel = toModel(modelMapper.map(student, StudentDto.class));
@@ -78,7 +78,7 @@ public class StudentController {
     @PutMapping("/students/{studentId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<StudentDto>> replaceStudent(@RequestBody final StudentDto studentDto,
-                                                                  @PathVariable final UUID studentId) {
+                                                                  @PathVariable final String studentId) {
         try {
             Student studentRequest = modelMapper.map(studentDto, Student.class);
             Student updatedStudent = studentService.updateStudent(studentId, studentRequest);
@@ -91,7 +91,7 @@ public class StudentController {
 
     @DeleteMapping("/students/{studentId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER')")
-    public ResponseEntity<String> deleteStudent(@PathVariable final UUID studentId) {
+    public ResponseEntity<String> deleteStudent(@PathVariable final String studentId) {
         try {
             studentService.deleteStudent(studentId);
             return ResponseEntity.ok().body("Student deleted successfully");
@@ -102,7 +102,7 @@ public class StudentController {
 
     @PostMapping("/students/{studentId}/lessons")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<EntityModel<StudentDto>> addStudentLesson(@PathVariable final UUID studentId,
+    public ResponseEntity<EntityModel<StudentDto>> addStudentLesson(@PathVariable final String studentId,
                                                                     @RequestBody final LessonDto lessonRequest) {
         try {
             Student student = studentService.addLessonToStudent(studentId, lessonRequest);

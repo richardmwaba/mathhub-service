@@ -1,20 +1,19 @@
 package com.hubformath.mathhubservice.dto.systemconfig;
 
-import java.util.UUID;
-
 public class ExpenseTypeDto {
-    private UUID expenseTypeId;
+
+    private String expenseTypeId;
 
     private String typeName;
 
     private String typeDescription;
 
 
-    public UUID getExpenseTypeId() {
+    public String getExpenseTypeId() {
         return expenseTypeId;
     }
 
-    public void setExpenseTypeId(UUID expenseTypeId) {
+    public void setExpenseTypeId(String expenseTypeId) {
         this.expenseTypeId = expenseTypeId;
     }
 

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class IncomeService {
@@ -36,20 +35,20 @@ public class IncomeService {
         return incomeRepository.findAll();
     }
 
-    public Income getIncomeById(UUID incomeId) {
+    public Income getIncomeById(String incomeId) {
         return incomeRepository.findById(incomeId).orElseThrow();
     }
 
     public Income createIncome(IncomeRequestDto incomeRequest) {
-        final UUID paymentMethodId = incomeRequest.getPaymentMethodId();
-        final UUID incomeTypeId = incomeRequest.getIncomeTypeId();
+        final String paymentMethodId = incomeRequest.getPaymentMethodId();
+        final String incomeTypeId = incomeRequest.getIncomeTypeId();
         final String narration = incomeRequest.getNarration();
         final Double amount = incomeRequest.getAmount();
 
         final PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(paymentMethodId);
         final IncomeType incomeType = incomeTypeService.getIncomeTypeById(incomeTypeId);
 
-        // To do: Replace null created by with actual logged in user
+        // To do: Replace null created by with actual logged-in user
         final Income newIncome = new Income(narration, amount, null, null);
         newIncome.setIncomeType(incomeType);
         newIncome.setPaymentMethod(paymentMethod);
@@ -57,7 +56,7 @@ public class IncomeService {
         return incomeRepository.save(newIncome);
     }
 
-    public Income updateIncome(UUID incomeId, Income incomeRequest) {
+    public Income updateIncome(String incomeId, Income incomeRequest) {
         return incomeRepository.findById(incomeId)
                                .map(income -> {
                                    Optional.ofNullable(incomeRequest.getNarration()).ifPresent(income::setNarration);
@@ -70,7 +69,7 @@ public class IncomeService {
                                .orElseThrow();
     }
 
-    public void deleteIncome(UUID incomeId) {
+    public void deleteIncome(String incomeId) {
         Income income = incomeRepository.findById(incomeId)
                                         .orElseThrow();
 

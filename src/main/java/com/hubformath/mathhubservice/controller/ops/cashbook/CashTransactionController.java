@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 
@@ -54,7 +53,7 @@ public class CashTransactionController {
     }
 
     @GetMapping("/transactions/{cashTransactionId}")
-    public ResponseEntity<EntityModel<CashTransactionDto>> getTransactionById(@PathVariable final UUID cashTransactionId) {
+    public ResponseEntity<EntityModel<CashTransactionDto>> getTransactionById(@PathVariable final String cashTransactionId) {
         try {
             CashTransaction transaction = transactionService.getTransactionById(cashTransactionId);
             EntityModel<CashTransactionDto> transactionEntityModel = toModel(modelMapper.map(transaction,
@@ -67,7 +66,7 @@ public class CashTransactionController {
 
     @PatchMapping("/transactions/{cashTransactionId}")
     public ResponseEntity<EntityModel<CashTransactionDto>> replaceTransaction(@RequestBody final CashTransactionDto transactionDto,
-                                                                              @PathVariable final UUID cashTransactionId) {
+                                                                              @PathVariable final String cashTransactionId) {
         try {
             CashTransaction transactionRequest = modelMapper.map(transactionDto, CashTransaction.class);
             CashTransaction updatedTransaction = transactionService.updateTransaction(cashTransactionId,
@@ -82,7 +81,7 @@ public class CashTransactionController {
     }
 
     @DeleteMapping("/transactions/{cashTransactionId}")
-    public ResponseEntity<String> deleteTransaction(@PathVariable final UUID cashTransactionId) {
+    public ResponseEntity<String> deleteTransaction(@PathVariable final String cashTransactionId) {
         try {
             transactionService.deleteTransaction(cashTransactionId);
             return ResponseEntity.ok().body("Transaction deleted successfully");

@@ -8,11 +8,10 @@ import com.hubformath.mathhubservice.model.sis.SessionType;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 public class LessonDto {
 
-    private UUID lessonId;
+    private String lessonId;
 
     private Subject subject;
 
@@ -32,11 +31,11 @@ public class LessonDto {
 
     private PaymentStatus lessonPaymentStatus;
 
-    public UUID getLessonId() {
+    public String getLessonId() {
         return lessonId;
     }
 
-    public void setLessonId(UUID lessonId) {
+    public void setLessonId(String lessonId) {
         this.lessonId = lessonId;
     }
 
