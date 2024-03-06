@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class GradeService {
@@ -21,7 +20,7 @@ public class GradeService {
         return gradeRepository.findAll();
     }
 
-    public Grade getGradeById(UUID gradeId) {
+    public Grade getGradeById(String gradeId) {
         return gradeRepository.findById(gradeId).orElseThrow();
     }
 
@@ -29,19 +28,18 @@ public class GradeService {
         return gradeRepository.save(gradeRequest);
     }
 
-    public Grade updateGrade(UUID gradeId, Grade gradeRequest) {
+    public Grade updateGrade(String gradeId, Grade gradeRequest) {
         return gradeRepository.findById(gradeId)
                               .map(grade -> {
                                   Optional.ofNullable(gradeRequest.getGradeName()).ifPresent(grade::setGradeName);
                                   Optional.ofNullable(gradeRequest.getGradeDescription())
                                           .ifPresent(grade::setGradeDescription);
-                                  Optional.ofNullable(gradeRequest.getSubjects()).ifPresent(grade::setSubjects);
                                   return gradeRepository.save(grade);
                               })
                               .orElseThrow();
     }
 
-    public void deleteGrade(UUID gradeId) {
+    public void deleteGrade(String gradeId) {
         Grade grade = gradeRepository.findById(gradeId)
                                      .orElseThrow();
 

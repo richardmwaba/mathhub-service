@@ -7,6 +7,7 @@ import com.hubformath.mathhubservice.model.auth.User;
 import com.hubformath.mathhubservice.repository.auth.AuthRefreshTokenRepository;
 import com.hubformath.mathhubservice.repository.auth.UserRepository;
 import jakarta.security.auth.message.AuthException;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,13 +44,17 @@ public class AuthRefreshTokenService {
         this.jwtUtils = jwtUtils;
     }
 
+    @Transactional
     public AuthRefreshToken createRefreshToken(UUID userId) {
         User user = userRepository.findById(userId).orElseThrow();
-        return authRefreshTokenRepository.findByUser(user)
-                                         .map(authRefreshToken -> {
-                                             authRefreshTokenRepository.delete(authRefreshToken);
-                                             return createNewRefreshToken(userId);
-                                         }).orElseGet(() -> createNewRefreshToken(userId));
+        AuthRefreshToken authRefreshToken =  authRefreshTokenRepository.findByUser(user).orElse(null);
+
+        if (authRefreshToken != null) {
+                authRefreshTokenRepository.delete(authRefreshToken);
+                return createNewRefreshToken(userId);
+        }
+
+        return createNewRefreshToken(userId);
     }
 
     public boolean deleteRefreshToken(String username) {

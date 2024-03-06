@@ -2,6 +2,7 @@ package com.hubformath.mathhubservice.model.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nonnull;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -51,13 +53,19 @@ public class User {
     @JsonIgnore
     private String password;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private AuthRefreshToken refreshToken;
+
     @ManyToMany
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "user_role_id"))
     private Set<UserRole> userRoles;
 
+    @SuppressWarnings("unused")
     public User() {
+        // Default constructor for Hibernate
     }
 
     public User(@Nonnull final String username,
@@ -136,6 +144,14 @@ public class User {
         this.password = password;
     }
 
+    public AuthRefreshToken getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(AuthRefreshToken refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
     public Set<UserRole> getUserRoles() {
         return userRoles;
     }
@@ -156,6 +172,7 @@ public class User {
                 && Objects.equals(getEmail(), user.getEmail())
                 && Objects.equals(getPhoneNumber(), user.getPhoneNumber())
                 && Objects.equals(getPassword(), user.getPassword())
+                && Objects.equals(getRefreshToken(), user.getRefreshToken())
                 && Objects.equals(getUserRoles(), user.getUserRoles());
     }
 

@@ -1,21 +1,17 @@
 package com.hubformath.mathhubservice.model.systemconfig;
 
 
-import com.hubformath.mathhubservice.model.sis.Student;
-import jakarta.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "grades")
@@ -24,7 +20,7 @@ public class Grade {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "grade_id", updatable = false, nullable = false)
-    private UUID gradeId;
+    private String gradeId;
 
     @Column(name = "grade_name", nullable = false)
     private String gradeName;
@@ -32,18 +28,14 @@ public class Grade {
     @Column(name = "grade_description", nullable = false)
     private String gradeDescription;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subjectGrade")
-    private List<Subject> subjects;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "grade")
-    private List<Student> students;
-
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
+    @JsonIgnore
     private LocalDateTime createdAt;
 
     @CreationTimestamp
     @Column(name = "updated_at")
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
     public Grade() {
@@ -55,11 +47,11 @@ public class Grade {
     }
 
 
-    public UUID getGradeId() {
+    public String getGradeId() {
         return this.gradeId;
     }
 
-    public void setGradeId(UUID gradeId) {
+    public void setGradeId(String gradeId) {
         this.gradeId = gradeId;
     }
 
@@ -77,22 +69,6 @@ public class Grade {
 
     public void setGradeDescription(String gradeDescription) {
         this.gradeDescription = gradeDescription;
-    }
-
-    public List<Student> getStudents() {
-        return students;
-    }
-
-    public void setStudents(List<Student> students) {
-        this.students = students;
-    }
-
-    public List<Subject> getSubjects() {
-        return subjects;
-    }
-
-    public void setSubjects(List<Subject> subjects) {
-        this.subjects = subjects;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -117,14 +93,12 @@ public class Grade {
         if (!(o instanceof Grade grade)) return false;
         return Objects.equals(getGradeId(), grade.getGradeId())
                 && Objects.equals(getGradeName(), grade.getGradeName())
-                && Objects.equals(getGradeDescription(), grade.getGradeDescription())
-                && Objects.equals(getSubjects(), grade.getSubjects())
-                && Objects.equals(getStudents(), grade.getStudents());
+                && Objects.equals(getGradeDescription(), grade.getGradeDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getGradeId(), getGradeName(), getGradeDescription(), getSubjects(), getStudents());
+        return Objects.hash(getGradeId(), getGradeName(), getGradeDescription());
     }
 
     @Override
@@ -133,8 +107,6 @@ public class Grade {
                 "gradeId=" + gradeId +
                 ", gradeName='" + gradeName + '\'' +
                 ", gradeDescription='" + gradeDescription + '\'' +
-                ", subjects=" + subjects +
-                ", students=" + students +
                 '}';
     }
 }

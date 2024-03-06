@@ -2,7 +2,7 @@ package com.hubformath.mathhubservice.dto.sis;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hubformath.mathhubservice.dto.systemconfig.SubjectDto;
+import com.hubformath.mathhubservice.dto.systemconfig.SubjectRequest;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.sis.LessonPeriod;
 import com.hubformath.mathhubservice.model.sis.SessionType;
@@ -14,9 +14,9 @@ public class LessonDto {
 
     private UUID lessonId;
 
-    private SubjectDto subject;
+    private SubjectRequest subject;
 
-    private UUID subjectId;
+    private String subjectId;
 
     private int occurrence;
 
@@ -41,22 +41,22 @@ public class LessonDto {
     }
 
     @JsonProperty
-    public SubjectDto getSubject() {
+    public SubjectRequest getSubject() {
         return subject;
     }
 
     @JsonIgnore
-    public void setSubject(SubjectDto subject) {
+    public void setSubject(SubjectRequest subject) {
         this.subject = subject;
     }
 
     @JsonProperty
-    public void setSubjectId(UUID subjectId) {
+    public void setSubjectId(String subjectId) {
         this.subjectId = subjectId;
     }
 
     @JsonIgnore
-    public UUID getSubjectId() {
+    public String getSubjectId() {
         return subjectId;
     }
 

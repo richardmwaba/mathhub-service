@@ -1,10 +1,8 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
-import com.hubformath.mathhubservice.config.ModelMapperConfig;
-import com.hubformath.mathhubservice.dto.systemconfig.SubjectDto;
+import com.hubformath.mathhubservice.dto.systemconfig.SubjectRequest;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -33,43 +30,42 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping(path = "/api/v1/sis")
 public class SubjectController {
 
-    private final ModelMapper modelMapper;
-
     private final SubjectService subjectService;
 
     @Autowired
-    public SubjectController(final ModelMapperConfig modelMapperConfig, final SubjectService subjectService) {
-        this.modelMapper = modelMapperConfig.createModelMapper();
+    public SubjectController(final SubjectService subjectService) {
         this.subjectService = subjectService;
     }
 
     @GetMapping("/subjects")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER') or hasRole('TEACHER')")
-    public ResponseEntity<CollectionModel<EntityModel<SubjectDto>>> getAllSubjects() {
-        List<SubjectDto> subjects = subjectService.getAllSubjects().stream().
-                                                  map(subject -> modelMapper.map(subject, SubjectDto.class))
-                                                  .toList();
-        CollectionModel<EntityModel<SubjectDto>> subjectCollectionModel = toCollectionModel(subjects);
+    public ResponseEntity<CollectionModel<EntityModel<Subject>>> getAllSubjects() {
+        CollectionModel<EntityModel<Subject>> subjectCollectionModel = toCollectionModel(subjectService.getAllSubjects());
 
         return ResponseEntity.ok().body(subjectCollectionModel);
     }
 
     @PostMapping("/subjects")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER')")
-    public ResponseEntity<EntityModel<SubjectDto>> newSubject(@RequestBody final SubjectDto subjectDto) {
-        Subject newSubject = subjectService.createSubject(subjectDto);
-        EntityModel<SubjectDto> subjectDtoEntityModel = toModel(modelMapper.map(newSubject, SubjectDto.class));
+    public ResponseEntity<Object> newSubject(@RequestBody final SubjectRequest subjectRequest) {
+        try {
+            Subject newSubject = subjectService.createSubject(subjectRequest);
+            EntityModel<Subject> subjectDtoEntityModel = toModel(newSubject);
 
-        return ResponseEntity.created(subjectDtoEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).
-                             body(subjectDtoEntityModel);
+            return ResponseEntity.created(subjectDtoEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).
+                                 body(subjectDtoEntityModel);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/subjects/{subjectId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER') or hasRole('TEACHER')")
-    public ResponseEntity<EntityModel<SubjectDto>> getSubjectById(@PathVariable final UUID subjectId) {
+    public ResponseEntity<EntityModel<Subject>> getSubjectById(@PathVariable final String subjectId) {
         try {
             Subject subject = subjectService.getSubjectById(subjectId);
-            EntityModel<SubjectDto> subjectEntityModel = toModel(modelMapper.map(subject, SubjectDto.class));
+            EntityModel<Subject> subjectEntityModel = toModel(subject);
+
             return ResponseEntity.ok().body(subjectEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -78,12 +74,12 @@ public class SubjectController {
 
     @PutMapping("/subjects/{subjectId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER')")
-    public ResponseEntity<EntityModel<SubjectDto>> replaceSubject(@RequestBody final SubjectDto subjectDto,
-                                                                  @PathVariable final UUID subjectId) {
+    public ResponseEntity<EntityModel<Subject>> updateSubject(@RequestBody final SubjectRequest subjectRequest,
+                                                                  @PathVariable final String subjectId) {
         try {
-            Subject subjectRequest = modelMapper.map(subjectDto, Subject.class);
             Subject updatedSubject = subjectService.updateSubject(subjectId, subjectRequest);
-            EntityModel<SubjectDto> subjectEntityModel = toModel(modelMapper.map(updatedSubject, SubjectDto.class));
+            EntityModel<Subject> subjectEntityModel = toModel(updatedSubject);
+
             return ResponseEntity.ok().body(subjectEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -92,7 +88,7 @@ public class SubjectController {
 
     @DeleteMapping("/subjects/{subjectId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER')")
-    public ResponseEntity<String> deleteSubject(@PathVariable final UUID subjectId) {
+    public ResponseEntity<String> deleteSubject(@PathVariable final String subjectId) {
         try {
             subjectService.deleteSubject(subjectId);
             return ResponseEntity.ok().body("Subject deleted successfully");
@@ -101,18 +97,18 @@ public class SubjectController {
         }
     }
 
-    private EntityModel<SubjectDto> toModel(final SubjectDto subject) {
+    private EntityModel<Subject> toModel(final Subject subject) {
         return EntityModel.of(subject,
                               linkTo(methodOn(SubjectController.class).getSubjectById(subject.getSubjectId())).withSelfRel(),
                               linkTo(methodOn(SubjectController.class).getAllSubjects()).withRel("subjects"));
     }
 
-    private CollectionModel<EntityModel<SubjectDto>> toCollectionModel(final Iterable<? extends SubjectDto> subjects) {
-        List<EntityModel<SubjectDto>> subjectList = StreamSupport.stream(subjects.spliterator(), false)
+    private CollectionModel<EntityModel<Subject>> toCollectionModel(final Iterable<Subject> subjectIterable) {
+        List<EntityModel<Subject>> subjects = StreamSupport.stream(subjectIterable.spliterator(), false)
                                                                  .map(this::toModel)
                                                                  .toList();
 
-        return CollectionModel.of(subjectList, linkTo(methodOn(SubjectController.class)
+        return CollectionModel.of(subjects, linkTo(methodOn(SubjectController.class)
                                                               .getAllSubjects())
                 .withSelfRel());
     }
