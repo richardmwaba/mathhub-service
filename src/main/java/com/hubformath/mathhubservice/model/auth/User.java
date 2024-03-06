@@ -172,7 +172,6 @@ public class User {
                 && Objects.equals(getEmail(), user.getEmail())
                 && Objects.equals(getPhoneNumber(), user.getPhoneNumber())
                 && Objects.equals(getPassword(), user.getPassword())
-                && Objects.equals(getRefreshToken(), user.getRefreshToken())
                 && Objects.equals(getUserRoles(), user.getUserRoles());
     }
 
