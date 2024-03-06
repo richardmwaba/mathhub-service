@@ -50,6 +50,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         LOGGER.info("User roles seeded into the database successfully.");
     }
 
+    @SuppressWarnings("java:S2201") // Ignore user role returned when we save a new role
     private void createRoleIfNotFound(Role role) {
         userRoleRepository.findByRole(role).orElseGet(() -> userRoleRepository.save(new UserRole(role)));
     }
