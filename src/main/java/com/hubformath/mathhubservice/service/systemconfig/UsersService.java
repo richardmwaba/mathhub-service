@@ -4,6 +4,7 @@ import com.hubformath.mathhubservice.model.auth.Role;
 import com.hubformath.mathhubservice.model.auth.User;
 import com.hubformath.mathhubservice.model.auth.UserRequest;
 import com.hubformath.mathhubservice.model.auth.UserRole;
+import com.hubformath.mathhubservice.repository.auth.AuthRefreshTokenRepository;
 import com.hubformath.mathhubservice.repository.auth.UserRepository;
 import com.hubformath.mathhubservice.repository.auth.UserRoleRepository;
 import jakarta.security.auth.message.AuthException;
@@ -33,12 +34,16 @@ public class UsersService {
 
     private final UserRoleRepository userRoleRepository;
 
+    private final AuthRefreshTokenRepository authRefreshTokenRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     public UsersService(UserRepository userRepository,
-                        UserRoleRepository userRoleRepository, PasswordEncoder passwordEncoder) {
+                        UserRoleRepository userRoleRepository,
+                        AuthRefreshTokenRepository authRefreshTokenRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
+        this.authRefreshTokenRepository = authRefreshTokenRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -96,9 +101,8 @@ public class UsersService {
     }
 
     public void deleteUser(String userId) {
-        User user = userRepository.findById(userId)
-                                  .orElseThrow();
-
+        User user = userRepository.findById(userId).orElseThrow();
+        authRefreshTokenRepository.findByUser(user).ifPresent(authRefreshTokenRepository::delete);
         userRepository.delete(user);
     }
 

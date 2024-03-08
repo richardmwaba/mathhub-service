@@ -2,7 +2,6 @@ package com.hubformath.mathhubservice.model.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nonnull;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,7 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -51,10 +49,6 @@ public class User {
     @Column(name = "password", nullable = false)
     @JsonIgnore
     private String password;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private AuthRefreshToken refreshToken;
 
     @ManyToMany
     @JoinTable(name = "users_roles",
@@ -141,14 +135,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public AuthRefreshToken getRefreshToken() {
-        return refreshToken;
-    }
-
-    public void setRefreshToken(AuthRefreshToken refreshToken) {
-        this.refreshToken = refreshToken;
     }
 
     public Set<UserRole> getUserRoles() {
