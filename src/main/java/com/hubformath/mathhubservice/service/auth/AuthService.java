@@ -5,6 +5,7 @@ import com.hubformath.mathhubservice.model.auth.AuthRefreshToken;
 import com.hubformath.mathhubservice.model.auth.AuthenticatedUser;
 import com.hubformath.mathhubservice.model.auth.Login;
 import com.hubformath.mathhubservice.model.auth.RefreshToken;
+import com.hubformath.mathhubservice.model.auth.Role;
 import com.hubformath.mathhubservice.model.auth.UserAuthDetails;
 import jakarta.security.auth.message.AuthException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,6 +47,8 @@ public class AuthService {
         UserAuthDetails userDetails = (UserAuthDetails) authentication.getPrincipal();
         Set<String> roles = userDetails.getAuthorities().stream()
                                        .map(GrantedAuthority::getAuthority)
+                                       .map(Role::valueOf)
+                                       .map(Role::getDescription)
                                        .collect(Collectors.toSet());
 
         AuthRefreshToken authRefreshToken = authRefreshTokenService.createRefreshToken(userDetails.getUserId());

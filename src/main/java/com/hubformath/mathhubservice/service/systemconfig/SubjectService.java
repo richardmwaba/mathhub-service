@@ -1,6 +1,5 @@
 package com.hubformath.mathhubservice.service.systemconfig;
 
-import com.google.common.collect.Sets;
 import com.hubformath.mathhubservice.dto.systemconfig.SubjectRequest;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
@@ -34,7 +33,7 @@ public class SubjectService {
     }
 
     public Subject createSubject(SubjectRequest subjectRequest) {
-        if(subjectRepository.existsBySubjectName(subjectRequest.subjectName())) {
+        if (subjectRepository.existsBySubjectName(subjectRequest.subjectName())) {
             throw new IllegalStateException("Subject with name " + subjectRequest.subjectName() + " already exists. If you want to update it, please use the update method.");
         }
 
@@ -48,18 +47,18 @@ public class SubjectService {
     }
 
     public Subject updateSubject(String subjectId, SubjectRequest subjectRequest) {
-        Subject subject = subjectRepository.findById(subjectId).orElseThrow();
+        Subject updatedSubject = subjectRepository.findById(subjectId).map(subject -> {
+            Optional.ofNullable(subjectRequest.subjectName())
+                    .ifPresent(subject::setSubjectName);
+            Optional.ofNullable(subjectRequest.subjectComplexity())
+                    .ifPresent(subject::setSubjectComplexity);
+            Optional.ofNullable(subjectRequest.subjectGradeIds())
+                    .ifPresent(gradeIds -> subject.setSubjectGrades(extractGrades(gradeIds)));
 
-        Optional.ofNullable(subjectRequest.subjectName())
-                .ifPresent(subject::setSubjectName);
-        Optional.ofNullable(subjectRequest.subjectComplexity())
-                .ifPresent(subject::setSubjectComplexity);
+            return subject;
+        }).orElseThrow();
 
-        if (subjectRequest.subjectGradeIds() != null && !subjectRequest.subjectGradeIds().isEmpty()) {
-            updateGrades(subject, subjectRequest.subjectGradeIds());
-        }
-
-        return subjectRepository.save(subject);
+        return subjectRepository.save(updatedSubject);
     }
 
     public void deleteSubject(String subjectId) {
@@ -72,14 +71,4 @@ public class SubjectService {
     private Set<Grade> extractGrades(Set<String> gradeIds) {
         return gradeIds.stream().map(gradeService::getGradeById).collect(Collectors.toSet());
     }
-
-    private void updateGrades(Subject subject, Set<String> updatedGradeIds) {
-        Set<Grade> currentSubjectGrades = subject.getSubjectGrades();
-        Set<Grade> newSubjectGrades = extractGrades(updatedGradeIds);
-
-        Sets.SetView<Grade> gradeSetView = Sets.difference(currentSubjectGrades, newSubjectGrades);
-        subject.getSubjectGrades().removeAll(gradeSetView);
-        subject.getSubjectGrades().addAll(Sets.difference(newSubjectGrades, currentSubjectGrades));
-    }
-
 }
