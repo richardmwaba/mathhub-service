@@ -1,10 +1,7 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
-import com.hubformath.mathhubservice.config.ModelMapperConfig;
-import com.hubformath.mathhubservice.dto.systemconfig.AssetTypeDto;
 import com.hubformath.mathhubservice.model.systemconfig.AssetType;
 import com.hubformath.mathhubservice.service.systemconfig.AssetTypeService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -30,42 +27,36 @@ import java.util.stream.StreamSupport;
 @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER')")
 public class AssetTypeController {
 
-    private final ModelMapper modelMapper;
-
     private final AssetTypeService assetTypeService;
 
     @Autowired
-    public AssetTypeController(final ModelMapperConfig modelMapperConfig, final AssetTypeService assetTypeService) {
-        this.modelMapper = modelMapperConfig.createModelMapper();
+    public AssetTypeController(final AssetTypeService assetTypeService) {
         this.assetTypeService = assetTypeService;
     }
 
     @GetMapping("/assetTypes")
-    public ResponseEntity<CollectionModel<EntityModel<AssetTypeDto>>> getAllAssetTypes() {
-        List<AssetTypeDto> assetTypes = assetTypeService.getAllAssetTypes().stream()
-                                                        .map(assetType -> modelMapper.map(assetType,
-                                                                                          AssetTypeDto.class))
-                                                        .toList();
-        CollectionModel<EntityModel<AssetTypeDto>> assetTypeCollectionModel = toCollectionModel(assetTypes);
+    public ResponseEntity<CollectionModel<EntityModel<AssetType>>> getAllAssetTypes() {
+        List<AssetType> assetTypes = assetTypeService.getAllAssetTypes().stream().toList();
+        CollectionModel<EntityModel<AssetType>> assetTypesCollectionModel = toCollectionModel(assetTypes);
 
-        return ResponseEntity.ok().body(assetTypeCollectionModel);
+        return ResponseEntity.ok().body(assetTypesCollectionModel);
     }
 
     @PostMapping("/assetTypes")
-    public ResponseEntity<EntityModel<AssetTypeDto>> createAssetType(@RequestBody final AssetTypeDto assetTypeDto) {
-        AssetType assetTypeRequest = modelMapper.map(assetTypeDto, AssetType.class);
+    public ResponseEntity<EntityModel<AssetType>> createAssetType(@RequestBody final AssetType assetTypeRequest) {
         AssetType newAssetType = assetTypeService.createAssetType(assetTypeRequest);
-        EntityModel<AssetTypeDto> assetTypeEntityModel = toModel(modelMapper.map(newAssetType, AssetTypeDto.class));
+        EntityModel<AssetType> assetTypeEntityModel = toModel(newAssetType);
 
         return ResponseEntity.created(assetTypeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                              .body(assetTypeEntityModel);
     }
 
     @GetMapping("/assetTypes/{assetTypeId}")
-    public ResponseEntity<EntityModel<AssetTypeDto>> getAssetTypeById(@PathVariable final String assetTypeId) {
+    public ResponseEntity<EntityModel<AssetType>> getAssetTypeById(@PathVariable final String assetTypeId) {
         try {
             AssetType assetType = assetTypeService.getAssetTypeById(assetTypeId);
-            EntityModel<AssetTypeDto> assetTypeEntityModel = toModel(modelMapper.map(assetType, AssetTypeDto.class));
+            EntityModel<AssetType> assetTypeEntityModel = toModel(assetType);
+
             return ResponseEntity.ok().body(assetTypeEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -73,13 +64,12 @@ public class AssetTypeController {
     }
 
     @PutMapping("/assetTypes/{assetTypeId}")
-    public ResponseEntity<EntityModel<AssetTypeDto>> updateAssetType(@RequestBody final AssetTypeDto assetTypeDto,
-                                                                      @PathVariable final String assetTypeId) {
+    public ResponseEntity<EntityModel<AssetType>> updateAssetType(@RequestBody final AssetType assetTypeRequest,
+                                                                  @PathVariable final String assetTypeId) {
         try {
-            AssetType assetTypeRequest = modelMapper.map(assetTypeDto, AssetType.class);
             AssetType updatedAssetType = assetTypeService.updateAssetType(assetTypeId, assetTypeRequest);
-            EntityModel<AssetTypeDto> assetTypeEntityModel = toModel(modelMapper.map(updatedAssetType,
-                                                                                     AssetTypeDto.class));
+            EntityModel<AssetType> assetTypeEntityModel = toModel(updatedAssetType);
+
             return ResponseEntity.ok().body(assetTypeEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -96,7 +86,7 @@ public class AssetTypeController {
         }
     }
 
-    private EntityModel<AssetTypeDto> toModel(final AssetTypeDto assetType) {
+    private EntityModel<AssetType> toModel(final AssetType assetType) {
         return EntityModel.of(assetType,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetTypeController.class)
                                                                         .getAssetTypeById(assetType.getAssetTypeId()))
@@ -105,12 +95,12 @@ public class AssetTypeController {
                                                                         .getAllAssetTypes()).withRel("assetTypes"));
     }
 
-    private CollectionModel<EntityModel<AssetTypeDto>> toCollectionModel(final Iterable<? extends AssetTypeDto> assetTypes) {
-        List<EntityModel<AssetTypeDto>> assetTypeList = StreamSupport.stream(assetTypes.spliterator(), false)
-                                                                     .map(this::toModel)
-                                                                     .toList();
+    private CollectionModel<EntityModel<AssetType>> toCollectionModel(final Iterable<? extends AssetType> assetTypesIterable) {
+        List<EntityModel<AssetType>> assetTypes = StreamSupport.stream(assetTypesIterable.spliterator(), false)
+                                                               .map(this::toModel)
+                                                               .toList();
 
-        return CollectionModel.of(assetTypeList,
+        return CollectionModel.of(assetTypes,
                                   WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetTypeController.class)
                                                                             .getAllAssetTypes())
                                                    .withSelfRel());

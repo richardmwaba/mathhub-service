@@ -1,10 +1,7 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
-import com.hubformath.mathhubservice.config.ModelMapperConfig;
-import com.hubformath.mathhubservice.dto.systemconfig.EquityTypeDto;
 import com.hubformath.mathhubservice.model.systemconfig.EquityType;
 import com.hubformath.mathhubservice.service.systemconfig.EquityTypeService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -30,44 +27,36 @@ import java.util.stream.StreamSupport;
 @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER')")
 public class EquityTypeController {
 
-    private final ModelMapper modelMapper;
-
     private final EquityTypeService equityTypeService;
 
     @Autowired
-    public EquityTypeController(final ModelMapperConfig modelMapperConfig, final EquityTypeService equityTypeService) {
-        this.modelMapper = modelMapperConfig.createModelMapper();
+    public EquityTypeController(final EquityTypeService equityTypeService) {
         this.equityTypeService = equityTypeService;
     }
 
     @GetMapping("/equityTypes")
-    public ResponseEntity<CollectionModel<EntityModel<EquityTypeDto>>> getAllEquityTypes() {
-        List<EquityTypeDto> equityTypes = equityTypeService.getAllEquityTypes().stream()
-                                                           .map(equityType -> modelMapper.map(equityType,
-                                                                                              EquityTypeDto.class))
-                                                           .toList();
-
-        CollectionModel<EntityModel<EquityTypeDto>> equityTypeCollectionModel = toCollectionModel(equityTypes);
+    public ResponseEntity<CollectionModel<EntityModel<EquityType>>> getAllEquityTypes() {
+        List<EquityType> equityTypes = equityTypeService.getAllEquityTypes().stream().toList();
+        CollectionModel<EntityModel<EquityType>> equityTypeCollectionModel = toCollectionModel(equityTypes);
 
         return ResponseEntity.ok().body(equityTypeCollectionModel);
     }
 
     @PostMapping("/equityTypes")
-    public ResponseEntity<EntityModel<EquityTypeDto>> newEquityType(@RequestBody final EquityTypeDto equityTypeDto) {
-        EquityType equityTypeRequest = modelMapper.map(equityTypeDto, EquityType.class);
+    public ResponseEntity<EntityModel<EquityType>> newEquityType(@RequestBody final EquityType equityTypeRequest) {
         EquityType newEquityType = equityTypeService.createEquityType(equityTypeRequest);
-        EntityModel<EquityTypeDto> equityTypeEntityModel = toModel(modelMapper.map(newEquityType, EquityTypeDto.class));
+        EntityModel<EquityType> equityTypeEntityModel = toModel(newEquityType);
 
         return ResponseEntity.created(equityTypeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                              .body(equityTypeEntityModel);
     }
 
     @GetMapping("/equityTypes/{equityTypeId}")
-    public ResponseEntity<EntityModel<EquityTypeDto>> getEquityTypeById(@PathVariable final String equityTypeId) {
+    public ResponseEntity<EntityModel<EquityType>> getEquityTypeById(@PathVariable final String equityTypeId) {
         try {
             EquityType equityType = equityTypeService.getEquityTypeById(equityTypeId);
-            EntityModel<EquityTypeDto> equityTypeEntityModel = toModel(modelMapper.map(equityType,
-                                                                                       EquityTypeDto.class));
+            EntityModel<EquityType> equityTypeEntityModel = toModel(equityType);
+
             return ResponseEntity.ok().body(equityTypeEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -75,13 +64,12 @@ public class EquityTypeController {
     }
 
     @PutMapping("/equityTypes/{equityTypeId}")
-    public ResponseEntity<EntityModel<EquityTypeDto>> replaceEquityType(@RequestBody final EquityTypeDto equityTypeDto,
-                                                                        @PathVariable final String equityTypeId) {
+    public ResponseEntity<EntityModel<EquityType>> replaceEquityType(@RequestBody final EquityType equityTypeRequest,
+                                                                     @PathVariable final String equityTypeId) {
         try {
-            EquityType equityTypeRequest = modelMapper.map(equityTypeDto, EquityType.class);
             EquityType updatedEquityType = equityTypeService.updateEquityType(equityTypeId, equityTypeRequest);
-            EntityModel<EquityTypeDto> equityTypeEntityModel = toModel(modelMapper.map(updatedEquityType,
-                                                                                       EquityTypeDto.class));
+            EntityModel<EquityType> equityTypeEntityModel = toModel(updatedEquityType);
+
             return ResponseEntity.ok().body(equityTypeEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -99,7 +87,7 @@ public class EquityTypeController {
         }
     }
 
-    private EntityModel<EquityTypeDto> toModel(final EquityTypeDto assessmentType) {
+    private EntityModel<EquityType> toModel(final EquityType assessmentType) {
         return EntityModel.of(assessmentType,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityTypeController.class)
                                                                         .getEquityTypeById(assessmentType.getEquityTypeId()))
@@ -108,12 +96,12 @@ public class EquityTypeController {
                                                                         .getAllEquityTypes()).withRel("equityTypes"));
     }
 
-    private CollectionModel<EntityModel<EquityTypeDto>> toCollectionModel(final Iterable<? extends EquityTypeDto> assessmentTypes) {
-        List<EntityModel<EquityTypeDto>> assessmentTypeList = StreamSupport.stream(assessmentTypes.spliterator(), false)
-                                                                           .map(this::toModel)
-                                                                           .toList();
+    private CollectionModel<EntityModel<EquityType>> toCollectionModel(final Iterable<? extends EquityType> equityTypesIterable) {
+        List<EntityModel<EquityType>> assessmentTypes = StreamSupport.stream(equityTypesIterable.spliterator(), false)
+                                                                     .map(this::toModel)
+                                                                     .toList();
 
-        return CollectionModel.of(assessmentTypeList,
+        return CollectionModel.of(assessmentTypes,
                                   WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityTypeController.class)
                                                                             .getAllEquityTypes())
                                                    .withSelfRel());
