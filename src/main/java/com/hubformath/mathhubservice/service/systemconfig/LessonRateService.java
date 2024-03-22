@@ -21,25 +21,36 @@ public class LessonRateService {
         if (effectiveDate != null && expiryDate != null) {
             return lessonRateRepository.findAll()
                                        .stream()
-                                       .filter(lessonRate ->
-                                                       (lessonRate.getEffectiveDate()
-                                                                  .equals(effectiveDate) || lessonRate.getEffectiveDate()
-                                                                                                      .isAfter(
-                                                                                                              effectiveDate))
-                                                               && (lessonRate.getExpiredDate()
-                                                                             .isBefore(expiryDate) || lessonRate.getExpiredDate()
-                                                                                                                .equals(expiryDate))
-                                              ).toList();
+                                       .filter(lessonRate -> isValidLessonRate(effectiveDate, expiryDate, lessonRate))
+                                       .toList();
         }
 
         final Instant instantNow = Instant.now();
 
         return lessonRateRepository.findAll()
                                    .stream()
-                                   .filter(lessonRate -> lessonRate.getExpiredDate()
-                                                                   .equals(instantNow) || lessonRate.getExpiredDate()
-                                                                                                    .isAfter(instantNow))
+                                   .filter(lessonRate -> isExpiredDateEqualToOrAfterGivenDate(lessonRate, instantNow))
                                    .toList();
+    }
+
+    private static boolean isExpiredDateEqualToOrAfterGivenDate(LessonRate lessonRate, Instant instantNow) {
+        return lessonRate.getExpiredDate()
+                         .equals(instantNow) || lessonRate.getExpiredDate()
+                                                          .isAfter(instantNow);
+    }
+
+    private static boolean isValidLessonRate(Instant effectiveDate, Instant expiryDate, LessonRate lessonRate) {
+        return isEffectiveDateEqualToOrAfterGivenDate(effectiveDate, lessonRate)
+                && isExpiryDateEqualToOrBeforeGivenDate(expiryDate, lessonRate);
+    }
+
+    private static boolean isExpiryDateEqualToOrBeforeGivenDate(Instant expiryDate, LessonRate lessonRate) {
+        return lessonRate.getExpiredDate().isBefore(expiryDate) || lessonRate.getExpiredDate().equals(expiryDate);
+    }
+
+    private static boolean isEffectiveDateEqualToOrAfterGivenDate(Instant effectiveDate, LessonRate lessonRate) {
+        return lessonRate.getEffectiveDate().equals(effectiveDate) || lessonRate.getEffectiveDate()
+                                                                                .isAfter(effectiveDate);
     }
 
     public LessonRate getLessonRateById(final String lessonRateId) {
@@ -50,12 +61,8 @@ public class LessonRateService {
         final Instant instantNow = Instant.now();
         return lessonRateRepository.findAll()
                                    .stream()
-                                   .filter(lessonRate ->
-                                                   (lessonRate.getExpiredDate()
-                                                              .equals(instantNow) || lessonRate.getExpiredDate()
-                                                                                               .isAfter(instantNow))
-                                                           && lessonRate.getSubjectComplexity()
-                                                                        .equals(subjectComplexity))
+                                   .filter(lessonRate -> isExpiredDateEqualToOrAfterGivenDate(lessonRate, instantNow)
+                                           && lessonRate.getSubjectComplexity().equals(subjectComplexity))
                                    .findAny().orElse(null);
     }
 
