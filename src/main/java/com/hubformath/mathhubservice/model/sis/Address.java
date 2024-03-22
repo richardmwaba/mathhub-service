@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.model.sis;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -46,17 +47,24 @@ public class Address {
 
     @CreationTimestamp
     @Column(name = "created_at")
+    @JsonIgnore
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
     public Address() {
     }
 
-    public Address(AddressType addressType, String addressLine1, String addressLine2, String addressLine3, String city,
-                   String province, String zipCode) {
+    public Address(AddressType addressType,
+                   String addressLine1,
+                   String addressLine2,
+                   String addressLine3,
+                   String city,
+                   String province,
+                   String zipCode) {
         this.addressType = addressType;
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
