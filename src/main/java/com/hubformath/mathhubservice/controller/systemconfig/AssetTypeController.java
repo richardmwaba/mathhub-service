@@ -36,10 +36,9 @@ public class AssetTypeController {
 
     @GetMapping("/assetTypes")
     public ResponseEntity<CollectionModel<EntityModel<AssetType>>> getAllAssetTypes() {
-        List<AssetType> assetTypes = assetTypeService.getAllAssetTypes().stream().toList();
-        CollectionModel<EntityModel<AssetType>> assetTypesCollectionModel = toCollectionModel(assetTypes);
+        CollectionModel<EntityModel<AssetType>> assetTypes = toCollectionModel(assetTypeService.getAllAssetTypes());
 
-        return ResponseEntity.ok().body(assetTypesCollectionModel);
+        return ResponseEntity.ok().body(assetTypes);
     }
 
     @PostMapping("/assetTypes")
