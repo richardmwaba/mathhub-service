@@ -1,7 +1,5 @@
 package com.hubformath.mathhubservice.service.sis;
 
-import com.hubformath.mathhubservice.config.ModelMapperConfig;
-import com.hubformath.mathhubservice.model.sis.StudentRequest;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.sis.Address;
 import com.hubformath.mathhubservice.model.sis.Lesson;
@@ -11,6 +9,7 @@ import com.hubformath.mathhubservice.model.sis.PhoneNumber;
 import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.sis.StudentFinancialSummary;
 import com.hubformath.mathhubservice.model.sis.StudentGender;
+import com.hubformath.mathhubservice.model.sis.StudentRequest;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
 import com.hubformath.mathhubservice.model.systemconfig.LessonRate;
@@ -20,7 +19,6 @@ import com.hubformath.mathhubservice.service.systemconfig.ExamBoardService;
 import com.hubformath.mathhubservice.service.systemconfig.GradeService;
 import com.hubformath.mathhubservice.service.systemconfig.LessonRateService;
 import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -41,21 +39,16 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-    private final ModelMapper modelMapper;
-
-
     public StudentService(StudentRepository studentRepository,
                           GradeService gradeService,
                           ExamBoardService examBoardService,
                           SubjectService subjectService,
-                          LessonRateService lessonRateService,
-                          ModelMapperConfig modelMapperConfig) {
+                          LessonRateService lessonRateService) {
         this.studentRepository = studentRepository;
         this.gradeService = gradeService;
         this.examBoardService = examBoardService;
         this.subjectService = subjectService;
         this.lessonRateService = lessonRateService;
-        this.modelMapper = modelMapperConfig.createModelMapper();
     }
 
     public List<Student> getAllStudents() {
@@ -121,14 +114,23 @@ public class StudentService {
         Student student = getStudentById(studentId);
         Subject subject = subjectService.getSubjectById(lessonRequest.subjectId());
         LessonRate lessonRate = lessonRateService.getLessonRateBySubjectComplexity(subject.getSubjectComplexity());
-        Lesson newlesson = modelMapper.map(lessonRequest, Lesson.class);
-        newlesson.setSubject(subject);
-        newlesson.setLessonRateAmount(lessonRate.getAmountPerLesson());
-        newlesson.setLessonPaymentStatus(PaymentStatus.UNPAID);
+        Lesson newlesson = getNewlesson(lessonRequest, subject, lessonRate);
         student.getLessons().add(newlesson);
         student.setStudentFinancialSummary(computeStudentFinancialSummary(student));
 
         return studentRepository.save(student);
+    }
+
+    private static Lesson getNewlesson(LessonRequest lessonRequest, Subject subject, LessonRate lessonRate) {
+        Lesson newlesson = new Lesson(subject,
+                                      lessonRequest.occurrence(),
+                                      lessonRequest.lessonStartDate(),
+                                      lessonRate.getAmountPerLesson(),
+                                      lessonRequest.lessonDuration(),
+                                      lessonRequest.lessonPeriod(),
+                                      lessonRequest.sessionType());
+        newlesson.setLessonPaymentStatus(PaymentStatus.UNPAID);
+        return newlesson;
     }
 
     public StudentFinancialSummary computeStudentFinancialSummary(final Student student) {

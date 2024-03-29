@@ -69,6 +69,22 @@ public class Lesson {
         // Used for hibernate instantiation
     }
 
+    public Lesson(Subject subject,
+                  int occurrence,
+                  LocalDate lessonStartDate,
+                  Double lessonRateAmount,
+                  int lessonDuration,
+                  LessonPeriod lessonPeriod,
+                  SessionType sessionType) {
+        this.subject = subject;
+        this.occurrence = occurrence;
+        this.lessonStartDate = lessonStartDate;
+        this.lessonRateAmount = lessonRateAmount;
+        this.lessonDuration = lessonDuration;
+        this.lessonPeriod = lessonPeriod;
+        this.sessionType = sessionType;
+    }
+
     public String getLessonId() {
         return lessonId;
     }
