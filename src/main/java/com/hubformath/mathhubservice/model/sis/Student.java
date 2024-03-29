@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.model.sis;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
@@ -48,9 +49,11 @@ public class Student {
     @Column(name = "gender")
     private StudentGender gender;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "parent_id")
-    private Parent parent;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "students_parents",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "parent_id"))
+    private List<Parent> parents;
 
     @ManyToOne
     @JoinColumn(name = "grade_id")
@@ -88,11 +91,13 @@ public class Student {
 
     @CreationTimestamp
     @ReadOnlyProperty
+    @JsonIgnore
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @ReadOnlyProperty
+    @JsonIgnore
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
@@ -106,13 +111,15 @@ public class Student {
                    final String lastName,
                    final String email,
                    final LocalDate dateOfBirth,
-                   final StudentGender gender) {
+                   final StudentGender gender,
+                   final List<Parent> parents) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.email = email;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
+        this.parents = parents;
     }
 
     public String getStudentId() {
@@ -171,12 +178,12 @@ public class Student {
         this.lessons = lessons;
     }
 
-    public Parent getParent() {
-        return parent;
+    public List<Parent> getParents() {
+        return parents;
     }
 
-    public void setParent(Parent parent) {
-        this.parent = parent;
+    public void setParents(List<Parent> parents) {
+        this.parents = parents;
     }
 
     public List<Address> getAddresses() {
@@ -256,7 +263,7 @@ public class Student {
                 && getMiddleName().equals(student.getMiddleName())
                 && getLastName().equals(student.getLastName())
                 && getGender().equals(student.getGender())
-                && getParent().equals(student.getParent())
+                && getParents().equals(student.getParents())
                 && getGrade().equals(student.getGrade())
                 && getLessons().equals(student.getLessons())
                 && getEmail().equals(student.getEmail())
@@ -274,7 +281,7 @@ public class Student {
                             getMiddleName(),
                             getLastName(),
                             getGender(),
-                            getParent(),
+                            getParents(),
                             getGrade(),
                             getLessons(),
                             getEmail(),
@@ -293,7 +300,7 @@ public class Student {
                 ", middleName=" + middleName + '\'' +
                 ", lastName=" + lastName + '\'' +
                 ", gender=" + gender +
-                ", parent=" + parent +
+                ", parents=" + parents +
                 ", grade=" + grade +
                 ", lessons=" + lessons +
                 ", email=" + email + '\'' +

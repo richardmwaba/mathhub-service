@@ -2,7 +2,7 @@ package com.hubformath.mathhubservice.dto.ops.cashbook;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hubformath.mathhubservice.dto.sis.StudentDto;
+import com.hubformath.mathhubservice.model.sis.StudentRequest;
 import com.hubformath.mathhubservice.model.ops.cashbook.InvoiceStatus;
 
 import java.time.LocalDate;
@@ -13,7 +13,7 @@ public class InvoiceDto {
 
     private String invoiceNumber;
 
-    private StudentDto student;
+    private StudentRequest student;
 
     private String studentId;
 
@@ -43,11 +43,11 @@ public class InvoiceDto {
         this.invoiceNumber = invoiceNumber;
     }
 
-    public StudentDto getStudent() {
+    public StudentRequest getStudent() {
         return student;
     }
 
-    public void setStudent(StudentDto student) {
+    public void setStudent(StudentRequest student) {
         this.student = student;
     }
 
