@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class TuitionPaymentService {
@@ -32,10 +33,10 @@ public class TuitionPaymentService {
     private final InvoiceService invoiceService;
 
     @Autowired
-    public TuitionPaymentService(final TuitionPaymentRepository tuitionPaymentRepository,
-                                 final PaymentMethodService paymentMethodService,
-                                 final StudentService studentService,
-                                 final InvoiceService invoiceService) {
+    public TuitionPaymentService(TuitionPaymentRepository tuitionPaymentRepository,
+                                 PaymentMethodService paymentMethodService,
+                                 StudentService studentService,
+                                 InvoiceService invoiceService) {
         this.tuitionPaymentRepository = tuitionPaymentRepository;
         this.paymentMethodService = paymentMethodService;
         this.studentService = studentService;
@@ -63,6 +64,7 @@ public class TuitionPaymentService {
         final String narration = tuitionPayment.getNarration();
         final Double amount = tuitionPayment.getAmount();
         final Set<String> lessonsIds = tuitionPayment.getLessonsIds();
+        final String transactionNumber = UUID.randomUUID().toString().toUpperCase().replace("-", "");
 
         final PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(paymentMethodId);
 
@@ -72,7 +74,8 @@ public class TuitionPaymentService {
                        lesson.getLessonId()))
                .forEach(lesson -> lesson.setLessonPaymentStatus(PaymentStatus.PAID));
 
-        final CashTransaction newCashTransaction = new CashTransaction(paymentMethod,
+        final CashTransaction newCashTransaction = new CashTransaction(transactionNumber,
+                                                                       paymentMethod,
                                                                        CashTransactionType.CASH_IN,
                                                                        narration,
                                                                        amount);

@@ -1,5 +1,7 @@
 package com.hubformath.mathhubservice.model.ops.cashbook;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hubformath.mathhubservice.model.auth.User;
 import com.hubformath.mathhubservice.model.systemconfig.CashTransactionCategory;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import jakarta.persistence.Column;
@@ -10,14 +12,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "cash_transactions")
@@ -29,7 +30,7 @@ public class CashTransaction {
     @Column(name = "transaction_number", unique = true)
     private String transactionNumber;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "payment_method_id")
     private PaymentMethod paymentMethod;
 
@@ -37,7 +38,7 @@ public class CashTransaction {
     @Column(name = "transaction_type")
     private CashTransactionType transactionType;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "transaction_category_id")
     private CashTransactionCategory transactionCategory;
 
@@ -50,29 +51,31 @@ public class CashTransaction {
     @Column(name = "transaction_date_time")
     private LocalDateTime transactionDateTime;
 
-    @Column(name = "transacted_by")
-    private Long transactedBy;
+    @ManyToOne
+    @JoinColumn(name = "transacted_by")
+    private User transactedBy;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
+    @JsonIgnore
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
-    public CashTransaction(final PaymentMethod paymentMethod,
-                           final CashTransactionType transactionType,
-                           final String narration,
-                           final Double amount) {
+    public CashTransaction(String transactionNumber,
+                           PaymentMethod paymentMethod,
+                           CashTransactionType transactionType,
+                           String narration,
+                           Double amount) {
         this.paymentMethod = paymentMethod;
-        this.transactionNumber = UUID.randomUUID().toString().toUpperCase().replace("-", "");
+        this.transactionNumber = transactionNumber;
         this.transactionType = transactionType;
         this.narration = narration;
         this.amount = amount;
         this.transactionDateTime = LocalDateTime.now();
-        //TODO: Add actual user on transacted by
-        this.transactedBy = null;
     }
 
     @SuppressWarnings("unused")
@@ -80,7 +83,7 @@ public class CashTransaction {
     }
 
     public String getCashTransactionId() {
-        return this.cashTransactionId;
+        return cashTransactionId;
     }
 
     public void setCashTransactionId(String cashTransactionId) {
@@ -143,11 +146,11 @@ public class CashTransaction {
         this.transactionDateTime = transactionDateTime;
     }
 
-    public Long getTransactedBy() {
+    public User getTransactedBy() {
         return transactedBy;
     }
 
-    public void setTransactedBy(Long transactedBy) {
+    public void setTransactedBy(User transactedBy) {
         this.transactedBy = transactedBy;
     }
 
@@ -178,6 +181,7 @@ public class CashTransaction {
                 && Objects.equals(getTransactionCategory(), that.getTransactionCategory())
                 && Objects.equals(getNarration(), that.getNarration())
                 && Objects.equals(getAmount(), that.getAmount())
+                && Objects.equals(getTransactionDateTime(), that.getTransactionDateTime())
                 && Objects.equals(getTransactedBy(), that.getTransactedBy());
     }
 
@@ -190,13 +194,14 @@ public class CashTransaction {
                             getTransactionCategory(),
                             getNarration(),
                             getAmount(),
+                            getTransactionDateTime(),
                             getTransactedBy());
     }
 
     @Override
     public String toString() {
         return "CashTransaction{" +
-                "cashTransactionId=" + cashTransactionId +
+                "cashTransactionId='" + cashTransactionId + '\'' +
                 ", transactionNumber='" + transactionNumber + '\'' +
                 ", paymentMethod=" + paymentMethod +
                 ", transactionType=" + transactionType +
