@@ -1,5 +1,7 @@
 package com.hubformath.mathhubservice.model.ops.cashbook;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hubformath.mathhubservice.model.auth.User;
 import com.hubformath.mathhubservice.model.systemconfig.EquityType;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import jakarta.persistence.Column;
@@ -8,7 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -24,44 +26,46 @@ public class Equity {
     @Column(name = "equity_id")
     private String equityId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "payment_method_id")
     private PaymentMethod paymentMethod;
 
     @Column(name = "narration")
     private String narration;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "equity_type_id")
     private EquityType equityType;
 
     @Column(name = "amount")
     private Double amount;
 
-    @Column(name = "created_by")
-    private Long createdBy;
-
-    @Column(name = "approved_by")
-    private Long approvedBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
 
     @CreationTimestamp
     @Column(name = "created_at")
+    @JsonIgnore
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
+    @SuppressWarnings("unused")
     public Equity() {
+        // Required by JPA
     }
 
-    public Equity(String narration, Double amount, Long createdBy, Long approvedBy) {
+    public Equity(PaymentMethod paymentMethod, String narration, EquityType equityType, Double amount, User createdBy) {
+        this.paymentMethod = paymentMethod;
         this.narration = narration;
+        this.equityType = equityType;
         this.amount = amount;
         this.createdBy = createdBy;
-        this.approvedBy = approvedBy;
     }
-
 
     public String getEquityId() {
         return equityId;
@@ -69,14 +73,6 @@ public class Equity {
 
     public void setEquityId(String equityId) {
         this.equityId = equityId;
-    }
-
-    public EquityType getEquityType() {
-        return equityType;
-    }
-
-    public void setEquityType(EquityType equityType) {
-        this.equityType = equityType;
     }
 
     public PaymentMethod getPaymentMethod() {
@@ -95,6 +91,14 @@ public class Equity {
         this.narration = narration;
     }
 
+    public EquityType getEquityType() {
+        return equityType;
+    }
+
+    public void setEquityType(EquityType equityType) {
+        this.equityType = equityType;
+    }
+
     public Double getAmount() {
         return amount;
     }
@@ -103,20 +107,12 @@ public class Equity {
         this.amount = amount;
     }
 
-    public Long getCreatedBy() {
+    public User getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(Long createdBy) {
+    public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
-    }
-
-    public Long getApprovedBy() {
-        return approvedBy;
-    }
-
-    public void setApprovedBy(Long approvedBy) {
-        this.approvedBy = approvedBy;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -144,8 +140,7 @@ public class Equity {
                 && Objects.equals(getNarration(), equity.getNarration())
                 && Objects.equals(getEquityType(), equity.getEquityType())
                 && Objects.equals(getAmount(), equity.getAmount())
-                && Objects.equals(getCreatedBy(), equity.getCreatedBy())
-                && Objects.equals(getApprovedBy(), equity.getApprovedBy());
+                && Objects.equals(getCreatedBy(), equity.getCreatedBy());
     }
 
     @Override
@@ -155,20 +150,18 @@ public class Equity {
                             getNarration(),
                             getEquityType(),
                             getAmount(),
-                            getCreatedBy(),
-                            getApprovedBy());
+                            getCreatedBy());
     }
 
     @Override
     public String toString() {
         return "Equity{" +
-                "equityId=" + equityId +
+                "equityId='" + equityId + '\'' +
                 ", paymentMethod=" + paymentMethod +
                 ", narration='" + narration + '\'' +
                 ", equityType=" + equityType +
                 ", amount=" + amount +
                 ", createdBy=" + createdBy +
-                ", approvedBy=" + approvedBy +
                 '}';
     }
 }

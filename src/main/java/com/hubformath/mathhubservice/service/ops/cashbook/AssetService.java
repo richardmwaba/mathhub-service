@@ -1,7 +1,6 @@
 package com.hubformath.mathhubservice.service.ops.cashbook;
 
 import com.hubformath.mathhubservice.model.auth.User;
-import com.hubformath.mathhubservice.model.auth.UserAuthDetails;
 import com.hubformath.mathhubservice.model.ops.cashbook.Asset;
 import com.hubformath.mathhubservice.model.ops.cashbook.AssetRequest;
 import com.hubformath.mathhubservice.model.systemconfig.AssetType;
@@ -11,7 +10,6 @@ import com.hubformath.mathhubservice.service.systemconfig.AssetTypeService;
 import com.hubformath.mathhubservice.service.systemconfig.PaymentMethodService;
 import com.hubformath.mathhubservice.service.systemconfig.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,10 +48,7 @@ public class AssetService {
     public Asset createAsset(AssetRequest assetRequest) {
         PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(assetRequest.paymentMethodId());
         AssetType assetType = assetTypeService.getAssetTypeById(assetRequest.assetTypeId());
-        UserAuthDetails userDetails = (UserAuthDetails) SecurityContextHolder.getContext()
-                                                                             .getAuthentication()
-                                                                             .getPrincipal();
-        User createdBy = usersService.getUserById(userDetails.getUserId());
+        User createdBy = usersService.getLoggedInUser();
         Asset newAsset = new Asset(assetRequest.narration(), assetRequest.amount(), paymentMethod, assetType);
         newAsset.setCreatedBy(createdBy);
 
