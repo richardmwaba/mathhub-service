@@ -1,10 +1,8 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
-import com.hubformath.mathhubservice.config.ModelMapperConfig;
-import com.hubformath.mathhubservice.dto.ops.cashbook.AssetDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.Asset;
+import com.hubformath.mathhubservice.model.ops.cashbook.AssetRequest;
 import com.hubformath.mathhubservice.service.ops.cashbook.AssetService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -30,43 +28,30 @@ import java.util.stream.StreamSupport;
 @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER')")
 public class AssetController {
 
-    private final ModelMapper modelMapper;
-
     private final AssetService assetService;
 
     @Autowired
-    public AssetController(final ModelMapperConfig modelMapperConfig, final AssetService assetService) {
-        this.modelMapper = modelMapperConfig.createModelMapper();
+    public AssetController(final AssetService assetService) {
         this.assetService = assetService;
     }
 
     @GetMapping("/assets")
-    public ResponseEntity<CollectionModel<EntityModel<AssetDto>>> getAllAssets() {
-        List<AssetDto> assets = assetService.getAllAssets().stream()
-                                            .map(asset -> modelMapper.map(asset, AssetDto.class))
-                                            .toList();
-
-        CollectionModel<EntityModel<AssetDto>> assetCollectionModel = toCollectionModel(assets);
-
-        return ResponseEntity.ok().body(assetCollectionModel);
+    public ResponseEntity<CollectionModel<EntityModel<Asset>>> getAllAssets() {
+        CollectionModel<EntityModel<Asset>> assets = toCollectionModel(assetService.getAllAssets());
+        return ResponseEntity.ok().body(assets);
     }
 
     @PostMapping("/assets")
-    public ResponseEntity<EntityModel<AssetDto>> newAsset(@RequestBody final AssetDto assetDto) {
-        Asset assetRequest = modelMapper.map(assetDto, Asset.class);
-        Asset newAsset = assetService.createAsset(assetRequest);
-
-        EntityModel<AssetDto> assetEntityModel = toModel(modelMapper.map(newAsset, AssetDto.class));
-
+    public ResponseEntity<EntityModel<Asset>> createAsset(@RequestBody final AssetRequest assetRequest) {
+        EntityModel<Asset> assetEntityModel = toModel(assetService.createAsset(assetRequest));
         return ResponseEntity.created(assetEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                              .body(assetEntityModel);
     }
 
     @GetMapping("/assets/{assetId}")
-    public ResponseEntity<EntityModel<AssetDto>> getAssetById(@PathVariable final String assetId) {
+    public ResponseEntity<EntityModel<Asset>> getAssetById(@PathVariable final String assetId) {
         try {
-            Asset asset = assetService.getAssetById(assetId);
-            EntityModel<AssetDto> assetEntityModel = toModel(modelMapper.map(asset, AssetDto.class));
+            EntityModel<Asset> assetEntityModel = toModel(assetService.getAssetById(assetId));
             return ResponseEntity.ok().body(assetEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -74,12 +59,10 @@ public class AssetController {
     }
 
     @PutMapping("/assets/{assetId}")
-    public ResponseEntity<EntityModel<AssetDto>> replaceAsset(@RequestBody final AssetDto assetDto,
-                                                              @PathVariable final String assetId) {
+    public ResponseEntity<EntityModel<Asset>> updateAsset(@RequestBody final AssetRequest assetRequest,
+                                                          @PathVariable final String assetId) {
         try {
-            Asset assetRequest = modelMapper.map(assetDto, Asset.class);
-            Asset updatedAsset = assetService.updateAsset(assetId, assetRequest);
-            EntityModel<AssetDto> assetEntityModel = toModel(modelMapper.map(updatedAsset, AssetDto.class));
+            EntityModel<Asset> assetEntityModel = toModel(assetService.updateAsset(assetId, assetRequest));
             return ResponseEntity.ok().body(assetEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -96,7 +79,7 @@ public class AssetController {
         }
     }
 
-    private EntityModel<AssetDto> toModel(final AssetDto asset) {
+    private EntityModel<Asset> toModel(final Asset asset) {
         return EntityModel.of(asset,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class)
                                                                         .getAssetById(asset.getAssetId()))
@@ -105,13 +88,13 @@ public class AssetController {
                                                .withRel("assets"));
     }
 
-    private CollectionModel<EntityModel<AssetDto>> toCollectionModel(final Iterable<? extends AssetDto> assets) {
-        List<EntityModel<AssetDto>> assetList = StreamSupport.stream(assets.spliterator(), false)
-                                                             .map(this::toModel)
-                                                             .toList();
+    private CollectionModel<EntityModel<Asset>> toCollectionModel(final Iterable<? extends Asset> assetsIterable) {
+        List<EntityModel<Asset>> assets = StreamSupport.stream(assetsIterable.spliterator(), false)
+                                                       .map(this::toModel)
+                                                       .toList();
 
-        return CollectionModel.of(assetList, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class)
-                                                                                       .getAllAssets())
-                                                              .withSelfRel());
+        return CollectionModel.of(assets, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class)
+                                                                                    .getAllAssets())
+                                                           .withSelfRel());
     }
 }

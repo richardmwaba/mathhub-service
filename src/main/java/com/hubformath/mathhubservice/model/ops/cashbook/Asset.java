@@ -1,5 +1,7 @@
 package com.hubformath.mathhubservice.model.ops.cashbook;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hubformath.mathhubservice.model.auth.User;
 import com.hubformath.mathhubservice.model.systemconfig.AssetType;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import jakarta.persistence.Column;
@@ -8,7 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -24,42 +26,44 @@ public class Asset {
     @Column(name = "asset_id")
     private String assetId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "payment_method_id")
     private PaymentMethod paymentMethod;
 
     @Column(name = "narration")
     private String narration;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "asset_type_id")
     private AssetType assetType;
 
     @Column(name = "amount")
     private Double amount;
 
-    @Column(name = "created_by")
-    private Long createdBy;
-
-    @Column(name = "approved_by")
-    private Long approvedBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
 
     @CreationTimestamp
     @Column(name = "created_at")
+    @JsonIgnore
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
+    @SuppressWarnings("unused")
     public Asset() {
+        // Required by JPA
     }
 
-    public Asset(String narration, Double amount, Long createdBy, Long approvedBy) {
+    public Asset(String narration, Double amount, PaymentMethod paymentMethod, AssetType assetType) {
         this.narration = narration;
         this.amount = amount;
-        this.createdBy = createdBy;
-        this.approvedBy = approvedBy;
+        this.paymentMethod = paymentMethod;
+        this.assetType = assetType;
     }
 
     public String getAssetId() {
@@ -68,14 +72,6 @@ public class Asset {
 
     public void setAssetId(String assetId) {
         this.assetId = assetId;
-    }
-
-    public AssetType getAssetType() {
-        return assetType;
-    }
-
-    public void setAssetType(AssetType assetType) {
-        this.assetType = assetType;
     }
 
     public PaymentMethod getPaymentMethod() {
@@ -94,6 +90,14 @@ public class Asset {
         this.narration = narration;
     }
 
+    public AssetType getAssetType() {
+        return assetType;
+    }
+
+    public void setAssetType(AssetType assetType) {
+        this.assetType = assetType;
+    }
+
     public Double getAmount() {
         return amount;
     }
@@ -102,20 +106,12 @@ public class Asset {
         this.amount = amount;
     }
 
-    public Long getCreatedBy() {
+    public User getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(Long createdBy) {
+    public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
-    }
-
-    public Long getApprovedBy() {
-        return approvedBy;
-    }
-
-    public void setApprovedBy(Long approvedBy) {
-        this.approvedBy = approvedBy;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -143,8 +139,7 @@ public class Asset {
                 && Objects.equals(getNarration(), asset.getNarration())
                 && Objects.equals(getAssetType(), asset.getAssetType())
                 && Objects.equals(getAmount(), asset.getAmount())
-                && Objects.equals(getCreatedBy(), asset.getCreatedBy())
-                && Objects.equals(getApprovedBy(), asset.getApprovedBy());
+                && Objects.equals(getCreatedBy(), asset.getCreatedBy());
     }
 
     @Override
@@ -154,20 +149,18 @@ public class Asset {
                             getNarration(),
                             getAssetType(),
                             getAmount(),
-                            getCreatedBy(),
-                            getApprovedBy());
+                            getCreatedBy());
     }
 
     @Override
     public String toString() {
         return "Asset{" +
-                "assetId=" + assetId +
+                "assetId='" + assetId + '\'' +
                 ", paymentMethod=" + paymentMethod +
                 ", narration='" + narration + '\'' +
                 ", assetType=" + assetType +
                 ", amount=" + amount +
                 ", createdBy=" + createdBy +
-                ", approvedBy=" + approvedBy +
                 '}';
     }
 }
