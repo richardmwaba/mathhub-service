@@ -1,5 +1,7 @@
 package com.hubformath.mathhubservice.model.ops.cashbook;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hubformath.mathhubservice.model.auth.User;
 import com.hubformath.mathhubservice.model.systemconfig.ExpenseType;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import jakarta.persistence.Column;
@@ -8,7 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -24,46 +26,45 @@ public class Expense {
     @Column(name = "expense_id")
     private String expenseId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "payment_method_id")
     private PaymentMethod paymentMethod;
 
     @Column(name = "narration")
     private String narration;
 
-    @Column(name = "status")
-    private ExpenseStatus status;
-
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "expense_type_id")
     private ExpenseType expenseType;
 
     @Column(name = "amount")
     private Double amount;
 
-    @Column(name = "created_by")
-    private Long createdBy;
-
-    @Column(name = "approved_by")
-    private Long approvedBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
 
     @CreationTimestamp
     @Column(name = "created_at")
+    @JsonIgnore
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
+    @SuppressWarnings("unused")
     public Expense() {
+        // Required by JPA
     }
 
-    public Expense(String narration, ExpenseStatus status, Double amount, Long createdBy, Long approvedBy) {
+    public Expense(PaymentMethod paymentMethod, String narration, ExpenseType expenseType, Double amount, User createdBy) {
+        this.paymentMethod = paymentMethod;
         this.narration = narration;
-        this.status = status;
+        this.expenseType = expenseType;
         this.amount = amount;
         this.createdBy = createdBy;
-        this.approvedBy = approvedBy;
     }
 
     public String getExpenseId() {
@@ -98,14 +99,6 @@ public class Expense {
         this.narration = narration;
     }
 
-    public ExpenseStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ExpenseStatus status) {
-        this.status = status;
-    }
-
     public Double getAmount() {
         return amount;
     }
@@ -114,20 +107,12 @@ public class Expense {
         this.amount = amount;
     }
 
-    public Long getCreatedBy() {
+    public User getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(Long createdBy) {
+    public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
-    }
-
-    public Long getApprovedBy() {
-        return approvedBy;
-    }
-
-    public void setApprovedBy(Long approvedBy) {
-        this.approvedBy = approvedBy;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -153,11 +138,9 @@ public class Expense {
         return Objects.equals(getExpenseId(), expense.getExpenseId())
                 && Objects.equals(getPaymentMethod(), expense.getPaymentMethod())
                 && Objects.equals(getNarration(), expense.getNarration())
-                && getStatus() == expense.getStatus()
                 && Objects.equals(getExpenseType(), expense.getExpenseType())
                 && Objects.equals(getAmount(), expense.getAmount())
-                && Objects.equals(getCreatedBy(), expense.getCreatedBy())
-                && Objects.equals(getApprovedBy(), expense.getApprovedBy());
+                && Objects.equals(getCreatedBy(), expense.getCreatedBy());
     }
 
     @Override
@@ -165,11 +148,9 @@ public class Expense {
         return Objects.hash(getExpenseId(),
                             getPaymentMethod(),
                             getNarration(),
-                            getStatus(),
                             getExpenseType(),
                             getAmount(),
-                            getCreatedBy(),
-                            getApprovedBy());
+                            getCreatedBy());
     }
 
     @Override
@@ -178,11 +159,9 @@ public class Expense {
                 "expenseId=" + expenseId +
                 ", paymentMethod=" + paymentMethod +
                 ", narration='" + narration + '\'' +
-                ", status=" + status +
                 ", expenseType=" + expenseType +
                 ", amount=" + amount +
                 ", createdBy=" + createdBy +
-                ", approvedBy=" + approvedBy +
                 '}';
     }
 }

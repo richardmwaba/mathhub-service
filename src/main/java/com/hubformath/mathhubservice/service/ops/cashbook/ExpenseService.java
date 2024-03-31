@@ -1,13 +1,13 @@
 package com.hubformath.mathhubservice.service.ops.cashbook;
 
-import com.hubformath.mathhubservice.dto.ops.cashbook.ExpenseRequestDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.Expense;
-import com.hubformath.mathhubservice.model.ops.cashbook.ExpenseStatus;
+import com.hubformath.mathhubservice.model.ops.cashbook.ExpenseRequest;
 import com.hubformath.mathhubservice.model.systemconfig.ExpenseType;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import com.hubformath.mathhubservice.repository.ops.cashbook.ExpenseRepository;
 import com.hubformath.mathhubservice.service.systemconfig.ExpenseTypeService;
 import com.hubformath.mathhubservice.service.systemconfig.PaymentMethodService;
+import com.hubformath.mathhubservice.service.systemconfig.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +23,17 @@ public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
 
+    private final UsersService usersService;
+
     @Autowired
-    public ExpenseService(final PaymentMethodService paymentMethodService,
+    public ExpenseService(PaymentMethodService paymentMethodService,
                           ExpenseTypeService expenseTypeService,
-                          final ExpenseRepository expenseRepository) {
+                          ExpenseRepository expenseRepository,
+                          UsersService usersService) {
         this.paymentMethodService = paymentMethodService;
         this.expenseTypeService = expenseTypeService;
         this.expenseRepository = expenseRepository;
+        this.usersService = usersService;
     }
 
     public List<Expense> getAllExpenses() {
@@ -41,34 +45,39 @@ public class ExpenseService {
 
     }
 
-    public Expense createExpense(ExpenseRequestDto expenseRequest) {
-        final String expenseTypeId = expenseRequest.getExpenseTypeId();
-        final String paymentMethodId = expenseRequest.getPaymentMethodId();
-        final Double amount = expenseRequest.getAmount();
-        final String narration = expenseRequest.getNarration();
-        final ExpenseStatus expenseStatus = expenseRequest.getStatus();
+    public Expense createExpense(ExpenseRequest expenseRequest) {
+        final String expenseTypeId = expenseRequest.expenseTypeId();
+        final String paymentMethodId = expenseRequest.paymentMethodId();
+        final Double amount = expenseRequest.amount();
+        final String narration = expenseRequest.narration();
 
         final ExpenseType expenseType = expenseTypeService.getExpenseTypeById(expenseTypeId);
         final PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(paymentMethodId);
 
-        // To do: Replace null created by with actual logged-in user
-        final Expense newExpense = new Expense(narration, expenseStatus, amount, null, null);
-        newExpense.setExpenseType(expenseType);
-        newExpense.setPaymentMethod(paymentMethod);
+        final Expense newExpense = new Expense(paymentMethod,
+                                               narration,
+                                               expenseType,
+                                               amount,
+                                               usersService.getLoggedInUser());
 
         return expenseRepository.save(newExpense);
     }
 
-    public Expense updateExpense(String expenseId, Expense expenseRequest) {
+    public Expense updateExpense(String expenseId, ExpenseRequest expenseRequest) {
         return expenseRepository.findById(expenseId)
                                 .map(expense -> {
-                                    Optional.ofNullable(expenseRequest.getPaymentMethod())
-                                            .ifPresent(expense::setPaymentMethod);
-                                    Optional.ofNullable(expenseRequest.getNarration()).ifPresent(expense::setNarration);
-                                    Optional.ofNullable(expenseRequest.getStatus()).ifPresent(expense::setStatus);
-                                    Optional.ofNullable(expenseRequest.getExpenseType())
-                                            .ifPresent(expense::setExpenseType);
-                                    Optional.ofNullable(expenseRequest.getAmount()).ifPresent(expense::setAmount);
+                                    Optional.ofNullable(expenseRequest.paymentMethodId())
+                                            .ifPresent(paymentMethodId -> {
+                                                PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(
+                                                        paymentMethodId);
+                                                expense.setPaymentMethod(paymentMethod);
+                                            });
+                                    Optional.ofNullable(expenseRequest.narration()).ifPresent(expense::setNarration);
+                                    Optional.ofNullable(expenseRequest.expenseTypeId()).ifPresent(expenseTypeId -> {
+                                        ExpenseType expenseType = expenseTypeService.getExpenseTypeById(expenseTypeId);
+                                        expense.setExpenseType(expenseType);
+                                    });
+                                    Optional.ofNullable(expenseRequest.amount()).ifPresent(expense::setAmount);
                                     return expenseRepository.save(expense);
                                 })
                                 .orElseThrow();
