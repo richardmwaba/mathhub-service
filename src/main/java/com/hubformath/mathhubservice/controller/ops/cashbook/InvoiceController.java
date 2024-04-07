@@ -1,10 +1,8 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
-import com.hubformath.mathhubservice.config.ModelMapperConfig;
-import com.hubformath.mathhubservice.dto.ops.cashbook.InvoiceDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.Invoice;
+import com.hubformath.mathhubservice.model.ops.cashbook.InvoiceRequest;
 import com.hubformath.mathhubservice.service.ops.cashbook.InvoiceService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -30,61 +28,55 @@ import java.util.stream.StreamSupport;
 @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER')")
 public class InvoiceController {
 
-    private final ModelMapper modelMapper;
-
     private final InvoiceService invoiceService;
 
     @Autowired
-    public InvoiceController(final ModelMapperConfig modelMapperConfig, final InvoiceService invoiceService) {
-        this.modelMapper = modelMapperConfig.createModelMapper();
+    public InvoiceController(InvoiceService invoiceService) {
         this.invoiceService = invoiceService;
     }
 
     @GetMapping("/invoices")
-    public ResponseEntity<CollectionModel<EntityModel<InvoiceDto>>> getAllInvoices() {
-        List<InvoiceDto> invoices = invoiceService.getAllInvoices().stream()
-                                                  .map(invoice -> modelMapper.map(invoice, InvoiceDto.class))
-                                                  .toList();
+    public ResponseEntity<CollectionModel<EntityModel<Invoice>>> getAllInvoices() {
+        CollectionModel<EntityModel<Invoice>> invoices = toCollectionModel(invoiceService.getAllInvoices());
 
-        CollectionModel<EntityModel<InvoiceDto>> invoiceCollectionModel = toCollectionModel(invoices);
-
-        return ResponseEntity.ok().body(invoiceCollectionModel);
+        return ResponseEntity.ok().body(invoices);
     }
 
     @PostMapping("/invoices")
-    public ResponseEntity<EntityModel<InvoiceDto>> createInvoice(@RequestBody final InvoiceDto invoiceRequestDto) {
-        Invoice newInvoice = invoiceService.createInvoice(invoiceRequestDto);
-        EntityModel<InvoiceDto> invoiceEntityModel = toModel(modelMapper.map(newInvoice, InvoiceDto.class));
-        return ResponseEntity.created(invoiceEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                             .body(invoiceEntityModel);
+    @SuppressWarnings("java:S1452") // Wildcard return required for readable messages when error occurs
+    public ResponseEntity<?> createInvoice(@RequestBody InvoiceRequest invoiceRequest) {
+        try {
+            EntityModel<Invoice> newInvoice = toModel(invoiceService.createInvoice(invoiceRequest));
+            return ResponseEntity.created(newInvoice.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                                 .body(newInvoice);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/invoices/{invoiceId}")
-    public ResponseEntity<EntityModel<InvoiceDto>> getInvoiceById(@PathVariable final String invoiceId) {
+    public ResponseEntity<EntityModel<Invoice>> getInvoiceById(@PathVariable String invoiceId) {
         try {
-            Invoice invoice = invoiceService.getInvoiceById(invoiceId);
-            EntityModel<InvoiceDto> invoiceEntityModel = toModel(modelMapper.map(invoice, InvoiceDto.class));
-            return ResponseEntity.ok().body(invoiceEntityModel);
+            EntityModel<Invoice> updatedInvoice = toModel(invoiceService.getInvoiceById(invoiceId));
+            return ResponseEntity.ok().body(updatedInvoice);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/invoices/{invoiceId}")
-    public ResponseEntity<EntityModel<InvoiceDto>> replaceInvoice(@RequestBody final InvoiceDto invoiceDto,
-                                                                  @PathVariable final String invoiceId) {
+    public ResponseEntity<EntityModel<Invoice>> replaceInvoice(@RequestBody InvoiceRequest invoiceRequest,
+                                                               @PathVariable String invoiceId) {
         try {
-            Invoice invoiceRequest = modelMapper.map(invoiceDto, Invoice.class);
-            Invoice updatedInvoice = invoiceService.updateInvoice(invoiceId, invoiceRequest);
-            EntityModel<InvoiceDto> invoiceEntityModel = toModel(modelMapper.map(updatedInvoice, InvoiceDto.class));
-            return ResponseEntity.ok().body(invoiceEntityModel);
+            EntityModel<Invoice> updatedInvoice = toModel(invoiceService.updateInvoice(invoiceId, invoiceRequest));
+            return ResponseEntity.ok().body(updatedInvoice);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/invoices/{invoiceId}")
-    public ResponseEntity<String> deleteInvoice(@PathVariable final String invoiceId) {
+    public ResponseEntity<String> deleteInvoice(@PathVariable String invoiceId) {
         try {
             invoiceService.deleteInvoice(invoiceId);
             return ResponseEntity.ok().body("Invoice deleted successfully");
@@ -93,7 +85,7 @@ public class InvoiceController {
         }
     }
 
-    private EntityModel<InvoiceDto> toModel(final InvoiceDto invoice) {
+    private EntityModel<Invoice> toModel(Invoice invoice) {
         return EntityModel.of(invoice,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(InvoiceController.class)
                                                                         .getInvoiceById(invoice.getInvoiceId()))
@@ -102,12 +94,12 @@ public class InvoiceController {
                                                                         .getAllInvoices()).withRel("invoices"));
     }
 
-    private CollectionModel<EntityModel<InvoiceDto>> toCollectionModel(final Iterable<? extends InvoiceDto> invoices) {
-        List<EntityModel<InvoiceDto>> invoiceList = StreamSupport.stream(invoices.spliterator(), false)
-                                                                 .map(this::toModel)
-                                                                 .toList();
+    private CollectionModel<EntityModel<Invoice>> toCollectionModel(Iterable<? extends Invoice> invoicesIterable) {
+        List<EntityModel<Invoice>> invoices = StreamSupport.stream(invoicesIterable.spliterator(), false)
+                                                           .map(this::toModel)
+                                                           .toList();
 
-        return CollectionModel.of(invoiceList,
+        return CollectionModel.of(invoices,
                                   WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(InvoiceController.class)
                                                                             .getAllInvoices())
                                                    .withSelfRel());

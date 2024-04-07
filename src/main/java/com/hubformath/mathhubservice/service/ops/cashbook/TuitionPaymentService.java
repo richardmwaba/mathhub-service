@@ -4,6 +4,7 @@ import com.hubformath.mathhubservice.dto.ops.cashbook.TuitionPaymentDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.CashTransaction;
 import com.hubformath.mathhubservice.model.ops.cashbook.CashTransactionType;
 import com.hubformath.mathhubservice.model.ops.cashbook.Invoice;
+import com.hubformath.mathhubservice.model.ops.cashbook.InvoiceRequest;
 import com.hubformath.mathhubservice.model.ops.cashbook.InvoiceStatus;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.ops.cashbook.Receipt;
@@ -85,8 +86,8 @@ public class TuitionPaymentService {
         student.setStudentFinancialSummary(studentService.computeStudentFinancialSummary(student));
 
         // Update invoice
-        invoice.setInvoiceStatus(InvoiceStatus.PAID);
-        invoiceService.updateInvoice(invoiceId, invoice);
+        InvoiceRequest invoiceRequest = new InvoiceRequest(null, null, narration, InvoiceStatus.PAID);
+        invoiceService.updateInvoice(invoiceId, invoiceRequest);
 
         final TuitionPayment newTuitionPayment = new TuitionPayment(newCashTransaction,
                                                                     student,

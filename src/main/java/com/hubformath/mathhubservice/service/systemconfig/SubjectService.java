@@ -47,16 +47,18 @@ public class SubjectService {
     }
 
     public Subject updateSubject(String subjectId, SubjectRequest subjectRequest) {
-        Subject updatedSubject = subjectRepository.findById(subjectId).map(subject -> {
-            Optional.ofNullable(subjectRequest.subjectName())
-                    .ifPresent(subject::setSubjectName);
-            Optional.ofNullable(subjectRequest.subjectComplexity())
-                    .ifPresent(subject::setSubjectComplexity);
-            Optional.ofNullable(subjectRequest.subjectGradeIds())
-                    .ifPresent(gradeIds -> subject.setSubjectGrades(extractGrades(gradeIds)));
+        Subject updatedSubject = subjectRepository.findById(subjectId)
+                                                  .map(subject -> {
+                                                      Optional.ofNullable(subjectRequest.subjectName())
+                                                              .ifPresent(subject::setSubjectName);
+                                                      Optional.ofNullable(subjectRequest.subjectComplexity())
+                                                              .ifPresent(subject::setSubjectComplexity);
+                                                      Optional.ofNullable(subjectRequest.subjectGradeIds())
+                                                              .ifPresent(gradeIds -> subject.setSubjectGrades(
+                                                                      extractGrades(gradeIds)));
 
-            return subject;
-        }).orElseThrow();
+                                                      return subject;
+                                                  }).orElseThrow();
 
         return subjectRepository.save(updatedSubject);
     }
