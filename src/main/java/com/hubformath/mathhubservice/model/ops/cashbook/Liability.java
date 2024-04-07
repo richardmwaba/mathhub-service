@@ -1,5 +1,7 @@
 package com.hubformath.mathhubservice.model.ops.cashbook;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hubformath.mathhubservice.model.auth.User;
 import com.hubformath.mathhubservice.model.systemconfig.LiabilityType;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import jakarta.persistence.Column;
@@ -37,27 +39,32 @@ public class Liability {
     @Column(name = "amount")
     private Double amount;
 
-    @Column(name = "created_by")
-    private Long createdBy;
+    @Column(name = "narration")
+    private String narration;
 
-    @Column(name = "approved_by")
-    private Long approvedBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by", unique = false, nullable = false)
+    private User createdBy;
 
     @CreationTimestamp
     @Column(name = "created_at")
+    @JsonIgnore
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column
+    @Column(name = "updated_at")
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
     public Liability() {
     }
 
-    public Liability(Double amount, Long createdBy, Long approvedBy) {
+    public Liability(LiabilityType liabilityType, PaymentMethod paymentMethod, Double amount, String narration, User createdBy) {
+        this.liabilityType = liabilityType;
+        this.paymentMethod = paymentMethod;
         this.amount = amount;
+        this.narration = narration;
         this.createdBy = createdBy;
-        this.approvedBy = approvedBy;
     }
 
     public String getLiabilityId() {
@@ -92,20 +99,20 @@ public class Liability {
         this.amount = amount;
     }
 
-    public Long getCreatedBy() {
+    public String getNarration() {
+        return narration;
+    }
+
+    public void setNarration(String narration) {
+        this.narration = narration;
+    }
+
+    public User getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(Long createdBy) {
+    public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
-    }
-
-    public Long getApprovedBy() {
-        return approvedBy;
-    }
-
-    public void setApprovedBy(Long approvedBy) {
-        this.approvedBy = approvedBy;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -132,8 +139,8 @@ public class Liability {
                 && Objects.equals(getLiabilityType(), liability.getLiabilityType())
                 && Objects.equals(getPaymentMethod(), liability.getPaymentMethod())
                 && Objects.equals(getAmount(), liability.getAmount())
-                && Objects.equals(getCreatedBy(), liability.getCreatedBy())
-                && Objects.equals(getApprovedBy(), liability.getApprovedBy());
+                && Objects.equals(getNarration(), liability.getNarration())
+                && Objects.equals(getCreatedBy(), liability.getCreatedBy());
     }
 
     @Override
@@ -142,8 +149,8 @@ public class Liability {
                             getLiabilityType(),
                             getPaymentMethod(),
                             getAmount(),
-                            getCreatedBy(),
-                            getApprovedBy());
+                            getNarration(),
+                            getCreatedBy());
     }
 
     @Override
@@ -153,8 +160,8 @@ public class Liability {
                 ", liabilityType=" + liabilityType +
                 ", paymentMethod=" + paymentMethod +
                 ", amount=" + amount +
+                ", narration=" + narration +
                 ", createdBy=" + createdBy +
-                ", approvedBy=" + approvedBy +
                 '}';
     }
 }
