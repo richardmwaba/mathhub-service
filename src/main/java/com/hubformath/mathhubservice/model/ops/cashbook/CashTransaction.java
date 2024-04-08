@@ -2,7 +2,6 @@ package com.hubformath.mathhubservice.model.ops.cashbook;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hubformath.mathhubservice.model.auth.User;
-import com.hubformath.mathhubservice.model.systemconfig.CashTransactionCategory;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,6 +25,7 @@ import java.util.Objects;
 public class CashTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "cash_transaction_id")
     private String cashTransactionId;
 
     @Column(name = "transaction_number", unique = true)
@@ -38,10 +38,6 @@ public class CashTransaction {
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type")
     private CashTransactionType transactionType;
-
-    @ManyToOne
-    @JoinColumn(name = "transaction_category_id", unique = false, nullable = false)
-    private CashTransactionCategory transactionCategory;
 
     @Column(name = "narration")
     private String narration;
@@ -70,12 +66,14 @@ public class CashTransaction {
                            PaymentMethod paymentMethod,
                            CashTransactionType transactionType,
                            String narration,
-                           Double amount) {
+                           Double amount,
+                           User transactedBy) {
         this.paymentMethod = paymentMethod;
         this.transactionNumber = transactionNumber;
         this.transactionType = transactionType;
         this.narration = narration;
         this.amount = amount;
+        this.transactedBy = transactedBy;
         this.transactionDateTime = LocalDateTime.now();
     }
 
@@ -113,14 +111,6 @@ public class CashTransaction {
 
     public void setTransactionType(CashTransactionType transactionType) {
         this.transactionType = transactionType;
-    }
-
-    public CashTransactionCategory getTransactionCategory() {
-        return transactionCategory;
-    }
-
-    public void setTransactionCategory(CashTransactionCategory transactionCategory) {
-        this.transactionCategory = transactionCategory;
     }
 
     public String getNarration() {
@@ -179,7 +169,6 @@ public class CashTransaction {
                 && Objects.equals(getTransactionNumber(), that.getTransactionNumber())
                 && Objects.equals(getPaymentMethod(), that.getPaymentMethod())
                 && getTransactionType() == that.getTransactionType()
-                && Objects.equals(getTransactionCategory(), that.getTransactionCategory())
                 && Objects.equals(getNarration(), that.getNarration())
                 && Objects.equals(getAmount(), that.getAmount())
                 && Objects.equals(getTransactionDateTime(), that.getTransactionDateTime())
@@ -192,7 +181,6 @@ public class CashTransaction {
                             getTransactionNumber(),
                             getPaymentMethod(),
                             getTransactionType(),
-                            getTransactionCategory(),
                             getNarration(),
                             getAmount(),
                             getTransactionDateTime(),
@@ -206,7 +194,6 @@ public class CashTransaction {
                 ", transactionNumber='" + transactionNumber + '\'' +
                 ", paymentMethod=" + paymentMethod +
                 ", transactionType=" + transactionType +
-                ", transactionCategory=" + transactionCategory +
                 ", narration='" + narration + '\'' +
                 ", amount=" + amount +
                 ", transactionDateTime=" + transactionDateTime +

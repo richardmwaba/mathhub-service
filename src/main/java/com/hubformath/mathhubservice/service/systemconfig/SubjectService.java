@@ -1,6 +1,6 @@
 package com.hubformath.mathhubservice.service.systemconfig;
 
-import com.hubformath.mathhubservice.dto.systemconfig.SubjectRequest;
+import com.hubformath.mathhubservice.model.sis.SubjectRequest;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import com.hubformath.mathhubservice.model.systemconfig.SubjectComplexity;

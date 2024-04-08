@@ -103,7 +103,8 @@ public class StudentService {
                                     Optional.ofNullable(studentRequest.getGrade()).ifPresent(student::setGrade);
                                     Optional.ofNullable(studentRequest.getParents()).ifPresent(student::setParents);
                                     Optional.ofNullable(studentRequest.getAddresses()).ifPresent(student::setAddresses);
-                                    Optional.ofNullable(studentRequest.getPhoneNumbers()).ifPresent(student::setPhoneNumbers);
+                                    Optional.ofNullable(studentRequest.getPhoneNumbers())
+                                            .ifPresent(student::setPhoneNumbers);
                                     Optional.ofNullable(studentRequest.getExamBoard()).ifPresent(student::setExamBoard);
                                     return studentRepository.save(student);
                                 })
@@ -140,7 +141,15 @@ public class StudentService {
                                     .map(lesson -> lesson.getLessonRateAmount() * lesson.getOccurrence())
                                     .reduce(Double::sum)
                                     .orElse(0d);
-        return new StudentFinancialSummary(student.isOwingPayment(), amountOwing);
+        boolean isStudentOwing = isStudentOwing(student, amountOwing);
+        return new StudentFinancialSummary(isStudentOwing, amountOwing);
+    }
+
+    private boolean isStudentOwing(Student student, Double amountOwing) {
+        boolean hasUnpaidLessons = student.getLessons()
+                                          .stream()
+                                          .anyMatch(lesson -> lesson.getLessonPaymentStatus() == PaymentStatus.UNPAID);
+        return hasUnpaidLessons && amountOwing > 0;
     }
 
     public void deleteStudent(String studentId) {

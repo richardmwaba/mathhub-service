@@ -1,7 +1,6 @@
 package com.hubformath.mathhubservice.model.sis;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
 import jakarta.persistence.CascadeType;
@@ -227,10 +226,6 @@ public class Student {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public boolean isOwingPayment() {
-        return getLessons().stream().anyMatch(lesson -> lesson.getLessonPaymentStatus() == PaymentStatus.UNPAID);
-    }
-
     public ExamBoard getExamBoard() {
         return examBoard;
     }
@@ -254,6 +249,8 @@ public class Student {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

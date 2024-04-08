@@ -1,10 +1,9 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
-import com.hubformath.mathhubservice.config.ModelMapperConfig;
-import com.hubformath.mathhubservice.dto.ops.cashbook.TuitionPaymentDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.TuitionPayment;
+import com.hubformath.mathhubservice.model.ops.cashbook.TuitionPaymentRequest;
 import com.hubformath.mathhubservice.service.ops.cashbook.TuitionPaymentService;
-import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -27,60 +26,55 @@ import java.util.stream.StreamSupport;
 @RequestMapping(path = "/api/v1/ops")
 public class TuitionPaymentController {
 
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(TuitionPaymentController.class);
+
     private final TuitionPaymentService tuitionPaymentService;
 
-    private final ModelMapper modelMapper;
-
     @Autowired
-    public TuitionPaymentController(final TuitionPaymentService tuitionPaymentService,
-                                    final ModelMapperConfig modelMapperConfig) {
+    public TuitionPaymentController(TuitionPaymentService tuitionPaymentService) {
         this.tuitionPaymentService = tuitionPaymentService;
-        this.modelMapper = modelMapperConfig.createModelMapper();
     }
 
     @GetMapping("/tuitionPayments")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT') or hasRole('TEACHER')")
-    public ResponseEntity<CollectionModel<EntityModel<TuitionPaymentDto>>> getAllTuitionPayments() {
-        List<TuitionPaymentDto> tuitionPayments = tuitionPaymentService.getAllTuitionPayments().stream()
-                                                                       .map(tuitionPayment -> modelMapper.map(
-                                                                               tuitionPayment,
-                                                                               TuitionPaymentDto.class))
-                                                                       .toList();
-
-        CollectionModel<EntityModel<TuitionPaymentDto>> tuitionPaymentCollectionModel = toCollectionModel(
-                tuitionPayments);
-
+    public ResponseEntity<CollectionModel<EntityModel<TuitionPayment>>> getAllTuitionPayments() {
+        CollectionModel<EntityModel<TuitionPayment>> tuitionPaymentCollectionModel = toCollectionModel(
+                tuitionPaymentService.getAllTuitionPayments());
         return ResponseEntity.ok().body(tuitionPaymentCollectionModel);
     }
 
     @PostMapping("/tuitionPayments")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<EntityModel<TuitionPaymentDto>> newTuitionPayment(@RequestBody final TuitionPaymentDto tuitionPayment) {
-        final TuitionPayment newTuitionPayment = tuitionPaymentService.createTuitionPayment(tuitionPayment);
-        if (newTuitionPayment == null) {
-            return ResponseEntity.noContent().build();
-        }
-        EntityModel<TuitionPaymentDto> tuitionPaymentEntityModel = toModel(modelMapper.map(newTuitionPayment,
-                                                                                           TuitionPaymentDto.class));
+    @SuppressWarnings("java:S1452") // Wildcard type required for multiple return types
+    public ResponseEntity<?> newTuitionPayment(@RequestBody TuitionPaymentRequest tuitionPaymentRequest) {
+        try {
+            final TuitionPayment newTuitionPayment = tuitionPaymentService.createTuitionPayment(tuitionPaymentRequest);
+            if (newTuitionPayment == null) {
+                return ResponseEntity.ok().body("Student is not currently not owing any payment or has already paid.");
+            }
 
-        return ResponseEntity.created(tuitionPaymentEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                             .body(tuitionPaymentEntityModel);
+            EntityModel<TuitionPayment> tuitionPaymentEntityModel = toModel(newTuitionPayment);
+
+            return ResponseEntity.created(tuitionPaymentEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                                 .body(tuitionPaymentEntityModel);
+        } catch (Exception e) {
+            LOGGER.error("An error occurred while processing the request.", e);
+            return ResponseEntity.internalServerError().body("An error occurred while processing the request. Please try again.");
+        }
     }
 
     @GetMapping("/tuitionPayments/{tuitionPaymentId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT') or hasRole('TEACHER')")
-    public ResponseEntity<EntityModel<TuitionPaymentDto>> getTuitionPaymentById(@PathVariable final String tuitionPaymentId) {
+    public ResponseEntity<EntityModel<TuitionPayment>> getTuitionPaymentById(@PathVariable String tuitionPaymentId) {
         try {
-            TuitionPayment tuitionPayment = tuitionPaymentService.getTuitionPaymentById(tuitionPaymentId);
-            EntityModel<TuitionPaymentDto> tuitionPaymentEntityModel = toModel(modelMapper.map(tuitionPayment,
-                                                                                               TuitionPaymentDto.class));
-            return ResponseEntity.ok().body(tuitionPaymentEntityModel);
+            EntityModel<TuitionPayment> tuitionPayment = toModel(tuitionPaymentService.getTuitionPaymentById(tuitionPaymentId));
+            return ResponseEntity.ok().body(tuitionPayment);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    private EntityModel<TuitionPaymentDto> toModel(final TuitionPaymentDto tuitionPayment) {
+    private EntityModel<TuitionPayment> toModel(TuitionPayment tuitionPayment) {
         return EntityModel.of(tuitionPayment,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TuitionPaymentController.class)
                                                                         .getTuitionPaymentById(tuitionPayment.getTuitionPaymentId()))
@@ -90,13 +84,13 @@ public class TuitionPaymentController {
                                                .withRel("tuitionPayments"));
     }
 
-    private CollectionModel<EntityModel<TuitionPaymentDto>> toCollectionModel(final Iterable<? extends TuitionPaymentDto> tuitionPayments) {
-        List<EntityModel<TuitionPaymentDto>> tuitionPaymentList = StreamSupport.stream(tuitionPayments.spliterator(),
-                                                                                       false)
-                                                                               .map(this::toModel)
-                                                                               .toList();
+    private CollectionModel<EntityModel<TuitionPayment>> toCollectionModel(Iterable<? extends TuitionPayment> tuitionPaymentsIterable) {
+        List<EntityModel<TuitionPayment>> tuitionPayments = StreamSupport.stream(tuitionPaymentsIterable.spliterator(),
+                                                                                 false)
+                                                                         .map(this::toModel)
+                                                                         .toList();
 
-        return CollectionModel.of(tuitionPaymentList,
+        return CollectionModel.of(tuitionPayments,
                                   WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TuitionPaymentController.class)
                                                                             .getAllTuitionPayments())
                                                    .withSelfRel());
