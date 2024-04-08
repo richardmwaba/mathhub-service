@@ -1,6 +1,6 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
-import com.hubformath.mathhubservice.dto.systemconfig.SubjectRequest;
+import com.hubformath.mathhubservice.model.sis.SubjectRequest;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;

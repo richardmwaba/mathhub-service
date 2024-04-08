@@ -2,12 +2,14 @@ package com.hubformath.mathhubservice.service.systemconfig;
 
 import com.hubformath.mathhubservice.model.auth.Role;
 import com.hubformath.mathhubservice.model.auth.User;
+import com.hubformath.mathhubservice.model.auth.UserAuthDetails;
 import com.hubformath.mathhubservice.model.auth.UserRequest;
 import com.hubformath.mathhubservice.model.auth.UserRole;
 import com.hubformath.mathhubservice.repository.auth.AuthRefreshTokenRepository;
 import com.hubformath.mathhubservice.repository.auth.UserRepository;
 import com.hubformath.mathhubservice.repository.auth.UserRoleRepository;
 import jakarta.security.auth.message.AuthException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -125,6 +127,13 @@ public class UsersService {
         }
 
         return userRoles;
+    }
+
+    public User getLoggedInUser() {
+        UserAuthDetails userDetails = (UserAuthDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+        return getUserById(userDetails.getUserId());
     }
 
     private UserRole getUserRole(Role role) {

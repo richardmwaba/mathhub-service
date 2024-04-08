@@ -1,10 +1,7 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
-import com.hubformath.mathhubservice.config.ModelMapperConfig;
-import com.hubformath.mathhubservice.dto.systemconfig.SessionTypeDto;
 import com.hubformath.mathhubservice.model.systemconfig.SessionType;
 import com.hubformath.mathhubservice.service.systemconfig.SessionTypeService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -30,61 +27,43 @@ import java.util.stream.StreamSupport;
 @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER') or hasRole('TEACHER')")
 public class SessionTypeController {
 
-    private final ModelMapper modelMapper;
-
     private final SessionTypeService sessionTypeService;
 
     @Autowired
-    public SessionTypeController(final ModelMapperConfig modelMapperConfig,
-                                 final SessionTypeService sessionTypeService) {
-        this.modelMapper = modelMapperConfig.createModelMapper();
+    public SessionTypeController(final SessionTypeService sessionTypeService) {
         this.sessionTypeService = sessionTypeService;
     }
 
     @GetMapping("/sessionTypes")
-    public ResponseEntity<CollectionModel<EntityModel<SessionTypeDto>>> getAllSessionTypes() {
-        List<SessionTypeDto> sessionTypes = sessionTypeService.getAllSessionTypes().stream()
-                                                              .map(sessionType -> modelMapper.map(sessionType,
-                                                                                                  SessionTypeDto.class))
-                                                              .toList();
-
-        CollectionModel<EntityModel<SessionTypeDto>> sessionTypeCollectionModel = toCollectionModel(sessionTypes);
-
-        return ResponseEntity.ok().body(sessionTypeCollectionModel);
+    public ResponseEntity<CollectionModel<EntityModel<SessionType>>> getAllSessionTypes() {
+        CollectionModel<EntityModel<SessionType>> sessionTypes = toCollectionModel(sessionTypeService.getAllSessionTypes());
+        return ResponseEntity.ok().body(sessionTypes);
     }
 
     @PostMapping("/sessionTypes")
-    public ResponseEntity<EntityModel<SessionTypeDto>> newSessionType(@RequestBody final SessionTypeDto sessionTypeDto) {
-        SessionType sessionTypeRequest = modelMapper.map(sessionTypeDto, SessionType.class);
-        SessionType newSessionType = sessionTypeService.createSessionType(sessionTypeRequest);
-        EntityModel<SessionTypeDto> sessionTypeEntityModel = toModel(modelMapper.map(newSessionType,
-                                                                                     SessionTypeDto.class));
-
-        return ResponseEntity.created(sessionTypeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                             .body(sessionTypeEntityModel);
+    public ResponseEntity<EntityModel<SessionType>> newSessionType(@RequestBody final SessionType sessionTypeRequest) {
+        EntityModel<SessionType> newSessionType = toModel(sessionTypeService.createSessionType(sessionTypeRequest));
+        return ResponseEntity.created(newSessionType.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                             .body(newSessionType);
     }
 
     @GetMapping("/sessionTypes/{sessionTypeId}")
-    public ResponseEntity<EntityModel<SessionTypeDto>> getSessionTypeById(@PathVariable final String sessionTypeId) {
+    public ResponseEntity<EntityModel<SessionType>> getSessionTypeById(@PathVariable final String sessionTypeId) {
         try {
-            SessionType sessionType = sessionTypeService.getSessionTypeById(sessionTypeId);
-            EntityModel<SessionTypeDto> sessionTypeEntityModel = toModel(modelMapper.map(sessionType,
-                                                                                         SessionTypeDto.class));
-            return ResponseEntity.ok().body(sessionTypeEntityModel);
+            EntityModel<SessionType> sessionType = toModel(sessionTypeService.getSessionTypeById(sessionTypeId));
+            return ResponseEntity.ok().body(sessionType);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/sessionTypes/{sessionTypeId}")
-    public ResponseEntity<EntityModel<SessionTypeDto>> replaceSessionType(@RequestBody final SessionTypeDto sessionTypeDto,
-                                                                          @PathVariable final String sessionTypeId) {
+    public ResponseEntity<EntityModel<SessionType>> replaceSessionType(@RequestBody final SessionType sessionTypeRequest,
+                                                                       @PathVariable final String sessionTypeId) {
         try {
-            SessionType sessionTypeRequest = modelMapper.map(sessionTypeDto, SessionType.class);
-            SessionType updatedSessionType = sessionTypeService.updateSessionType(sessionTypeId, sessionTypeRequest);
-            EntityModel<SessionTypeDto> sessionTypeEntityModel = toModel(modelMapper.map(updatedSessionType,
-                                                                                         SessionTypeDto.class));
-            return ResponseEntity.ok().body(sessionTypeEntityModel);
+            EntityModel<SessionType> updatedSessionType = toModel(sessionTypeService.updateSessionType(sessionTypeId,
+                                                                                                       sessionTypeRequest));
+            return ResponseEntity.ok().body(updatedSessionType);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
@@ -100,7 +79,7 @@ public class SessionTypeController {
         }
     }
 
-    private EntityModel<SessionTypeDto> toModel(final SessionTypeDto sessionType) {
+    private EntityModel<SessionType> toModel(final SessionType sessionType) {
         return EntityModel.of(sessionType,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SessionTypeController.class)
                                                                         .getSessionTypeById(sessionType.getSessionTypeId()))
@@ -109,12 +88,12 @@ public class SessionTypeController {
                                                                         .getAllSessionTypes()).withRel("sessionTypes"));
     }
 
-    private CollectionModel<EntityModel<SessionTypeDto>> toCollectionModel(final Iterable<? extends SessionTypeDto> sessionTypes) {
-        List<EntityModel<SessionTypeDto>> sessionTypeList = StreamSupport.stream(sessionTypes.spliterator(), false)
-                                                                         .map(this::toModel)
-                                                                         .toList();
+    private CollectionModel<EntityModel<SessionType>> toCollectionModel(final Iterable<? extends SessionType> sessionTypesIterable) {
+        List<EntityModel<SessionType>> sessionTypes = StreamSupport.stream(sessionTypesIterable.spliterator(), false)
+                                                                   .map(this::toModel)
+                                                                   .toList();
 
-        return CollectionModel.of(sessionTypeList,
+        return CollectionModel.of(sessionTypes,
                                   WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SessionTypeController.class)
                                                                             .getAllSessionTypes())
                                                    .withSelfRel());

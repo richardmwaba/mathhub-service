@@ -1,7 +1,10 @@
 package com.hubformath.mathhubservice.service.ops.cashbook;
 
 import com.hubformath.mathhubservice.model.ops.cashbook.CashTransaction;
+import com.hubformath.mathhubservice.model.ops.cashbook.CashTransactionRequest;
+import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import com.hubformath.mathhubservice.repository.ops.cashbook.CashTransactionRepository;
+import com.hubformath.mathhubservice.service.systemconfig.PaymentMethodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +16,14 @@ public class CashTransactionService {
 
     private final CashTransactionRepository transactionRepository;
 
+    private final PaymentMethodService paymentMethodService;
+
+
     @Autowired
-    public CashTransactionService(final CashTransactionRepository transactionRepository) {
+    public CashTransactionService(CashTransactionRepository transactionRepository,
+                                  PaymentMethodService paymentMethodService) {
         this.transactionRepository = transactionRepository;
+        this.paymentMethodService = paymentMethodService;
     }
 
     public List<CashTransaction> getAllTransactions() {
@@ -26,25 +34,21 @@ public class CashTransactionService {
         return transactionRepository.findById(cashTransactionId).orElseThrow();
     }
 
-    public CashTransaction createTransaction(CashTransaction cashTransaction) {
-        return transactionRepository.save(cashTransaction);
-    }
-
-    public CashTransaction updateTransaction(String cashTransactionId, CashTransaction transactionRequest) {
+    public CashTransaction updateTransaction(String cashTransactionId, CashTransactionRequest transactionRequest) {
         return transactionRepository.findById(cashTransactionId)
                                     .map(transaction -> {
-                                        Optional.ofNullable(transactionRequest.getPaymentMethod())
-                                                .ifPresent(transaction::setPaymentMethod);
-                                        Optional.ofNullable(transactionRequest.getNarration())
+                                        Optional.ofNullable(transactionRequest.paymentMethodId())
+                                                .ifPresent(paymentMethodId -> {
+                                                    PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(
+                                                            paymentMethodId);
+                                                    transaction.setPaymentMethod(paymentMethod);
+                                                });
+                                        Optional.ofNullable(transactionRequest.narration())
                                                 .ifPresent(transaction::setNarration);
-                                        Optional.ofNullable(transactionRequest.getTransactionType())
+                                        Optional.ofNullable(transactionRequest.transactionType())
                                                 .ifPresent(transaction::setTransactionType);
-                                        Optional.ofNullable(transactionRequest.getAmount())
+                                        Optional.ofNullable(transactionRequest.amount())
                                                 .ifPresent(transaction::setAmount);
-                                        Optional.ofNullable(transactionRequest.getTransactionNumber())
-                                                .ifPresent(transaction::setTransactionNumber);
-                                        Optional.ofNullable(transactionRequest.getTransactionDateTime())
-                                                .ifPresent(transaction::setTransactionDateTime);
                                         return transactionRepository.save(transaction);
                                     })
                                     .orElseThrow();

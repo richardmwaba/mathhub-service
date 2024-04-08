@@ -1,10 +1,7 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
-import com.hubformath.mathhubservice.config.ModelMapperConfig;
-import com.hubformath.mathhubservice.dto.systemconfig.ExpenseTypeDto;
 import com.hubformath.mathhubservice.model.systemconfig.ExpenseType;
 import com.hubformath.mathhubservice.service.systemconfig.ExpenseTypeService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -30,61 +27,47 @@ import java.util.stream.StreamSupport;
 @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER')")
 public class ExpenseTypeController {
 
-    private final ModelMapper modelMapper;
-
     private final ExpenseTypeService expenseTypeService;
 
     @Autowired
-    public ExpenseTypeController(final ModelMapperConfig modelMapperConfig,
-                                 final ExpenseTypeService expenseTypeService) {
-        this.modelMapper = modelMapperConfig.createModelMapper();
+    public ExpenseTypeController(final ExpenseTypeService expenseTypeService) {
         this.expenseTypeService = expenseTypeService;
     }
 
     @GetMapping("/expenseTypes")
-    public ResponseEntity<CollectionModel<EntityModel<ExpenseTypeDto>>> getAllExpenseTypes() {
-        List<ExpenseTypeDto> expenseTypes = expenseTypeService.getAllExpenseTypes().stream()
-                                                              .map(expenseType -> modelMapper.map(expenseType,
-                                                                                                  ExpenseTypeDto.class))
-                                                              .toList();
+    public ResponseEntity<CollectionModel<EntityModel<ExpenseType>>> getAllExpenseTypes() {
+        CollectionModel<EntityModel<ExpenseType>> expenseTypes = toCollectionModel(expenseTypeService.getAllExpenseTypes());
 
-        CollectionModel<EntityModel<ExpenseTypeDto>> expenseTypeCollectionModel = toCollectionModel(expenseTypes);
-
-        return ResponseEntity.ok().body(expenseTypeCollectionModel);
+        return ResponseEntity.ok().body(expenseTypes);
     }
 
     @PostMapping("/expenseTypes")
-    public ResponseEntity<EntityModel<ExpenseTypeDto>> newExpenseType(@RequestBody final ExpenseTypeDto expenseTypeDto) {
-        ExpenseType expenseTypeRequest = modelMapper.map(expenseTypeDto, ExpenseType.class);
+    public ResponseEntity<EntityModel<ExpenseType>> newExpenseType(@RequestBody final ExpenseType expenseTypeRequest) {
         ExpenseType newExpenseType = expenseTypeService.createExpenseType(expenseTypeRequest);
-        EntityModel<ExpenseTypeDto> expenseTypeEntityModel = toModel(modelMapper.map(newExpenseType,
-                                                                                     ExpenseTypeDto.class));
+        EntityModel<ExpenseType> expenseType = toModel(newExpenseType);
 
-        return ResponseEntity.created(expenseTypeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                             .body(expenseTypeEntityModel);
+        return ResponseEntity.created(expenseType.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                             .body(expenseType);
     }
 
     @GetMapping("/expenseTypes/{expenseTypeId}")
-    public ResponseEntity<EntityModel<ExpenseTypeDto>> getExpenseTypeById(@PathVariable final String expenseTypeId) {
+    public ResponseEntity<EntityModel<ExpenseType>> getExpenseTypeById(@PathVariable final String expenseTypeId) {
         try {
-            ExpenseType expenseType = expenseTypeService.getExpenseTypeById(expenseTypeId);
-            EntityModel<ExpenseTypeDto> expenseTypeEntityModel = toModel(modelMapper.map(expenseType,
-                                                                                         ExpenseTypeDto.class));
-            return ResponseEntity.ok().body(expenseTypeEntityModel);
+            EntityModel<ExpenseType> expenseType = toModel(expenseTypeService.getExpenseTypeById(expenseTypeId));
+
+            return ResponseEntity.ok().body(expenseType);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/expenseTypes/{expenseTypeId}")
-    public ResponseEntity<EntityModel<ExpenseTypeDto>> replaceExpenseType(@RequestBody final ExpenseTypeDto expenseTypeDto,
-                                                                          @PathVariable final String expenseTypeId) {
+    public ResponseEntity<EntityModel<ExpenseType>> replaceExpenseType(@RequestBody final ExpenseType expenseTypeRequest,
+                                                                       @PathVariable final String expenseTypeId) {
         try {
-            ExpenseType expenseTypeRequest = modelMapper.map(expenseTypeDto, ExpenseType.class);
-            ExpenseType updatedExpenseType = expenseTypeService.updateExpenseType(expenseTypeId, expenseTypeRequest);
-            EntityModel<ExpenseTypeDto> expenseTypeEntityModel = toModel(modelMapper.map(updatedExpenseType,
-                                                                                         ExpenseTypeDto.class));
-            return ResponseEntity.ok().body(expenseTypeEntityModel);
+            EntityModel<ExpenseType> updatedExpenseType = toModel(expenseTypeService.updateExpenseType(expenseTypeId,
+                                                                                                       expenseTypeRequest));
+            return ResponseEntity.ok().body(updatedExpenseType);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
@@ -100,7 +83,7 @@ public class ExpenseTypeController {
         }
     }
 
-    public EntityModel<ExpenseTypeDto> toModel(final ExpenseTypeDto assessmentType) {
+    public EntityModel<ExpenseType> toModel(final ExpenseType assessmentType) {
         return EntityModel.of(assessmentType,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseTypeController.class)
                                                                         .getExpenseTypeById(assessmentType.getExpenseTypeId()))
@@ -109,13 +92,12 @@ public class ExpenseTypeController {
                                                                         .getAllExpenseTypes()).withRel("expenseTypes"));
     }
 
-    private CollectionModel<EntityModel<ExpenseTypeDto>> toCollectionModel(final Iterable<? extends ExpenseTypeDto> assessmentTypes) {
-        List<EntityModel<ExpenseTypeDto>> assessmentTypeList = StreamSupport
-                .stream(assessmentTypes.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+    private CollectionModel<EntityModel<ExpenseType>> toCollectionModel(final Iterable<? extends ExpenseType> expenseTypesIterable) {
+        List<EntityModel<ExpenseType>> expenseTypes = StreamSupport.stream(expenseTypesIterable.spliterator(), false)
+                                                                   .map(this::toModel)
+                                                                   .toList();
 
-        return CollectionModel.of(assessmentTypeList,
+        return CollectionModel.of(expenseTypes,
                                   WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseTypeController.class)
                                                                             .getAllExpenseTypes())
                                                    .withSelfRel());

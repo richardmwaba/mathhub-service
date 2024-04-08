@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.model.sis;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,9 +38,6 @@ public class Parent {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
-    private List<Student> students;
-
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "parents_addresses",
             joinColumns = @JoinColumn(name = "parent_id"),
@@ -54,10 +52,12 @@ public class Parent {
 
     @CreationTimestamp
     @Column(name = "created_at")
+    @JsonIgnore
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
     public Parent() {
@@ -110,14 +110,6 @@ public class Parent {
         this.email = email;
     }
 
-    public List<Student> getStudents() {
-        return students;
-    }
-
-    public void setStudents(List<Student> students) {
-        this.students = students;
-    }
-
     public List<Address> getAddresses() {
         return addresses;
     }
@@ -159,7 +151,6 @@ public class Parent {
                 && Objects.equals(getMiddleName(), parent.getMiddleName())
                 && Objects.equals(getLastName(), parent.getLastName())
                 && Objects.equals(getEmail(), parent.getEmail())
-                && Objects.equals(getStudents(), parent.getStudents())
                 && Objects.equals(getAddresses(), parent.getAddresses())
                 && Objects.equals(getPhoneNumbers(), parent.getPhoneNumbers());
     }
@@ -171,8 +162,20 @@ public class Parent {
                             getMiddleName(),
                             getLastName(),
                             getEmail(),
-                            getStudents(),
                             getAddresses(),
                             getPhoneNumbers());
+    }
+
+    @Override
+    public String toString() {
+        return "Parent{" +
+                "parentId='" + parentId + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", addresses=" + addresses +
+                ", phoneNumbers=" + phoneNumbers +
+                '}';
     }
 }

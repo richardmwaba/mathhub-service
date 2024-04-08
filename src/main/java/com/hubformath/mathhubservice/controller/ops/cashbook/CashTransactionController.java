@@ -1,10 +1,8 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
-import com.hubformath.mathhubservice.config.ModelMapperConfig;
-import com.hubformath.mathhubservice.dto.ops.cashbook.CashTransactionDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.CashTransaction;
+import com.hubformath.mathhubservice.model.ops.cashbook.CashTransactionRequest;
 import com.hubformath.mathhubservice.service.ops.cashbook.CashTransactionService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -29,51 +27,38 @@ import java.util.stream.StreamSupport;
 @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER')")
 public class CashTransactionController {
 
-    private final ModelMapper modelMapper;
-
     private final CashTransactionService transactionService;
 
     @Autowired
-    public CashTransactionController(final ModelMapperConfig modelMapperConfig,
-                                     final CashTransactionService transactionService) {
-        this.modelMapper = modelMapperConfig.createModelMapper();
+    public CashTransactionController(CashTransactionService transactionService) {
         this.transactionService = transactionService;
     }
 
     @GetMapping("/transactions")
-    public ResponseEntity<CollectionModel<EntityModel<CashTransactionDto>>> getAllTransactions() {
-        List<CashTransactionDto> transactions = transactionService.getAllTransactions().stream()
-                                                                  .map(transaction -> modelMapper.map(transaction,
-                                                                                                      CashTransactionDto.class))
-                                                                  .toList();
-
-        CollectionModel<EntityModel<CashTransactionDto>> transactionCollectionModel = toCollectionModel(transactions);
+    public ResponseEntity<CollectionModel<EntityModel<CashTransaction>>> getAllTransactions() {
+        List<CashTransaction> transactions = transactionService.getAllTransactions();
+        CollectionModel<EntityModel<CashTransaction>> transactionCollectionModel = toCollectionModel(transactions);
 
         return ResponseEntity.ok().body(transactionCollectionModel);
     }
 
     @GetMapping("/transactions/{cashTransactionId}")
-    public ResponseEntity<EntityModel<CashTransactionDto>> getTransactionById(@PathVariable final String cashTransactionId) {
+    public ResponseEntity<EntityModel<CashTransaction>> getTransactionById(@PathVariable String cashTransactionId) {
         try {
-            CashTransaction transaction = transactionService.getTransactionById(cashTransactionId);
-            EntityModel<CashTransactionDto> transactionEntityModel = toModel(modelMapper.map(transaction,
-                                                                                             CashTransactionDto.class));
-            return ResponseEntity.ok().body(transactionEntityModel);
+            EntityModel<CashTransaction> transaction = toModel(transactionService.getTransactionById(cashTransactionId));
+            return ResponseEntity.ok().body(transaction);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PatchMapping("/transactions/{cashTransactionId}")
-    public ResponseEntity<EntityModel<CashTransactionDto>> replaceTransaction(@RequestBody final CashTransactionDto transactionDto,
-                                                                              @PathVariable final String cashTransactionId) {
+    public ResponseEntity<EntityModel<CashTransaction>> updateTransaction(@RequestBody CashTransactionRequest transactionRequest,
+                                                                          @PathVariable String cashTransactionId) {
         try {
-            CashTransaction transactionRequest = modelMapper.map(transactionDto, CashTransaction.class);
-            CashTransaction updatedTransaction = transactionService.updateTransaction(cashTransactionId,
-                                                                                      transactionRequest);
-            EntityModel<CashTransactionDto> transactionEntityModel = toModel(modelMapper.map(updatedTransaction,
-                                                                                             CashTransactionDto.class));
-            return ResponseEntity.ok().body(transactionEntityModel);
+            EntityModel<CashTransaction> updatedTransaction =
+                    toModel(transactionService.updateTransaction(cashTransactionId, transactionRequest));
+            return ResponseEntity.ok().body(updatedTransaction);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
@@ -81,7 +66,7 @@ public class CashTransactionController {
     }
 
     @DeleteMapping("/transactions/{cashTransactionId}")
-    public ResponseEntity<String> deleteTransaction(@PathVariable final String cashTransactionId) {
+    public ResponseEntity<String> deleteTransaction(@PathVariable String cashTransactionId) {
         try {
             transactionService.deleteTransaction(cashTransactionId);
             return ResponseEntity.ok().body("Transaction deleted successfully");
@@ -90,7 +75,7 @@ public class CashTransactionController {
         }
     }
 
-    private EntityModel<CashTransactionDto> toModel(final CashTransactionDto transaction) {
+    private EntityModel<CashTransaction> toModel(CashTransaction transaction) {
         return EntityModel.of(transaction,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionController.class)
                                                                         .getTransactionById(transaction.getCashTransactionId()))
@@ -99,12 +84,12 @@ public class CashTransactionController {
                                                                         .getAllTransactions()).withRel("transactions"));
     }
 
-    private CollectionModel<EntityModel<CashTransactionDto>> toCollectionModel(final Iterable<? extends CashTransactionDto> transactions) {
-        List<EntityModel<CashTransactionDto>> transactionList = StreamSupport.stream(transactions.spliterator(), false)
+    private CollectionModel<EntityModel<CashTransaction>> toCollectionModel(Iterable<? extends CashTransaction> transactionsIterable) {
+        List<EntityModel<CashTransaction>> transactions = StreamSupport.stream(transactionsIterable.spliterator(), false)
                                                                              .map(this::toModel)
                                                                              .toList();
 
-        return CollectionModel.of(transactionList,
+        return CollectionModel.of(transactions,
                                   WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionController.class)
                                                                             .getAllTransactions())
                                                    .withSelfRel());

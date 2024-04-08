@@ -1,4 +1,4 @@
-package com.hubformath.mathhubservice.dto.systemconfig;
+package com.hubformath.mathhubservice.model.sis;
 
 import com.hubformath.mathhubservice.model.systemconfig.SubjectComplexity;
 

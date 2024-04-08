@@ -1,16 +1,15 @@
 package com.hubformath.mathhubservice.service.sis;
 
-import com.hubformath.mathhubservice.config.ModelMapperConfig;
-import com.hubformath.mathhubservice.dto.sis.LessonDto;
-import com.hubformath.mathhubservice.dto.sis.StudentDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.sis.Address;
 import com.hubformath.mathhubservice.model.sis.Lesson;
+import com.hubformath.mathhubservice.model.sis.LessonRequest;
 import com.hubformath.mathhubservice.model.sis.Parent;
 import com.hubformath.mathhubservice.model.sis.PhoneNumber;
 import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.sis.StudentFinancialSummary;
 import com.hubformath.mathhubservice.model.sis.StudentGender;
+import com.hubformath.mathhubservice.model.sis.StudentRequest;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
 import com.hubformath.mathhubservice.model.systemconfig.LessonRate;
@@ -20,10 +19,10 @@ import com.hubformath.mathhubservice.service.systemconfig.ExamBoardService;
 import com.hubformath.mathhubservice.service.systemconfig.GradeService;
 import com.hubformath.mathhubservice.service.systemconfig.LessonRateService;
 import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,21 +39,16 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-    private final ModelMapper modelMapper;
-
-
     public StudentService(StudentRepository studentRepository,
                           GradeService gradeService,
                           ExamBoardService examBoardService,
                           SubjectService subjectService,
-                          LessonRateService lessonRateService,
-                          ModelMapperConfig modelMapperConfig) {
+                          LessonRateService lessonRateService) {
         this.studentRepository = studentRepository;
         this.gradeService = gradeService;
         this.examBoardService = examBoardService;
         this.subjectService = subjectService;
         this.lessonRateService = lessonRateService;
-        this.modelMapper = modelMapperConfig.createModelMapper();
     }
 
     public List<Student> getAllStudents() {
@@ -70,35 +64,28 @@ public class StudentService {
                                 .orElseThrow();
     }
 
-    public Student createStudent(StudentDto studentRequest) {
-        final String gradeId = studentRequest.getGradeId();
-        final String examBoardId = studentRequest.getExamBoardId();
-        final String firstName = studentRequest.getFirstName();
-        final String middleName = studentRequest.getMiddleName();
-        final String lastName = studentRequest.getLastName();
-        final StudentGender gender = studentRequest.getGender();
-        final String email = studentRequest.getEmail();
-        final LocalDate dateOfBirth = studentRequest.getDateOfBirth();
-        final Parent parent = modelMapper.map(studentRequest.getParent(), Parent.class);
-        final List<Address> addresses = studentRequest.getAddresses()
-                                                      .stream()
-                                                      .map(address -> modelMapper.map(address, Address.class))
-                                                      .toList();
-        final List<PhoneNumber> phoneNumbers = studentRequest.getPhoneNumbers()
-                                                             .stream()
-                                                             .map(phoneNumber -> modelMapper.map(phoneNumber,
-                                                                                                 PhoneNumber.class))
-                                                             .toList();
+    public Student createStudent(StudentRequest studentRequest) {
+        final String gradeId = studentRequest.gradeId();
+        final String examBoardId = studentRequest.examBoardId();
+        final String firstName = studentRequest.firstName();
+        final String middleName = studentRequest.middleName();
+        final String lastName = studentRequest.lastName();
+        final StudentGender gender = studentRequest.gender();
+        final String email = studentRequest.email();
+        final LocalDate dateOfBirth = studentRequest.dateOfBirth();
+        final List<Parent> parents = studentRequest.parents();
+        final List<Address> addresses = studentRequest.addresses();
+        final List<PhoneNumber> phoneNumbers = studentRequest.phoneNumbers();
 
         final Grade grade = gradeService.getGradeById(gradeId);
         final ExamBoard examBoard = examBoardService.getExamBoardById(examBoardId);
 
-        final Student newStudent = new Student(firstName, middleName, lastName, email, dateOfBirth, gender);
+        final Student newStudent = new Student(firstName, middleName, lastName, email, dateOfBirth, gender, parents);
         newStudent.setGrade(grade);
         newStudent.setExamBoard(examBoard);
-        newStudent.setParent(parent);
         newStudent.setPhoneNumbers(phoneNumbers);
         newStudent.setAddresses(addresses);
+        newStudent.setLessons(Collections.emptyList());
 
         return studentRepository.save(newStudent);
     }
@@ -114,8 +101,7 @@ public class StudentService {
                                     Optional.ofNullable(studentRequest.getGender()).ifPresent(student::setGender);
                                     Optional.ofNullable(studentRequest.getEmail()).ifPresent(student::setEmail);
                                     Optional.ofNullable(studentRequest.getGrade()).ifPresent(student::setGrade);
-                                    Optional.ofNullable(studentRequest.getLessons()).ifPresent(student::setLessons);
-                                    Optional.ofNullable(studentRequest.getParent()).ifPresent(student::setParent);
+                                    Optional.ofNullable(studentRequest.getParents()).ifPresent(student::setParents);
                                     Optional.ofNullable(studentRequest.getAddresses()).ifPresent(student::setAddresses);
                                     Optional.ofNullable(studentRequest.getPhoneNumbers())
                                             .ifPresent(student::setPhoneNumbers);
@@ -125,18 +111,27 @@ public class StudentService {
                                 .orElseThrow();
     }
 
-    public Student addLessonToStudent(final String studentId, final LessonDto lesson) {
+    public Student addLessonToStudent(final String studentId, final LessonRequest lessonRequest) {
         Student student = getStudentById(studentId);
-        Subject subject = subjectService.getSubjectById(lesson.getSubjectId());
+        Subject subject = subjectService.getSubjectById(lessonRequest.subjectId());
         LessonRate lessonRate = lessonRateService.getLessonRateBySubjectComplexity(subject.getSubjectComplexity());
-        Lesson newlesson = modelMapper.map(lesson, Lesson.class);
-        newlesson.setSubject(subject);
-        newlesson.setLessonRateAmount(lessonRate.getAmountPerLesson());
-        newlesson.setLessonPaymentStatus(PaymentStatus.UNPAID);
+        Lesson newlesson = getNewlesson(lessonRequest, subject, lessonRate);
         student.getLessons().add(newlesson);
         student.setStudentFinancialSummary(computeStudentFinancialSummary(student));
 
         return studentRepository.save(student);
+    }
+
+    private static Lesson getNewlesson(LessonRequest lessonRequest, Subject subject, LessonRate lessonRate) {
+        Lesson newlesson = new Lesson(subject,
+                                      lessonRequest.occurrence(),
+                                      lessonRequest.lessonStartDate(),
+                                      lessonRate.getAmountPerLesson(),
+                                      lessonRequest.lessonDuration(),
+                                      lessonRequest.lessonPeriod(),
+                                      lessonRequest.sessionType());
+        newlesson.setLessonPaymentStatus(PaymentStatus.UNPAID);
+        return newlesson;
     }
 
     public StudentFinancialSummary computeStudentFinancialSummary(final Student student) {
@@ -146,7 +141,15 @@ public class StudentService {
                                     .map(lesson -> lesson.getLessonRateAmount() * lesson.getOccurrence())
                                     .reduce(Double::sum)
                                     .orElse(0d);
-        return new StudentFinancialSummary(student.isOwingPayment(), amountOwing);
+        boolean isStudentOwing = isStudentOwing(student, amountOwing);
+        return new StudentFinancialSummary(isStudentOwing, amountOwing);
+    }
+
+    private boolean isStudentOwing(Student student, Double amountOwing) {
+        boolean hasUnpaidLessons = student.getLessons()
+                                          .stream()
+                                          .anyMatch(lesson -> lesson.getLessonPaymentStatus() == PaymentStatus.UNPAID);
+        return hasUnpaidLessons && amountOwing > 0;
     }
 
     public void deleteStudent(String studentId) {

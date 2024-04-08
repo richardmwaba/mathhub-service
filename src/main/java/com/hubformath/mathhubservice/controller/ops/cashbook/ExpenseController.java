@@ -1,11 +1,8 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
-import com.hubformath.mathhubservice.config.ModelMapperConfig;
-import com.hubformath.mathhubservice.dto.ops.cashbook.ExpenseDto;
-import com.hubformath.mathhubservice.dto.ops.cashbook.ExpenseRequestDto;
 import com.hubformath.mathhubservice.model.ops.cashbook.Expense;
+import com.hubformath.mathhubservice.model.ops.cashbook.ExpenseRequest;
 import com.hubformath.mathhubservice.service.ops.cashbook.ExpenseService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -34,61 +31,48 @@ public class ExpenseController {
 
     private final ExpenseService expenseService;
 
-    private final ModelMapper modelMapper;
-
     @Autowired
-    public ExpenseController(final ExpenseService expenseService, final ModelMapperConfig modelMapperConfig) {
+    public ExpenseController(ExpenseService expenseService) {
         this.expenseService = expenseService;
-        this.modelMapper = modelMapperConfig.createModelMapper();
     }
 
     @GetMapping("/expenses")
-    public ResponseEntity<CollectionModel<EntityModel<ExpenseDto>>> getAllExpenses() {
-        List<ExpenseDto> expenses = expenseService.getAllExpenses().stream()
-                                                  .map(expense -> modelMapper.map(expense, ExpenseDto.class))
-                                                  .toList();
-
-        CollectionModel<EntityModel<ExpenseDto>> expenseCollectionModel = toCollectionModel(expenses);
-
+    public ResponseEntity<CollectionModel<EntityModel<Expense>>> getAllExpenses() {
+        CollectionModel<EntityModel<Expense>> expenseCollectionModel = toCollectionModel(expenseService.getAllExpenses());
         return ResponseEntity.ok().body(expenseCollectionModel);
     }
 
     @PostMapping("/expenses")
-    public ResponseEntity<EntityModel<ExpenseDto>> newExpense(@RequestBody final ExpenseRequestDto expenseRequestDto) {
-        Expense newExpense = expenseService.createExpense(expenseRequestDto);
+    public ResponseEntity<EntityModel<Expense>> newExpense(@RequestBody ExpenseRequest expenseRequest) {
+        EntityModel<Expense> newExpense = toModel(expenseService.createExpense(expenseRequest));
 
-        EntityModel<ExpenseDto> expenseEntityModel = toModel(modelMapper.map(newExpense, ExpenseDto.class));
-
-        return ResponseEntity.created(expenseEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                             .body(expenseEntityModel);
+        return ResponseEntity.created(newExpense.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                             .body(newExpense);
     }
 
     @GetMapping("/expenses/{expenseId}")
-    public ResponseEntity<EntityModel<ExpenseDto>> getExpenseById(@PathVariable final String expenseId) {
+    public ResponseEntity<EntityModel<Expense>> getExpenseById(@PathVariable String expenseId) {
         try {
-            Expense expense = expenseService.getExpenseById(expenseId);
-            EntityModel<ExpenseDto> expenseEntityModel = toModel(modelMapper.map(expense, ExpenseDto.class));
-            return ResponseEntity.ok().body(expenseEntityModel);
+            EntityModel<Expense> expense = toModel(expenseService.getExpenseById(expenseId));
+            return ResponseEntity.ok().body(expense);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/expenses/{expenseId}")
-    public ResponseEntity<EntityModel<ExpenseDto>> replaceExpense(@RequestBody final ExpenseDto expenseDto,
-                                                                  @PathVariable final String expenseId) {
+    public ResponseEntity<EntityModel<Expense>> updateExpense(@RequestBody ExpenseRequest expenseRequest,
+                                                              @PathVariable String expenseId) {
         try {
-            Expense expenseRequest = modelMapper.map(expenseDto, Expense.class);
-            Expense updatedExpense = expenseService.updateExpense(expenseId, expenseRequest);
-            EntityModel<ExpenseDto> expenseEntityModel = toModel(modelMapper.map(updatedExpense, ExpenseDto.class));
-            return ResponseEntity.ok().body(expenseEntityModel);
+            EntityModel<Expense> updatedExpense = toModel(expenseService.updateExpense(expenseId, expenseRequest));
+            return ResponseEntity.ok().body(updatedExpense);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/expenses/{expenseId}")
-    public ResponseEntity<String> deleteExpense(@PathVariable final String expenseId) {
+    public ResponseEntity<String> deleteExpense(@PathVariable String expenseId) {
         try {
             expenseService.deleteExpense(expenseId);
             return ResponseEntity.ok().body("Expense deleted successfully");
@@ -97,7 +81,7 @@ public class ExpenseController {
         }
     }
 
-    private EntityModel<ExpenseDto> toModel(final ExpenseDto expense) {
+    private EntityModel<Expense> toModel(Expense expense) {
         return EntityModel.of(expense,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class)
                                                                         .getExpenseById(expense.getExpenseId()))
@@ -106,12 +90,12 @@ public class ExpenseController {
                                                                         .getAllExpenses()).withRel("expenses"));
     }
 
-    private CollectionModel<EntityModel<ExpenseDto>> toCollectionModel(final Iterable<? extends ExpenseDto> expenses) {
-        List<EntityModel<ExpenseDto>> expenseList = StreamSupport.stream(expenses.spliterator(), false)
-                                                                 .map(this::toModel)
-                                                                 .toList();
+    private CollectionModel<EntityModel<Expense>> toCollectionModel(Iterable<? extends Expense> expensesIterable) {
+        List<EntityModel<Expense>> expenses = StreamSupport.stream(expensesIterable.spliterator(), false)
+                                                           .map(this::toModel)
+                                                           .toList();
 
-        return CollectionModel.of(expenseList,
+        return CollectionModel.of(expenses,
                                   WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class)
                                                                             .getAllExpenses())
                                                    .withSelfRel());

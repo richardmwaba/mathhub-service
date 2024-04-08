@@ -1,6 +1,6 @@
 package com.hubformath.mathhubservice.service.systemconfig;
 
-import com.hubformath.mathhubservice.dto.systemconfig.SubjectRequest;
+import com.hubformath.mathhubservice.model.sis.SubjectRequest;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import com.hubformath.mathhubservice.model.systemconfig.SubjectComplexity;
@@ -47,16 +47,18 @@ public class SubjectService {
     }
 
     public Subject updateSubject(String subjectId, SubjectRequest subjectRequest) {
-        Subject updatedSubject = subjectRepository.findById(subjectId).map(subject -> {
-            Optional.ofNullable(subjectRequest.subjectName())
-                    .ifPresent(subject::setSubjectName);
-            Optional.ofNullable(subjectRequest.subjectComplexity())
-                    .ifPresent(subject::setSubjectComplexity);
-            Optional.ofNullable(subjectRequest.subjectGradeIds())
-                    .ifPresent(gradeIds -> subject.setSubjectGrades(extractGrades(gradeIds)));
+        Subject updatedSubject = subjectRepository.findById(subjectId)
+                                                  .map(subject -> {
+                                                      Optional.ofNullable(subjectRequest.subjectName())
+                                                              .ifPresent(subject::setSubjectName);
+                                                      Optional.ofNullable(subjectRequest.subjectComplexity())
+                                                              .ifPresent(subject::setSubjectComplexity);
+                                                      Optional.ofNullable(subjectRequest.subjectGradeIds())
+                                                              .ifPresent(gradeIds -> subject.setSubjectGrades(
+                                                                      extractGrades(gradeIds)));
 
-            return subject;
-        }).orElseThrow();
+                                                      return subject;
+                                                  }).orElseThrow();
 
         return subjectRepository.save(updatedSubject);
     }

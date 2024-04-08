@@ -1,10 +1,7 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
-import com.hubformath.mathhubservice.config.ModelMapperConfig;
-import com.hubformath.mathhubservice.dto.systemconfig.AssessmentTypeDto;
 import com.hubformath.mathhubservice.model.systemconfig.AssessmentType;
 import com.hubformath.mathhubservice.service.systemconfig.AssessmentTypeService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -30,48 +27,37 @@ import java.util.stream.StreamSupport;
 @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER')")
 public class AssessmentTypeController {
 
-    private final ModelMapper modelMapper;
-
     private final AssessmentTypeService assessmentTypeService;
 
     @Autowired
-    public AssessmentTypeController(final ModelMapperConfig modelMapperConfig,
-                                    final AssessmentTypeService assessmentTypeService
-                                   ) {
-        this.modelMapper = modelMapperConfig.createModelMapper();
+    public AssessmentTypeController(final AssessmentTypeService assessmentTypeService) {
         this.assessmentTypeService = assessmentTypeService;
     }
 
     @GetMapping("/assessmentTypes")
-    public ResponseEntity<CollectionModel<EntityModel<AssessmentTypeDto>>> getAllAssessmentTypes() {
-        List<AssessmentTypeDto> assessmentTypes = assessmentTypeService.getAllAssessmentTypes().stream()
-                                                                       .map(assessmentType -> modelMapper.map(
-                                                                               assessmentType,
-                                                                               AssessmentTypeDto.class))
-                                                                       .toList();
-        CollectionModel<EntityModel<AssessmentTypeDto>> assessmentTypeCollectionModel = toCollectionModel(
-                assessmentTypes);
+    public ResponseEntity<CollectionModel<EntityModel<AssessmentType>>> getAllAssessmentTypes() {
+        List<AssessmentType> assessmentTypes = assessmentTypeService.getAllAssessmentTypes().stream()
+                                                                    .toList();
+        CollectionModel<EntityModel<AssessmentType>> assessmentTypesCollectionModel = toCollectionModel(assessmentTypes);
 
-        return ResponseEntity.ok().body(assessmentTypeCollectionModel);
+        return ResponseEntity.ok().body(assessmentTypesCollectionModel);
     }
 
     @PostMapping("/assessmentTypes")
-    public ResponseEntity<EntityModel<AssessmentTypeDto>> newAssessmentType(@RequestBody final AssessmentTypeDto assessmentTypeDto) {
-        AssessmentType assessmentTypeRequest = modelMapper.map(assessmentTypeDto, AssessmentType.class);
+    public ResponseEntity<EntityModel<AssessmentType>> createAssessmentType(@RequestBody final AssessmentType assessmentTypeRequest) {
         AssessmentType newAssessmentType = assessmentTypeService.createAssessmentType(assessmentTypeRequest);
-        EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(newAssessmentType,
-                                                                                           AssessmentTypeDto.class));
+        EntityModel<AssessmentType> assessmentTypeEntityModel = toModel(newAssessmentType);
 
         return ResponseEntity.created(assessmentTypeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                              .body(assessmentTypeEntityModel);
     }
 
     @GetMapping("/assessmentTypes/{assessmentTypeId}")
-    public ResponseEntity<EntityModel<AssessmentTypeDto>> getAssessmentTypeById(@PathVariable final String assessmentTypeId) {
+    public ResponseEntity<EntityModel<AssessmentType>> getAssessmentTypeById(@PathVariable final String assessmentTypeId) {
         try {
             AssessmentType assessmentType = assessmentTypeService.getAssessmentTypeById(assessmentTypeId);
-            EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(assessmentType,
-                                                                                               AssessmentTypeDto.class));
+            EntityModel<AssessmentType> assessmentTypeEntityModel = toModel(assessmentType);
+
             return ResponseEntity.ok().body(assessmentTypeEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -79,14 +65,13 @@ public class AssessmentTypeController {
     }
 
     @PutMapping("/assessmentTypes/{assessmentTypeId}")
-    public ResponseEntity<EntityModel<AssessmentTypeDto>> replaceAssessmentType(@RequestBody final AssessmentTypeDto assessmentTypeDto,
-                                                                                @PathVariable final String assessmentTypeId) {
+    public ResponseEntity<EntityModel<AssessmentType>> replaceAssessmentType(@RequestBody final AssessmentType assessmentTypeRequest,
+                                                                             @PathVariable final String assessmentTypeId) {
         try {
-            AssessmentType assessmentTypeRequest = modelMapper.map(assessmentTypeDto, AssessmentType.class);
             AssessmentType updatedAssessmentType = assessmentTypeService.updateAssessmentType(assessmentTypeId,
                                                                                               assessmentTypeRequest);
-            EntityModel<AssessmentTypeDto> assessmentTypeEntityModel = toModel(modelMapper.map(updatedAssessmentType,
-                                                                                               AssessmentTypeDto.class));
+            EntityModel<AssessmentType> assessmentTypeEntityModel = toModel(updatedAssessmentType);
+
             return ResponseEntity.ok().body(assessmentTypeEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -103,7 +88,7 @@ public class AssessmentTypeController {
         }
     }
 
-    private EntityModel<AssessmentTypeDto> toModel(final AssessmentTypeDto assessmentType) {
+    private EntityModel<AssessmentType> toModel(final AssessmentType assessmentType) {
         return EntityModel.of(assessmentType,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssessmentTypeController.class)
                                                                         .getAssessmentTypeById(assessmentType.getAssessmentTypeId()))
@@ -113,14 +98,13 @@ public class AssessmentTypeController {
                                                .withRel("assessmentTypes"));
     }
 
-    private CollectionModel<EntityModel<AssessmentTypeDto>> toCollectionModel(
-            final Iterable<? extends AssessmentTypeDto> assessmentTypes) {
-        List<EntityModel<AssessmentTypeDto>> assessmentTypeList = StreamSupport
-                .stream(assessmentTypes.spliterator(), false)
-                .map(this::toModel)
-                .toList();
+    private CollectionModel<EntityModel<AssessmentType>> toCollectionModel(final Iterable<? extends AssessmentType> assessmentTypesIterable) {
+        List<EntityModel<AssessmentType>> assessmentTypes = StreamSupport.stream(assessmentTypesIterable.spliterator(),
+                                                                                 false)
+                                                                         .map(this::toModel)
+                                                                         .toList();
 
-        return CollectionModel.of(assessmentTypeList,
+        return CollectionModel.of(assessmentTypes,
                                   WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssessmentTypeController.class)
                                                                             .getAllAssessmentTypes())
                                                    .withSelfRel());
