@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
+import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.ops.cashbook.Asset;
 import com.hubformath.mathhubservice.model.ops.cashbook.AssetRequest;
 import com.hubformath.mathhubservice.service.ops.cashbook.AssetService;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/ops")
@@ -31,25 +32,25 @@ public class AssetController {
     private final AssetService assetService;
 
     @Autowired
-    public AssetController(final AssetService assetService) {
+    public AssetController(AssetService assetService) {
         this.assetService = assetService;
     }
 
     @GetMapping("/assets")
-    public ResponseEntity<CollectionModel<EntityModel<Asset>>> getAllAssets() {
-        CollectionModel<EntityModel<Asset>> assets = toCollectionModel(assetService.getAllAssets());
-        return ResponseEntity.ok().body(assets);
+    public ResponseEntity<CollectionModel<?>> getAllAssets() {
+        List<Asset> assets = assetService.getAllAssets();
+        return ResponseEntity.ok().body(toCollectionModel(assets));
     }
 
     @PostMapping("/assets")
-    public ResponseEntity<EntityModel<Asset>> createAsset(@RequestBody final AssetRequest assetRequest) {
+    public ResponseEntity<EntityModel<Asset>> createAsset(@RequestBody AssetRequest assetRequest) {
         EntityModel<Asset> assetEntityModel = toModel(assetService.createAsset(assetRequest));
         return ResponseEntity.created(assetEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                              .body(assetEntityModel);
     }
 
     @GetMapping("/assets/{assetId}")
-    public ResponseEntity<EntityModel<Asset>> getAssetById(@PathVariable final String assetId) {
+    public ResponseEntity<EntityModel<Asset>> getAssetById(@PathVariable String assetId) {
         try {
             EntityModel<Asset> assetEntityModel = toModel(assetService.getAssetById(assetId));
             return ResponseEntity.ok().body(assetEntityModel);
@@ -59,8 +60,8 @@ public class AssetController {
     }
 
     @PutMapping("/assets/{assetId}")
-    public ResponseEntity<EntityModel<Asset>> updateAsset(@RequestBody final AssetRequest assetRequest,
-                                                          @PathVariable final String assetId) {
+    public ResponseEntity<EntityModel<Asset>> updateAsset(@RequestBody AssetRequest assetRequest,
+                                                          @PathVariable String assetId) {
         try {
             EntityModel<Asset> assetEntityModel = toModel(assetService.updateAsset(assetId, assetRequest));
             return ResponseEntity.ok().body(assetEntityModel);
@@ -79,7 +80,7 @@ public class AssetController {
         }
     }
 
-    private EntityModel<Asset> toModel(final Asset asset) {
+    private EntityModel<Asset> toModel(Asset asset) {
         return EntityModel.of(asset,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class)
                                                                         .getAssetById(asset.getAssetId()))
@@ -88,13 +89,15 @@ public class AssetController {
                                                .withRel("assets"));
     }
 
-    private CollectionModel<EntityModel<Asset>> toCollectionModel(final Iterable<? extends Asset> assetsIterable) {
-        List<EntityModel<Asset>> assets = StreamSupport.stream(assetsIterable.spliterator(), false)
-                                                       .map(this::toModel)
-                                                       .toList();
+    private CollectionModel<?> toCollectionModel(List<Asset> assetList) {
+        Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class)
+                                                              .getAllAssets()).withSelfRel();
+        List<EntityModel<Asset>> assets = assetList.stream()
+                                                   .map(this::toModel)
+                                                   .toList();
 
-        return CollectionModel.of(assets, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class)
-                                                                                    .getAllAssets())
-                                                           .withSelfRel());
+        return assets.isEmpty()
+                ? CollectionModelUtils.getEmptyEmbeddedCollectionModel(Asset.class, link)
+                : CollectionModel.of(assets, link);
     }
 }

@@ -1,11 +1,13 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
+import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.systemconfig.PaymentMethod;
 import com.hubformath.mathhubservice.service.systemconfig.PaymentMethodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/systemconfig/ops")
@@ -35,22 +36,24 @@ public class PaymentMethodController {
     }
 
     @GetMapping("/paymentMethods")
-    public ResponseEntity<CollectionModel<EntityModel<PaymentMethod>>> getAllPaymentMethods() {
-        CollectionModel<EntityModel<PaymentMethod>> paymentMethods = toCollectionModel(paymentMethodService.getAllPaymentMethods());
-        return ResponseEntity.ok().body(paymentMethods);
+    public ResponseEntity<CollectionModel<?>> getAllPaymentMethods() {
+        List<PaymentMethod> paymentMethods = paymentMethodService.getAllPaymentMethods();
+        return ResponseEntity.ok().body(toCollectionModel(paymentMethods));
     }
 
     @PostMapping("/paymentMethods")
     public ResponseEntity<EntityModel<PaymentMethod>> newPaymentMethod(@RequestBody PaymentMethod paymentMethodRequest) {
-        EntityModel<PaymentMethod> newPaymentMethod = toModel(paymentMethodService.createPaymentMethod(paymentMethodRequest));
+        EntityModel<PaymentMethod> newPaymentMethod = toModel(paymentMethodService.createPaymentMethod(
+                paymentMethodRequest));
         return ResponseEntity.created(newPaymentMethod.getRequiredLink(IanaLinkRelations.SELF).toUri())
                              .body(newPaymentMethod);
     }
 
     @GetMapping("/paymentMethods/{paymentMethodId}")
-    public ResponseEntity<EntityModel<PaymentMethod>> getPaymentMethodById(@PathVariable final String paymentMethodId) {
+    public ResponseEntity<EntityModel<PaymentMethod>> getPaymentMethodById(@PathVariable String paymentMethodId) {
         try {
-            EntityModel<PaymentMethod> newPaymentMethod = toModel(paymentMethodService.getPaymentMethodById(paymentMethodId));
+            EntityModel<PaymentMethod> newPaymentMethod = toModel(paymentMethodService.getPaymentMethodById(
+                    paymentMethodId));
             return ResponseEntity.ok().body(newPaymentMethod);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -58,11 +61,12 @@ public class PaymentMethodController {
     }
 
     @PutMapping("/paymentMethods/{paymentMethodId}")
-    public ResponseEntity<EntityModel<PaymentMethod>> replacePaymentMethod(@RequestBody final PaymentMethod paymentMethodRequest,
-                                                                           @PathVariable final String paymentMethodId) {
+    public ResponseEntity<EntityModel<PaymentMethod>> replacePaymentMethod(@RequestBody PaymentMethod paymentMethodRequest,
+                                                                           @PathVariable String paymentMethodId) {
         try {
-            EntityModel<PaymentMethod> paymentMethodEntityModel = toModel(paymentMethodService.updatePaymentMethod(paymentMethodId,
-                                                                                                                  paymentMethodRequest));
+            EntityModel<PaymentMethod> paymentMethodEntityModel = toModel(paymentMethodService.updatePaymentMethod(
+                    paymentMethodId,
+                    paymentMethodRequest));
             return ResponseEntity.ok().body(paymentMethodEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -70,7 +74,7 @@ public class PaymentMethodController {
     }
 
     @DeleteMapping("/paymentMethods/{paymentMethodId}")
-    public ResponseEntity<String> deletePaymentMethod(@PathVariable final String paymentMethodId) {
+    public ResponseEntity<String> deletePaymentMethod(@PathVariable String paymentMethodId) {
         try {
             paymentMethodService.deletePaymentMethod(paymentMethodId);
             return ResponseEntity.ok().body("Payment method deleted successfully");
@@ -79,7 +83,7 @@ public class PaymentMethodController {
         }
     }
 
-    private EntityModel<PaymentMethod> toModel(final PaymentMethod paymentMethod) {
+    private EntityModel<PaymentMethod> toModel(PaymentMethod paymentMethod) {
         return EntityModel.of(paymentMethod,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PaymentMethodController.class)
                                                                         .getPaymentMethodById(paymentMethod.getPaymentMethodId()))
@@ -89,15 +93,15 @@ public class PaymentMethodController {
                                                .withRel("paymentMethods"));
     }
 
-    private CollectionModel<EntityModel<PaymentMethod>> toCollectionModel(final Iterable<? extends PaymentMethod> paymentMethodsIterable) {
-        List<EntityModel<PaymentMethod>> paymentMethods = StreamSupport.stream(paymentMethodsIterable.spliterator(),
-                                                                               false)
-                                                                       .map(this::toModel)
-                                                                       .toList();
+    private CollectionModel<?> toCollectionModel(List<PaymentMethod> paymentMethodList) {
+        Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PaymentMethodController.class)
+                                                              .getAllPaymentMethods()).withSelfRel();
+        List<EntityModel<PaymentMethod>> paymentMethods = paymentMethodList.stream()
+                                                                           .map(this::toModel)
+                                                                           .toList();
 
-        return CollectionModel.of(paymentMethods,
-                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PaymentMethodController.class)
-                                                                            .getAllPaymentMethods())
-                                                   .withSelfRel());
+        return paymentMethodList.isEmpty()
+                ? CollectionModelUtils.getEmptyEmbeddedCollectionModel(PaymentMethod.class, link)
+                : CollectionModel.of(paymentMethods, link);
     }
 }

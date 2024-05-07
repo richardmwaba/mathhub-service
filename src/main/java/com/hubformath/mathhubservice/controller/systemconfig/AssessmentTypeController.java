@@ -1,11 +1,13 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
+import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.systemconfig.AssessmentType;
 import com.hubformath.mathhubservice.service.systemconfig.AssessmentTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/systemconfig/sis")
@@ -30,21 +31,20 @@ public class AssessmentTypeController {
     private final AssessmentTypeService assessmentTypeService;
 
     @Autowired
-    public AssessmentTypeController(final AssessmentTypeService assessmentTypeService) {
+    public AssessmentTypeController(AssessmentTypeService assessmentTypeService) {
         this.assessmentTypeService = assessmentTypeService;
     }
 
     @GetMapping("/assessmentTypes")
-    public ResponseEntity<CollectionModel<EntityModel<AssessmentType>>> getAllAssessmentTypes() {
+    public ResponseEntity<CollectionModel<?>> getAllAssessmentTypes() {
         List<AssessmentType> assessmentTypes = assessmentTypeService.getAllAssessmentTypes().stream()
                                                                     .toList();
-        CollectionModel<EntityModel<AssessmentType>> assessmentTypesCollectionModel = toCollectionModel(assessmentTypes);
 
-        return ResponseEntity.ok().body(assessmentTypesCollectionModel);
+        return ResponseEntity.ok().body(toCollectionModel(assessmentTypes));
     }
 
     @PostMapping("/assessmentTypes")
-    public ResponseEntity<EntityModel<AssessmentType>> createAssessmentType(@RequestBody final AssessmentType assessmentTypeRequest) {
+    public ResponseEntity<EntityModel<AssessmentType>> createAssessmentType(@RequestBody AssessmentType assessmentTypeRequest) {
         AssessmentType newAssessmentType = assessmentTypeService.createAssessmentType(assessmentTypeRequest);
         EntityModel<AssessmentType> assessmentTypeEntityModel = toModel(newAssessmentType);
 
@@ -53,7 +53,7 @@ public class AssessmentTypeController {
     }
 
     @GetMapping("/assessmentTypes/{assessmentTypeId}")
-    public ResponseEntity<EntityModel<AssessmentType>> getAssessmentTypeById(@PathVariable final String assessmentTypeId) {
+    public ResponseEntity<EntityModel<AssessmentType>> getAssessmentTypeById(@PathVariable String assessmentTypeId) {
         try {
             AssessmentType assessmentType = assessmentTypeService.getAssessmentTypeById(assessmentTypeId);
             EntityModel<AssessmentType> assessmentTypeEntityModel = toModel(assessmentType);
@@ -65,8 +65,8 @@ public class AssessmentTypeController {
     }
 
     @PutMapping("/assessmentTypes/{assessmentTypeId}")
-    public ResponseEntity<EntityModel<AssessmentType>> replaceAssessmentType(@RequestBody final AssessmentType assessmentTypeRequest,
-                                                                             @PathVariable final String assessmentTypeId) {
+    public ResponseEntity<EntityModel<AssessmentType>> replaceAssessmentType(@RequestBody AssessmentType assessmentTypeRequest,
+                                                                             @PathVariable String assessmentTypeId) {
         try {
             AssessmentType updatedAssessmentType = assessmentTypeService.updateAssessmentType(assessmentTypeId,
                                                                                               assessmentTypeRequest);
@@ -79,7 +79,7 @@ public class AssessmentTypeController {
     }
 
     @DeleteMapping("/assessmentTypes/{assessmentTypeId}")
-    public ResponseEntity<String> deleteAssessmentType(@PathVariable final String assessmentTypeId) {
+    public ResponseEntity<String> deleteAssessmentType(@PathVariable String assessmentTypeId) {
         try {
             assessmentTypeService.deleteAssessmentType(assessmentTypeId);
             return ResponseEntity.ok().body("Assessment type deleted successfully");
@@ -98,15 +98,16 @@ public class AssessmentTypeController {
                                                .withRel("assessmentTypes"));
     }
 
-    private CollectionModel<EntityModel<AssessmentType>> toCollectionModel(final Iterable<? extends AssessmentType> assessmentTypesIterable) {
-        List<EntityModel<AssessmentType>> assessmentTypes = StreamSupport.stream(assessmentTypesIterable.spliterator(),
-                                                                                 false)
-                                                                         .map(this::toModel)
-                                                                         .toList();
+    private CollectionModel<?> toCollectionModel(List<AssessmentType> assessmentTypesList) {
+        Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssessmentTypeController.class)
+                                                              .getAllAssessmentTypes()).withSelfRel();
 
-        return CollectionModel.of(assessmentTypes,
-                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssessmentTypeController.class)
-                                                                            .getAllAssessmentTypes())
-                                                   .withSelfRel());
+        List<EntityModel<AssessmentType>> assessmentTypes = assessmentTypesList.stream()
+                                                                               .map(this::toModel)
+                                                                               .toList();
+
+        return assessmentTypesList.isEmpty()
+                ? CollectionModelUtils.getEmptyEmbeddedCollectionModel(AssessmentType.class, link)
+                : CollectionModel.of(assessmentTypes, link);
     }
 }

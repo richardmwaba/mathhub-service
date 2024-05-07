@@ -1,11 +1,13 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
+import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.systemconfig.ExpenseType;
 import com.hubformath.mathhubservice.service.systemconfig.ExpenseTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/systemconfig/ops")
@@ -30,19 +31,18 @@ public class ExpenseTypeController {
     private final ExpenseTypeService expenseTypeService;
 
     @Autowired
-    public ExpenseTypeController(final ExpenseTypeService expenseTypeService) {
+    public ExpenseTypeController(ExpenseTypeService expenseTypeService) {
         this.expenseTypeService = expenseTypeService;
     }
 
     @GetMapping("/expenseTypes")
-    public ResponseEntity<CollectionModel<EntityModel<ExpenseType>>> getAllExpenseTypes() {
-        CollectionModel<EntityModel<ExpenseType>> expenseTypes = toCollectionModel(expenseTypeService.getAllExpenseTypes());
-
-        return ResponseEntity.ok().body(expenseTypes);
+    public ResponseEntity<CollectionModel<?>> getAllExpenseTypes() {
+        List<ExpenseType> expenseTypes = expenseTypeService.getAllExpenseTypes();
+        return ResponseEntity.ok().body(toCollectionModel(expenseTypes));
     }
 
     @PostMapping("/expenseTypes")
-    public ResponseEntity<EntityModel<ExpenseType>> newExpenseType(@RequestBody final ExpenseType expenseTypeRequest) {
+    public ResponseEntity<EntityModel<ExpenseType>> newExpenseType(@RequestBody ExpenseType expenseTypeRequest) {
         ExpenseType newExpenseType = expenseTypeService.createExpenseType(expenseTypeRequest);
         EntityModel<ExpenseType> expenseType = toModel(newExpenseType);
 
@@ -51,7 +51,7 @@ public class ExpenseTypeController {
     }
 
     @GetMapping("/expenseTypes/{expenseTypeId}")
-    public ResponseEntity<EntityModel<ExpenseType>> getExpenseTypeById(@PathVariable final String expenseTypeId) {
+    public ResponseEntity<EntityModel<ExpenseType>> getExpenseTypeById(@PathVariable String expenseTypeId) {
         try {
             EntityModel<ExpenseType> expenseType = toModel(expenseTypeService.getExpenseTypeById(expenseTypeId));
 
@@ -62,8 +62,8 @@ public class ExpenseTypeController {
     }
 
     @PutMapping("/expenseTypes/{expenseTypeId}")
-    public ResponseEntity<EntityModel<ExpenseType>> replaceExpenseType(@RequestBody final ExpenseType expenseTypeRequest,
-                                                                       @PathVariable final String expenseTypeId) {
+    public ResponseEntity<EntityModel<ExpenseType>> replaceExpenseType(@RequestBody ExpenseType expenseTypeRequest,
+                                                                       @PathVariable String expenseTypeId) {
         try {
             EntityModel<ExpenseType> updatedExpenseType = toModel(expenseTypeService.updateExpenseType(expenseTypeId,
                                                                                                        expenseTypeRequest));
@@ -74,7 +74,7 @@ public class ExpenseTypeController {
     }
 
     @DeleteMapping("/expenseTypes/{expenseTypeId}")
-    public ResponseEntity<String> deleteExpenseType(@PathVariable final String expenseTypeId) {
+    public ResponseEntity<String> deleteExpenseType(@PathVariable String expenseTypeId) {
         try {
             expenseTypeService.deleteExpenseType(expenseTypeId);
             return ResponseEntity.ok().body("Expense type deleted successfully");
@@ -83,7 +83,7 @@ public class ExpenseTypeController {
         }
     }
 
-    public EntityModel<ExpenseType> toModel(final ExpenseType assessmentType) {
+    public EntityModel<ExpenseType> toModel(ExpenseType assessmentType) {
         return EntityModel.of(assessmentType,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseTypeController.class)
                                                                         .getExpenseTypeById(assessmentType.getExpenseTypeId()))
@@ -92,14 +92,15 @@ public class ExpenseTypeController {
                                                                         .getAllExpenseTypes()).withRel("expenseTypes"));
     }
 
-    private CollectionModel<EntityModel<ExpenseType>> toCollectionModel(final Iterable<? extends ExpenseType> expenseTypesIterable) {
-        List<EntityModel<ExpenseType>> expenseTypes = StreamSupport.stream(expenseTypesIterable.spliterator(), false)
+    private CollectionModel<?> toCollectionModel(List<ExpenseType> expenseTypeList) {
+        Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseTypeController.class)
+                                                              .getAllExpenseTypes()).withSelfRel();
+        List<EntityModel<ExpenseType>> expenseTypes = expenseTypeList.stream()
                                                                    .map(this::toModel)
                                                                    .toList();
 
-        return CollectionModel.of(expenseTypes,
-                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseTypeController.class)
-                                                                            .getAllExpenseTypes())
-                                                   .withSelfRel());
+        return expenseTypeList.isEmpty()
+                ? CollectionModelUtils.getEmptyEmbeddedCollectionModel(ExpenseType.class, link)
+                : CollectionModel.of(expenseTypes, link);
     }
 }

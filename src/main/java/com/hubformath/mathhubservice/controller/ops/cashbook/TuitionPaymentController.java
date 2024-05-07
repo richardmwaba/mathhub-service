@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
+import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.ops.cashbook.TuitionPayment;
 import com.hubformath.mathhubservice.model.ops.cashbook.TuitionPaymentRequest;
 import com.hubformath.mathhubservice.service.ops.cashbook.TuitionPaymentService;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/ops")
@@ -37,10 +38,9 @@ public class TuitionPaymentController {
 
     @GetMapping("/tuitionPayments")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT') or hasRole('TEACHER')")
-    public ResponseEntity<CollectionModel<EntityModel<TuitionPayment>>> getAllTuitionPayments() {
-        CollectionModel<EntityModel<TuitionPayment>> tuitionPaymentCollectionModel = toCollectionModel(
-                tuitionPaymentService.getAllTuitionPayments());
-        return ResponseEntity.ok().body(tuitionPaymentCollectionModel);
+    public ResponseEntity<CollectionModel<?>> getAllTuitionPayments() {
+        List<TuitionPayment> tuitionPayments = tuitionPaymentService.getAllTuitionPayments();
+        return ResponseEntity.ok().body(toCollectionModel(tuitionPayments));
     }
 
     @PostMapping("/tuitionPayments")
@@ -59,7 +59,8 @@ public class TuitionPaymentController {
                                  .body(tuitionPaymentEntityModel);
         } catch (Exception e) {
             LOGGER.error("An error occurred while processing the request.", e);
-            return ResponseEntity.internalServerError().body("An error occurred while processing the request. Please try again.");
+            return ResponseEntity.internalServerError()
+                                 .body("An error occurred while processing the request. Please try again.");
         }
     }
 
@@ -67,7 +68,8 @@ public class TuitionPaymentController {
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT') or hasRole('TEACHER')")
     public ResponseEntity<EntityModel<TuitionPayment>> getTuitionPaymentById(@PathVariable String tuitionPaymentId) {
         try {
-            EntityModel<TuitionPayment> tuitionPayment = toModel(tuitionPaymentService.getTuitionPaymentById(tuitionPaymentId));
+            EntityModel<TuitionPayment> tuitionPayment = toModel(tuitionPaymentService.getTuitionPaymentById(
+                    tuitionPaymentId));
             return ResponseEntity.ok().body(tuitionPayment);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -84,15 +86,15 @@ public class TuitionPaymentController {
                                                .withRel("tuitionPayments"));
     }
 
-    private CollectionModel<EntityModel<TuitionPayment>> toCollectionModel(Iterable<? extends TuitionPayment> tuitionPaymentsIterable) {
-        List<EntityModel<TuitionPayment>> tuitionPayments = StreamSupport.stream(tuitionPaymentsIterable.spliterator(),
-                                                                                 false)
-                                                                         .map(this::toModel)
-                                                                         .toList();
+    private CollectionModel<?> toCollectionModel(List<TuitionPayment> tuitionPaymentList) {
+        Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TuitionPaymentController.class)
+                                                              .getAllTuitionPayments()).withSelfRel();
+        List<EntityModel<TuitionPayment>> tuitionPayments = tuitionPaymentList.stream()
+                                                                              .map(this::toModel)
+                                                                              .toList();
 
-        return CollectionModel.of(tuitionPayments,
-                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TuitionPaymentController.class)
-                                                                            .getAllTuitionPayments())
-                                                   .withSelfRel());
+        return tuitionPaymentList.isEmpty()
+                ? CollectionModelUtils.getEmptyEmbeddedCollectionModel(TuitionPayment.class, link)
+                : CollectionModel.of(tuitionPayments, link);
     }
 }

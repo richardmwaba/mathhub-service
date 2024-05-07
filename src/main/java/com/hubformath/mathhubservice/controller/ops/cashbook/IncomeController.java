@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
+import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.ops.cashbook.Income;
 import com.hubformath.mathhubservice.model.ops.cashbook.IncomeRequest;
 import com.hubformath.mathhubservice.service.ops.cashbook.IncomeService;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/ops")
@@ -36,20 +37,20 @@ public class IncomeController {
     }
 
     @GetMapping("/incomes")
-    public ResponseEntity<CollectionModel<EntityModel<Income>>> getAllIncomes() {
-        CollectionModel<EntityModel<Income>> incomeCollectionModel = toCollectionModel(incomeService.getAllIncomes());
-        return ResponseEntity.ok().body(incomeCollectionModel);
+    public ResponseEntity<CollectionModel<?>> getAllIncomes() {
+        List<Income> incomes = incomeService.getAllIncomes();
+        return ResponseEntity.ok().body(toCollectionModel(incomes));
     }
 
     @PostMapping("/incomes")
-    public ResponseEntity<EntityModel<Income>> newIncome(@RequestBody final IncomeRequest incomeRequest) {
+    public ResponseEntity<EntityModel<Income>> newIncome(@RequestBody IncomeRequest incomeRequest) {
         EntityModel<Income> newIncome = toModel(incomeService.createIncome(incomeRequest));
         return ResponseEntity.created(newIncome.getRequiredLink(IanaLinkRelations.SELF).toUri())
                              .body(newIncome);
     }
 
     @GetMapping("/incomes/{incomeId}")
-    public ResponseEntity<EntityModel<Income>> getIncomeById(@PathVariable final String incomeId) {
+    public ResponseEntity<EntityModel<Income>> getIncomeById(@PathVariable String incomeId) {
         try {
             EntityModel<Income> income = toModel(incomeService.getIncomeById(incomeId));
             return ResponseEntity.ok().body(income);
@@ -59,8 +60,8 @@ public class IncomeController {
     }
 
     @PutMapping("/incomes/{incomeId}")
-    public ResponseEntity<EntityModel<Income>> replaceIncome(@RequestBody final IncomeRequest incomeRequest,
-                                                             @PathVariable final String incomeId) {
+    public ResponseEntity<EntityModel<Income>> replaceIncome(@RequestBody IncomeRequest incomeRequest,
+                                                             @PathVariable String incomeId) {
         try {
             EntityModel<Income> incomeEntityModel = toModel(incomeService.updateIncome(incomeId, incomeRequest));
             return ResponseEntity.ok().body(incomeEntityModel);
@@ -70,7 +71,7 @@ public class IncomeController {
     }
 
     @DeleteMapping("/incomes/{incomeId}")
-    public ResponseEntity<String> deleteIncome(@PathVariable final String incomeId) {
+    public ResponseEntity<String> deleteIncome(@PathVariable String incomeId) {
         try {
             incomeService.deleteIncome(incomeId);
             return ResponseEntity.ok().body("Income deleted successfully");
@@ -79,7 +80,7 @@ public class IncomeController {
         }
     }
 
-    private EntityModel<Income> toModel(final Income income) {
+    private EntityModel<Income> toModel(Income income) {
         return EntityModel.of(income,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeController.class)
                                                                         .getIncomeById(income.getIncomeId()))
@@ -88,15 +89,16 @@ public class IncomeController {
                                                                         .getAllIncomes()).withRel("incomes"));
     }
 
-    private CollectionModel<EntityModel<Income>> toCollectionModel(final Iterable<? extends Income> incomeIterable) {
-        List<EntityModel<Income>> incomes = StreamSupport.stream(incomeIterable.spliterator(), false)
-                                                         .map(this::toModel)
-                                                         .toList();
+    private CollectionModel<?> toCollectionModel(List<Income> incomeList) {
+        Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeController.class)
+                                                              .getAllIncomes()).withSelfRel();
+        List<EntityModel<Income>> incomes = incomeList.stream()
+                                                      .map(this::toModel)
+                                                      .toList();
 
-        return CollectionModel.of(incomes,
-                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeController.class)
-                                                                            .getAllIncomes())
-                                                   .withSelfRel());
+        return incomeList.isEmpty()
+                ? CollectionModelUtils.getEmptyEmbeddedCollectionModel(Income.class, link)
+                : CollectionModel.of(incomes, link);
     }
 }
 
