@@ -1,11 +1,13 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
+import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.systemconfig.SessionType;
 import com.hubformath.mathhubservice.service.systemconfig.SessionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/systemconfig/sis")
@@ -35,20 +36,20 @@ public class SessionTypeController {
     }
 
     @GetMapping("/sessionTypes")
-    public ResponseEntity<CollectionModel<EntityModel<SessionType>>> getAllSessionTypes() {
-        CollectionModel<EntityModel<SessionType>> sessionTypes = toCollectionModel(sessionTypeService.getAllSessionTypes());
-        return ResponseEntity.ok().body(sessionTypes);
+    public ResponseEntity<CollectionModel<?>> getAllSessionTypes() {
+        List<SessionType> sessionTypes = sessionTypeService.getAllSessionTypes();
+        return ResponseEntity.ok().body(toCollectionModel(sessionTypes));
     }
 
     @PostMapping("/sessionTypes")
-    public ResponseEntity<EntityModel<SessionType>> newSessionType(@RequestBody final SessionType sessionTypeRequest) {
+    public ResponseEntity<EntityModel<SessionType>> newSessionType(@RequestBody SessionType sessionTypeRequest) {
         EntityModel<SessionType> newSessionType = toModel(sessionTypeService.createSessionType(sessionTypeRequest));
         return ResponseEntity.created(newSessionType.getRequiredLink(IanaLinkRelations.SELF).toUri())
                              .body(newSessionType);
     }
 
     @GetMapping("/sessionTypes/{sessionTypeId}")
-    public ResponseEntity<EntityModel<SessionType>> getSessionTypeById(@PathVariable final String sessionTypeId) {
+    public ResponseEntity<EntityModel<SessionType>> getSessionTypeById(@PathVariable String sessionTypeId) {
         try {
             EntityModel<SessionType> sessionType = toModel(sessionTypeService.getSessionTypeById(sessionTypeId));
             return ResponseEntity.ok().body(sessionType);
@@ -58,8 +59,8 @@ public class SessionTypeController {
     }
 
     @PutMapping("/sessionTypes/{sessionTypeId}")
-    public ResponseEntity<EntityModel<SessionType>> replaceSessionType(@RequestBody final SessionType sessionTypeRequest,
-                                                                       @PathVariable final String sessionTypeId) {
+    public ResponseEntity<EntityModel<SessionType>> replaceSessionType(@RequestBody SessionType sessionTypeRequest,
+                                                                       @PathVariable String sessionTypeId) {
         try {
             EntityModel<SessionType> updatedSessionType = toModel(sessionTypeService.updateSessionType(sessionTypeId,
                                                                                                        sessionTypeRequest));
@@ -70,7 +71,7 @@ public class SessionTypeController {
     }
 
     @DeleteMapping("/sessionTypes/{sessionTypeId}")
-    public ResponseEntity<String> deleteSessionType(@PathVariable final String sessionTypeId) {
+    public ResponseEntity<String> deleteSessionType(@PathVariable String sessionTypeId) {
         try {
             sessionTypeService.deleteSessionType(sessionTypeId);
             return ResponseEntity.ok().body("Session type deleted successfully");
@@ -79,7 +80,7 @@ public class SessionTypeController {
         }
     }
 
-    private EntityModel<SessionType> toModel(final SessionType sessionType) {
+    private EntityModel<SessionType> toModel(SessionType sessionType) {
         return EntityModel.of(sessionType,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SessionTypeController.class)
                                                                         .getSessionTypeById(sessionType.getSessionTypeId()))
@@ -88,14 +89,16 @@ public class SessionTypeController {
                                                                         .getAllSessionTypes()).withRel("sessionTypes"));
     }
 
-    private CollectionModel<EntityModel<SessionType>> toCollectionModel(final Iterable<? extends SessionType> sessionTypesIterable) {
-        List<EntityModel<SessionType>> sessionTypes = StreamSupport.stream(sessionTypesIterable.spliterator(), false)
-                                                                   .map(this::toModel)
-                                                                   .toList();
+    private CollectionModel<?> toCollectionModel(List<SessionType> sessionTypeList) {
+        Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SessionTypeController.class)
+                                                              .getAllSessionTypes()).withSelfRel();
+        List<EntityModel<SessionType>> sessionTypes = sessionTypeList.stream()
+                                                                     .map(this::toModel)
+                                                                     .toList();
 
-        return CollectionModel.of(sessionTypes,
-                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SessionTypeController.class)
-                                                                            .getAllSessionTypes())
-                                                   .withSelfRel());
+
+        return sessionTypeList.isEmpty()
+                ? CollectionModelUtils.getEmptyEmbeddedCollectionModel(SessionType.class, link)
+                : CollectionModel.of(sessionTypes, link);
     }
 }

@@ -1,11 +1,13 @@
 package com.hubformath.mathhubservice.controller.sis;
 
+import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.sis.Address;
 import com.hubformath.mathhubservice.service.sis.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/sis")
@@ -29,20 +30,20 @@ public class AddressController {
     private final AddressService addressService;
 
     @Autowired
-    public AddressController(final AddressService addressService) {
+    public AddressController(AddressService addressService) {
         this.addressService = addressService;
     }
 
     @GetMapping("/addresses")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<CollectionModel<EntityModel<Address>>> getAllAddresses() {
-        CollectionModel<EntityModel<Address>> addresses = toCollectionModel(addressService.getAllAddresses());
-        return ResponseEntity.ok().body(addresses);
+    public ResponseEntity<CollectionModel<?>> getAllAddresses() {
+        List<Address> addresses = addressService.getAllAddresses();
+        return ResponseEntity.ok().body(toCollectionModel(addresses));
     }
 
     @PostMapping("/addresses")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<EntityModel<Address>> newAddress(@RequestBody final Address addressRequest) {
+    public ResponseEntity<EntityModel<Address>> newAddress(@RequestBody Address addressRequest) {
         EntityModel<Address> newAddress = toModel(addressService.createAddress(addressRequest));
         return ResponseEntity.created(newAddress.getRequiredLink(IanaLinkRelations.SELF).toUri())
                              .body(newAddress);
@@ -50,7 +51,7 @@ public class AddressController {
 
     @GetMapping("/addresses/{addressId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<EntityModel<Address>> getAddressById(@PathVariable final String addressId) {
+    public ResponseEntity<EntityModel<Address>> getAddressById(@PathVariable String addressId) {
         try {
             EntityModel<Address> address = toModel(addressService.getAddressById(addressId));
             return ResponseEntity.ok().body(address);
@@ -61,8 +62,8 @@ public class AddressController {
 
     @PutMapping("/addresses/{addressId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<EntityModel<Address>> replaceAddress(@RequestBody final Address addressRequest,
-                                                               @PathVariable final String addressId) {
+    public ResponseEntity<EntityModel<Address>> replaceAddress(@RequestBody Address addressRequest,
+                                                               @PathVariable String addressId) {
         try {
             EntityModel<Address> updatedAddress = toModel(addressService.updateAddress(addressId, addressRequest));
             return ResponseEntity.ok().body(updatedAddress);
@@ -73,7 +74,7 @@ public class AddressController {
 
     @DeleteMapping("/addresses/{addressId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<String> deleteAddress(@PathVariable final String addressId) {
+    public ResponseEntity<String> deleteAddress(@PathVariable String addressId) {
         try {
             addressService.deleteAddress(addressId);
             return ResponseEntity.ok().body("Address deleted successfully");
@@ -82,7 +83,7 @@ public class AddressController {
         }
     }
 
-    private EntityModel<Address> toModel(final Address address) {
+    private EntityModel<Address> toModel(Address address) {
         return EntityModel.of(address,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AddressController.class)
                                                                         .getAddressById(address.getAddressId()))
@@ -91,14 +92,15 @@ public class AddressController {
                                                                         .getAllAddresses()).withRel("addresses"));
     }
 
-    private CollectionModel<EntityModel<Address>> toCollectionModel(final Iterable<? extends Address> addressesIterable) {
-        List<EntityModel<Address>> addresses = StreamSupport.stream(addressesIterable.spliterator(), false)
-                                                            .map(this::toModel)
-                                                            .toList();
+    private CollectionModel<?> toCollectionModel(List<Address> addressList) {
+        Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AddressController.class)
+                                                              .getAllAddresses()).withSelfRel();
+        List<EntityModel<Address>> addresses = addressList.stream()
+                                                          .map(this::toModel)
+                                                          .toList();
 
-        return CollectionModel.of(addresses,
-                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AddressController.class)
-                                                                            .getAllAddresses())
-                                                   .withSelfRel());
+        return addressList.isEmpty()
+                ? CollectionModelUtils.getEmptyEmbeddedCollectionModel(Address.class, link)
+                : CollectionModel.of(addresses, link);
     }
 }

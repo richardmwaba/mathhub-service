@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
+import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.ops.cashbook.Expense;
 import com.hubformath.mathhubservice.model.ops.cashbook.ExpenseRequest;
 import com.hubformath.mathhubservice.service.ops.cashbook.ExpenseService;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.StreamSupport;
 
 
 @RestController
@@ -37,9 +38,9 @@ public class ExpenseController {
     }
 
     @GetMapping("/expenses")
-    public ResponseEntity<CollectionModel<EntityModel<Expense>>> getAllExpenses() {
-        CollectionModel<EntityModel<Expense>> expenseCollectionModel = toCollectionModel(expenseService.getAllExpenses());
-        return ResponseEntity.ok().body(expenseCollectionModel);
+    public ResponseEntity<CollectionModel<?>> getAllExpenses() {
+        List<Expense> expenses = expenseService.getAllExpenses();
+        return ResponseEntity.ok().body(toCollectionModel(expenses));
     }
 
     @PostMapping("/expenses")
@@ -90,14 +91,15 @@ public class ExpenseController {
                                                                         .getAllExpenses()).withRel("expenses"));
     }
 
-    private CollectionModel<EntityModel<Expense>> toCollectionModel(Iterable<? extends Expense> expensesIterable) {
-        List<EntityModel<Expense>> expenses = StreamSupport.stream(expensesIterable.spliterator(), false)
-                                                           .map(this::toModel)
-                                                           .toList();
+    private CollectionModel<?> toCollectionModel(List<Expense> expenseList) {
+        Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class)
+                                                              .getAllExpenses()).withSelfRel();
+        List<EntityModel<Expense>> expenses = expenseList.stream()
+                                                         .map(this::toModel)
+                                                         .toList();
 
-        return CollectionModel.of(expenses,
-                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class)
-                                                                            .getAllExpenses())
-                                                   .withSelfRel());
+        return expenseList.isEmpty()
+                ? CollectionModelUtils.getEmptyEmbeddedCollectionModel(Expense.class, link)
+                : CollectionModel.of(expenses, link);
     }
 }

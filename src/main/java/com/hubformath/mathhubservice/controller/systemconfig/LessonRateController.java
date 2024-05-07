@@ -1,11 +1,14 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
+import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.systemconfig.LessonRate;
 import com.hubformath.mathhubservice.service.systemconfig.LessonRateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +23,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(path = "/api/v1/systemconfig/sis")
@@ -37,19 +36,17 @@ public class LessonRateController {
     }
 
     @GetMapping("/lessonRates")
-    public ResponseEntity<CollectionModel<EntityModel<LessonRate>>> getAllLessonRates(@RequestParam final Optional<Instant> effectiveDate,
-                                                                                      @RequestParam final Optional<Instant> expiryDate) {
+    public ResponseEntity<CollectionModel<?>> getAllLessonRates(@RequestParam Optional<Instant> effectiveDate,
+                                                                @RequestParam Optional<Instant> expiryDate) {
         List<LessonRate> lessonRates = lessonRateService.getAllLessonRates(effectiveDate.orElse(null),
                                                                            expiryDate.orElse(null));
-        CollectionModel<EntityModel<LessonRate>> lessonRateCollectionModel = toCollectionModel(lessonRates,
-                                                                                               effectiveDate,
-                                                                                               expiryDate);
-
-        return ResponseEntity.ok().body(lessonRateCollectionModel);
+        return ResponseEntity.ok().body(toCollectionModel(lessonRates,
+                                                          effectiveDate,
+                                                          expiryDate));
     }
 
     @PostMapping("/lessonRates")
-    public ResponseEntity<EntityModel<LessonRate>> newLessonRate(@RequestBody final LessonRate lessonRateRequest) {
+    public ResponseEntity<EntityModel<LessonRate>> newLessonRate(@RequestBody LessonRate lessonRateRequest) {
         LessonRate newLessonRate = lessonRateService.createLessonRate(lessonRateRequest);
         EntityModel<LessonRate> lessonRateEntity = toModel(newLessonRate, Optional.empty(), Optional.empty());
 
@@ -58,7 +55,7 @@ public class LessonRateController {
     }
 
     @GetMapping("/lessonRates/{lessonRateId}")
-    public ResponseEntity<EntityModel<LessonRate>> getLessonRateById(@PathVariable final String lessonRateId) {
+    public ResponseEntity<EntityModel<LessonRate>> getLessonRateById(@PathVariable String lessonRateId) {
         try {
             LessonRate lessonRate = lessonRateService.getLessonRateById(lessonRateId);
             EntityModel<LessonRate> lessonRateEntity = toModel(lessonRate, Optional.empty(), Optional.empty());
@@ -68,27 +65,32 @@ public class LessonRateController {
         }
     }
 
-    private EntityModel<LessonRate> toModel(final LessonRate lessonRate,
-                                            final Optional<Instant> effectiveDate,
-                                            final Optional<Instant> expiryDate) {
+    private EntityModel<LessonRate> toModel(LessonRate lessonRate,
+                                            Optional<Instant> effectiveDate,
+                                            Optional<Instant> expiryDate) {
         return EntityModel.of(lessonRate,
-                              linkTo(methodOn(LessonRateController.class).getLessonRateById(lessonRate.getLessonRateId())).withSelfRel(),
-                              linkTo(methodOn(LessonRateController.class).getAllLessonRates(effectiveDate,
-                                                                                            expiryDate)).withRel(
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LessonRateController.class)
+                                                                        .getLessonRateById(lessonRate.getLessonRateId()))
+                                               .withSelfRel(),
+                              WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LessonRateController.class)
+                                                                        .getAllLessonRates(effectiveDate,
+                                                                                           expiryDate)).withRel(
                                       "lessonRates"));
     }
 
-    private CollectionModel<EntityModel<LessonRate>> toCollectionModel(final Iterable<? extends LessonRate> lessonRatesIterable,
-                                                                       final Optional<Instant> effectiveDate,
-                                                                       final Optional<Instant> expiryDate) {
-        List<EntityModel<LessonRate>> lessonRates = StreamSupport.stream(lessonRatesIterable.spliterator(), false)
-                                                                 .map(lessonRate -> this.toModel(lessonRate,
-                                                                                                 effectiveDate,
-                                                                                                 expiryDate))
-                                                                 .toList();
-
-        return CollectionModel.of(lessonRates, linkTo(methodOn(LessonRateController.class)
+    private CollectionModel<?> toCollectionModel(List<LessonRate> lessonRateList,
+                                                 Optional<Instant> effectiveDate,
+                                                 Optional<Instant> expiryDate) {
+        Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LessonRateController.class)
                                                               .getAllLessonRates(effectiveDate, expiryDate))
-                .withSelfRel());
+                                     .withSelfRel();
+        List<EntityModel<LessonRate>> lessonRates = lessonRateList.stream()
+                                                                  .map(lessonRate -> this.toModel(lessonRate,
+                                                                                                  effectiveDate,
+                                                                                                  expiryDate)).toList();
+
+        return lessonRateList.isEmpty()
+                ? CollectionModelUtils.getEmptyEmbeddedCollectionModel(LessonRate.class, link)
+                : CollectionModel.of(lessonRates, link);
     }
 }

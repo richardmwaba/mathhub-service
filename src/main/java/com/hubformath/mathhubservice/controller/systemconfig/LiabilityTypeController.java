@@ -1,11 +1,13 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
+import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.systemconfig.LiabilityType;
 import com.hubformath.mathhubservice.service.systemconfig.LiabilityTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/systemconfig/ops")
@@ -35,20 +36,21 @@ public class LiabilityTypeController {
     }
 
     @GetMapping("/liabilityTypes")
-    public ResponseEntity<CollectionModel<EntityModel<LiabilityType>>> getAllLiabilityTypes() {
-        CollectionModel<EntityModel<LiabilityType>> liabilityTypes = toCollectionModel(liabilityTypeService.getAllLiabilityTypes());
-        return ResponseEntity.ok().body(liabilityTypes);
+    public ResponseEntity<CollectionModel<?>> getAllLiabilityTypes() {
+        List<LiabilityType> liabilityTypes = liabilityTypeService.getAllLiabilityTypes();
+        return ResponseEntity.ok().body(toCollectionModel(liabilityTypes));
     }
 
     @PostMapping("/liabilityTypes")
-    public ResponseEntity<EntityModel<LiabilityType>> newLiabilityType(@RequestBody final LiabilityType liabilityTypeRequest) {
-        EntityModel<LiabilityType> liabilityTypeEntityModel = toModel(liabilityTypeService.createLiabilityType(liabilityTypeRequest));
+    public ResponseEntity<EntityModel<LiabilityType>> newLiabilityType(@RequestBody LiabilityType liabilityTypeRequest) {
+        EntityModel<LiabilityType> liabilityTypeEntityModel = toModel(liabilityTypeService.createLiabilityType(
+                liabilityTypeRequest));
         return ResponseEntity.created(liabilityTypeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                              .body(liabilityTypeEntityModel);
     }
 
     @GetMapping("/liabilityTypes/{liabilityTypeId}")
-    public ResponseEntity<EntityModel<LiabilityType>> getLiabilityTypeById(@PathVariable final String liabilityTypeId) {
+    public ResponseEntity<EntityModel<LiabilityType>> getLiabilityTypeById(@PathVariable String liabilityTypeId) {
         try {
             EntityModel<LiabilityType> liabilityType = toModel(liabilityTypeService.getLiabilityTypeById(liabilityTypeId));
             return ResponseEntity.ok().body(liabilityType);
@@ -58,11 +60,12 @@ public class LiabilityTypeController {
     }
 
     @PutMapping("/liabilityTypes/{liabilityTypeId}")
-    public ResponseEntity<EntityModel<LiabilityType>> replaceLiabilityType(@RequestBody final LiabilityType liabilityTypeRequest,
-                                                                           @PathVariable final String liabilityTypeId) {
+    public ResponseEntity<EntityModel<LiabilityType>> replaceLiabilityType(@RequestBody LiabilityType liabilityTypeRequest,
+                                                                           @PathVariable String liabilityTypeId) {
         try {
-            EntityModel<LiabilityType> liabilityTypeEntityModel = toModel(liabilityTypeService.updateLiabilityType(liabilityTypeId,
-                                                                                                                   liabilityTypeRequest));
+            EntityModel<LiabilityType> liabilityTypeEntityModel = toModel(liabilityTypeService.updateLiabilityType(
+                    liabilityTypeId,
+                    liabilityTypeRequest));
             return ResponseEntity.ok().body(liabilityTypeEntityModel);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -70,7 +73,7 @@ public class LiabilityTypeController {
     }
 
     @DeleteMapping("/liabilityTypes/{liabilityTypeId}")
-    public ResponseEntity<String> deleteLiabilityType(@PathVariable final String liabilityTypeId) {
+    public ResponseEntity<String> deleteLiabilityType(@PathVariable String liabilityTypeId) {
         try {
             liabilityTypeService.deleteLiabilityType(liabilityTypeId);
             return ResponseEntity.ok().body("Liability type deleted successfully");
@@ -79,7 +82,7 @@ public class LiabilityTypeController {
         }
     }
 
-    private EntityModel<LiabilityType> toModel(final LiabilityType assessmentType) {
+    private EntityModel<LiabilityType> toModel(LiabilityType assessmentType) {
         return EntityModel.of(assessmentType,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LiabilityTypeController.class)
                                                                         .getLiabilityTypeById(assessmentType.getLiabilityTypeId()))
@@ -89,15 +92,15 @@ public class LiabilityTypeController {
                                                .withRel("liabilityTypes"));
     }
 
-    private CollectionModel<EntityModel<LiabilityType>> toCollectionModel(final Iterable<? extends LiabilityType> assessmentTypesIterable) {
-        List<EntityModel<LiabilityType>> assessmentTypes = StreamSupport.stream(assessmentTypesIterable.spliterator(),
-                                                                                false)
-                                                                        .map(this::toModel)
-                                                                        .toList();
+    private CollectionModel<?> toCollectionModel(List<LiabilityType> liabilityTypeList) {
+        Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LiabilityTypeController.class)
+                                                              .getAllLiabilityTypes()).withSelfRel();
+        List<EntityModel<LiabilityType>> liabilityTypes = liabilityTypeList.stream()
+                                                                           .map(this::toModel)
+                                                                           .toList();
 
-        return CollectionModel.of(assessmentTypes,
-                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LiabilityTypeController.class)
-                                                                            .getAllLiabilityTypes())
-                                                   .withSelfRel());
+        return liabilityTypeList.isEmpty()
+                ? CollectionModelUtils.getEmptyEmbeddedCollectionModel(LiabilityType.class, link)
+                : CollectionModel.of(liabilityTypes, link);
     }
 }

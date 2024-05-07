@@ -1,11 +1,13 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
+import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.systemconfig.IncomeType;
 import com.hubformath.mathhubservice.service.systemconfig.IncomeTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/systemconfig/ops")
@@ -35,20 +36,20 @@ public class IncomeTypeController {
     }
 
     @GetMapping("/incomeTypes")
-    public ResponseEntity<CollectionModel<EntityModel<IncomeType>>> getAllIncomeTypes() {
-        CollectionModel<EntityModel<IncomeType>> incomeTypeCollectionModel = toCollectionModel(incomeTypeService.getAllIncomeTypes());
-        return ResponseEntity.ok().body(incomeTypeCollectionModel);
+    public ResponseEntity<CollectionModel<?>> getAllIncomeTypes() {
+        List<IncomeType> incomeTypes = incomeTypeService.getAllIncomeTypes();
+        return ResponseEntity.ok().body(toCollectionModel(incomeTypes));
     }
 
     @PostMapping("/incomeTypes")
-    public ResponseEntity<EntityModel<IncomeType>> newIncomeType(@RequestBody final IncomeType incomeTypeRequest) {
+    public ResponseEntity<EntityModel<IncomeType>> newIncomeType(@RequestBody IncomeType incomeTypeRequest) {
         EntityModel<IncomeType> newIncomeType = toModel(incomeTypeService.createIncomeType(incomeTypeRequest));
         return ResponseEntity.created(newIncomeType.getRequiredLink(IanaLinkRelations.SELF).toUri())
                              .body(newIncomeType);
     }
 
     @GetMapping("/incomeTypes/{incomeTypeId}")
-    public ResponseEntity<EntityModel<IncomeType>> getIncomeTypeById(@PathVariable final String incomeTypeId) {
+    public ResponseEntity<EntityModel<IncomeType>> getIncomeTypeById(@PathVariable String incomeTypeId) {
         try {
             EntityModel<IncomeType> incomeType = toModel(incomeTypeService.getIncomeTypeById(incomeTypeId));
             return ResponseEntity.ok().body(incomeType);
@@ -58,8 +59,8 @@ public class IncomeTypeController {
     }
 
     @PutMapping("/incomeTypes/{incomeTypeId}")
-    public ResponseEntity<EntityModel<IncomeType>> replaceIncomeType(@RequestBody final IncomeType incomeTypeRequest,
-                                                                     @PathVariable final String incomeTypeId) {
+    public ResponseEntity<EntityModel<IncomeType>> replaceIncomeType(@RequestBody IncomeType incomeTypeRequest,
+                                                                     @PathVariable String incomeTypeId) {
         try {
             EntityModel<IncomeType> updatedIncomeType = toModel(incomeTypeService.updateIncomeType(incomeTypeId,
                                                                                                    incomeTypeRequest));
@@ -70,7 +71,7 @@ public class IncomeTypeController {
     }
 
     @DeleteMapping("/incomeTypes/{incomeTypeId}")
-    public ResponseEntity<String> deleteIncomeType(@PathVariable final String incomeTypeId) {
+    public ResponseEntity<String> deleteIncomeType(@PathVariable String incomeTypeId) {
         try {
             incomeTypeService.deleteIncomeType(incomeTypeId);
             return ResponseEntity.ok().body("Income type deleted successfully");
@@ -79,7 +80,7 @@ public class IncomeTypeController {
         }
     }
 
-    public EntityModel<IncomeType> toModel(final IncomeType incomeType) {
+    public EntityModel<IncomeType> toModel(IncomeType incomeType) {
         return EntityModel.of(incomeType,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeTypeController.class)
                                                                         .getIncomeTypeById(incomeType.getIncomeTypeId()))
@@ -88,14 +89,15 @@ public class IncomeTypeController {
                                                                         .getAllIncomeTypes()).withRel("incomeTypes"));
     }
 
-    private CollectionModel<EntityModel<IncomeType>> toCollectionModel(final Iterable<? extends IncomeType> incomeTypesIterable) {
-        List<EntityModel<IncomeType>> incomeTypes = StreamSupport.stream(incomeTypesIterable.spliterator(), false)
-                                                                 .map(this::toModel)
-                                                                 .toList();
+    private CollectionModel<?> toCollectionModel(List<IncomeType> incomeTypeList) {
+        Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeTypeController.class)
+                                                              .getAllIncomeTypes()).withSelfRel();
+        List<EntityModel<IncomeType>> incomeTypes = incomeTypeList.stream()
+                                                                  .map(this::toModel)
+                                                                  .toList();
 
-        return CollectionModel.of(incomeTypes,
-                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeTypeController.class)
-                                                                            .getAllIncomeTypes())
-                                                   .withSelfRel());
+        return incomeTypeList.isEmpty()
+                ? CollectionModelUtils.getEmptyEmbeddedCollectionModel(IncomeType.class, link)
+                : CollectionModel.of(incomeTypes, link);
     }
 }

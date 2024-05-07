@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
+import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.auth.User;
 import com.hubformath.mathhubservice.model.auth.UserRequest;
 import com.hubformath.mathhubservice.service.systemconfig.UsersService;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/ops")
@@ -37,7 +38,7 @@ public class UserController {
 
     @PostMapping("/users")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    public ResponseEntity<EntityModel<User>> newUser(@RequestBody final UserRequest userRequest) {
+    public ResponseEntity<EntityModel<User>> newUser(@RequestBody UserRequest userRequest) {
         try {
             User newUser = usersService.createUser(userRequest);
             EntityModel<User> userEntityModel = toModel(newUser);
@@ -52,16 +53,14 @@ public class UserController {
 
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER')")
-    public ResponseEntity<CollectionModel<EntityModel<User>>> getAllUsers() {
-        List<User> users = usersService.getAllUsers().stream().toList();
-        CollectionModel<EntityModel<User>> userCollectionModel = toCollectionModel(users);
-
-        return ResponseEntity.ok().body(userCollectionModel);
+    public ResponseEntity<CollectionModel<?>> getAllUsers() {
+        List<User> users = usersService.getAllUsers();
+        return ResponseEntity.ok().body(toCollectionModel(users));
     }
 
     @GetMapping("/users/{userId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER')")
-    public ResponseEntity<EntityModel<User>> getUserById(@PathVariable final String userId) {
+    public ResponseEntity<EntityModel<User>> getUserById(@PathVariable String userId) {
         try {
             User user = usersService.getUserById(userId);
             EntityModel<User> userEntityModel = toModel(user);
@@ -74,8 +73,8 @@ public class UserController {
 
     @PutMapping("/users/{userId}")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    public ResponseEntity<EntityModel<User>> updateUser(@PathVariable final String userId,
-                                                        @RequestBody final UserRequest userRequest) {
+    public ResponseEntity<EntityModel<User>> updateUser(@PathVariable String userId,
+                                                        @RequestBody UserRequest userRequest) {
         try {
             User updatedUser = usersService.updateUser(userId, userRequest);
             EntityModel<User> userEntityModel = toModel(updatedUser);
@@ -88,7 +87,7 @@ public class UserController {
 
     @DeleteMapping("/users/{userId}")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    public ResponseEntity<String> deleteUser(@PathVariable final String userId) {
+    public ResponseEntity<String> deleteUser(@PathVariable String userId) {
         try {
             usersService.deleteUser(userId);
             return ResponseEntity.ok().body("User deleted successfully");
@@ -97,7 +96,7 @@ public class UserController {
         }
     }
 
-    private EntityModel<User> toModel(final User user) {
+    private EntityModel<User> toModel(User user) {
         return EntityModel.of(user,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class)
                                                                         .getUserById(user.getUserId()))
@@ -106,14 +105,15 @@ public class UserController {
                                                                         .getAllUsers()).withRel("users"));
     }
 
-    private CollectionModel<EntityModel<User>> toCollectionModel(final Iterable<? extends User> users) {
-        List<EntityModel<User>> usersEntities = StreamSupport.stream(users.spliterator(), false)
-                                                             .map(this::toModel)
-                                                             .toList();
+    private CollectionModel<?> toCollectionModel(List<User> users) {
+        Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class)
+                                                              .getAllUsers()).withSelfRel();
+        List<EntityModel<User>> usersEntities = users.stream()
+                                                     .map(this::toModel)
+                                                     .toList();
 
-        return CollectionModel.of(usersEntities,
-                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class)
-                                                                            .getAllUsers())
-                                                   .withSelfRel());
+        return users.isEmpty()
+                ? CollectionModelUtils.getEmptyEmbeddedCollectionModel(User.class, link)
+                : CollectionModel.of(usersEntities, link);
     }
 }

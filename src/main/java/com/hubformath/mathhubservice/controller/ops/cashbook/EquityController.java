@@ -1,6 +1,7 @@
 package com.hubformath.mathhubservice.controller.ops.cashbook;
 
 
+import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.ops.cashbook.Equity;
 import com.hubformath.mathhubservice.model.ops.cashbook.EquityRequest;
 import com.hubformath.mathhubservice.service.ops.cashbook.EquityService;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/api/v1/ops")
@@ -37,9 +38,9 @@ public class EquityController {
     }
 
     @GetMapping("/equity")
-    public ResponseEntity<CollectionModel<EntityModel<Equity>>> getAllEquity() {
-        CollectionModel<EntityModel<Equity>> equities = toCollectionModel(equityService.getAllEquity());
-        return ResponseEntity.ok().body(equities);
+    public ResponseEntity<CollectionModel<?>> getAllEquity() {
+        List<Equity> equities = equityService.getAllEquity();
+        return ResponseEntity.ok().body(toCollectionModel(equities));
     }
 
     @PostMapping("/equity")
@@ -61,8 +62,8 @@ public class EquityController {
     }
 
     @PutMapping("/equity/{equityId}")
-    public ResponseEntity<EntityModel<Equity>> updateEquity(@RequestBody final EquityRequest equityRequest,
-                                                            @PathVariable final String equityId) {
+    public ResponseEntity<EntityModel<Equity>> updateEquity(@RequestBody EquityRequest equityRequest,
+                                                            @PathVariable String equityId) {
         try {
             EntityModel<Equity> updatedEquity = toModel(equityService.updateEquity(equityId, equityRequest));
             return ResponseEntity.ok().body(updatedEquity);
@@ -82,7 +83,7 @@ public class EquityController {
         }
     }
 
-    private EntityModel<Equity> toModel(final Equity equity) {
+    private EntityModel<Equity> toModel(Equity equity) {
         return EntityModel.of(equity,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityController.class)
                                                                         .getEquityById(equity.getEquityId()))
@@ -91,15 +92,16 @@ public class EquityController {
                                                                         .getAllEquity()).withRel("equity"));
     }
 
-    private CollectionModel<EntityModel<Equity>> toCollectionModel(final Iterable<? extends Equity> equityIterable) {
-        List<EntityModel<Equity>> equities = StreamSupport.stream(equityIterable.spliterator(), false)
-                                                          .map(this::toModel)
-                                                          .toList();
+    private CollectionModel<?> toCollectionModel(List<Equity> equityList) {
+        Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityController.class)
+                                                              .getAllEquity()).withSelfRel();
+        List<EntityModel<Equity>> equities = equityList.stream()
+                                                       .map(this::toModel)
+                                                       .toList();
 
-        return CollectionModel.of(equities,
-                                  WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityController.class)
-                                                                            .getAllEquity())
-                                                   .withSelfRel());
+        return equityList.isEmpty()
+                ? CollectionModelUtils.getEmptyEmbeddedCollectionModel(Equity.class, link)
+                : CollectionModel.of(equities, link);
     }
 
 }

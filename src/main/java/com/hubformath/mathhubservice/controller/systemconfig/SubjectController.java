@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.controller.systemconfig;
 
+import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.sis.SubjectRequest;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -33,21 +35,20 @@ public class SubjectController {
     private final SubjectService subjectService;
 
     @Autowired
-    public SubjectController(final SubjectService subjectService) {
+    public SubjectController(SubjectService subjectService) {
         this.subjectService = subjectService;
     }
 
     @GetMapping("/subjects")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER') or hasRole('TEACHER')")
-    public ResponseEntity<CollectionModel<EntityModel<Subject>>> getAllSubjects() {
-        CollectionModel<EntityModel<Subject>> subjectCollectionModel = toCollectionModel(subjectService.getAllSubjects());
-
-        return ResponseEntity.ok().body(subjectCollectionModel);
+    public ResponseEntity<CollectionModel<?>> getAllSubjects() {
+        List<Subject> subjects = subjectService.getAllSubjects();
+        return ResponseEntity.ok().body(toCollectionModel(subjects));
     }
 
     @PostMapping("/subjects")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER')")
-    public ResponseEntity<Object> newSubject(@RequestBody final SubjectRequest subjectRequest) {
+    public ResponseEntity<Object> newSubject(@RequestBody SubjectRequest subjectRequest) {
         try {
             Subject newSubject = subjectService.createSubject(subjectRequest);
             EntityModel<Subject> subjectDtoEntityModel = toModel(newSubject);
@@ -61,7 +62,7 @@ public class SubjectController {
 
     @GetMapping("/subjects/{subjectId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER') or hasRole('TEACHER')")
-    public ResponseEntity<EntityModel<Subject>> getSubjectById(@PathVariable final String subjectId) {
+    public ResponseEntity<EntityModel<Subject>> getSubjectById(@PathVariable String subjectId) {
         try {
             Subject subject = subjectService.getSubjectById(subjectId);
             EntityModel<Subject> subjectEntityModel = toModel(subject);
@@ -74,8 +75,8 @@ public class SubjectController {
 
     @PutMapping("/subjects/{subjectId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER')")
-    public ResponseEntity<EntityModel<Subject>> updateSubject(@RequestBody final SubjectRequest subjectRequest,
-                                                                  @PathVariable final String subjectId) {
+    public ResponseEntity<EntityModel<Subject>> updateSubject(@RequestBody SubjectRequest subjectRequest,
+                                                              @PathVariable String subjectId) {
         try {
             Subject updatedSubject = subjectService.updateSubject(subjectId, subjectRequest);
             EntityModel<Subject> subjectEntityModel = toModel(updatedSubject);
@@ -88,7 +89,7 @@ public class SubjectController {
 
     @DeleteMapping("/subjects/{subjectId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER')")
-    public ResponseEntity<String> deleteSubject(@PathVariable final String subjectId) {
+    public ResponseEntity<String> deleteSubject(@PathVariable String subjectId) {
         try {
             subjectService.deleteSubject(subjectId);
             return ResponseEntity.ok().body("Subject deleted successfully");
@@ -97,19 +98,22 @@ public class SubjectController {
         }
     }
 
-    private EntityModel<Subject> toModel(final Subject subject) {
+    private EntityModel<Subject> toModel(Subject subject) {
         return EntityModel.of(subject,
                               linkTo(methodOn(SubjectController.class).getSubjectById(subject.getSubjectId())).withSelfRel(),
                               linkTo(methodOn(SubjectController.class).getAllSubjects()).withRel("subjects"));
     }
 
-    private CollectionModel<EntityModel<Subject>> toCollectionModel(final Iterable<Subject> subjectIterable) {
-        List<EntityModel<Subject>> subjects = StreamSupport.stream(subjectIterable.spliterator(), false)
-                                                                 .map(this::toModel)
-                                                                 .toList();
+    private CollectionModel<?> toCollectionModel(List<Subject> subjectList) {
+        Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SubjectController.class)
+                                                              .getAllSubjects()).withSelfRel();
 
-        return CollectionModel.of(subjects, linkTo(methodOn(SubjectController.class)
-                                                              .getAllSubjects())
-                .withSelfRel());
+        List<EntityModel<Subject>> subjects = subjectList.stream()
+                                                         .map(this::toModel)
+                                                         .toList();
+
+        return subjectList.isEmpty()
+                ? CollectionModelUtils.getEmptyEmbeddedCollectionModel(Subject.class, link)
+                : CollectionModel.of(subjects, link);
     }
 }
