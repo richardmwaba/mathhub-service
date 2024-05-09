@@ -34,8 +34,8 @@ public class LessonRate {
     @Column(name = "effective_date", nullable = false)
     private Instant effectiveDate;
 
-    @Column(name = "expired_date", nullable = false)
-    private Instant expiredDate;
+    @Column(name = "expiry_date", nullable = false)
+    private Instant expiryDate;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -56,15 +56,11 @@ public class LessonRate {
             final Double amountPerLesson,
             final SubjectComplexity subjectComplexity,
             final Instant effectiveDate,
-            final Instant expiredDate,
-            final LocalDateTime createdAt,
-            final LocalDateTime updatedAt) {
+            final Instant expiryDate) {
         this.amountPerLesson = amountPerLesson;
         this.subjectComplexity = subjectComplexity;
         this.effectiveDate = effectiveDate;
-        this.expiredDate = expiredDate;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.expiryDate = expiryDate;
     }
 
     public String getLessonRateId() {
@@ -99,12 +95,12 @@ public class LessonRate {
         this.effectiveDate = effectiveDate;
     }
 
-    public Instant getExpiredDate() {
-        return expiredDate;
+    public Instant getExpiryDate() {
+        return expiryDate;
     }
 
-    public void setExpiredDate(Instant expiredDate) {
-        this.expiredDate = expiredDate;
+    public void setExpiryDate(Instant expiryDate) {
+        this.expiryDate = expiryDate;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -131,7 +127,7 @@ public class LessonRate {
                 && Objects.equals(getAmountPerLesson(), that.getAmountPerLesson())
                 && getSubjectComplexity() == that.getSubjectComplexity()
                 && Objects.equals(getEffectiveDate(), that.getEffectiveDate())
-                && Objects.equals(getExpiredDate(), that.getExpiredDate());
+                && Objects.equals(getExpiryDate(), that.getExpiryDate());
     }
 
     @Override
@@ -140,7 +136,7 @@ public class LessonRate {
                             getAmountPerLesson(),
                             getSubjectComplexity(),
                             getEffectiveDate(),
-                            getExpiredDate());
+                            getExpiryDate());
     }
 
     @Override
@@ -150,7 +146,7 @@ public class LessonRate {
                 ", amountPerLesson=" + amountPerLesson +
                 ", subjectComplexity=" + subjectComplexity +
                 ", effectiveDate=" + effectiveDate +
-                ", expiredDate=" + expiredDate +
+                ", expiredDate=" + expiryDate +
                 '}';
     }
 }

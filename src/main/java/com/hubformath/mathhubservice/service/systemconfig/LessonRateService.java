@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LessonRateService {
@@ -17,7 +18,34 @@ public class LessonRateService {
         this.lessonRateRepository = lessonRateRepository;
     }
 
-    public List<LessonRate> getAllLessonRates(final Instant effectiveDate, final Instant expiryDate) {
+    public LessonRate createLessonRate(LessonRate lessonRate) {
+        return lessonRateRepository.save(lessonRate);
+    }
+
+    public LessonRate getLessonRateById(String lessonRateId) {
+        return lessonRateRepository.findById(lessonRateId).orElseThrow();
+    }
+
+    public LessonRate updateLessonRate(String lessonRateId, LessonRate lessonRateRequest) {
+        return lessonRateRepository.findById(lessonRateId)
+                                   .map(lessonRate -> {
+                                       Optional.of(lessonRateRequest.getExpiryDate())
+                                               .ifPresent(lessonRate::setExpiryDate);
+                                       return lessonRateRepository.save(lessonRate);
+                                   })
+                                   .orElseThrow();
+    }
+
+    public LessonRate getLessonRateBySubjectComplexity(SubjectComplexity subjectComplexity) {
+        final Instant instantNow = Instant.now();
+        return lessonRateRepository.findAll()
+                                   .stream()
+                                   .filter(lessonRate -> isExpiredDateEqualToOrAfterGivenDate(lessonRate, instantNow)
+                                           && lessonRate.getSubjectComplexity().equals(subjectComplexity))
+                                   .findAny().orElse(null);
+    }
+
+    public List<LessonRate> getAllLessonRates(Instant effectiveDate, Instant expiryDate) {
         if (effectiveDate != null && expiryDate != null) {
             return lessonRateRepository.findAll()
                                        .stream()
@@ -34,8 +62,8 @@ public class LessonRateService {
     }
 
     private static boolean isExpiredDateEqualToOrAfterGivenDate(LessonRate lessonRate, Instant instantNow) {
-        return lessonRate.getExpiredDate()
-                         .equals(instantNow) || lessonRate.getExpiredDate()
+        return lessonRate.getExpiryDate()
+                         .equals(instantNow) || lessonRate.getExpiryDate()
                                                           .isAfter(instantNow);
     }
 
@@ -45,28 +73,11 @@ public class LessonRateService {
     }
 
     private static boolean isExpiryDateEqualToOrBeforeGivenDate(Instant expiryDate, LessonRate lessonRate) {
-        return lessonRate.getExpiredDate().isBefore(expiryDate) || lessonRate.getExpiredDate().equals(expiryDate);
+        return lessonRate.getExpiryDate().isBefore(expiryDate) || lessonRate.getExpiryDate().equals(expiryDate);
     }
 
     private static boolean isEffectiveDateEqualToOrAfterGivenDate(Instant effectiveDate, LessonRate lessonRate) {
         return lessonRate.getEffectiveDate().equals(effectiveDate) || lessonRate.getEffectiveDate()
                                                                                 .isAfter(effectiveDate);
-    }
-
-    public LessonRate getLessonRateById(final String lessonRateId) {
-        return lessonRateRepository.findById(lessonRateId).orElseThrow();
-    }
-
-    public LessonRate getLessonRateBySubjectComplexity(final SubjectComplexity subjectComplexity) {
-        final Instant instantNow = Instant.now();
-        return lessonRateRepository.findAll()
-                                   .stream()
-                                   .filter(lessonRate -> isExpiredDateEqualToOrAfterGivenDate(lessonRate, instantNow)
-                                           && lessonRate.getSubjectComplexity().equals(subjectComplexity))
-                                   .findAny().orElse(null);
-    }
-
-    public LessonRate createLessonRate(final LessonRate lessonRate) {
-        return lessonRateRepository.save(lessonRate);
     }
 }

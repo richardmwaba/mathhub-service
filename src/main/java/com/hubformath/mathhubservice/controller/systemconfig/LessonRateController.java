@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,6 +59,18 @@ public class LessonRateController {
     public ResponseEntity<EntityModel<LessonRate>> getLessonRateById(@PathVariable String lessonRateId) {
         try {
             LessonRate lessonRate = lessonRateService.getLessonRateById(lessonRateId);
+            EntityModel<LessonRate> lessonRateEntity = toModel(lessonRate, Optional.empty(), Optional.empty());
+            return ResponseEntity.ok().body(lessonRateEntity);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/lessonRates/{lessonRateId}")
+    public ResponseEntity<EntityModel<LessonRate>> editLessonRate(@PathVariable String lessonRateId,
+                                                                  @RequestBody LessonRate lessonRateRequest) {
+        try {
+            LessonRate lessonRate = lessonRateService.updateLessonRate(lessonRateId, lessonRateRequest);
             EntityModel<LessonRate> lessonRateEntity = toModel(lessonRate, Optional.empty(), Optional.empty());
             return ResponseEntity.ok().body(lessonRateEntity);
         } catch (NoSuchElementException e) {
