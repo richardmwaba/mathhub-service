@@ -41,7 +41,8 @@ public class AssessmentType {
     public AssessmentType() {
     }
 
-    public AssessmentType(String typeName, String typeDescription) {
+    public AssessmentType(String assessmentTypeId, String typeName, String typeDescription) {
+        this.assessmentTypeId = assessmentTypeId;
         this.typeName = typeName;
         this.typeDescription = typeDescription;
     }

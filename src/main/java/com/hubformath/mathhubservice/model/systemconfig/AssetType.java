@@ -41,7 +41,8 @@ public class AssetType {
     public AssetType() {
     }
 
-    public AssetType(String typeName, String typeDescription) {
+    public AssetType(String assetTypeId, String typeName, String typeDescription) {
+        this.assetTypeId = assetTypeId;
         this.typeName = typeName;
         this.typeDescription = typeDescription;
     }
