@@ -1,14 +1,10 @@
 package com.hubformath.mathhubservice.service.sis;
 
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
-import com.hubformath.mathhubservice.model.sis.Address;
 import com.hubformath.mathhubservice.model.sis.Lesson;
 import com.hubformath.mathhubservice.model.sis.LessonRequest;
-import com.hubformath.mathhubservice.model.sis.Parent;
-import com.hubformath.mathhubservice.model.sis.PhoneNumber;
 import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.sis.StudentFinancialSummary;
-import com.hubformath.mathhubservice.model.sis.StudentGender;
 import com.hubformath.mathhubservice.model.sis.StudentRequest;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
@@ -21,8 +17,6 @@ import com.hubformath.mathhubservice.service.systemconfig.LessonRateService;
 import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,48 +58,28 @@ public class StudentService {
                                 .orElseThrow();
     }
 
-    public Student createStudent(StudentRequest studentRequest) {
-        final String gradeId = studentRequest.gradeId();
-        final String examBoardId = studentRequest.examBoardId();
-        final String firstName = studentRequest.firstName();
-        final String middleName = studentRequest.middleName();
-        final String lastName = studentRequest.lastName();
-        final StudentGender gender = studentRequest.gender();
-        final String email = studentRequest.email();
-        final LocalDate dateOfBirth = studentRequest.dateOfBirth();
-        final List<Parent> parents = studentRequest.parents();
-        final List<Address> addresses = studentRequest.addresses();
-        final List<PhoneNumber> phoneNumbers = studentRequest.phoneNumbers();
-
-        final Grade grade = gradeService.getGradeById(gradeId);
-        final ExamBoard examBoard = examBoardService.getExamBoardById(examBoardId);
-
-        final Student newStudent = new Student(firstName, middleName, lastName, email, dateOfBirth, gender, parents);
-        newStudent.setGrade(grade);
-        newStudent.setExamBoard(examBoard);
-        newStudent.setPhoneNumbers(phoneNumbers);
-        newStudent.setAddresses(addresses);
-        newStudent.setLessons(Collections.emptyList());
-
-        return studentRepository.save(newStudent);
-    }
-
-    public Student updateStudent(String studentId, Student studentRequest) {
+    public Student updateStudent(String studentId, StudentRequest studentRequest) {
         return studentRepository.findById(studentId)
                                 .map(student -> {
-                                    Optional.ofNullable(studentRequest.getFirstName()).ifPresent(student::setFirstName);
-                                    Optional.ofNullable(studentRequest.getMiddleName())
+                                    Optional.ofNullable(studentRequest.firstName()).ifPresent(student::setFirstName);
+                                    Optional.ofNullable(studentRequest.middleName())
                                             .ifPresent(student::setMiddleName);
-                                    Optional.ofNullable(studentRequest.getLastName())
-                                            .ifPresent(studentRequest::setLastName);
-                                    Optional.ofNullable(studentRequest.getGender()).ifPresent(student::setGender);
-                                    Optional.ofNullable(studentRequest.getEmail()).ifPresent(student::setEmail);
-                                    Optional.ofNullable(studentRequest.getGrade()).ifPresent(student::setGrade);
-                                    Optional.ofNullable(studentRequest.getParents()).ifPresent(student::setParents);
-                                    Optional.ofNullable(studentRequest.getAddresses()).ifPresent(student::setAddresses);
-                                    Optional.ofNullable(studentRequest.getPhoneNumbers())
+                                    Optional.ofNullable(studentRequest.lastName())
+                                            .ifPresent(student::setLastName);
+                                    Optional.ofNullable(studentRequest.gender()).ifPresent(student::setGender);
+                                    Optional.ofNullable(studentRequest.email()).ifPresent(student::setEmail);
+                                    Optional.ofNullable(studentRequest.gradeId()).ifPresent(gradeId -> {
+                                        Grade grade = gradeService.getGradeById(gradeId);
+                                        student.setGrade(grade);
+                                    });
+                                    Optional.ofNullable(studentRequest.parents()).ifPresent(student::setParents);
+                                    Optional.ofNullable(studentRequest.addresses()).ifPresent(student::setAddresses);
+                                    Optional.ofNullable(studentRequest.phoneNumbers())
                                             .ifPresent(student::setPhoneNumbers);
-                                    Optional.ofNullable(studentRequest.getExamBoard()).ifPresent(student::setExamBoard);
+                                    Optional.ofNullable(studentRequest.examBoardId()).ifPresent(examBoardId -> {
+                                        ExamBoard examBoard = examBoardService.getExamBoardById(examBoardId);
+                                        student.setExamBoard(examBoard);
+                                    });
                                     return studentRepository.save(student);
                                 })
                                 .orElseThrow();

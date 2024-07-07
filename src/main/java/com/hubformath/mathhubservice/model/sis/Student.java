@@ -47,7 +47,7 @@ public class Student {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
-    private StudentGender gender;
+    private Gender gender;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "students_parents",
@@ -56,7 +56,7 @@ public class Student {
     private List<Parent> parents;
 
     @ManyToOne
-    @JoinColumn(name = "grade_id", unique = false, nullable = false)
+    @JoinColumn(name = "grade_id", unique = false)
     private Grade grade;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -67,6 +67,8 @@ public class Student {
 
     private String email;
 
+    private String userId;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "students_addresses",
             joinColumns = @JoinColumn(name = "student_id"),
@@ -74,7 +76,7 @@ public class Student {
     private List<Address> addresses;
 
     @ManyToOne
-    @JoinColumn(name = "examBoard_id", unique = false, nullable = false)
+    @JoinColumn(name = "examBoard_id", unique = false)
     private ExamBoard examBoard;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -106,20 +108,16 @@ public class Student {
         // Used by hibernate instantiation
     }
 
-    public Student(final String firstName,
-                   final String middleName,
-                   final String lastName,
-                   final String email,
-                   final LocalDate dateOfBirth,
-                   final StudentGender gender,
-                   final List<Parent> parents) {
+    public Student(String firstName,
+                   String lastName,
+                   String email,
+                   Gender gender,
+                   String userId) {
         this.firstName = firstName;
-        this.middleName = middleName;
         this.lastName = lastName;
         this.email = email;
-        this.dateOfBirth = dateOfBirth;
         this.gender = gender;
-        this.parents = parents;
+        this.userId = userId;
     }
 
     public String getStudentId() {
@@ -154,11 +152,11 @@ public class Student {
         this.lastName = lastName;
     }
 
-    public StudentGender getGender() {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(StudentGender gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 
@@ -218,6 +216,14 @@ public class Student {
         this.email = email;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
@@ -250,8 +256,6 @@ public class Student {
         this.updatedAt = updatedAt;
     }
 
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -265,6 +269,7 @@ public class Student {
                 && getGrade().equals(student.getGrade())
                 && getLessons().equals(student.getLessons())
                 && getEmail().equals(student.getEmail())
+                && getUserId().equals(student.getUserId())
                 && getAddresses().equals(student.getAddresses())
                 && getExamBoard().equals(student.getExamBoard())
                 && getPhoneNumbers().equals(student.getPhoneNumbers())
@@ -283,6 +288,7 @@ public class Student {
                             getGrade(),
                             getLessons(),
                             getEmail(),
+                            getUserId(),
                             getAddresses(),
                             getExamBoard(),
                             getPhoneNumbers(),
@@ -302,6 +308,7 @@ public class Student {
                 ", grade=" + grade +
                 ", lessons=" + lessons +
                 ", email=" + email + '\'' +
+                ", userId=" + userId + '\'' +
                 ", addresses=" + addresses +
                 ", examBoard=" + examBoard +
                 ", phoneNumbers=" + phoneNumbers +

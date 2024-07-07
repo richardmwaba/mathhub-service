@@ -1,9 +1,12 @@
 package com.hubformath.mathhubservice.model.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hubformath.mathhubservice.model.sis.Gender;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,6 +43,10 @@ public class User {
     @Column(name = "middle_name")
     private String middleName;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    private Gender gender;
+
     @Column(name = "email", nullable = false)
     private String email;
 
@@ -64,11 +71,13 @@ public class User {
     public User(@Nonnull final String username,
                 @Nonnull String firstName,
                 @Nonnull String lastName,
+                @Nonnull Gender gender,
                 @Nonnull final String email,
                 @Nonnull final String password) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.gender = gender;
         this.email = email;
         this.password = password;
     }
@@ -121,6 +130,14 @@ public class User {
         this.email = email;
     }
 
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -155,6 +172,7 @@ public class User {
                 && Objects.equals(getLastName(), user.getLastName())
                 && Objects.equals(getMiddleName(), user.getMiddleName())
                 && Objects.equals(getEmail(), user.getEmail())
+                && Objects.equals(getGender(), user.getGender())
                 && Objects.equals(getPhoneNumber(), user.getPhoneNumber())
                 && Objects.equals(getPassword(), user.getPassword())
                 && Objects.equals(getUserRoles(), user.getUserRoles());
@@ -168,6 +186,7 @@ public class User {
                             getLastName(),
                             getMiddleName(),
                             getEmail(),
+                            getGender(),
                             getPhoneNumber(),
                             getPassword(),
                             getUserRoles());
@@ -176,11 +195,12 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "userId=" + userId +
+                "userId='" + userId + '\'' +
                 ", username='" + username + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", middleName='" + middleName + '\'' +
+                ", gender=" + gender +
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", password='" + password + '\'' +

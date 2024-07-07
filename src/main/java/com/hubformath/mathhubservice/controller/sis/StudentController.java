@@ -9,7 +9,6 @@ import com.hubformath.mathhubservice.service.sis.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -45,14 +44,6 @@ public class StudentController {
         return ResponseEntity.ok().body(toCollectionModel(students));
     }
 
-    @PostMapping("/students")
-    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER')")
-    public ResponseEntity<EntityModel<Student>> newStudent(@RequestBody StudentRequest studentRequest) {
-        EntityModel<Student> newStudent = toModel(studentService.createStudent(studentRequest));
-        return ResponseEntity.created(newStudent.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                             .body(newStudent);
-    }
-
     @GetMapping("/students/{studentId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<Student>> getStudentById(@PathVariable String studentId) {
@@ -66,7 +57,7 @@ public class StudentController {
 
     @PutMapping("/students/{studentId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<EntityModel<Student>> replaceStudent(@RequestBody Student studentRequest,
+    public ResponseEntity<EntityModel<Student>> updateStudent(@RequestBody StudentRequest studentRequest,
                                                                @PathVariable String studentId) {
         try {
             EntityModel<Student> updatedStudent = toModel(studentService.updateStudent(studentId, studentRequest));

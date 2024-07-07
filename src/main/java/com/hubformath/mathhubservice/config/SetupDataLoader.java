@@ -3,6 +3,7 @@ package com.hubformath.mathhubservice.config;
 import com.hubformath.mathhubservice.model.auth.Role;
 import com.hubformath.mathhubservice.model.auth.User;
 import com.hubformath.mathhubservice.model.auth.UserRole;
+import com.hubformath.mathhubservice.model.sis.Gender;
 import com.hubformath.mathhubservice.repository.auth.UserRepository;
 import com.hubformath.mathhubservice.repository.auth.UserRoleRepository;
 import jakarta.annotation.Nonnull;
@@ -65,6 +66,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         User user = new User("setup",
                              "Setup",
                              "Setup",
+                             Gender.OTHER,
                              "setup@hubformath.com",
                              passwordEncoder.encode(setupPassword));
         user.setUserRoles(Set.of(userRoleRepository.findByRole(Role.ROLE_ADMINISTRATOR)
