@@ -2,7 +2,7 @@ package com.hubformath.mathhubservice.model.sis;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum StudentGender {
+public enum Gender {
     MALE("Male"),
     FEMALE("Female"),
     OTHER("Other"),
@@ -10,7 +10,7 @@ public enum StudentGender {
 
     private final String description;
 
-    StudentGender(String description) {
+    Gender(String description) {
         this.description = description;
     }
 
@@ -19,10 +19,11 @@ public enum StudentGender {
         return description;
     }
 
-    public static StudentGender fromDescription(String description) {
-        for (StudentGender studentGender : StudentGender.values()) {
-            if (studentGender.getDescription().equals(description)) {
-                return studentGender;
+    @SuppressWarnings("unused")
+    public static Gender fromDescription(String description) {
+        for (Gender gender : Gender.values()) {
+            if (gender.getDescription().equals(description)) {
+                return gender;
             }
         }
         return null;
