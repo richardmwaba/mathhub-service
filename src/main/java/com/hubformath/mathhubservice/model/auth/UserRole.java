@@ -28,7 +28,7 @@ public class UserRole {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false)
-    private Role role;
+    private Role name;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -43,8 +43,8 @@ public class UserRole {
     public UserRole() {
     }
 
-    public UserRole(Role role) {
-        this.role = role;
+    public UserRole(Role name) {
+        this.name = name;
     }
 
     public Long getId() {
@@ -55,12 +55,12 @@ public class UserRole {
         this.id = id;
     }
 
-    public Role getRole() {
-        return role;
+    public Role getName() {
+        return name;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setName(Role name) {
+        this.name = name;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -84,21 +84,21 @@ public class UserRole {
         if (this == o) return true;
         if (!(o instanceof UserRole userRole)) return false;
         return Objects.equals(getId(), userRole.getId())
-                && Objects.equals(getRole(), userRole.getRole())
+                && Objects.equals(getName(), userRole.getName())
                 && Objects.equals(getCreatedAt(), userRole.getCreatedAt())
                 && Objects.equals(getUpdatedAt(), userRole.getUpdatedAt());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getRole(), getCreatedAt(), getUpdatedAt());
+        return Objects.hash(getId(), getName(), getCreatedAt(), getUpdatedAt());
     }
 
     @Override
     public String toString() {
         return "UserRole{" +
                 "id=" + id +
-                ", role=" + role +
+                ", role=" + name +
                 '}';
     }
 }
