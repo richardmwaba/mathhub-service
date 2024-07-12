@@ -33,13 +33,13 @@ public class SubjectService {
     }
 
     public Subject createSubject(SubjectRequest subjectRequest) {
-        if (subjectRepository.existsBySubjectName(subjectRequest.subjectName())) {
-            throw new IllegalStateException("Subject with name " + subjectRequest.subjectName() + " already exists. If you want to update it, please use the update method.");
+        if (subjectRepository.existsByName(subjectRequest.name())) {
+            throw new IllegalStateException("Subject with name " + subjectRequest.name() + " already exists. If you want to update it, please use the update method.");
         }
 
-        final String subjectName = subjectRequest.subjectName();
+        final String subjectName = subjectRequest.name();
         final SubjectComplexity subjectComplexity = subjectRequest.subjectComplexity();
-        final Set<Grade> grades = extractGrades(subjectRequest.subjectGradeIds());
+        final Set<Grade> grades = extractGrades(subjectRequest.gradeIds());
 
         final Subject newSubject = new Subject(subjectName, subjectComplexity, grades);
 
@@ -49,12 +49,12 @@ public class SubjectService {
     public Subject updateSubject(String subjectId, SubjectRequest subjectRequest) {
         Subject updatedSubject = subjectRepository.findById(subjectId)
                                                   .map(subject -> {
-                                                      Optional.ofNullable(subjectRequest.subjectName())
-                                                              .ifPresent(subject::setSubjectName);
+                                                      Optional.ofNullable(subjectRequest.name())
+                                                              .ifPresent(subject::setName);
                                                       Optional.ofNullable(subjectRequest.subjectComplexity())
-                                                              .ifPresent(subject::setSubjectComplexity);
-                                                      Optional.ofNullable(subjectRequest.subjectGradeIds())
-                                                              .ifPresent(gradeIds -> subject.setSubjectGrades(
+                                                              .ifPresent(subject::setComplexity);
+                                                      Optional.ofNullable(subjectRequest.gradeIds())
+                                                              .ifPresent(gradeIds -> subject.setGrades(
                                                                       extractGrades(gradeIds)));
 
                                                       return subject;

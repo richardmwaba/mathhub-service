@@ -86,7 +86,7 @@ public class ExpenseTypeController {
     public EntityModel<ExpenseType> toModel(ExpenseType assessmentType) {
         return EntityModel.of(assessmentType,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseTypeController.class)
-                                                                        .getExpenseTypeById(assessmentType.getExpenseTypeId()))
+                                                                        .getExpenseTypeById(assessmentType.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseTypeController.class)
                                                                         .getAllExpenseTypes()).withRel("expenseTypes"));

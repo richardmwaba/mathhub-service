@@ -24,8 +24,7 @@ import java.util.Objects;
 public class Asset {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "asset_id")
-    private String assetId;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "payment_method_id", unique = false, nullable = false)
@@ -36,7 +35,7 @@ public class Asset {
 
     @ManyToOne
     @JoinColumn(name = "asset_type_id", unique = false, nullable = false)
-    private AssetType assetType;
+    private AssetType type;
 
     @Column(name = "amount")
     private Double amount;
@@ -60,19 +59,19 @@ public class Asset {
         // Required by JPA
     }
 
-    public Asset(String narration, Double amount, PaymentMethod paymentMethod, AssetType assetType) {
+    public Asset(String narration, Double amount, PaymentMethod paymentMethod, AssetType type) {
         this.narration = narration;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
-        this.assetType = assetType;
+        this.type = type;
     }
 
-    public String getAssetId() {
-        return assetId;
+    public String getId() {
+        return id;
     }
 
-    public void setAssetId(String assetId) {
-        this.assetId = assetId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public PaymentMethod getPaymentMethod() {
@@ -91,12 +90,12 @@ public class Asset {
         this.narration = narration;
     }
 
-    public AssetType getAssetType() {
-        return assetType;
+    public AssetType getType() {
+        return type;
     }
 
-    public void setAssetType(AssetType assetType) {
-        this.assetType = assetType;
+    public void setType(AssetType type) {
+        this.type = type;
     }
 
     public Double getAmount() {
@@ -135,20 +134,20 @@ public class Asset {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Asset asset)) return false;
-        return Objects.equals(getAssetId(), asset.getAssetId())
+        return Objects.equals(getId(), asset.getId())
                 && Objects.equals(getPaymentMethod(), asset.getPaymentMethod())
                 && Objects.equals(getNarration(), asset.getNarration())
-                && Objects.equals(getAssetType(), asset.getAssetType())
+                && Objects.equals(getType(), asset.getType())
                 && Objects.equals(getAmount(), asset.getAmount())
                 && Objects.equals(getCreatedBy(), asset.getCreatedBy());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAssetId(),
+        return Objects.hash(getId(),
                             getPaymentMethod(),
                             getNarration(),
-                            getAssetType(),
+                            getType(),
                             getAmount(),
                             getCreatedBy());
     }
@@ -156,10 +155,10 @@ public class Asset {
     @Override
     public String toString() {
         return "Asset{" +
-                "assetId='" + assetId + '\'' +
+                "id='" + id + '\'' +
                 ", paymentMethod=" + paymentMethod +
                 ", narration='" + narration + '\'' +
-                ", assetType=" + assetType +
+                ", type=" + type +
                 ", amount=" + amount +
                 ", createdBy=" + createdBy +
                 '}';

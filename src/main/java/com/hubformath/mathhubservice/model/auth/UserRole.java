@@ -23,8 +23,8 @@ public class UserRole {
     @Id
     @ReadOnlyProperty
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id", updatable = false, nullable = false)
-    private Long roleId;
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false)
@@ -47,12 +47,12 @@ public class UserRole {
         this.role = role;
     }
 
-    public Long getRoleId() {
-        return this.roleId;
+    public Long getId() {
+        return this.id;
     }
 
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Role getRole() {
@@ -83,7 +83,7 @@ public class UserRole {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UserRole userRole)) return false;
-        return Objects.equals(getRoleId(), userRole.getRoleId())
+        return Objects.equals(getId(), userRole.getId())
                 && Objects.equals(getRole(), userRole.getRole())
                 && Objects.equals(getCreatedAt(), userRole.getCreatedAt())
                 && Objects.equals(getUpdatedAt(), userRole.getUpdatedAt());
@@ -91,16 +91,14 @@ public class UserRole {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getRoleId(), getRole(), getCreatedAt(), getUpdatedAt());
+        return Objects.hash(getId(), getRole(), getCreatedAt(), getUpdatedAt());
     }
 
     @Override
     public String toString() {
         return "UserRole{" +
-                "roleId=" + roleId +
+                "id=" + id +
                 ", role=" + role +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

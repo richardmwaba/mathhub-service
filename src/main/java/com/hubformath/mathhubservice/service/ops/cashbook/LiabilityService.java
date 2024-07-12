@@ -69,7 +69,7 @@ public class LiabilityService {
                                               .ifPresent(liabilityTypeId -> {
                                                   LiabilityType liabilityType = liabilityTypeService.getLiabilityTypeById(
                                                           liabilityTypeId);
-                                                  liability.setLiabilityType(liabilityType);
+                                                  liability.setType(liabilityType);
                                               });
                                       Optional.ofNullable(liabilityRequest.amount()).ifPresent(liability::setAmount);
                                       Optional.ofNullable(liabilityRequest.narration())

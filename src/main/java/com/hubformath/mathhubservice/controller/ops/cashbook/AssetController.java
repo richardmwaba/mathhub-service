@@ -83,7 +83,7 @@ public class AssetController {
     private EntityModel<Asset> toModel(Asset asset) {
         return EntityModel.of(asset,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class)
-                                                                        .getAssetById(asset.getAssetId()))
+                                                                        .getAssetById(asset.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssetController.class).getAllAssets())
                                                .withRel("assets"));

@@ -31,10 +31,10 @@ public class SessionTypeService {
     public SessionType updateSessionType(String sessionTypeId, SessionType sessionTypeRequest) {
         return sessionTypeRepository.findById(sessionTypeId)
                                     .map(sessionType -> {
-                                        Optional.ofNullable(sessionTypeRequest.getTypeName())
-                                                .ifPresent(sessionType::setTypeName);
-                                        Optional.ofNullable(sessionTypeRequest.getTypeDescription())
-                                                .ifPresent(sessionType::setTypeDescription);
+                                        Optional.ofNullable(sessionTypeRequest.getName())
+                                                .ifPresent(sessionType::setName);
+                                        Optional.ofNullable(sessionTypeRequest.getDescription())
+                                                .ifPresent(sessionType::setDescription);
                                         return sessionTypeRepository.save(sessionType);
                                     })
                                     .orElseThrow();

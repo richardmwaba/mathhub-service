@@ -83,7 +83,7 @@ public class IncomeTypeController {
     public EntityModel<IncomeType> toModel(IncomeType incomeType) {
         return EntityModel.of(incomeType,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeTypeController.class)
-                                                                        .getIncomeTypeById(incomeType.getIncomeTypeId()))
+                                                                        .getIncomeTypeById(incomeType.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(IncomeTypeController.class)
                                                                         .getAllIncomeTypes()).withRel("incomeTypes"));

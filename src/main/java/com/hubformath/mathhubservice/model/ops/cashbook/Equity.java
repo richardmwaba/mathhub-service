@@ -24,8 +24,7 @@ import java.util.Objects;
 public class Equity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "equity_id")
-    private String equityId;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "payment_method_id", unique = false, nullable = false)
@@ -36,7 +35,7 @@ public class Equity {
 
     @ManyToOne
     @JoinColumn(name = "equity_type_id", unique = false, nullable = false)
-    private EquityType equityType;
+    private EquityType type;
 
     @Column(name = "amount")
     private Double amount;
@@ -60,20 +59,20 @@ public class Equity {
         // Required by JPA
     }
 
-    public Equity(PaymentMethod paymentMethod, String narration, EquityType equityType, Double amount, User createdBy) {
+    public Equity(PaymentMethod paymentMethod, String narration, EquityType type, Double amount, User createdBy) {
         this.paymentMethod = paymentMethod;
         this.narration = narration;
-        this.equityType = equityType;
+        this.type = type;
         this.amount = amount;
         this.createdBy = createdBy;
     }
 
-    public String getEquityId() {
-        return equityId;
+    public String getId() {
+        return id;
     }
 
-    public void setEquityId(String equityId) {
-        this.equityId = equityId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public PaymentMethod getPaymentMethod() {
@@ -92,12 +91,12 @@ public class Equity {
         this.narration = narration;
     }
 
-    public EquityType getEquityType() {
-        return equityType;
+    public EquityType getType() {
+        return type;
     }
 
-    public void setEquityType(EquityType equityType) {
-        this.equityType = equityType;
+    public void setType(EquityType type) {
+        this.type = type;
     }
 
     public Double getAmount() {
@@ -136,20 +135,20 @@ public class Equity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Equity equity)) return false;
-        return Objects.equals(getEquityId(), equity.getEquityId())
+        return Objects.equals(getId(), equity.getId())
                 && Objects.equals(getPaymentMethod(), equity.getPaymentMethod())
                 && Objects.equals(getNarration(), equity.getNarration())
-                && Objects.equals(getEquityType(), equity.getEquityType())
+                && Objects.equals(getType(), equity.getType())
                 && Objects.equals(getAmount(), equity.getAmount())
                 && Objects.equals(getCreatedBy(), equity.getCreatedBy());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getEquityId(),
+        return Objects.hash(getId(),
                             getPaymentMethod(),
                             getNarration(),
-                            getEquityType(),
+                            getType(),
                             getAmount(),
                             getCreatedBy());
     }
@@ -157,10 +156,10 @@ public class Equity {
     @Override
     public String toString() {
         return "Equity{" +
-                "equityId='" + equityId + '\'' +
+                "id='" + id + '\'' +
                 ", paymentMethod=" + paymentMethod +
                 ", narration='" + narration + '\'' +
-                ", equityType=" + equityType +
+                ", type=" + type +
                 ", amount=" + amount +
                 ", createdBy=" + createdBy +
                 '}';

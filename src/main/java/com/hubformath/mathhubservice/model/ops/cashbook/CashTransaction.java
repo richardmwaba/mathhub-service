@@ -25,8 +25,7 @@ import java.util.Objects;
 public class CashTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "cash_transaction_id")
-    private String cashTransactionId;
+    private String id;
 
     @Column(name = "transaction_number", unique = true)
     private String transactionNumber;
@@ -81,12 +80,12 @@ public class CashTransaction {
     public CashTransaction() {
     }
 
-    public String getCashTransactionId() {
-        return cashTransactionId;
+    public String getId() {
+        return id;
     }
 
-    public void setCashTransactionId(String cashTransactionId) {
-        this.cashTransactionId = cashTransactionId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTransactionNumber() {
@@ -165,7 +164,7 @@ public class CashTransaction {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof CashTransaction that)) return false;
-        return Objects.equals(getCashTransactionId(), that.getCashTransactionId())
+        return Objects.equals(getId(), that.getId())
                 && Objects.equals(getTransactionNumber(), that.getTransactionNumber())
                 && Objects.equals(getPaymentMethod(), that.getPaymentMethod())
                 && getTransactionType() == that.getTransactionType()
@@ -177,7 +176,7 @@ public class CashTransaction {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCashTransactionId(),
+        return Objects.hash(getId(),
                             getTransactionNumber(),
                             getPaymentMethod(),
                             getTransactionType(),
@@ -190,7 +189,7 @@ public class CashTransaction {
     @Override
     public String toString() {
         return "CashTransaction{" +
-                "cashTransactionId='" + cashTransactionId + '\'' +
+                "id='" + id + '\'' +
                 ", transactionNumber='" + transactionNumber + '\'' +
                 ", paymentMethod=" + paymentMethod +
                 ", transactionType=" + transactionType +

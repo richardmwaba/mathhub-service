@@ -76,7 +76,7 @@ public class ParentController {
     public EntityModel<Parent> toModel(Parent parent) {
         return EntityModel.of(parent,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ParentController.class)
-                                                                        .getParentById(parent.getParentId()))
+                                                                        .getParentById(parent.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ParentController.class)
                                                                         .getAllParents()).withRel("parents"));

@@ -69,8 +69,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
                              Gender.OTHER,
                              "setup@hubformath.com",
                              passwordEncoder.encode(setupPassword));
-        user.setUserRoles(Set.of(userRoleRepository.findByRole(Role.ROLE_ADMINISTRATOR)
-                                                   .orElseThrow(() -> new IllegalStateException("Role not found."))));
+        user.setRoles(Set.of(userRoleRepository.findByRole(Role.ROLE_ADMINISTRATOR)
+                                               .orElseThrow(() -> new IllegalStateException("Role not found."))));
         userRepository.save(user);
 
         LOGGER.info("User roles seeded into the database successfully.");

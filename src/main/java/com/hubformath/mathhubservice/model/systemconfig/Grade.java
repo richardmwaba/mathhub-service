@@ -19,14 +19,14 @@ public class Grade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "grade_id", updatable = false, nullable = false)
-    private String gradeId;
+    @Column(name = "id", updatable = false, nullable = false)
+    private String id;
 
     @Column(name = "grade_name", nullable = false)
-    private String gradeName;
+    private String name;
 
     @Column(name = "grade_description", nullable = false)
-    private String gradeDescription;
+    private String description;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -41,34 +41,34 @@ public class Grade {
     public Grade() {
     }
 
-    public Grade(String gradeName, String gradeDescription) {
-        this.gradeName = gradeName;
-        this.gradeDescription = gradeDescription;
+    public Grade(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
 
-    public String getGradeId() {
-        return this.gradeId;
+    public String getId() {
+        return this.id;
     }
 
-    public void setGradeId(String gradeId) {
-        this.gradeId = gradeId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getGradeName() {
-        return this.gradeName;
+    public String getName() {
+        return this.name;
     }
 
-    public void setGradeName(String gradeName) {
-        this.gradeName = gradeName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getGradeDescription() {
-        return this.gradeDescription;
+    public String getDescription() {
+        return this.description;
     }
 
-    public void setGradeDescription(String gradeDescription) {
-        this.gradeDescription = gradeDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -91,22 +91,22 @@ public class Grade {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Grade grade)) return false;
-        return Objects.equals(getGradeId(), grade.getGradeId())
-                && Objects.equals(getGradeName(), grade.getGradeName())
-                && Objects.equals(getGradeDescription(), grade.getGradeDescription());
+        return Objects.equals(getId(), grade.getId())
+                && Objects.equals(getName(), grade.getName())
+                && Objects.equals(getDescription(), grade.getDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getGradeId(), getGradeName(), getGradeDescription());
+        return Objects.hash(getId(), getName(), getDescription());
     }
 
     @Override
     public String toString() {
         return "Grade{" +
-                "gradeId=" + gradeId +
-                ", gradeName='" + gradeName + '\'' +
-                ", gradeDescription='" + gradeDescription + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

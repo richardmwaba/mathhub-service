@@ -27,8 +27,7 @@ import java.util.Objects;
 public class TuitionPayment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "tuition_payment_id")
-    private String tuitionPaymentId;
+    private String id;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cash_transaction_id")
@@ -91,12 +90,12 @@ public class TuitionPayment {
         this.narration = narration;
     }
 
-    public String getTuitionPaymentId() {
-        return tuitionPaymentId;
+    public String getId() {
+        return id;
     }
 
-    public void setTuitionPaymentId(String tuitionPaymentId) {
-        this.tuitionPaymentId = tuitionPaymentId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public CashTransaction getCashTransaction() {
@@ -191,7 +190,7 @@ public class TuitionPayment {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TuitionPayment that)) return false;
-        return Objects.equals(getTuitionPaymentId(), that.getTuitionPaymentId())
+        return Objects.equals(getId(), that.getId())
                 && Objects.equals(getCashTransaction(), that.getCashTransaction())
                 && Objects.equals(getStudent(), that.getStudent())
                 && Objects.equals(getPaymentMethod(), that.getPaymentMethod())
@@ -205,7 +204,7 @@ public class TuitionPayment {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTuitionPaymentId(),
+        return Objects.hash(getId(),
                             getCashTransaction(),
                             getStudent(),
                             getPaymentMethod(),
@@ -220,17 +219,16 @@ public class TuitionPayment {
     @Override
     public String toString() {
         return "TuitionPayment{" +
-                "tuitionPaymentId=" + tuitionPaymentId +
+                "id='" + id + '\'' +
                 ", cashTransaction=" + cashTransaction +
                 ", student=" + student +
                 ", paymentMethod=" + paymentMethod +
                 ", paymentDate=" + paymentDate +
                 ", amount=" + amount +
-                ", invoiceNumber='" + invoice +
+                ", invoice=" + invoice +
                 ", receipt=" + receipt +
                 ", narration='" + narration + '\'' +
                 ", createdBy=" + createdBy +
-                ", createdAt=" + createdAt +
                 '}';
     }
 }

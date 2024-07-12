@@ -20,14 +20,14 @@ public class ExamBoard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "exam_board_id", updatable = false, nullable = false)
-    private String examBoardId;
+    @Column(name = "id", updatable = false, nullable = false)
+    private String id;
 
     @Column(name = "exam_board_name", nullable = false)
-    private String examBoardName;
+    private String name;
 
     @Column(name = "exam_board_description", nullable = false)
-    private String examBoardDescription;
+    private String description;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -42,33 +42,33 @@ public class ExamBoard {
     public ExamBoard() {
     }
 
-    public ExamBoard(final String examBoardName, final String examBoardDescription) {
-        this.examBoardName = examBoardName;
-        this.examBoardDescription = examBoardDescription;
+    public ExamBoard(final String name, final String description) {
+        this.name = name;
+        this.description = description;
     }
 
-    public String getExamBoardId() {
-        return this.examBoardId;
+    public String getId() {
+        return this.id;
     }
 
-    public void setExamBoardId(String examBoardId) {
-        this.examBoardId = examBoardId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getExamBoardName() {
-        return this.examBoardName;
+    public String getName() {
+        return this.name;
     }
 
-    public void setExamBoardName(String examBoardName) {
-        this.examBoardName = examBoardName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getExamBoardDescription() {
-        return this.examBoardDescription;
+    public String getDescription() {
+        return this.description;
     }
 
-    public void setExamBoardDescription(String examBoardDescription) {
-        this.examBoardDescription = examBoardDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -91,22 +91,22 @@ public class ExamBoard {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ExamBoard examBoard)) return false;
-        return Objects.equals(getExamBoardId(), examBoard.getExamBoardId())
-                && Objects.equals(getExamBoardName(), examBoard.getExamBoardName())
-                && Objects.equals(getExamBoardDescription(), examBoard.getExamBoardDescription());
+        return Objects.equals(getId(), examBoard.getId())
+                && Objects.equals(getName(), examBoard.getName())
+                && Objects.equals(getDescription(), examBoard.getDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getExamBoardId(), getExamBoardName(), getExamBoardDescription());
+        return Objects.hash(getId(), getName(), getDescription());
     }
 
     @Override
     public String toString() {
         return "ExamBoard{" +
-                "examBoardId=" + examBoardId +
-                ", examBoardName='" + examBoardName + '\'' +
-                ", examBoardDescription='" + examBoardDescription + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

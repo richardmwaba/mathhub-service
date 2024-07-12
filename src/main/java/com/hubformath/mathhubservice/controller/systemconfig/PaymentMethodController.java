@@ -86,7 +86,7 @@ public class PaymentMethodController {
     private EntityModel<PaymentMethod> toModel(PaymentMethod paymentMethod) {
         return EntityModel.of(paymentMethod,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PaymentMethodController.class)
-                                                                        .getPaymentMethodById(paymentMethod.getPaymentMethodId()))
+                                                                        .getPaymentMethodById(paymentMethod.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PaymentMethodController.class)
                                                                         .getAllPaymentMethods())

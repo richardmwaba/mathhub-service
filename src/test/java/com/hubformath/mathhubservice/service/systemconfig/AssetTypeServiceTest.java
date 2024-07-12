@@ -47,9 +47,9 @@ class AssetTypeServiceTest {
     @Test
     void shouldCreateAssetType() {
         AssetType expectedAssetType = new AssetType();
-        expectedAssetType.setAssetTypeId(UUID.randomUUID().toString());
-        expectedAssetType.setTypeName("Cash flow");
-        expectedAssetType.setTypeDescription("Cash flow");
+        expectedAssetType.setId(UUID.randomUUID().toString());
+        expectedAssetType.setName("Cash flow");
+        expectedAssetType.setDescription("Cash flow");
         when(assetTypeRepository.save(expectedAssetType)).thenReturn(expectedAssetType);
 
         AssetType actualAssetType = assetTypeService.createAssetType(expectedAssetType);
@@ -69,8 +69,8 @@ class AssetTypeServiceTest {
 
         AssetType updatedAssetType = assetTypeService.updateAssetType("1", updatedAssetTypeRequest);
 
-        assertThat(updatedAssetType.getTypeName()).isEqualTo("Fixed assets");
-        assertThat(updatedAssetType.getTypeDescription()).isEqualTo("Fixed assets like real estate, machinery, etc.");
+        assertThat(updatedAssetType.getName()).isEqualTo("Fixed assets");
+        assertThat(updatedAssetType.getDescription()).isEqualTo("Fixed assets like real estate, machinery, etc.");
     }
 
     @Test

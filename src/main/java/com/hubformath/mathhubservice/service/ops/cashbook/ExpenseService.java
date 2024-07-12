@@ -75,7 +75,7 @@ public class ExpenseService {
                                     Optional.ofNullable(expenseRequest.narration()).ifPresent(expense::setNarration);
                                     Optional.ofNullable(expenseRequest.expenseTypeId()).ifPresent(expenseTypeId -> {
                                         ExpenseType expenseType = expenseTypeService.getExpenseTypeById(expenseTypeId);
-                                        expense.setExpenseType(expenseType);
+                                        expense.setType(expenseType);
                                     });
                                     Optional.ofNullable(expenseRequest.amount()).ifPresent(expense::setAmount);
                                     return expenseRepository.save(expense);

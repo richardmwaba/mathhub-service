@@ -31,10 +31,10 @@ public class IncomeTypeService {
     public IncomeType updateIncomeType(String incomeTypeId, IncomeType incomeTypeRequest) {
         return incomeTypeRepository.findById(incomeTypeId)
                                    .map(incomeType -> {
-                                       Optional.ofNullable(incomeTypeRequest.getTypeName())
-                                               .ifPresent(incomeType::setTypeName);
-                                       Optional.ofNullable(incomeTypeRequest.getTypeDescription())
-                                               .ifPresent(incomeType::setTypeDescription);
+                                       Optional.ofNullable(incomeTypeRequest.getName())
+                                               .ifPresent(incomeType::setName);
+                                       Optional.ofNullable(incomeTypeRequest.getDescription())
+                                               .ifPresent(incomeType::setDescription);
                                        return incomeTypeRepository.save(incomeType);
                                    })
                                    .orElseThrow();

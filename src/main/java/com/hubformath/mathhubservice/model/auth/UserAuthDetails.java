@@ -39,13 +39,13 @@ public class UserAuthDetails implements UserDetails {
     }
 
     public static UserAuthDetails build(User user) {
-        List<SimpleGrantedAuthority> authorities = user.getUserRoles()
+        List<SimpleGrantedAuthority> authorities = user.getRoles()
                                                        .stream()
                                                        .map(userRole -> new SimpleGrantedAuthority(userRole.getRole()
                                                                                                            .name()))
                                                        .toList();
 
-        return new UserAuthDetails(user.getUserId(),
+        return new UserAuthDetails(user.getId(),
                                    user.getUsername(),
                                    user.getEmail(),
                                    user.getPassword(),

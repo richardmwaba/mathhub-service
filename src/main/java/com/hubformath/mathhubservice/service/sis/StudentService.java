@@ -1,19 +1,19 @@
 package com.hubformath.mathhubservice.service.sis;
 
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
-import com.hubformath.mathhubservice.model.sis.Lesson;
-import com.hubformath.mathhubservice.model.sis.LessonRequest;
+import com.hubformath.mathhubservice.model.sis.Class;
+import com.hubformath.mathhubservice.model.sis.ClassRequest;
 import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.sis.StudentFinancialSummary;
 import com.hubformath.mathhubservice.model.sis.StudentRequest;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
-import com.hubformath.mathhubservice.model.systemconfig.LessonRate;
+import com.hubformath.mathhubservice.model.systemconfig.ClassRate;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import com.hubformath.mathhubservice.repository.sis.StudentRepository;
 import com.hubformath.mathhubservice.service.systemconfig.ExamBoardService;
 import com.hubformath.mathhubservice.service.systemconfig.GradeService;
-import com.hubformath.mathhubservice.service.systemconfig.LessonRateService;
+import com.hubformath.mathhubservice.service.systemconfig.ClassRateService;
 import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +29,7 @@ public class StudentService {
 
     private final SubjectService subjectService;
 
-    private final LessonRateService lessonRateService;
+    private final ClassRateService classRateService;
 
     private final StudentRepository studentRepository;
 
@@ -37,12 +37,12 @@ public class StudentService {
                           GradeService gradeService,
                           ExamBoardService examBoardService,
                           SubjectService subjectService,
-                          LessonRateService lessonRateService) {
+                          ClassRateService classRateService) {
         this.studentRepository = studentRepository;
         this.gradeService = gradeService;
         this.examBoardService = examBoardService;
         this.subjectService = subjectService;
-        this.lessonRateService = lessonRateService;
+        this.classRateService = classRateService;
     }
 
     public List<Student> getAllStudents() {
@@ -85,34 +85,34 @@ public class StudentService {
                                 .orElseThrow();
     }
 
-    public Student addLessonToStudent(final String studentId, final LessonRequest lessonRequest) {
+    public Student addClassToStudent(final String studentId, final ClassRequest classRequest) {
         Student student = getStudentById(studentId);
-        Subject subject = subjectService.getSubjectById(lessonRequest.subjectId());
-        LessonRate lessonRate = lessonRateService.getLessonRateBySubjectComplexity(subject.getSubjectComplexity());
-        Lesson newlesson = getNewlesson(lessonRequest, subject, lessonRate);
-        student.getLessons().add(newlesson);
+        Subject subject = subjectService.getSubjectById(classRequest.subjectId());
+        ClassRate classRate = classRateService.getClassRateBySubjectComplexity(subject.getComplexity());
+        Class newClass = getNewClass(classRequest, subject, classRate);
+        student.getLessons().add(newClass);
         student.setStudentFinancialSummary(computeStudentFinancialSummary(student));
 
         return studentRepository.save(student);
     }
 
-    private static Lesson getNewlesson(LessonRequest lessonRequest, Subject subject, LessonRate lessonRate) {
-        Lesson newlesson = new Lesson(subject,
-                                      lessonRequest.occurrence(),
-                                      lessonRequest.lessonStartDate(),
-                                      lessonRate.getAmountPerLesson(),
-                                      lessonRequest.lessonDuration(),
-                                      lessonRequest.lessonPeriod(),
-                                      lessonRequest.sessionType());
-        newlesson.setLessonPaymentStatus(PaymentStatus.UNPAID);
-        return newlesson;
+    private static Class getNewClass(ClassRequest classRequest, Subject subject, ClassRate classRate) {
+        Class newClass = new Class(subject,
+                                    classRequest.occurrence(),
+                                    classRequest.startDate(),
+                                    classRate.getAmount(),
+                                    classRequest.duration(),
+                                    classRequest.period(),
+                                    classRequest.sessionType());
+        newClass.setPaymentStatus(PaymentStatus.UNPAID);
+        return newClass;
     }
 
     public StudentFinancialSummary computeStudentFinancialSummary(final Student student) {
         Double amountOwing = student.getLessons()
                                     .stream()
-                                    .filter(lesson -> lesson.getLessonPaymentStatus() == PaymentStatus.UNPAID)
-                                    .map(lesson -> lesson.getLessonRateAmount() * lesson.getOccurrence())
+                                    .filter(aClass -> aClass.getPaymentStatus() == PaymentStatus.UNPAID)
+                                    .map(aClass -> aClass.getCost() * aClass.getOccurrence())
                                     .reduce(Double::sum)
                                     .orElse(0d);
         boolean isStudentOwing = isStudentOwing(student, amountOwing);
@@ -122,7 +122,7 @@ public class StudentService {
     private boolean isStudentOwing(Student student, Double amountOwing) {
         boolean hasUnpaidLessons = student.getLessons()
                                           .stream()
-                                          .anyMatch(lesson -> lesson.getLessonPaymentStatus() == PaymentStatus.UNPAID);
+                                          .anyMatch(aClass -> aClass.getPaymentStatus() == PaymentStatus.UNPAID);
         return hasUnpaidLessons && amountOwing > 0;
     }
 

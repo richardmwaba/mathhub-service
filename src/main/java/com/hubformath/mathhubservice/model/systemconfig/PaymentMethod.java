@@ -18,14 +18,14 @@ import java.util.Objects;
 public class PaymentMethod {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "payment_method_id", updatable = false, nullable = false)
-    private String paymentMethodId;
+    @Column(name = "id", updatable = false, nullable = false)
+    private String id;
 
     @Column(name = "type_name", nullable = false)
-    private String typeName;
+    private String name;
 
     @Column(name = "type_description", nullable = false)
-    private String typeDescription;
+    private String description;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -40,33 +40,33 @@ public class PaymentMethod {
     public PaymentMethod() {
     }
 
-    public PaymentMethod(String typeName, String typeDescription) {
-        this.typeName = typeName;
-        this.typeDescription = typeDescription;
+    public PaymentMethod(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
-    public String getPaymentMethodId() {
-        return this.paymentMethodId;
+    public String getId() {
+        return this.id;
     }
 
-    public void setPaymentMethodId(String paymentMethodId) {
-        this.paymentMethodId = paymentMethodId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getTypeName() {
-        return this.typeName;
+    public String getName() {
+        return this.name;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getTypeDescription() {
-        return this.typeDescription;
+    public String getDescription() {
+        return this.description;
     }
 
-    public void setTypeDescription(String typeDescription) {
-        this.typeDescription = typeDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -89,22 +89,22 @@ public class PaymentMethod {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof PaymentMethod that)) return false;
-        return Objects.equals(getPaymentMethodId(), that.getPaymentMethodId())
-                && Objects.equals(getTypeName(), that.getTypeName())
-                && Objects.equals(getTypeDescription(), that.getTypeDescription());
+        return Objects.equals(getId(), that.getId())
+                && Objects.equals(getName(), that.getName())
+                && Objects.equals(getDescription(), that.getDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPaymentMethodId(), getTypeName(), getTypeDescription());
+        return Objects.hash(getId(), getName(), getDescription());
     }
 
     @Override
     public String toString() {
         return "PaymentMethod{" +
-                "paymentMethodId=" + paymentMethodId +
-                ", typeName='" + typeName + '\'' +
-                ", typeDescription='" + typeDescription + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

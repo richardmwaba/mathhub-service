@@ -86,7 +86,7 @@ public class AddressController {
     private EntityModel<Address> toModel(Address address) {
         return EntityModel.of(address,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AddressController.class)
-                                                                        .getAddressById(address.getAddressId()))
+                                                                        .getAddressById(address.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AddressController.class)
                                                                         .getAllAddresses()).withRel("addresses"));

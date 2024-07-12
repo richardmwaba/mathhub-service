@@ -25,20 +25,20 @@ public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "subject_id", updatable = false, nullable = false)
-    private String subjectId;
+    private String id;
 
     @Column(name = "subject_name", nullable = false, unique = true)
-    private String subjectName;
+    private String name;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "subject_complexity", nullable = false)
-    private SubjectComplexity subjectComplexity;
+    private SubjectComplexity complexity;
 
     @ManyToMany
     @JoinTable(name = "subjects_grades",
             joinColumns = @JoinColumn(name = "subject_id"),
             inverseJoinColumns = @JoinColumn(name = "grade_id"))
-    private Set<Grade> subjectGrades;
+    private Set<Grade> grades;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -53,42 +53,42 @@ public class Subject {
     public Subject() {
     }
 
-    public Subject(final String subjectName, final SubjectComplexity subjectComplexity, final Set<Grade> subjectGrades) {
-        this.subjectName = subjectName;
-        this.subjectComplexity = subjectComplexity;
-        this.subjectGrades = subjectGrades;
+    public Subject(final String name, final SubjectComplexity complexity, final Set<Grade> grades) {
+        this.name = name;
+        this.complexity = complexity;
+        this.grades = grades;
     }
 
-    public void setSubjectId(String subjectId) {
-        this.subjectId = subjectId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getSubjectId() {
-        return this.subjectId;
+    public String getId() {
+        return this.id;
     }
 
-    public String getSubjectName() {
-        return subjectName;
+    public String getName() {
+        return name;
     }
 
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public SubjectComplexity getSubjectComplexity() {
-        return subjectComplexity;
+    public SubjectComplexity getComplexity() {
+        return complexity;
     }
 
-    public void setSubjectComplexity(SubjectComplexity subjectComplexity) {
-        this.subjectComplexity = subjectComplexity;
+    public void setComplexity(SubjectComplexity complexity) {
+        this.complexity = complexity;
     }
 
-    public Set<Grade> getSubjectGrades() {
-        return subjectGrades;
+    public Set<Grade> getGrades() {
+        return grades;
     }
 
-    public void setSubjectGrades(Set<Grade> grades) {
-        this.subjectGrades = grades;
+    public void setGrades(Set<Grade> grades) {
+        this.grades = grades;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -111,24 +111,24 @@ public class Subject {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Subject subject)) return false;
-        return Objects.equals(getSubjectId(), subject.getSubjectId())
-                && Objects.equals(getSubjectName(), subject.getSubjectName())
-                && getSubjectComplexity() == subject.getSubjectComplexity()
-                && Objects.equals(getSubjectGrades(), subject.getSubjectGrades());
+        return Objects.equals(getId(), subject.getId())
+                && Objects.equals(getName(), subject.getName())
+                && getComplexity() == subject.getComplexity()
+                && Objects.equals(getGrades(), subject.getGrades());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getSubjectId(), getSubjectName(), getSubjectComplexity(), getSubjectGrades());
+        return Objects.hash(getId(), getName(), getComplexity(), getGrades());
     }
 
     @Override
     public String toString() {
         return "Subject{" +
-                "subjectId=" + subjectId +
-                ", subjectName='" + subjectName + '\'' +
-                ", subjectComplexity=" + subjectComplexity +
-                ", subjectGrades=" + subjectGrades +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", complexity=" + complexity +
+                ", grades=" + grades +
                 '}';
     }
 }

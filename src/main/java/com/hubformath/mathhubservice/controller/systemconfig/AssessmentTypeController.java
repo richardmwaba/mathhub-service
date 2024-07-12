@@ -91,7 +91,7 @@ public class AssessmentTypeController {
     private EntityModel<AssessmentType> toModel(final AssessmentType assessmentType) {
         return EntityModel.of(assessmentType,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssessmentTypeController.class)
-                                                                        .getAssessmentTypeById(assessmentType.getAssessmentTypeId()))
+                                                                        .getAssessmentTypeById(assessmentType.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AssessmentTypeController.class)
                                                                         .getAllAssessmentTypes())

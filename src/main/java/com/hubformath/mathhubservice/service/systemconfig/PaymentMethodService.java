@@ -31,10 +31,10 @@ public class PaymentMethodService {
     public PaymentMethod updatePaymentMethod(String paymentMethodId, PaymentMethod paymentMethodRequest) {
         return paymentMethodRepository.findById(paymentMethodId)
                                       .map(paymentMethod -> {
-                                          Optional.ofNullable(paymentMethodRequest.getTypeName())
-                                                  .ifPresent(paymentMethod::setTypeName);
-                                          Optional.ofNullable(paymentMethodRequest.getTypeDescription())
-                                                  .ifPresent(paymentMethod::setTypeDescription);
+                                          Optional.ofNullable(paymentMethodRequest.getName())
+                                                  .ifPresent(paymentMethod::setName);
+                                          Optional.ofNullable(paymentMethodRequest.getDescription())
+                                                  .ifPresent(paymentMethod::setDescription);
                                           return paymentMethodRepository.save(paymentMethod);
                                       })
                                       .orElseThrow();

@@ -68,7 +68,7 @@ public class InvoiceService {
                                                       Optional.ofNullable(invoiceRequest.amount())
                                                               .ifPresent(invoice::setAmount);
                                                       Optional.ofNullable(invoiceRequest.invoiceStatus())
-                                                              .ifPresent(invoice::setInvoiceStatus);
+                                                              .ifPresent(invoice::setStatus);
                                                       Optional.ofNullable(invoiceRequest.studentId())
                                                               .ifPresent(studentId -> {
                                                                   Student student = studentService.getStudentById(

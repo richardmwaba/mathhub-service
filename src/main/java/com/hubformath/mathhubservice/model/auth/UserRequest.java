@@ -17,5 +17,5 @@ public record UserRequest(UUID userId,
                           @NotBlank Gender gender,
                           @NotBlank @Size(max = 50) @Email String email,
                           String phoneNumber,
-                          Set<String> userRoles) {
+                          Set<String> roles) {
 }

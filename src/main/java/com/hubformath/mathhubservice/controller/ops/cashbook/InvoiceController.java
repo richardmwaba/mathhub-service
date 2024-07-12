@@ -88,7 +88,7 @@ public class InvoiceController {
     private EntityModel<Invoice> toModel(Invoice invoice) {
         return EntityModel.of(invoice,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(InvoiceController.class)
-                                                                        .getInvoiceById(invoice.getInvoiceId()))
+                                                                        .getInvoiceById(invoice.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(InvoiceController.class)
                                                                         .getAllInvoices()).withRel("invoices"));

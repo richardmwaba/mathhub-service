@@ -87,7 +87,7 @@ public class ExamBoardController {
 
     private EntityModel<ExamBoard> toModel(ExamBoard examBoard) {
         return EntityModel.of(examBoard,
-                              linkTo(methodOn(ExamBoardController.class).getExamBoardById(examBoard.getExamBoardId())).withSelfRel(),
+                              linkTo(methodOn(ExamBoardController.class).getExamBoardById(examBoard.getId())).withSelfRel(),
                               linkTo(methodOn(ExamBoardController.class).getAllExamBoard()).withRel("examBoard"));
     }
 

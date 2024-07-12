@@ -89,7 +89,7 @@ public class EquityTypeController {
     private EntityModel<EquityType> toModel(EquityType assessmentType) {
         return EntityModel.of(assessmentType,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityTypeController.class)
-                                                                        .getEquityTypeById(assessmentType.getEquityTypeId()))
+                                                                        .getEquityTypeById(assessmentType.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityTypeController.class)
                                                                         .getAllEquityTypes()).withRel("equityTypes"));

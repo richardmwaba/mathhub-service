@@ -69,22 +69,22 @@ public class UsersService {
             throw new AuthException("Email is already in use!");
         }
 
-        Set<UserRole> userRoles = extractUserRoles(userRequest.userRoles());
+        Set<UserRole> userRoles = extractUserRoles(userRequest.roles());
         User user = new User(userRequest.username(),
                              userRequest.firstName(),
                              userRequest.lastName(),
                              userRequest.gender(),
                              userRequest.email(),
                              passwordEncoder.encode(userRequest.password()));
-        user.setUserRoles(userRoles);
+        user.setRoles(userRoles);
         User createdUser = userRepository.save(user);
 
-        if (!createdUser.getUserId().isEmpty() && userRoles.contains(getUserRole(ROLE_STUDENT))) {
+        if (!createdUser.getId().isEmpty() && userRoles.contains(getUserRole(ROLE_STUDENT))) {
             studentRepository.save(new Student(userRequest.firstName(),
                                                userRequest.lastName(),
                                                userRequest.email(),
                                                userRequest.gender(),
-                                               createdUser.getUserId()));
+                                               createdUser.getId()));
         }
 
         return createdUser;
@@ -115,8 +115,8 @@ public class UsersService {
                                          .ifPresent(user::setPhoneNumber);
                                  Optional.ofNullable(userRequest.password())
                                          .ifPresent(user::setPassword);
-                                 Optional.ofNullable(userRequest.userRoles())
-                                         .ifPresent(userRoles -> user.setUserRoles(extractUserRoles(userRoles)));
+                                 Optional.ofNullable(userRequest.roles())
+                                         .ifPresent(userRoles -> user.setRoles(extractUserRoles(userRoles)));
                                  return userRepository.save(user);
                              })
                              .orElseThrow();

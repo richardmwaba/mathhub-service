@@ -31,14 +31,14 @@ public class AddressService {
     public Address updateAddress(final String addressId, final Address addressRequest) {
         return addressRepository.findById(addressId)
                                 .map(address -> {
-                                    Optional.ofNullable(addressRequest.getAddressType())
-                                            .ifPresent(address::setAddressType);
-                                    Optional.ofNullable(addressRequest.getAddressLine1())
-                                            .ifPresent(address::setAddressLine1);
-                                    Optional.ofNullable(addressRequest.getAddressLine2())
-                                            .ifPresent(address::setAddressLine2);
-                                    Optional.ofNullable(addressRequest.getAddressLine3())
-                                            .ifPresent(address::setAddressLine3);
+                                    Optional.ofNullable(addressRequest.getType())
+                                            .ifPresent(address::setType);
+                                    Optional.ofNullable(addressRequest.getFirstAddress())
+                                            .ifPresent(address::setFirstAddress);
+                                    Optional.ofNullable(addressRequest.getSecondAddress())
+                                            .ifPresent(address::setSecondAddress);
+                                    Optional.ofNullable(addressRequest.getThirdAddress())
+                                            .ifPresent(address::setThirdAddress);
                                     Optional.ofNullable(addressRequest.getCity()).ifPresent(address::setCity);
                                     Optional.ofNullable(addressRequest.getProvince()).ifPresent(address::setProvince);
                                     Optional.ofNullable(addressRequest.getZipCode()).ifPresent(address::setZipCode);

@@ -47,9 +47,9 @@ class AssessmentTypeServiceTest {
     @Test
     void shouldCreateAssessmentType() {
         AssessmentType expectedAssessmentType = new AssessmentType();
-        expectedAssessmentType.setAssessmentTypeId(UUID.randomUUID().toString());
-        expectedAssessmentType.setTypeName("Test");
-        expectedAssessmentType.setTypeDescription("End of term test");
+        expectedAssessmentType.setId(UUID.randomUUID().toString());
+        expectedAssessmentType.setName("Test");
+        expectedAssessmentType.setDescription("End of term test");
         when(assessmentTypeRepository.save(expectedAssessmentType)).thenReturn(expectedAssessmentType);
 
         AssessmentType actualAssessmentType = assessmentTypeService.createAssessmentType(expectedAssessmentType);
