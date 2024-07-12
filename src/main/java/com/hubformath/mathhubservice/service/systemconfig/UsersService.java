@@ -157,7 +157,7 @@ public class UsersService {
     }
 
     private UserRole getUserRole(Role role) {
-        return userRoleRepository.findByRole(role)
+        return userRoleRepository.findByName(role)
                                  .orElseThrow(() -> new NoSuchElementException(ROLE_IS_NOT_FOUND));
     }
 

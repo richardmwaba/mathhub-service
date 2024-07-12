@@ -144,7 +144,7 @@ public class ClassRate {
         return "ClassRate{" +
                 "id='" + id + '\'' +
                 ", amount=" + amount +
-                ", subjectComplexity=" + subjectComplexity +
+                ", complexity=" + subjectComplexity +
                 ", effectiveDate=" + effectiveDate +
                 ", expiryDate=" + expiryDate +
                 '}';

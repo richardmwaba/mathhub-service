@@ -38,7 +38,7 @@ public class SubjectService {
         }
 
         final String subjectName = subjectRequest.name();
-        final SubjectComplexity subjectComplexity = subjectRequest.subjectComplexity();
+        final SubjectComplexity subjectComplexity = subjectRequest.complexity();
         final Set<Grade> grades = extractGrades(subjectRequest.gradeIds());
 
         final Subject newSubject = new Subject(subjectName, subjectComplexity, grades);
@@ -51,7 +51,7 @@ public class SubjectService {
                                                   .map(subject -> {
                                                       Optional.ofNullable(subjectRequest.name())
                                                               .ifPresent(subject::setName);
-                                                      Optional.ofNullable(subjectRequest.subjectComplexity())
+                                                      Optional.ofNullable(subjectRequest.complexity())
                                                               .ifPresent(subject::setComplexity);
                                                       Optional.ofNullable(subjectRequest.gradeIds())
                                                               .ifPresent(gradeIds -> subject.setGrades(

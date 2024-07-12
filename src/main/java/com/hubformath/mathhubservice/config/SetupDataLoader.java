@@ -48,7 +48,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         LOGGER.info("Seeding user roles into the database...");
         Set<Role> currentRoles = userRoleRepository.findAll()
                                                    .stream()
-                                                   .map(UserRole::getRole)
+                                                   .map(UserRole::getName)
                                                    .collect(Collectors.toSet());
 
         if (currentRoles.containsAll(Set.of(Role.values()))) {
@@ -69,7 +69,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
                              Gender.OTHER,
                              "setup@hubformath.com",
                              passwordEncoder.encode(setupPassword));
-        user.setRoles(Set.of(userRoleRepository.findByRole(Role.ROLE_ADMINISTRATOR)
+        user.setRoles(Set.of(userRoleRepository.findByName(Role.ROLE_ADMINISTRATOR)
                                                .orElseThrow(() -> new IllegalStateException("Role not found."))));
         userRepository.save(user);
 
@@ -78,6 +78,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
     @SuppressWarnings("java:S2201") // Ignore user role returned when we save a new role
     private void createRoleIfNotFound(Role role) {
-        userRoleRepository.findByRole(role).orElseGet(() -> userRoleRepository.save(new UserRole(role)));
+        userRoleRepository.findByName(role).orElseGet(() -> userRoleRepository.save(new UserRole(role)));
     }
 }

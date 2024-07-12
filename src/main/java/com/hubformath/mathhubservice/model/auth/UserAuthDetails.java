@@ -41,7 +41,7 @@ public class UserAuthDetails implements UserDetails {
     public static UserAuthDetails build(User user) {
         List<SimpleGrantedAuthority> authorities = user.getRoles()
                                                        .stream()
-                                                       .map(userRole -> new SimpleGrantedAuthority(userRole.getRole()
+                                                       .map(userRole -> new SimpleGrantedAuthority(userRole.getName()
                                                                                                            .name()))
                                                        .toList();
 
