@@ -69,7 +69,7 @@ public class EquityService {
                                    Optional.ofNullable(equityRequest.narration()).ifPresent(equity::setNarration);
                                    Optional.ofNullable(equityRequest.equityTypeId()).ifPresent(equityTypeId -> {
                                        EquityType equityType = equityTypeService.getEquityTypeById(equityTypeId);
-                                       equity.setEquityType(equityType);
+                                       equity.setType(equityType);
                                    });
                                    Optional.ofNullable(equityRequest.amount()).ifPresent(equity::setAmount);
                                    return equityRepository.save(equity);

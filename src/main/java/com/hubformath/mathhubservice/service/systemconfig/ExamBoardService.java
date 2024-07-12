@@ -32,10 +32,10 @@ public class ExamBoardService {
     public ExamBoard updateExamBoard(String examBoardId, ExamBoard examBoardRequest) {
         return examBoardRepository.findById(examBoardId)
                                   .map(examBoard -> {
-                                      Optional.ofNullable(examBoardRequest.getExamBoardName())
-                                              .ifPresent(examBoard::setExamBoardName);
-                                      Optional.ofNullable(examBoardRequest.getExamBoardDescription())
-                                              .ifPresent(examBoard::setExamBoardDescription);
+                                      Optional.ofNullable(examBoardRequest.getName())
+                                              .ifPresent(examBoard::setName);
+                                      Optional.ofNullable(examBoardRequest.getDescription())
+                                              .ifPresent(examBoard::setDescription);
                                       return examBoardRepository.save(examBoard);
                                   })
                                   .orElseThrow();

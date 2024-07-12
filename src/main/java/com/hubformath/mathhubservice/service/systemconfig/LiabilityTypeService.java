@@ -30,10 +30,10 @@ public class LiabilityTypeService {
     public LiabilityType updateLiabilityType(String liabilityTypeId, LiabilityType liabilityTypeRequest) {
         return liabilityTypeRepository.findById(liabilityTypeId)
                                       .map(liabilityType -> {
-                                          Optional.ofNullable(liabilityTypeRequest.getTypeName())
-                                                  .ifPresent(liabilityType::setTypeName);
-                                          Optional.ofNullable(liabilityTypeRequest.getTypeDescription())
-                                                  .ifPresent(liabilityType::setTypeDescription);
+                                          Optional.ofNullable(liabilityTypeRequest.getName())
+                                                  .ifPresent(liabilityType::setName);
+                                          Optional.ofNullable(liabilityTypeRequest.getDescription())
+                                                  .ifPresent(liabilityType::setDescription);
                                           return liabilityTypeRepository.save(liabilityType);
                                       })
                                       .orElseThrow();

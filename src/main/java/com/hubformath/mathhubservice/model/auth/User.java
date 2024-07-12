@@ -28,8 +28,8 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "user_id", updatable = false, nullable = false)
-    private String userId;
+    @Column(name = "id", updatable = false, nullable = false)
+    private String id;
 
     @Column(name = "username", nullable = false)
     private String username;
@@ -61,7 +61,7 @@ public class User {
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "user_role_id"))
-    private Set<UserRole> userRoles;
+    private Set<UserRole> roles;
 
     @SuppressWarnings("unused")
     public User() {
@@ -82,12 +82,12 @@ public class User {
         this.password = password;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getId() {
+        return id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -154,19 +154,19 @@ public class User {
         this.password = password;
     }
 
-    public Set<UserRole> getUserRoles() {
-        return userRoles;
+    public Set<UserRole> getRoles() {
+        return roles;
     }
 
-    public void setUserRoles(Set<UserRole> userRoles) {
-        this.userRoles = userRoles;
+    public void setRoles(Set<UserRole> roles) {
+        this.roles = roles;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User user)) return false;
-        return Objects.equals(getUserId(), user.getUserId())
+        return Objects.equals(getId(), user.getId())
                 && Objects.equals(getUsername(), user.getUsername())
                 && Objects.equals(getFirstName(), user.getFirstName())
                 && Objects.equals(getLastName(), user.getLastName())
@@ -175,12 +175,12 @@ public class User {
                 && Objects.equals(getGender(), user.getGender())
                 && Objects.equals(getPhoneNumber(), user.getPhoneNumber())
                 && Objects.equals(getPassword(), user.getPassword())
-                && Objects.equals(getUserRoles(), user.getUserRoles());
+                && Objects.equals(getRoles(), user.getRoles());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserId(),
+        return Objects.hash(getId(),
                             getUsername(),
                             getFirstName(),
                             getLastName(),
@@ -189,13 +189,13 @@ public class User {
                             getGender(),
                             getPhoneNumber(),
                             getPassword(),
-                            getUserRoles());
+                            getRoles());
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "userId='" + userId + '\'' +
+                "id='" + id + '\'' +
                 ", username='" + username + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
@@ -204,7 +204,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", password='" + password + '\'' +
-                ", userRoles=" + userRoles +
+                ", roles=" + roles +
                 '}';
     }
 }

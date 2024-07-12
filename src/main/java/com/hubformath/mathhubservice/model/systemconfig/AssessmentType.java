@@ -18,14 +18,14 @@ import java.util.Objects;
 public class AssessmentType {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "assessment_type_id", updatable = false, nullable = false)
-    private String assessmentTypeId;
+    @Column(name = "id", updatable = false, nullable = false)
+    private String id;
 
     @Column(name = "type_name", nullable = false)
-    private String typeName;
+    private String name;
 
     @Column(name = "type_description", nullable = false)
-    private String typeDescription;
+    private String description;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -41,34 +41,34 @@ public class AssessmentType {
     public AssessmentType() {
     }
 
-    public AssessmentType(String assessmentTypeId, String typeName, String typeDescription) {
-        this.assessmentTypeId = assessmentTypeId;
-        this.typeName = typeName;
-        this.typeDescription = typeDescription;
+    public AssessmentType(String id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
     }
 
-    public String getAssessmentTypeId() {
-        return this.assessmentTypeId;
+    public String getId() {
+        return this.id;
     }
 
-    public void setAssessmentTypeId(String assessmentTypeId) {
-        this.assessmentTypeId = assessmentTypeId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getTypeName() {
-        return this.typeName;
+    public String getName() {
+        return this.name;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getTypeDescription() {
-        return this.typeDescription;
+    public String getDescription() {
+        return this.description;
     }
 
-    public void setTypeDescription(String typeDescription) {
-        this.typeDescription = typeDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -91,22 +91,22 @@ public class AssessmentType {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AssessmentType that)) return false;
-        return Objects.equals(getAssessmentTypeId(), that.getAssessmentTypeId())
-                && Objects.equals(getTypeName(), that.getTypeName())
-                && Objects.equals(getTypeDescription(), that.getTypeDescription());
+        return Objects.equals(getId(), that.getId())
+                && Objects.equals(getName(), that.getName())
+                && Objects.equals(getDescription(), that.getDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAssessmentTypeId(), getTypeName(), getTypeDescription());
+        return Objects.hash(getId(), getName(), getDescription());
     }
 
     @Override
     public String toString() {
         return "AssessmentType{" +
-                "assessmentId=" + assessmentTypeId +
-                ", typeName='" + typeName + '\'' +
-                ", typeDescription='" + typeDescription + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

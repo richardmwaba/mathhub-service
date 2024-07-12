@@ -19,11 +19,10 @@ import java.util.Objects;
 public class PhoneNumber {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "phone_number_id")
-    private String phoneNumberId;
+    private String id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "phone_number_type")
+    @Column(name = "type")
     private PhoneNumberType type;
 
     @Column(name = "country_code")
@@ -49,12 +48,12 @@ public class PhoneNumber {
         this.number = number;
     }
 
-    public String getPhoneNumberId() {
-        return phoneNumberId;
+    public String getId() {
+        return id;
     }
 
-    public void setPhoneNumberId(String phoneNumberId) {
-        this.phoneNumberId = phoneNumberId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public PhoneNumberType getType() {
@@ -101,7 +100,7 @@ public class PhoneNumber {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof PhoneNumber that)) return false;
-        return Objects.equals(getPhoneNumberId(), that.getPhoneNumberId())
+        return Objects.equals(getId(), that.getId())
                 && getType() == that.getType()
                 && Objects.equals(getCountryCode(), that.getCountryCode())
                 && Objects.equals(getNumber(), that.getNumber());
@@ -109,13 +108,13 @@ public class PhoneNumber {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPhoneNumberId(), getType(), getCountryCode(), getNumber());
+        return Objects.hash(getId(), getType(), getCountryCode(), getNumber());
     }
 
     @Override
     public String toString() {
         return "PhoneNumber{" +
-                "phoneNumberId=" + phoneNumberId +
+                "id='" + id + '\'' +
                 ", type=" + type +
                 ", countryCode='" + countryCode + '\'' +
                 ", number='" + number + '\'' +

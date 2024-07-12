@@ -31,9 +31,9 @@ public class GradeService {
     public Grade updateGrade(String gradeId, Grade gradeRequest) {
         return gradeRepository.findById(gradeId)
                               .map(grade -> {
-                                  Optional.ofNullable(gradeRequest.getGradeName()).ifPresent(grade::setGradeName);
-                                  Optional.ofNullable(gradeRequest.getGradeDescription())
-                                          .ifPresent(grade::setGradeDescription);
+                                  Optional.ofNullable(gradeRequest.getName()).ifPresent(grade::setName);
+                                  Optional.ofNullable(gradeRequest.getDescription())
+                                          .ifPresent(grade::setDescription);
                                   return gradeRepository.save(grade);
                               })
                               .orElseThrow();

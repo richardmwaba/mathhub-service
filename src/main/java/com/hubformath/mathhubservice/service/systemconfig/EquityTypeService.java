@@ -31,10 +31,10 @@ public class EquityTypeService {
     public EquityType updateEquityType(String equityTypeId, EquityType equityTypeRequest) {
         return equityTypeRepository.findById(equityTypeId)
                                    .map(equityType -> {
-                                       Optional.ofNullable(equityTypeRequest.getTypeName())
-                                               .ifPresent(equityType::setTypeName);
-                                       Optional.ofNullable(equityTypeRequest.getTypeDescription())
-                                               .ifPresent(equityType::setTypeDescription);
+                                       Optional.ofNullable(equityTypeRequest.getName())
+                                               .ifPresent(equityType::setName);
+                                       Optional.ofNullable(equityTypeRequest.getDescription())
+                                               .ifPresent(equityType::setDescription);
                                        return equityTypeRepository.save(equityType);
                                    })
                                    .orElseThrow();

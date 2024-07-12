@@ -23,8 +23,7 @@ import java.util.Objects;
 public class Parent {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "parent_id")
-    private String parentId;
+    private String id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -60,7 +59,9 @@ public class Parent {
     @JsonIgnore
     private LocalDateTime updatedAt;
 
+    @SuppressWarnings("unused")
     public Parent() {
+        // Required by Hibernate
     }
 
     public Parent(String firstName, String middleName, String lastName, String email) {
@@ -70,12 +71,12 @@ public class Parent {
         this.email = email;
     }
 
-    public String getParentId() {
-        return parentId;
+    public String getId() {
+        return id;
     }
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -146,7 +147,7 @@ public class Parent {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Parent parent)) return false;
-        return Objects.equals(getParentId(), parent.getParentId())
+        return Objects.equals(getId(), parent.getId())
                 && Objects.equals(getFirstName(), parent.getFirstName())
                 && Objects.equals(getMiddleName(), parent.getMiddleName())
                 && Objects.equals(getLastName(), parent.getLastName())
@@ -157,7 +158,7 @@ public class Parent {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getParentId(),
+        return Objects.hash(getId(),
                             getFirstName(),
                             getMiddleName(),
                             getLastName(),
@@ -169,7 +170,7 @@ public class Parent {
     @Override
     public String toString() {
         return "Parent{" +
-                "parentId='" + parentId + '\'' +
+                "id='" + id + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", lastName='" + lastName + '\'' +

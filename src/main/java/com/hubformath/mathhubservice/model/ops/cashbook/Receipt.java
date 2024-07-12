@@ -24,11 +24,10 @@ import java.util.UUID;
 public class Receipt {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "receipt_id")
-    private String receiptId;
+    private String id;
 
     @Column(name = "receipt_number")
-    private String receiptNumber;
+    private String number;
 
     @Column(name = "transaction_number")
     private String transactionNumber;
@@ -51,7 +50,7 @@ public class Receipt {
     private LocalDateTime updatedAt;
 
     public Receipt(String transactionNumber, User issuedBy) {
-        this.receiptNumber = UUID.randomUUID().toString().toUpperCase().replace("-", "");
+        this.number = UUID.randomUUID().toString().toUpperCase().replace("-", "");
         this.transactionNumber = transactionNumber;
         this.receiptDate = LocalDate.now();
         this.issuedBy = issuedBy;
@@ -62,20 +61,20 @@ public class Receipt {
         // Required by JPA
     }
 
-    public String getReceiptId() {
-        return receiptId;
+    public String getId() {
+        return id;
     }
 
-    public void setReceiptId(String receiptId) {
-        this.receiptId = receiptId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getReceiptNumber() {
-        return receiptNumber;
+    public String getNumber() {
+        return number;
     }
 
-    public void setReceiptNumber(String receiptNumber) {
-        this.receiptNumber = receiptNumber;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public String getTransactionNumber() {
@@ -122,8 +121,8 @@ public class Receipt {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Receipt receipt)) return false;
-        return Objects.equals(getReceiptId(), receipt.getReceiptId())
-                && Objects.equals(getReceiptNumber(), receipt.getReceiptNumber())
+        return Objects.equals(getId(), receipt.getId())
+                && Objects.equals(getNumber(), receipt.getNumber())
                 && Objects.equals(getTransactionNumber(), receipt.getTransactionNumber())
                 && Objects.equals(getReceiptDate(), receipt.getReceiptDate())
                 && Objects.equals(getIssuedBy(), receipt.getIssuedBy());
@@ -131,8 +130,8 @@ public class Receipt {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getReceiptId(),
-                            getReceiptNumber(),
+        return Objects.hash(getId(),
+                            getNumber(),
                             getTransactionNumber(),
                             getReceiptDate(),
                             getIssuedBy());
@@ -141,8 +140,8 @@ public class Receipt {
     @Override
     public String toString() {
         return "Receipt{" +
-                "receiptId=" + receiptId +
-                ", receiptNumber='" + receiptNumber + '\'' +
+                "id='" + id + '\'' +
+                ", number='" + number + '\'' +
                 ", transactionNumber='" + transactionNumber + '\'' +
                 ", receiptDate=" + receiptDate +
                 ", issuedBy=" + issuedBy +

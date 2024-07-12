@@ -24,10 +24,6 @@ public class ParentService {
         return parentRepository.findById(parentId).orElseThrow();
     }
 
-    public Parent createParent(final Parent parentRequest) {
-        return parentRepository.save(parentRequest);
-    }
-
     public Parent updateParent(final String parentId, final Parent parentRequest) {
         return parentRepository.findById(parentId)
                                .map(parent -> {

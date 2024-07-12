@@ -99,7 +99,7 @@ public class UserController {
     private EntityModel<User> toModel(User user) {
         return EntityModel.of(user,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class)
-                                                                        .getUserById(user.getUserId()))
+                                                                        .getUserById(user.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class)
                                                                         .getAllUsers()).withRel("users"));

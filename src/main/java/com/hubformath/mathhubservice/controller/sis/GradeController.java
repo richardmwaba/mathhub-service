@@ -89,7 +89,7 @@ public class GradeController {
 
     private EntityModel<Grade> toModel(Grade grade) {
         return EntityModel.of(grade,
-                              linkTo(methodOn(GradeController.class).getGradeById(grade.getGradeId())).withSelfRel(),
+                              linkTo(methodOn(GradeController.class).getGradeById(grade.getId())).withSelfRel(),
                               linkTo(methodOn(GradeController.class).getAllGrades()).withRel("grades"));
     }
 

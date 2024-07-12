@@ -25,12 +25,11 @@ import java.util.Objects;
 public class Liability {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "liability_id")
-    private String liabilityId;
+    private String id;
 
     @OneToOne
     @JoinColumn(name = "liability_type_id")
-    private LiabilityType liabilityType;
+    private LiabilityType type;
 
     @ManyToOne
     @JoinColumn(name = "payment_method_id", unique = false, nullable = false)
@@ -59,28 +58,28 @@ public class Liability {
     public Liability() {
     }
 
-    public Liability(LiabilityType liabilityType, PaymentMethod paymentMethod, Double amount, String narration, User createdBy) {
-        this.liabilityType = liabilityType;
+    public Liability(LiabilityType type, PaymentMethod paymentMethod, Double amount, String narration, User createdBy) {
+        this.type = type;
         this.paymentMethod = paymentMethod;
         this.amount = amount;
         this.narration = narration;
         this.createdBy = createdBy;
     }
 
-    public String getLiabilityId() {
-        return liabilityId;
+    public String getId() {
+        return id;
     }
 
-    public void setLiabilityId(String liabilityId) {
-        this.liabilityId = liabilityId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public LiabilityType getLiabilityType() {
-        return liabilityType;
+    public LiabilityType getType() {
+        return type;
     }
 
-    public void setLiabilityType(LiabilityType liabilityType) {
-        this.liabilityType = liabilityType;
+    public void setType(LiabilityType type) {
+        this.type = type;
     }
 
     public PaymentMethod getPaymentMethod() {
@@ -135,8 +134,8 @@ public class Liability {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Liability liability)) return false;
-        return Objects.equals(getLiabilityId(), liability.getLiabilityId())
-                && Objects.equals(getLiabilityType(), liability.getLiabilityType())
+        return Objects.equals(getId(), liability.getId())
+                && Objects.equals(getType(), liability.getType())
                 && Objects.equals(getPaymentMethod(), liability.getPaymentMethod())
                 && Objects.equals(getAmount(), liability.getAmount())
                 && Objects.equals(getNarration(), liability.getNarration())
@@ -145,8 +144,8 @@ public class Liability {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getLiabilityId(),
-                            getLiabilityType(),
+        return Objects.hash(getId(),
+                            getType(),
                             getPaymentMethod(),
                             getAmount(),
                             getNarration(),
@@ -156,11 +155,11 @@ public class Liability {
     @Override
     public String toString() {
         return "Liability{" +
-                "liabilityId=" + liabilityId +
-                ", liabilityType=" + liabilityType +
+                "id='" + id + '\'' +
+                ", type=" + type +
                 ", paymentMethod=" + paymentMethod +
                 ", amount=" + amount +
-                ", narration=" + narration +
+                ", narration='" + narration + '\'' +
                 ", createdBy=" + createdBy +
                 '}';
     }

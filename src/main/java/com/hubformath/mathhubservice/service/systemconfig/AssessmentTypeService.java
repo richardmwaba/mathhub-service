@@ -31,10 +31,10 @@ public class AssessmentTypeService {
     public AssessmentType updateAssessmentType(String assessmentTypeId, AssessmentType assessmentTypeRequest) {
         return assessmentTypeRepository.findById(assessmentTypeId)
                                        .map(assessmentType -> {
-                                           Optional.ofNullable(assessmentTypeRequest.getTypeName())
-                                                   .ifPresent(assessmentType::setTypeName);
-                                           Optional.ofNullable(assessmentTypeRequest.getTypeDescription())
-                                                   .ifPresent(assessmentType::setTypeDescription);
+                                           Optional.ofNullable(assessmentTypeRequest.getName())
+                                                   .ifPresent(assessmentType::setName);
+                                           Optional.ofNullable(assessmentTypeRequest.getDescription())
+                                                   .ifPresent(assessmentType::setDescription);
                                            return assessmentTypeRepository.save(assessmentType);
                                        })
                                        .orElseThrow();

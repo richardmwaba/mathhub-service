@@ -100,7 +100,7 @@ public class SubjectController {
 
     private EntityModel<Subject> toModel(Subject subject) {
         return EntityModel.of(subject,
-                              linkTo(methodOn(SubjectController.class).getSubjectById(subject.getSubjectId())).withSelfRel(),
+                              linkTo(methodOn(SubjectController.class).getSubjectById(subject.getId())).withSelfRel(),
                               linkTo(methodOn(SubjectController.class).getAllSubjects()).withRel("subjects"));
     }
 

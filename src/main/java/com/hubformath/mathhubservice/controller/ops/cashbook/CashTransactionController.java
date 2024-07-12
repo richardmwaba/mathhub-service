@@ -77,7 +77,7 @@ public class CashTransactionController {
     private EntityModel<CashTransaction> toModel(CashTransaction transaction) {
         return EntityModel.of(transaction,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionController.class)
-                                                                        .getTransactionById(transaction.getCashTransactionId()))
+                                                                        .getTransactionById(transaction.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CashTransactionController.class)
                                                                         .getAllTransactions()).withRel("transactions"));

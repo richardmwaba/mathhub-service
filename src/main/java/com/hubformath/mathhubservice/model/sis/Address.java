@@ -20,21 +20,20 @@ import java.util.Objects;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "address_id")
-    private String addressId;
+    private String id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "address_type")
-    private AddressType addressType;
+    private AddressType type;
 
     @Column(name = "address_line1")
-    private String addressLine1;
+    private String firstAddress;
 
     @Column(name = "address_line2")
-    private String addressLine2;
+    private String secondAddress;
 
     @Column(name = "address_line3")
-    private String addressLine3;
+    private String thirdAddress;
 
     @Column(name = "city")
     private String city;
@@ -58,60 +57,60 @@ public class Address {
     public Address() {
     }
 
-    public Address(AddressType addressType,
-                   String addressLine1,
-                   String addressLine2,
-                   String addressLine3,
+    public Address(AddressType type,
+                   String firstAddress,
+                   String secondAddress,
+                   String thirdAddress,
                    String city,
                    String province,
                    String zipCode) {
-        this.addressType = addressType;
-        this.addressLine1 = addressLine1;
-        this.addressLine2 = addressLine2;
-        this.addressLine3 = addressLine3;
+        this.type = type;
+        this.firstAddress = firstAddress;
+        this.secondAddress = secondAddress;
+        this.thirdAddress = thirdAddress;
         this.city = city;
         this.province = province;
         this.zipCode = zipCode;
     }
 
-    public String getAddressId() {
-        return addressId;
+    public String getId() {
+        return id;
     }
 
-    public void setAddressId(String addressId) {
-        this.addressId = addressId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public AddressType getAddressType() {
-        return addressType;
+    public AddressType getType() {
+        return type;
     }
 
-    public void setAddressType(AddressType addressType) {
-        this.addressType = addressType;
+    public void setType(AddressType type) {
+        this.type = type;
     }
 
-    public String getAddressLine1() {
-        return addressLine1;
+    public String getFirstAddress() {
+        return firstAddress;
     }
 
-    public void setAddressLine1(String addressLine1) {
-        this.addressLine1 = addressLine1;
+    public void setFirstAddress(String firstAddress) {
+        this.firstAddress = firstAddress;
     }
 
-    public String getAddressLine2() {
-        return addressLine2;
+    public String getSecondAddress() {
+        return secondAddress;
     }
 
-    public void setAddressLine2(String addressLine2) {
-        this.addressLine2 = addressLine2;
+    public void setSecondAddress(String secondAddress) {
+        this.secondAddress = secondAddress;
     }
 
-    public String getAddressLine3() {
-        return addressLine3;
+    public String getThirdAddress() {
+        return thirdAddress;
     }
 
-    public void setAddressLine3(String addressLine3) {
-        this.addressLine3 = addressLine3;
+    public void setThirdAddress(String thirdAddress) {
+        this.thirdAddress = thirdAddress;
     }
 
     public String getCity() {
@@ -158,11 +157,11 @@ public class Address {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Address address)) return false;
-        return Objects.equals(getAddressId(), address.getAddressId())
-                && getAddressType() == address.getAddressType()
-                && Objects.equals(getAddressLine1(), address.getAddressLine1())
-                && Objects.equals(getAddressLine2(), address.getAddressLine2())
-                && Objects.equals(getAddressLine3(), address.getAddressLine3())
+        return Objects.equals(getId(), address.getId())
+                && getType() == address.getType()
+                && Objects.equals(getFirstAddress(), address.getFirstAddress())
+                && Objects.equals(getSecondAddress(), address.getSecondAddress())
+                && Objects.equals(getThirdAddress(), address.getThirdAddress())
                 && Objects.equals(getCity(), address.getCity())
                 && Objects.equals(getProvince(), address.getProvince())
                 && Objects.equals(getZipCode(), address.getZipCode());
@@ -170,11 +169,11 @@ public class Address {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAddressId(),
-                            getAddressType(),
-                            getAddressLine1(),
-                            getAddressLine2(),
-                            getAddressLine3(),
+        return Objects.hash(getId(),
+                            getType(),
+                            getFirstAddress(),
+                            getSecondAddress(),
+                            getThirdAddress(),
                             getCity(),
                             getProvince(),
                             getZipCode());
@@ -183,11 +182,11 @@ public class Address {
     @Override
     public String toString() {
         return "Address{" +
-                "addressId=" + addressId +
-                ", addressType=" + addressType +
-                ", addressLine1='" + addressLine1 + '\'' +
-                ", addressLine2='" + addressLine2 + '\'' +
-                ", addressLine3='" + addressLine3 + '\'' +
+                "id='" + id + '\'' +
+                ", type=" + type +
+                ", firstAddress='" + firstAddress + '\'' +
+                ", secondAddress='" + secondAddress + '\'' +
+                ", thirdAddress='" + thirdAddress + '\'' +
                 ", city='" + city + '\'' +
                 ", province='" + province + '\'' +
                 ", zipCode='" + zipCode + '\'' +

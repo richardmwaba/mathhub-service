@@ -24,8 +24,7 @@ import java.util.Objects;
 public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "expense_id")
-    private String expenseId;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "payment_method_id", unique = false, nullable = false)
@@ -36,7 +35,7 @@ public class Expense {
 
     @ManyToOne
     @JoinColumn(name = "expense_type_id", unique = false, nullable = false)
-    private ExpenseType expenseType;
+    private ExpenseType type;
 
     @Column(name = "amount")
     private Double amount;
@@ -60,28 +59,28 @@ public class Expense {
         // Required by JPA
     }
 
-    public Expense(PaymentMethod paymentMethod, String narration, ExpenseType expenseType, Double amount, User createdBy) {
+    public Expense(PaymentMethod paymentMethod, String narration, ExpenseType type, Double amount, User createdBy) {
         this.paymentMethod = paymentMethod;
         this.narration = narration;
-        this.expenseType = expenseType;
+        this.type = type;
         this.amount = amount;
         this.createdBy = createdBy;
     }
 
-    public String getExpenseId() {
-        return expenseId;
+    public String getId() {
+        return id;
     }
 
-    public void setExpenseId(String expenseId) {
-        this.expenseId = expenseId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public ExpenseType getExpenseType() {
-        return expenseType;
+    public ExpenseType getType() {
+        return type;
     }
 
-    public void setExpenseType(ExpenseType expenseType) {
-        this.expenseType = expenseType;
+    public void setType(ExpenseType type) {
+        this.type = type;
     }
 
     public PaymentMethod getPaymentMethod() {
@@ -136,20 +135,20 @@ public class Expense {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Expense expense)) return false;
-        return Objects.equals(getExpenseId(), expense.getExpenseId())
+        return Objects.equals(getId(), expense.getId())
                 && Objects.equals(getPaymentMethod(), expense.getPaymentMethod())
                 && Objects.equals(getNarration(), expense.getNarration())
-                && Objects.equals(getExpenseType(), expense.getExpenseType())
+                && Objects.equals(getType(), expense.getType())
                 && Objects.equals(getAmount(), expense.getAmount())
                 && Objects.equals(getCreatedBy(), expense.getCreatedBy());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getExpenseId(),
+        return Objects.hash(getId(),
                             getPaymentMethod(),
                             getNarration(),
-                            getExpenseType(),
+                            getType(),
                             getAmount(),
                             getCreatedBy());
     }
@@ -157,10 +156,10 @@ public class Expense {
     @Override
     public String toString() {
         return "Expense{" +
-                "expenseId=" + expenseId +
+                "id='" + id + '\'' +
                 ", paymentMethod=" + paymentMethod +
                 ", narration='" + narration + '\'' +
-                ", expenseType=" + expenseType +
+                ", type=" + type +
                 ", amount=" + amount +
                 ", createdBy=" + createdBy +
                 '}';

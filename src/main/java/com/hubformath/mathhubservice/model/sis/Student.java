@@ -33,8 +33,8 @@ public class Student {
     @Id
     @ReadOnlyProperty
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "student_id")
-    private String studentId;
+    @Column(name = "id")
+    private String id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -60,10 +60,10 @@ public class Student {
     private Grade grade;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "students_lessons",
+    @JoinTable(name = "students_classes",
             joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "lesson_id"))
-    private List<Lesson> lessons;
+            inverseJoinColumns = @JoinColumn(name = "class_id"))
+    private List<Class> classes;
 
     private String email;
 
@@ -120,12 +120,12 @@ public class Student {
         this.userId = userId;
     }
 
-    public String getStudentId() {
-        return studentId;
+    public String getId() {
+        return id;
     }
 
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -168,12 +168,12 @@ public class Student {
         this.grade = grade;
     }
 
-    public List<Lesson> getLessons() {
-        return lessons;
+    public List<Class> getLessons() {
+        return classes;
     }
 
-    public void setLessons(List<Lesson> lessons) {
-        this.lessons = lessons;
+    public void setLessons(List<Class> aClasses) {
+        this.classes = aClasses;
     }
 
     public List<Parent> getParents() {
@@ -260,7 +260,7 @@ public class Student {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Student student)) return false;
-        return getStudentId().equals(student.getStudentId())
+        return getId().equals(student.getId())
                 && getFirstName().equals(student.getFirstName())
                 && getMiddleName().equals(student.getMiddleName())
                 && getLastName().equals(student.getLastName())
@@ -279,7 +279,7 @@ public class Student {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getStudentId(),
+        return Objects.hash(getId(),
                             getFirstName(),
                             getMiddleName(),
                             getLastName(),
@@ -299,16 +299,16 @@ public class Student {
     @Override
     public String toString() {
         return "Student{" +
-                "studentId=" + studentId +
-                ", firstName=" + firstName + '\'' +
-                ", middleName=" + middleName + '\'' +
-                ", lastName=" + lastName + '\'' +
+                "id='" + id + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", gender=" + gender +
                 ", parents=" + parents +
                 ", grade=" + grade +
-                ", lessons=" + lessons +
-                ", email=" + email + '\'' +
-                ", userId=" + userId + '\'' +
+                ", classes=" + classes +
+                ", email='" + email + '\'' +
+                ", userId='" + userId + '\'' +
                 ", addresses=" + addresses +
                 ", examBoard=" + examBoard +
                 ", phoneNumbers=" + phoneNumbers +

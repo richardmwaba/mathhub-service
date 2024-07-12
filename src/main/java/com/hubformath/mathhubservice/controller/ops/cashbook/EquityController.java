@@ -86,7 +86,7 @@ public class EquityController {
     private EntityModel<Equity> toModel(Equity equity) {
         return EntityModel.of(equity,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityController.class)
-                                                                        .getEquityById(equity.getEquityId()))
+                                                                        .getEquityById(equity.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EquityController.class)
                                                                         .getAllEquity()).withRel("equity"));

@@ -72,7 +72,7 @@ public class IncomeService {
                                            });
                                    Optional.ofNullable(incomeRequest.incomeTypeId()).ifPresent(incomeTypeId -> {
                                        IncomeType incomeType = incomeTypeService.getIncomeTypeById(incomeTypeId);
-                                       income.setIncomeType(incomeType);
+                                       income.setType(incomeType);
                                    });
                                    Optional.ofNullable(incomeRequest.amount()).ifPresent(income::setAmount);
                                    return incomeRepository.save(income);

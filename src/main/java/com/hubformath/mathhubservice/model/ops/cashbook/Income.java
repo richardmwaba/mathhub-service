@@ -24,7 +24,7 @@ import java.util.Objects;
 public class Income {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String incomeId;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "payment_method_id", unique = false, nullable = false)
@@ -35,7 +35,7 @@ public class Income {
 
     @ManyToOne
     @JoinColumn(name = "income_type_id", unique = false, nullable = false)
-    private IncomeType incomeType;
+    private IncomeType type;
 
     @Column(name = "amount")
     private Double amount;
@@ -59,28 +59,28 @@ public class Income {
         // Required by JPA
     }
 
-    public Income(PaymentMethod paymentMethod, String narration, IncomeType incomeType, Double amount, User createdBy) {
+    public Income(PaymentMethod paymentMethod, String narration, IncomeType type, Double amount, User createdBy) {
         this.paymentMethod = paymentMethod;
         this.narration = narration;
-        this.incomeType = incomeType;
+        this.type = type;
         this.amount = amount;
         this.createdBy = createdBy;
     }
 
-    public String getIncomeId() {
-        return incomeId;
+    public String getId() {
+        return id;
     }
 
-    public void setIncomeId(String incomeId) {
-        this.incomeId = incomeId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public IncomeType getIncomeType() {
-        return incomeType;
+    public IncomeType getType() {
+        return type;
     }
 
-    public void setIncomeType(IncomeType incomeType) {
-        this.incomeType = incomeType;
+    public void setType(IncomeType type) {
+        this.type = type;
     }
 
     public PaymentMethod getPaymentMethod() {
@@ -135,20 +135,20 @@ public class Income {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Income income)) return false;
-        return Objects.equals(getIncomeId(), income.getIncomeId())
+        return Objects.equals(getId(), income.getId())
                 && Objects.equals(getPaymentMethod(), income.getPaymentMethod())
                 && Objects.equals(getNarration(), income.getNarration())
-                && Objects.equals(getIncomeType(), income.getIncomeType())
+                && Objects.equals(getType(), income.getType())
                 && Objects.equals(getAmount(), income.getAmount())
                 && Objects.equals(getCreatedBy(), income.getCreatedBy());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getIncomeId(),
+        return Objects.hash(getId(),
                             getPaymentMethod(),
                             getNarration(),
-                            getIncomeType(),
+                            getType(),
                             getAmount(),
                             getCreatedBy());
     }
@@ -156,10 +156,10 @@ public class Income {
     @Override
     public String toString() {
         return "Income{" +
-                "incomeId=" + incomeId +
+                "id='" + id + '\'' +
                 ", paymentMethod=" + paymentMethod +
                 ", narration='" + narration + '\'' +
-                ", incomeType=" + incomeType +
+                ", type=" + type +
                 ", amount=" + amount +
                 ", createdBy=" + createdBy +
                 '}';

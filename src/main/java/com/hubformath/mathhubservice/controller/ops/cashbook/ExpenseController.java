@@ -85,7 +85,7 @@ public class ExpenseController {
     private EntityModel<Expense> toModel(Expense expense) {
         return EntityModel.of(expense,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class)
-                                                                        .getExpenseById(expense.getExpenseId()))
+                                                                        .getExpenseById(expense.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ExpenseController.class)
                                                                         .getAllExpenses()).withRel("expenses"));

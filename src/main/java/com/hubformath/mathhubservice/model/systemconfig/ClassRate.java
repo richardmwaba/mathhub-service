@@ -17,15 +17,15 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "lesson_rates")
-public class LessonRate {
+@Table(name = "class_rates")
+public class ClassRate {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "lesson_rate_id", updatable = false, nullable = false)
-    private String lessonRateId;
+    @Column(name = "id", updatable = false, nullable = false)
+    private String id;
 
-    @Column(name = "amount_per_lesson", nullable = false)
-    private Double amountPerLesson;
+    @Column(name = "amount", nullable = false)
+    private Double amount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "subject_complexity", nullable = false)
@@ -48,35 +48,35 @@ public class LessonRate {
     private LocalDateTime updatedAt;
 
     @SuppressWarnings("unused")
-    public LessonRate() {
+    public ClassRate() {
         // Used by hibernate instantiation
     }
 
-    public LessonRate(
-            final Double amountPerLesson,
+    public ClassRate(
+            final Double amount,
             final SubjectComplexity subjectComplexity,
             final Instant effectiveDate,
             final Instant expiryDate) {
-        this.amountPerLesson = amountPerLesson;
+        this.amount = amount;
         this.subjectComplexity = subjectComplexity;
         this.effectiveDate = effectiveDate;
         this.expiryDate = expiryDate;
     }
 
-    public String getLessonRateId() {
-        return lessonRateId;
+    public String getId() {
+        return id;
     }
 
-    public void setLessonRateId(String lessonRateId) {
-        this.lessonRateId = lessonRateId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public Double getAmountPerLesson() {
-        return amountPerLesson;
+    public Double getAmount() {
+        return amount;
     }
 
-    public void setAmountPerLesson(Double amountPerLesson) {
-        this.amountPerLesson = amountPerLesson;
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 
     public SubjectComplexity getSubjectComplexity() {
@@ -122,9 +122,9 @@ public class LessonRate {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof LessonRate that)) return false;
-        return Objects.equals(getLessonRateId(), that.getLessonRateId())
-                && Objects.equals(getAmountPerLesson(), that.getAmountPerLesson())
+        if (!(o instanceof ClassRate that)) return false;
+        return Objects.equals(getId(), that.getId())
+                && Objects.equals(getAmount(), that.getAmount())
                 && getSubjectComplexity() == that.getSubjectComplexity()
                 && Objects.equals(getEffectiveDate(), that.getEffectiveDate())
                 && Objects.equals(getExpiryDate(), that.getExpiryDate());
@@ -132,8 +132,8 @@ public class LessonRate {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getLessonRateId(),
-                            getAmountPerLesson(),
+        return Objects.hash(getId(),
+                            getAmount(),
                             getSubjectComplexity(),
                             getEffectiveDate(),
                             getExpiryDate());
@@ -141,12 +141,12 @@ public class LessonRate {
 
     @Override
     public String toString() {
-        return "LessonRate{" +
-                "lessonRateId=" + lessonRateId +
-                ", amountPerLesson=" + amountPerLesson +
+        return "ClassRate{" +
+                "id='" + id + '\'' +
+                ", amount=" + amount +
                 ", subjectComplexity=" + subjectComplexity +
                 ", effectiveDate=" + effectiveDate +
-                ", expiredDate=" + expiryDate +
+                ", expiryDate=" + expiryDate +
                 '}';
     }
 }

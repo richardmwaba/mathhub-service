@@ -18,14 +18,14 @@ import java.util.Objects;
 public class AssetType {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "asset_type_id", updatable = false, nullable = false)
-    private String assetTypeId;
+    @Column(name = "id", updatable = false, nullable = false)
+    private String id;
 
     @Column(name = "type_name", nullable = false)
-    private String typeName;
+    private String name;
 
     @Column(name = "type_description", nullable = false)
-    private String typeDescription;
+    private String description;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -41,34 +41,34 @@ public class AssetType {
     public AssetType() {
     }
 
-    public AssetType(String assetTypeId, String typeName, String typeDescription) {
-        this.assetTypeId = assetTypeId;
-        this.typeName = typeName;
-        this.typeDescription = typeDescription;
+    public AssetType(String id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
     }
 
-    public String getAssetTypeId() {
-        return this.assetTypeId;
+    public String getId() {
+        return this.id;
     }
 
-    public void setAssetTypeId(String assetTypeId) {
-        this.assetTypeId = assetTypeId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getTypeName() {
-        return this.typeName;
+    public String getName() {
+        return this.name;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getTypeDescription() {
-        return this.typeDescription;
+    public String getDescription() {
+        return this.description;
     }
 
-    public void setTypeDescription(String typeDescription) {
-        this.typeDescription = typeDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -91,22 +91,22 @@ public class AssetType {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AssetType assetType)) return false;
-        return Objects.equals(getAssetTypeId(), assetType.getAssetTypeId())
-                && Objects.equals(getTypeName(), assetType.getTypeName())
-                && Objects.equals(getTypeDescription(), assetType.getTypeDescription());
+        return Objects.equals(getId(), assetType.getId())
+                && Objects.equals(getName(), assetType.getName())
+                && Objects.equals(getDescription(), assetType.getDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAssetTypeId(), getTypeName(), getTypeDescription());
+        return Objects.hash(getId(), getName(), getDescription());
     }
 
     @Override
     public String toString() {
         return "AssetType{" +
-                "assetTypeId=" + assetTypeId +
-                ", typeName='" + typeName + '\'' +
-                ", typeDescription='" + typeDescription + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

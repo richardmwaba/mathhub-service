@@ -76,9 +76,9 @@ public class TuitionPaymentService {
         // Update student's lessons payment status
         student.getLessons()
                .parallelStream()
-               .filter(lesson -> lesson.getLessonPaymentStatus().equals(PaymentStatus.UNPAID) && lessonsIds.contains(
-                       lesson.getLessonId()))
-               .forEach(lesson -> lesson.setLessonPaymentStatus(PaymentStatus.PAID));
+               .filter(lesson -> lesson.getPaymentStatus().equals(PaymentStatus.UNPAID) && lessonsIds.contains(
+                       lesson.getId()))
+               .forEach(lesson -> lesson.setPaymentStatus(PaymentStatus.PAID));
 
         final CashTransaction newCashTransaction = new CashTransaction(transactionNumber,
                                                                        paymentMethod,
@@ -93,7 +93,7 @@ public class TuitionPaymentService {
 
         // Update invoice
         InvoiceRequest invoiceRequest = new InvoiceRequest(null, null, narration, InvoiceStatus.PAID);
-        invoiceService.updateInvoice(invoice.getInvoiceId(), invoiceRequest);
+        invoiceService.updateInvoice(invoice.getId(), invoiceRequest);
 
         final TuitionPayment newTuitionPayment = new TuitionPayment(newCashTransaction,
                                                                     student,

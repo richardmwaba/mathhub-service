@@ -85,7 +85,7 @@ public class LiabilityController {
     private EntityModel<Liability> toModel(Liability liability) {
         return EntityModel.of(liability,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LiabilityController.class)
-                                                                        .getLiabilityById(liability.getLiabilityId()))
+                                                                        .getLiabilityById(liability.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LiabilityController.class)
                                                                         .getAllLiabilities()).withRel("liabilities"));

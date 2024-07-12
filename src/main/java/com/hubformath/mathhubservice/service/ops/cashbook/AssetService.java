@@ -65,7 +65,7 @@ public class AssetService {
                                   Optional.ofNullable(assetRequest.narration()).ifPresent(updatedAsset::setNarration);
                                   Optional.ofNullable(assetRequest.assetTypeId()).ifPresent(assetTypeId -> {
                                       AssetType assetType = assetTypeService.getAssetTypeById(assetTypeId);
-                                      updatedAsset.setAssetType(assetType);
+                                      updatedAsset.setType(assetType);
                                   });
                                   Optional.ofNullable(assetRequest.amount()).ifPresent(updatedAsset::setAmount);
                                   return assetRepository.save(updatedAsset);

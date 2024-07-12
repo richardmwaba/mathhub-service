@@ -27,17 +27,17 @@ import java.util.UUID;
 public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String invoiceId;
+    private String id;
 
     @Column(name = "invoice_number")
-    private String invoiceNumber;
+    private String number;
 
     @ManyToOne
     @JoinColumn(name = "student_id", unique = false, nullable = false)
     private Student student;
 
     @Column(name = "invoice_date")
-    private LocalDate invoiceDate;
+    private LocalDate dateGenerated;
 
     @Column(name = "amount")
     private Double amount;
@@ -47,7 +47,7 @@ public class Invoice {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "invoice_status")
-    private InvoiceStatus invoiceStatus;
+    private InvoiceStatus status;
 
     @Column(name = "due_date")
     private LocalDate dueDate;
@@ -69,40 +69,40 @@ public class Invoice {
     public Invoice() {
     }
 
-    public Invoice(Student student, final Double amount, final String narration, InvoiceStatus invoiceStatus, User issuedBy) {
+    public Invoice(Student student, final Double amount, final String narration, InvoiceStatus status, User issuedBy) {
         this.student = student;
-        this.invoiceStatus = invoiceStatus;
+        this.status = status;
         this.issuedBy = issuedBy;
-        this.invoiceNumber = UUID.randomUUID().toString().toUpperCase().replace("-", "");
-        this.invoiceDate = LocalDate.now();
+        this.number = UUID.randomUUID().toString().toUpperCase().replace("-", "");
+        this.dateGenerated = LocalDate.now();
         this.amount = amount;
         this.narration = narration;
-        this.invoiceStatus = InvoiceStatus.PENDING;
+        this.status = InvoiceStatus.PENDING;
         this.dueDate = LocalDate.now().plusDays(14);
     }
 
-    public String getInvoiceId() {
-        return invoiceId;
+    public String getId() {
+        return id;
     }
 
-    public void setInvoiceId(String invoiceId) {
-        this.invoiceId = invoiceId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getInvoiceNumber() {
-        return invoiceNumber;
+    public String getNumber() {
+        return number;
     }
 
-    public void setInvoiceNumber(String invoiceNumber) {
-        this.invoiceNumber = invoiceNumber;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
-    public LocalDate getInvoiceDate() {
-        return invoiceDate;
+    public LocalDate getDateGenerated() {
+        return dateGenerated;
     }
 
-    public void setInvoiceDate(LocalDate invoiceDate) {
-        this.invoiceDate = invoiceDate;
+    public void setDateGenerated(LocalDate dateGenerated) {
+        this.dateGenerated = dateGenerated;
     }
 
     public User getIssuedBy() {
@@ -153,12 +153,12 @@ public class Invoice {
         this.narration = narration;
     }
 
-    public InvoiceStatus getInvoiceStatus() {
-        return invoiceStatus;
+    public InvoiceStatus getStatus() {
+        return status;
     }
 
-    public void setInvoiceStatus(InvoiceStatus invoiceStatus) {
-        this.invoiceStatus = invoiceStatus;
+    public void setStatus(InvoiceStatus status) {
+        this.status = status;
     }
 
     public LocalDate getDueDate() {
@@ -173,24 +173,24 @@ public class Invoice {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Invoice invoice)) return false;
-        return Objects.equals(getInvoiceId(), invoice.getInvoiceId())
-                && Objects.equals(getInvoiceNumber(), invoice.getInvoiceNumber())
-                && Objects.equals(getInvoiceDate(), invoice.getInvoiceDate())
+        return Objects.equals(getId(), invoice.getId())
+                && Objects.equals(getNumber(), invoice.getNumber())
+                && Objects.equals(getDateGenerated(), invoice.getDateGenerated())
                 && Objects.equals(getAmount(), invoice.getAmount())
                 && Objects.equals(getNarration(), invoice.getNarration())
-                && getInvoiceStatus() == invoice.getInvoiceStatus()
+                && getStatus() == invoice.getStatus()
                 && Objects.equals(getDueDate(), invoice.getDueDate())
                 && Objects.equals(getIssuedBy(), invoice.getIssuedBy());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getInvoiceId(),
-                            getInvoiceNumber(),
-                            getInvoiceDate(),
+        return Objects.hash(getId(),
+                            getNumber(),
+                            getDateGenerated(),
                             getAmount(),
                             getNarration(),
-                            getInvoiceStatus(),
+                            getStatus(),
                             getDueDate(),
                             getIssuedBy());
     }
@@ -198,13 +198,13 @@ public class Invoice {
     @Override
     public String toString() {
         return "Invoice{" +
-                "invoiceId=" + invoiceId +
-                ", invoiceNumber='" + invoiceNumber + '\'' +
+                "id='" + id + '\'' +
+                ", number='" + number + '\'' +
                 ", student=" + student +
-                ", invoiceDate=" + invoiceDate +
+                ", dateGenerated=" + dateGenerated +
                 ", amount=" + amount +
                 ", narration='" + narration + '\'' +
-                ", invoiceStatus=" + invoiceStatus +
+                ", status=" + status +
                 ", dueDate=" + dueDate +
                 ", issuedBy=" + issuedBy +
                 '}';

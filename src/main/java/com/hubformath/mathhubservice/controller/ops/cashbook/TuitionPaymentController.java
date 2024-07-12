@@ -79,7 +79,7 @@ public class TuitionPaymentController {
     private EntityModel<TuitionPayment> toModel(TuitionPayment tuitionPayment) {
         return EntityModel.of(tuitionPayment,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TuitionPaymentController.class)
-                                                                        .getTuitionPaymentById(tuitionPayment.getTuitionPaymentId()))
+                                                                        .getTuitionPaymentById(tuitionPayment.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TuitionPaymentController.class)
                                                                         .getAllTuitionPayments())

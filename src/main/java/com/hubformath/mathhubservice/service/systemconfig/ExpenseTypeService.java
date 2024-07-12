@@ -31,10 +31,10 @@ public class ExpenseTypeService {
     public ExpenseType updateExpenseType(String expenseTypeId, ExpenseType expenseTypeRequest) {
         return expenseTypeRepository.findById(expenseTypeId)
                                     .map(expenseType -> {
-                                        Optional.ofNullable(expenseTypeRequest.getTypeName())
-                                                .ifPresent(expenseType::setTypeName);
-                                        Optional.ofNullable(expenseTypeRequest.getTypeDescription())
-                                                .ifPresent(expenseType::setTypeDescription);
+                                        Optional.ofNullable(expenseTypeRequest.getName())
+                                                .ifPresent(expenseType::setName);
+                                        Optional.ofNullable(expenseTypeRequest.getDescription())
+                                                .ifPresent(expenseType::setDescription);
                                         return expenseTypeRepository.save(expenseType);
                                     })
                                     .orElseThrow();

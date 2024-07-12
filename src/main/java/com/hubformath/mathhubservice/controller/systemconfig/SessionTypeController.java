@@ -83,7 +83,7 @@ public class SessionTypeController {
     private EntityModel<SessionType> toModel(SessionType sessionType) {
         return EntityModel.of(sessionType,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SessionTypeController.class)
-                                                                        .getSessionTypeById(sessionType.getSessionTypeId()))
+                                                                        .getSessionTypeById(sessionType.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SessionTypeController.class)
                                                                         .getAllSessionTypes()).withRel("sessionTypes"));

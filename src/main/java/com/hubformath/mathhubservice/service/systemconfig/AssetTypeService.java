@@ -31,10 +31,10 @@ public class AssetTypeService {
     public AssetType updateAssetType(String assetTypeId, AssetType assetTypeRequest) {
         return assetTypeRepository.findById(assetTypeId)
                                   .map(assetType -> {
-                                      Optional.ofNullable(assetTypeRequest.getTypeName())
-                                              .ifPresent(assetType::setTypeName);
-                                      Optional.ofNullable(assetTypeRequest.getTypeDescription())
-                                              .ifPresent(assetType::setTypeDescription);
+                                      Optional.ofNullable(assetTypeRequest.getName())
+                                              .ifPresent(assetType::setName);
+                                      Optional.ofNullable(assetTypeRequest.getDescription())
+                                              .ifPresent(assetType::setDescription);
                                       return assetTypeRepository.save(assetType);
                                   })
                                   .orElseThrow();

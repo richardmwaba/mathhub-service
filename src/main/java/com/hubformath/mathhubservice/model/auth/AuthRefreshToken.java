@@ -16,8 +16,8 @@ public class AuthRefreshToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "refresh_token_id", updatable = false, nullable = false)
-    private String refreshTokenId;
+    @Column(name = "id", updatable = false, nullable = false)
+    private String id;
 
     @OneToOne
     @JoinColumn(name = "user_id", unique = true, nullable = false)
@@ -33,12 +33,12 @@ public class AuthRefreshToken {
         // Default constructor for Hibernate
     }
 
-    public String getRefreshTokenId() {
-        return refreshTokenId;
+    public String getId() {
+        return id;
     }
 
-    public void setRefreshTokenId(String refreshTokenId) {
-        this.refreshTokenId = refreshTokenId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public User getUser() {
@@ -69,7 +69,7 @@ public class AuthRefreshToken {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AuthRefreshToken that)) return false;
-        return Objects.equals(getRefreshTokenId(), that.getRefreshTokenId())
+        return Objects.equals(getId(), that.getId())
                 && Objects.equals(getUser(), that.getUser())
                 && Objects.equals(getToken(), that.getToken())
                 && Objects.equals(getExpiryDateTime(), that.getExpiryDateTime());
@@ -77,13 +77,13 @@ public class AuthRefreshToken {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getRefreshTokenId(), getUser(), getToken(), getExpiryDateTime());
+        return Objects.hash(getId(), getUser(), getToken(), getExpiryDateTime());
     }
 
     @Override
     public String toString() {
         return "AuthRefreshToken{" +
-                "refreshTokenId=" + refreshTokenId +
+                "id='" + id + '\'' +
                 ", user=" + user +
                 ", token='" + token + '\'' +
                 ", expiryDateTime=" + expiryDateTime +

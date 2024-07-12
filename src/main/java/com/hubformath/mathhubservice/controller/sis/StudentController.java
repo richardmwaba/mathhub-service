@@ -1,7 +1,7 @@
 package com.hubformath.mathhubservice.controller.sis;
 
 import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
-import com.hubformath.mathhubservice.model.sis.LessonRequest;
+import com.hubformath.mathhubservice.model.sis.ClassRequest;
 import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.sis.StudentActionBase;
 import com.hubformath.mathhubservice.model.sis.StudentRequest;
@@ -78,12 +78,12 @@ public class StudentController {
         }
     }
 
-    @PostMapping("/students/{studentId}/lessons")
+    @PostMapping("/students/{studentId}/classes")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<EntityModel<Student>> addStudentLesson(@PathVariable String studentId,
-                                                                 @RequestBody LessonRequest lessonRequest) {
+    public ResponseEntity<EntityModel<Student>> addStudentClass(@PathVariable String studentId,
+                                                                @RequestBody ClassRequest classRequest) {
         try {
-            EntityModel<Student> student = toModel(studentService.addLessonToStudent(studentId, lessonRequest));
+            EntityModel<Student> student = toModel(studentService.addClassToStudent(studentId, classRequest));
             return ResponseEntity.ok(student);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -100,7 +100,7 @@ public class StudentController {
     private EntityModel<Student> toModel(Student student) {
         return EntityModel.of(student,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(StudentController.class)
-                                                                        .getStudentById(student.getStudentId()))
+                                                                        .getStudentById(student.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(StudentController.class)
                                                                         .getAllStudents()).withRel("students"));

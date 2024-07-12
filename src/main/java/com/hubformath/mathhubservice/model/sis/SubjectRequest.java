@@ -4,5 +4,5 @@ import com.hubformath.mathhubservice.model.systemconfig.SubjectComplexity;
 
 import java.util.Set;
 
-public record SubjectRequest(String subjectName, Set<String> subjectGradeIds, SubjectComplexity subjectComplexity) {
+public record SubjectRequest(String name, Set<String> gradeIds, SubjectComplexity subjectComplexity) {
 }
