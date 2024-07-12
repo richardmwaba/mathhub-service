@@ -168,11 +168,11 @@ public class Student {
         this.grade = grade;
     }
 
-    public List<Class> getLessons() {
+    public List<Class> getClasses() {
         return classes;
     }
 
-    public void setLessons(List<Class> aClasses) {
+    public void setClasses(List<Class> aClasses) {
         this.classes = aClasses;
     }
 
@@ -267,7 +267,7 @@ public class Student {
                 && getGender().equals(student.getGender())
                 && getParents().equals(student.getParents())
                 && getGrade().equals(student.getGrade())
-                && getLessons().equals(student.getLessons())
+                && getClasses().equals(student.getClasses())
                 && getEmail().equals(student.getEmail())
                 && getUserId().equals(student.getUserId())
                 && getAddresses().equals(student.getAddresses())
@@ -286,7 +286,7 @@ public class Student {
                             getGender(),
                             getParents(),
                             getGrade(),
-                            getLessons(),
+                            getClasses(),
                             getEmail(),
                             getUserId(),
                             getAddresses(),

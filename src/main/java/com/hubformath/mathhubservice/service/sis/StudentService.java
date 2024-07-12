@@ -90,7 +90,7 @@ public class StudentService {
         Subject subject = subjectService.getSubjectById(classRequest.subjectId());
         ClassRate classRate = classRateService.getClassRateBySubjectComplexity(subject.getComplexity());
         Class newClass = getNewClass(classRequest, subject, classRate);
-        student.getLessons().add(newClass);
+        student.getClasses().add(newClass);
         student.setStudentFinancialSummary(computeStudentFinancialSummary(student));
 
         return studentRepository.save(student);
@@ -109,7 +109,7 @@ public class StudentService {
     }
 
     public StudentFinancialSummary computeStudentFinancialSummary(final Student student) {
-        Double amountOwing = student.getLessons()
+        Double amountOwing = student.getClasses()
                                     .stream()
                                     .filter(aClass -> aClass.getPaymentStatus() == PaymentStatus.UNPAID)
                                     .map(aClass -> aClass.getCost() * aClass.getOccurrence())
@@ -120,7 +120,7 @@ public class StudentService {
     }
 
     private boolean isStudentOwing(Student student, Double amountOwing) {
-        boolean hasUnpaidLessons = student.getLessons()
+        boolean hasUnpaidLessons = student.getClasses()
                                           .stream()
                                           .anyMatch(aClass -> aClass.getPaymentStatus() == PaymentStatus.UNPAID);
         return hasUnpaidLessons && amountOwing > 0;

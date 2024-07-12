@@ -111,6 +111,8 @@ public class UsersService {
                                          .ifPresent(user::setMiddleName);
                                  Optional.ofNullable(userRequest.email())
                                          .ifPresent(user::setEmail);
+                                 Optional.ofNullable(userRequest.gender())
+                                         .ifPresent(user::setGender);
                                  Optional.ofNullable(userRequest.phoneNumber())
                                          .ifPresent(user::setPhoneNumber);
                                  Optional.ofNullable(userRequest.password())
