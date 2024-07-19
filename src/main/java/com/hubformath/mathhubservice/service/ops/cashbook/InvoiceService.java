@@ -9,6 +9,7 @@ import com.hubformath.mathhubservice.service.sis.StudentService;
 import com.hubformath.mathhubservice.service.systemconfig.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -32,8 +33,24 @@ public class InvoiceService {
         this.usersService = usersService;
     }
 
-    public List<Invoice> getAllInvoices() {
-        return invoiceRepository.findAll();
+    public List<Invoice> getAllInvoices(List<String> studentId, List<InvoiceStatus> invoiceStatus) {
+        return invoiceRepository.findAll()
+                                .parallelStream()
+                                .filter(invoice -> shouldGetDefaultInvoices(invoiceStatus,
+                                                                            invoice) || invoiceStatus.contains(invoice.getStatus()))
+                                .filter(invoice -> {
+                                    String invoiceStudentId = invoice.getStudent().getId();
+                                    return CollectionUtils.isEmpty(studentId) || studentId.contains(invoiceStudentId);
+                                }).toList();
+    }
+
+    private boolean shouldGetDefaultInvoices(List<InvoiceStatus> invoiceStatus, Invoice invoice) {
+        return CollectionUtils.isEmpty(invoiceStatus ) && isPendingOrOverdue(invoice);
+    }
+
+    private static boolean isPendingOrOverdue(Invoice invoice) {
+        return invoice.getStatus().equals(InvoiceStatus.PENDING) || invoice.getStatus()
+                                                                           .equals(InvoiceStatus.OVERDUE);
     }
 
     public Invoice getInvoiceById(String invoiceId) {

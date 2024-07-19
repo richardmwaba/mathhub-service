@@ -3,6 +3,7 @@ package com.hubformath.mathhubservice.controller.ops.cashbook;
 import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
 import com.hubformath.mathhubservice.model.ops.cashbook.Invoice;
 import com.hubformath.mathhubservice.model.ops.cashbook.InvoiceRequest;
+import com.hubformath.mathhubservice.model.ops.cashbook.InvoiceStatus;
 import com.hubformath.mathhubservice.service.ops.cashbook.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -19,8 +20,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -37,8 +40,9 @@ public class InvoiceController {
     }
 
     @GetMapping("/invoices")
-    public ResponseEntity<CollectionModel<?>> getAllInvoices() {
-        List<Invoice> invoices = invoiceService.getAllInvoices();
+    public ResponseEntity<CollectionModel<?>> getAllInvoices(@RequestParam(required = false) List<String> studentId,
+                                                             @RequestParam(required = false) List<InvoiceStatus> invoiceStatus) {
+        List<Invoice> invoices = invoiceService.getAllInvoices(studentId, invoiceStatus);
         return ResponseEntity.ok().body(toCollectionModel(invoices));
     }
 
@@ -91,12 +95,15 @@ public class InvoiceController {
                                                                         .getInvoiceById(invoice.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(InvoiceController.class)
-                                                                        .getAllInvoices()).withRel("invoices"));
+                                                                        .getAllInvoices(Collections.emptyList(),
+                                                                                        Collections.emptyList()))
+                                               .withRel("invoices"));
     }
 
     private CollectionModel<?> toCollectionModel(List<Invoice> invoiceList) {
         Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(InvoiceController.class)
-                                                              .getAllInvoices()).withSelfRel();
+                                                              .getAllInvoices(Collections.emptyList(),
+                                                                              Collections.emptyList())).withSelfRel();
         List<EntityModel<Invoice>> invoices = invoiceList.stream()
                                                          .map(this::toModel)
                                                          .toList();
