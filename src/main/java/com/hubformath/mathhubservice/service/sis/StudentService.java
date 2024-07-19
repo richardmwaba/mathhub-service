@@ -47,7 +47,10 @@ public class StudentService {
     }
 
     public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+        return studentRepository.findAll()
+                                .parallelStream()
+                                .peek(student -> student.setFinancialSummary(computeStudentFinancialSummary(student)))
+                                .toList();
     }
 
     public Student getStudentById(String studentId) {
