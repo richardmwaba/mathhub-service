@@ -61,7 +61,7 @@ public class TuitionPaymentService {
     @Transactional
     public TuitionPayment createTuitionPayment(TuitionPaymentRequest tuitionPaymentRequest) {
         final Student student = studentService.getStudentById(tuitionPaymentRequest.studentId());
-        if (!student.getStudentFinancialSummary().isStudentOwing()) {
+        if (!student.getStudentFinancialSummary().isOwing()) {
             return null;
         }
 
