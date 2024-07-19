@@ -61,7 +61,7 @@ public class TuitionPaymentService {
     @Transactional
     public TuitionPayment createTuitionPayment(TuitionPaymentRequest tuitionPaymentRequest) {
         final Student student = studentService.getStudentById(tuitionPaymentRequest.studentId());
-        if (!student.getStudentFinancialSummary().isOwing()) {
+        if (!student.getFinancialSummary().isOwing()) {
             return null;
         }
 
@@ -89,7 +89,7 @@ public class TuitionPaymentService {
         final Receipt receipt = new Receipt(newCashTransaction.getTransactionNumber(), currentUser);
 
         // Update student financial summary
-        student.setStudentFinancialSummary(studentService.computeStudentFinancialSummary(student));
+        student.setFinancialSummary(studentService.computeStudentFinancialSummary(student));
 
         // Update invoice
         InvoiceRequest invoiceRequest = new InvoiceRequest(null, null, narration, InvoiceStatus.PAID);
