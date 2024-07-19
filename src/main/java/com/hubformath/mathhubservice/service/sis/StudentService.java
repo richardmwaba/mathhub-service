@@ -53,7 +53,7 @@ public class StudentService {
     public Student getStudentById(String studentId) {
         return studentRepository.findById(studentId)
                                 .map(student -> {
-                                    student.setStudentFinancialSummary(computeStudentFinancialSummary(student));
+                                    student.setFinancialSummary(computeStudentFinancialSummary(student));
                                     return student;
                                 })
                                 .orElseThrow();
@@ -92,7 +92,7 @@ public class StudentService {
         ClassRate classRate = classRateService.getClassRateBySubjectComplexity(subject.getComplexity());
         Class newClass = getNewClass(classRequest, subject, classRate);
         student.getClasses().add(newClass);
-        student.setStudentFinancialSummary(computeStudentFinancialSummary(student));
+        student.setFinancialSummary(computeStudentFinancialSummary(student));
 
         return studentRepository.save(student);
     }

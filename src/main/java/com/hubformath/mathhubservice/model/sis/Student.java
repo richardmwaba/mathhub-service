@@ -86,7 +86,7 @@ public class Student {
     private List<PhoneNumber> phoneNumbers;
 
     @Transient
-    private StudentFinancialSummary studentFinancialSummary;
+    private StudentFinancialSummary financialSummary;
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
@@ -200,12 +200,12 @@ public class Student {
         this.phoneNumbers = phoneNumbers;
     }
 
-    public StudentFinancialSummary getStudentFinancialSummary() {
-        return studentFinancialSummary;
+    public StudentFinancialSummary getFinancialSummary() {
+        return financialSummary;
     }
 
-    public void setStudentFinancialSummary(StudentFinancialSummary studentFinancialSummary) {
-        this.studentFinancialSummary = studentFinancialSummary;
+    public void setFinancialSummary(StudentFinancialSummary financialSummary) {
+        this.financialSummary = financialSummary;
     }
 
     public String getEmail() {
@@ -273,7 +273,7 @@ public class Student {
                 && getAddresses().equals(student.getAddresses())
                 && getExamBoard().equals(student.getExamBoard())
                 && getPhoneNumbers().equals(student.getPhoneNumbers())
-                && getStudentFinancialSummary().equals(student.getStudentFinancialSummary())
+                && getFinancialSummary().equals(student.getFinancialSummary())
                 && getDateOfBirth().equals(student.getDateOfBirth());
     }
 
@@ -292,7 +292,7 @@ public class Student {
                             getAddresses(),
                             getExamBoard(),
                             getPhoneNumbers(),
-                            getStudentFinancialSummary(),
+                            getFinancialSummary(),
                             getDateOfBirth());
     }
 
@@ -312,7 +312,7 @@ public class Student {
                 ", addresses=" + addresses +
                 ", examBoard=" + examBoard +
                 ", phoneNumbers=" + phoneNumbers +
-                ", studentFinancialSummary=" + studentFinancialSummary +
+                ", financialSummary=" + financialSummary +
                 ", dateOfBirth=" + dateOfBirth +
                 '}';
     }
