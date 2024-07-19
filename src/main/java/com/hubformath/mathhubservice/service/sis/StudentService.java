@@ -17,6 +17,7 @@ import com.hubformath.mathhubservice.service.systemconfig.ClassRateService;
 import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,12 +99,12 @@ public class StudentService {
 
     private static Class getNewClass(ClassRequest classRequest, Subject subject, ClassRate classRate) {
         Class newClass = new Class(subject,
-                                    classRequest.occurrence(),
-                                    classRequest.startDate(),
-                                    classRate.getAmount(),
-                                    classRequest.duration(),
-                                    classRequest.period(),
-                                    classRequest.sessionType());
+                                   classRequest.occurrence(),
+                                   classRequest.startDate(),
+                                   classRate.getAmount(),
+                                   classRequest.duration(),
+                                   classRequest.period(),
+                                   classRequest.sessionType());
         newClass.setPaymentStatus(PaymentStatus.UNPAID);
         return newClass;
     }
@@ -116,7 +117,7 @@ public class StudentService {
                                     .reduce(Double::sum)
                                     .orElse(0d);
         boolean isStudentOwing = isStudentOwing(student, amountOwing);
-        return new StudentFinancialSummary(isStudentOwing, amountOwing);
+        return new StudentFinancialSummary(isStudentOwing, amountOwing, computeDueDate(student));
     }
 
     private boolean isStudentOwing(Student student, Double amountOwing) {
@@ -124,6 +125,16 @@ public class StudentService {
                                           .stream()
                                           .anyMatch(aClass -> aClass.getPaymentStatus() == PaymentStatus.UNPAID);
         return hasUnpaidLessons && amountOwing > 0;
+    }
+
+    private LocalDate computeDueDate(Student student) {
+        return student.getClasses()
+                      .stream()
+                      .filter(aClass -> aClass.getPaymentStatus() == PaymentStatus.UNPAID)
+                      .map(Class::getStartDate)
+                      .min(LocalDate::compareTo)
+                      .map(date -> date.plusDays(30))
+                      .orElse(null);
     }
 
     public void deleteStudent(String studentId) {

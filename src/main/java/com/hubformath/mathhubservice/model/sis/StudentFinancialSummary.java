@@ -1,24 +1,28 @@
 package com.hubformath.mathhubservice.model.sis;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class StudentFinancialSummary {
 
-    private boolean isStudentOwing;
+    private boolean isOwing;
 
     private Double amountOwing;
 
-    public StudentFinancialSummary(boolean isStudentOwing, Double amountOwing) {
-        this.isStudentOwing = isStudentOwing;
+    private LocalDate dueDate;
+
+    public StudentFinancialSummary(boolean isOwing, Double amountOwing, LocalDate dueDate) {
+        this.isOwing = isOwing;
         this.amountOwing = amountOwing;
+        this.dueDate = dueDate;
     }
 
-    public boolean isStudentOwing() {
-        return isStudentOwing;
+    public boolean isOwing() {
+        return isOwing;
     }
 
-    public void setStudentOwing(boolean studentOwing) {
-        isStudentOwing = studentOwing;
+    public void setOwing(boolean owing) {
+        isOwing = owing;
     }
 
     public Double getAmountOwing() {
@@ -29,23 +33,34 @@ public class StudentFinancialSummary {
         this.amountOwing = amountOwing;
     }
 
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof StudentFinancialSummary that)) return false;
-        return isStudentOwing() == that.isStudentOwing() && getAmountOwing().equals(that.getAmountOwing());
+        return isOwing() == that.isOwing()
+                && Objects.equals(getAmountOwing(), that.getAmountOwing())
+                && Objects.equals(getDueDate(), that.getDueDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(isStudentOwing(), getAmountOwing());
+        return Objects.hash(isOwing(), getAmountOwing(), getDueDate());
     }
 
     @Override
     public String toString() {
         return "StudentFinancialSummary{" +
-                ", isStudentOwing=" + isStudentOwing +
+                "isStudentOwing=" + isOwing +
                 ", amountOwing=" + amountOwing +
+                ", dueDate=" + dueDate +
                 '}';
     }
 }
