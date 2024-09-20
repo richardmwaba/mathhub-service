@@ -72,6 +72,8 @@ public class StudentService {
                                             .ifPresent(student::setLastName);
                                     Optional.ofNullable(studentRequest.gender()).ifPresent(student::setGender);
                                     Optional.ofNullable(studentRequest.email()).ifPresent(student::setEmail);
+                                    Optional.ofNullable(studentRequest.dateOfBirth())
+                                            .ifPresent(student::setDateOfBirth);
                                     Optional.ofNullable(studentRequest.gradeId()).ifPresent(gradeId -> {
                                         Grade grade = gradeService.getGradeById(gradeId);
                                         student.setGrade(grade);
@@ -85,6 +87,10 @@ public class StudentService {
                                         student.setExamBoard(examBoard);
                                     });
                                     return studentRepository.save(student);
+                                })
+                                .map(student -> {
+                                    student.setFinancialSummary(computeStudentFinancialSummary(student));
+                                    return student;
                                 })
                                 .orElseThrow();
     }
