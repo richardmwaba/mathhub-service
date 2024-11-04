@@ -10,9 +10,8 @@ public record StudentRequest(String examBoardId,
                              String lastName,
                              Gender gender,
                              String email,
-                             String userId,
                              List<Parent> parents,
                              List<Address> addresses,
-                             List<PhoneNumber> phoneNumbers,
+                             PhoneNumber phoneNumber,
                              LocalDate dateOfBirth) {
 }

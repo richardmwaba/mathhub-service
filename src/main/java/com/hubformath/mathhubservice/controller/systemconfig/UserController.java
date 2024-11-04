@@ -38,7 +38,7 @@ public class UserController {
 
     @PostMapping("/users")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    public ResponseEntity<EntityModel<User>> newUser(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<EntityModel<User>> createUser(@RequestBody UserRequest userRequest) {
         try {
             User newUser = usersService.createUser(userRequest);
             EntityModel<User> userEntityModel = toModel(newUser);

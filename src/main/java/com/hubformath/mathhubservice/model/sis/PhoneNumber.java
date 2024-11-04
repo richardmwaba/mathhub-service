@@ -1,5 +1,6 @@
 package com.hubformath.mathhubservice.model.sis;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,6 +20,7 @@ import java.util.Objects;
 public class PhoneNumber {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @JsonIgnore
     private String id;
 
     @Enumerated(EnumType.STRING)
@@ -33,13 +35,17 @@ public class PhoneNumber {
 
     @CreationTimestamp
     @Column(name = "created_at")
+    @JsonIgnore
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
+    @SuppressWarnings("unused")
     public PhoneNumber() {
+        // Default constructor for Hibernate
     }
 
     public PhoneNumber(PhoneNumberType type, String countryCode, String number) {

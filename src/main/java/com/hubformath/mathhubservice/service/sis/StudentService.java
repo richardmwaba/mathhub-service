@@ -1,25 +1,39 @@
 package com.hubformath.mathhubservice.service.sis;
 
+import com.hubformath.mathhubservice.config.PasswordGeneratorConfig;
+import com.hubformath.mathhubservice.model.auth.Role;
+import com.hubformath.mathhubservice.model.auth.User;
+import com.hubformath.mathhubservice.model.auth.UserRole;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.sis.Class;
 import com.hubformath.mathhubservice.model.sis.ClassRequest;
+import com.hubformath.mathhubservice.model.sis.PhoneNumber;
 import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.sis.StudentFinancialSummary;
 import com.hubformath.mathhubservice.model.sis.StudentRequest;
+import com.hubformath.mathhubservice.model.systemconfig.ClassRate;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
-import com.hubformath.mathhubservice.model.systemconfig.ClassRate;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
+import com.hubformath.mathhubservice.repository.auth.UserRoleRepository;
 import com.hubformath.mathhubservice.repository.sis.StudentRepository;
+import com.hubformath.mathhubservice.service.systemconfig.ClassRateService;
 import com.hubformath.mathhubservice.service.systemconfig.ExamBoardService;
 import com.hubformath.mathhubservice.service.systemconfig.GradeService;
-import com.hubformath.mathhubservice.service.systemconfig.ClassRateService;
 import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
+import jakarta.security.auth.message.AuthException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
+
+import static com.hubformath.mathhubservice.service.systemconfig.UsersService.ROLE_IS_NOT_FOUND;
 
 @Service
 public class StudentService {
@@ -34,16 +48,68 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
+    private final UserRoleRepository userRoleRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
     public StudentService(StudentRepository studentRepository,
                           GradeService gradeService,
                           ExamBoardService examBoardService,
                           SubjectService subjectService,
-                          ClassRateService classRateService) {
+                          ClassRateService classRateService,
+                          UserRoleRepository userRoleRepository,
+                          PasswordEncoder passwordEncoder) {
         this.studentRepository = studentRepository;
         this.gradeService = gradeService;
         this.examBoardService = examBoardService;
         this.subjectService = subjectService;
         this.classRateService = classRateService;
+        this.userRoleRepository = userRoleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Transactional
+    public Student createStudent(StudentRequest studentRequest) throws AuthException, NoSuchElementException {
+        Grade grade = gradeService.getGradeById(studentRequest.gradeId());
+        ExamBoard examBoard = examBoardService.getExamBoardById(studentRequest.examBoardId());
+        String username = createUsername(studentRequest, studentRepository);
+        String password = passwordEncoder.encode(PasswordGeneratorConfig.generatePassword());
+        UserRole userRole = userRoleRepository.findByName(Role.ROLE_STUDENT)
+                                              .orElseThrow(() -> new NoSuchElementException(ROLE_IS_NOT_FOUND));
+        User user = new User(username,
+                             studentRequest.firstName(),
+                             studentRequest.lastName(),
+                             studentRequest.gender(),
+                             studentRequest.email(),
+                             studentRequest.phoneNumber(),
+                             password,
+                             Set.of(userRole));
+        user.setMiddleName(studentRequest.middleName());
+
+        Student student = new Student(studentRequest.firstName(),
+                                      studentRequest.middleName(),
+                                      studentRequest.lastName(),
+                                      studentRequest.email(),
+                                      studentRequest.gender(),
+                                      user);
+        student.setParents(studentRequest.parents());
+        student.setGrade(grade);
+        student.setAddresses(studentRequest.addresses());
+        student.setExamBoard(examBoard);
+        student.setPhoneNumber(studentRequest.phoneNumber());
+        student.setDateOfBirth(studentRequest.dateOfBirth());
+
+        return studentRepository.save(student);
+
+    }
+
+    private String createUsername(StudentRequest studentRequest,
+                                  StudentRepository studentRepository) throws AuthException {
+        if (studentRepository.existsByEmail(studentRequest.email())) {
+            throw new AuthException("Email is already in use!");
+        }
+        return studentRequest.email();
     }
 
     public List<Student> getAllStudents() {
@@ -80,8 +146,8 @@ public class StudentService {
                                     });
                                     Optional.ofNullable(studentRequest.parents()).ifPresent(student::setParents);
                                     Optional.ofNullable(studentRequest.addresses()).ifPresent(student::setAddresses);
-                                    Optional.ofNullable(studentRequest.phoneNumbers())
-                                            .ifPresent(student::setPhoneNumbers);
+                                    Optional.ofNullable(studentRequest.phoneNumber())
+                                            .ifPresent(phoneNumber -> setNewPhoneNumber(student, phoneNumber));
                                     Optional.ofNullable(studentRequest.examBoardId()).ifPresent(examBoardId -> {
                                         ExamBoard examBoard = examBoardService.getExamBoardById(examBoardId);
                                         student.setExamBoard(examBoard);
@@ -93,6 +159,10 @@ public class StudentService {
                                     return student;
                                 })
                                 .orElseThrow();
+    }
+
+    private void setNewPhoneNumber(Student student, PhoneNumber phoneNumber) {
+        student.getUser().setPhoneNumber(phoneNumber);
     }
 
     public Student addClassToStudent(final String studentId, final ClassRequest classRequest) {

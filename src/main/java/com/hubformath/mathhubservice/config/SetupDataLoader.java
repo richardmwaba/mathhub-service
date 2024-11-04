@@ -4,6 +4,8 @@ import com.hubformath.mathhubservice.model.auth.Role;
 import com.hubformath.mathhubservice.model.auth.User;
 import com.hubformath.mathhubservice.model.auth.UserRole;
 import com.hubformath.mathhubservice.model.sis.Gender;
+import com.hubformath.mathhubservice.model.sis.PhoneNumber;
+import com.hubformath.mathhubservice.model.sis.PhoneNumberType;
 import com.hubformath.mathhubservice.repository.auth.UserRepository;
 import com.hubformath.mathhubservice.repository.auth.UserRoleRepository;
 import jakarta.annotation.Nonnull;
@@ -45,16 +47,16 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Override
     @Transactional
     public void onApplicationEvent(@Nonnull ContextRefreshedEvent event) {
-        LOGGER.info("Seeding user roles into the database...");
         Set<Role> currentRoles = userRoleRepository.findAll()
                                                    .stream()
                                                    .map(UserRole::getName)
                                                    .collect(Collectors.toSet());
 
         if (currentRoles.containsAll(Set.of(Role.values()))) {
-            LOGGER.info("User roles already seeded into the database, nothing to do.");
             return;
         }
+
+        LOGGER.info("Seeding user roles into the database...");
 
         createRoleIfNotFound(Role.ROLE_ADMINISTRATOR);
         createRoleIfNotFound(Role.ROLE_CASHIER);
@@ -63,14 +65,16 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         createRoleIfNotFound(Role.ROLE_STUDENT);
         createRoleIfNotFound(Role.ROLE_TEACHER);
 
+        Set<UserRole> roles = Set.of(userRoleRepository.findByName(Role.ROLE_ADMINISTRATOR)
+                                                       .orElseThrow(() -> new IllegalStateException("Role not found.")));
         User user = new User("setup",
                              "Setup",
                              "Setup",
                              Gender.OTHER,
                              "setup@hubformath.com",
-                             passwordEncoder.encode(setupPassword));
-        user.setRoles(Set.of(userRoleRepository.findByName(Role.ROLE_ADMINISTRATOR)
-                                               .orElseThrow(() -> new IllegalStateException("Role not found."))));
+                             new PhoneNumber(PhoneNumberType.MOBILE, "+260", "971123456"),
+                             passwordEncoder.encode(setupPassword),
+                             roles);
         userRepository.save(user);
 
         LOGGER.info("User roles seeded into the database successfully.");
