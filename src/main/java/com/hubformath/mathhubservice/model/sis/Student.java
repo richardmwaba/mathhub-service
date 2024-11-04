@@ -1,6 +1,7 @@
 package com.hubformath.mathhubservice.model.sis;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hubformath.mathhubservice.model.auth.User;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
 import jakarta.persistence.CascadeType;
@@ -15,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import org.hibernate.annotations.CreationTimestamp;
@@ -67,7 +69,10 @@ public class Student {
 
     private String email;
 
-    private String userId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "students_addresses",
@@ -79,11 +84,8 @@ public class Student {
     @JoinColumn(name = "examBoard_id", unique = false)
     private ExamBoard examBoard;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "students_phone_numbers",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "phone_number_id"))
-    private List<PhoneNumber> phoneNumbers;
+    @Transient
+    private PhoneNumber phoneNumber;
 
     @Transient
     private StudentFinancialSummary financialSummary;
@@ -109,15 +111,17 @@ public class Student {
     }
 
     public Student(String firstName,
+                   String middleName,
                    String lastName,
                    String email,
                    Gender gender,
-                   String userId) {
+                   User user) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.middleName = middleName;
         this.email = email;
         this.gender = gender;
-        this.userId = userId;
+        this.user = user;
     }
 
     public String getId() {
@@ -192,12 +196,12 @@ public class Student {
         this.addresses = addresses;
     }
 
-    public List<PhoneNumber> getPhoneNumbers() {
-        return phoneNumbers;
+    public PhoneNumber getPhoneNumber() {
+        return user.getPhoneNumber();
     }
 
-    public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
-        this.phoneNumbers = phoneNumbers;
+    public void setPhoneNumber(PhoneNumber phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public StudentFinancialSummary getFinancialSummary() {
@@ -216,12 +220,12 @@ public class Student {
         this.email = email;
     }
 
-    public String getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public LocalDate getDateOfBirth() {
@@ -269,10 +273,10 @@ public class Student {
                 && getGrade().equals(student.getGrade())
                 && getClasses().equals(student.getClasses())
                 && getEmail().equals(student.getEmail())
-                && getUserId().equals(student.getUserId())
+                && getUser().equals(student.getUser())
                 && getAddresses().equals(student.getAddresses())
                 && getExamBoard().equals(student.getExamBoard())
-                && getPhoneNumbers().equals(student.getPhoneNumbers())
+                && getPhoneNumber().equals(student.getPhoneNumber())
                 && getFinancialSummary().equals(student.getFinancialSummary())
                 && getDateOfBirth().equals(student.getDateOfBirth());
     }
@@ -288,10 +292,10 @@ public class Student {
                             getGrade(),
                             getClasses(),
                             getEmail(),
-                            getUserId(),
+                            getUser(),
                             getAddresses(),
                             getExamBoard(),
-                            getPhoneNumbers(),
+                            getPhoneNumber(),
                             getFinancialSummary(),
                             getDateOfBirth());
     }
@@ -308,10 +312,10 @@ public class Student {
                 ", grade=" + grade +
                 ", classes=" + classes +
                 ", email='" + email + '\'' +
-                ", userId='" + userId + '\'' +
+                ", user='" + user + '\'' +
                 ", addresses=" + addresses +
                 ", examBoard=" + examBoard +
-                ", phoneNumbers=" + phoneNumbers +
+                ", phoneNumber=" + phoneNumber +
                 ", financialSummary=" + financialSummary +
                 ", dateOfBirth=" + dateOfBirth +
                 '}';

@@ -2,7 +2,8 @@ package com.hubformath.mathhubservice.model.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hubformath.mathhubservice.model.sis.Gender;
-import jakarta.annotation.Nonnull;
+import com.hubformath.mathhubservice.model.sis.PhoneNumber;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,8 +14,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.Objects;
 import java.util.Set;
@@ -50,8 +53,9 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "phone_number")
-    private String phoneNumber;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "phone_number_id")
+    private PhoneNumber phoneNumber;
 
     @Column(name = "password", nullable = false)
     @JsonIgnore
@@ -68,18 +72,22 @@ public class User {
         // Default constructor for Hibernate
     }
 
-    public User(@Nonnull final String username,
-                @Nonnull String firstName,
-                @Nonnull String lastName,
-                @Nonnull Gender gender,
-                @Nonnull final String email,
-                @Nonnull final String password) {
+    public User(@NotNull String username,
+                @NotNull String firstName,
+                @NotNull String lastName,
+                @NotNull Gender gender,
+                @NotNull String email,
+                @NotNull PhoneNumber phoneNumber,
+                @NotNull String password,
+                @NotNull Set<UserRole> roles) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.password = password;
+        this.roles = roles;
     }
 
     public String getId() {
@@ -138,11 +146,11 @@ public class User {
         this.gender = gender;
     }
 
-    public String getPhoneNumber() {
+    public PhoneNumber getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(PhoneNumber phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

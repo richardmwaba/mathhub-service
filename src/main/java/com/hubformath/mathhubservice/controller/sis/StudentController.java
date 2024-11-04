@@ -6,9 +6,11 @@ import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.sis.StudentActionBase;
 import com.hubformath.mathhubservice.model.sis.StudentRequest;
 import com.hubformath.mathhubservice.service.sis.StudentService;
+import jakarta.security.auth.message.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +46,22 @@ public class StudentController {
         return ResponseEntity.ok().body(toCollectionModel(students));
     }
 
+    @PostMapping("/students")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER')")
+    public ResponseEntity<?> createStudent(@RequestBody StudentRequest studentRequest) {
+        try {
+            Student student = studentService.createStudent(studentRequest);
+            EntityModel<Student> studentEntityModel = toModel(student);
+
+            return ResponseEntity.created(studentEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                                 .body(studentEntityModel);
+        } catch (AuthException | NoSuchElementException e) {
+            return ResponseEntity.badRequest()
+                                 .body("Cannot create student because another student with the provided details already exists!");
+        }
+
+    }
+
     @GetMapping("/students/{studentId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<Student>> getStudentById(@PathVariable String studentId) {
@@ -58,7 +76,7 @@ public class StudentController {
     @PutMapping("/students/{studentId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<Student>> updateStudent(@RequestBody StudentRequest studentRequest,
-                                                               @PathVariable String studentId) {
+                                                              @PathVariable String studentId) {
         try {
             EntityModel<Student> updatedStudent = toModel(studentService.updateStudent(studentId, studentRequest));
             return ResponseEntity.ok().body(updatedStudent);

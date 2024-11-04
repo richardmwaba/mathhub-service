@@ -75,16 +75,19 @@ public class UsersService {
                              userRequest.lastName(),
                              userRequest.gender(),
                              userRequest.email(),
-                             passwordEncoder.encode(userRequest.password()));
-        user.setRoles(userRoles);
+                             userRequest.phoneNumber(),
+                             passwordEncoder.encode(userRequest.password()),
+                             userRoles);
+        user.setMiddleName(userRequest.middleName());
         User createdUser = userRepository.save(user);
 
         if (!createdUser.getId().isEmpty() && userRoles.contains(getUserRole(ROLE_STUDENT))) {
             studentRepository.save(new Student(userRequest.firstName(),
+                                               userRequest.middleName(),
                                                userRequest.lastName(),
                                                userRequest.email(),
                                                userRequest.gender(),
-                                               createdUser.getId()));
+                                               createdUser));
         }
 
         return createdUser;

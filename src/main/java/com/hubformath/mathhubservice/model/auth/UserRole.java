@@ -40,7 +40,9 @@ public class UserRole {
     @JsonIgnore
     private LocalDateTime updatedAt;
 
+    @SuppressWarnings("unused")
     public UserRole() {
+        // Default constructor for Hibernate
     }
 
     public UserRole(Role name) {
