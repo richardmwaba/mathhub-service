@@ -24,8 +24,8 @@ public class JwtUtils {
     @Value("${mathhub.app.jwtSecret}")
     private String jwtSecret;
 
-    @Value("${mathhub.app.jwtExpirationMs}")
-    private int jwtExpirationMs;
+    @Value("${mathhub.app.jwtExpirationSecs}")
+    private long jwtExpirationSecs;
 
     public String generateJwtAccessToken(Authentication authentication) {
         UserAuthDetails userPrincipal = (UserAuthDetails) authentication.getPrincipal();
@@ -38,7 +38,7 @@ public class JwtUtils {
         return Jwts.builder()
                    .subject(username)
                    .issuedAt(now)
-                   .expiration(new Date(now.getTime() + jwtExpirationMs))
+                   .expiration(new Date(now.getTime() + (jwtExpirationSecs * 1000)))
                    .signWith(key())
                    .compact();
     }
