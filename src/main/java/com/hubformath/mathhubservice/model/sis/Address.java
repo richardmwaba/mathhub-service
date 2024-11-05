@@ -20,6 +20,7 @@ import java.util.Objects;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @JsonIgnore
     private String id;
 
     @Enumerated(EnumType.STRING)
@@ -27,13 +28,13 @@ public class Address {
     private AddressType type;
 
     @Column(name = "address_line1")
-    private String firstAddress;
+    private String firstAddressLine;
 
     @Column(name = "address_line2")
-    private String secondAddress;
+    private String secondAddressLine;
 
     @Column(name = "address_line3")
-    private String thirdAddress;
+    private String thirdAddressLine;
 
     @Column(name = "city")
     private String city;
@@ -54,20 +55,22 @@ public class Address {
     @JsonIgnore
     private LocalDateTime updatedAt;
 
+    @SuppressWarnings("unused")
     public Address() {
+        // Default constructor required by Hibernate
     }
 
     public Address(AddressType type,
-                   String firstAddress,
-                   String secondAddress,
-                   String thirdAddress,
+                   String firstAddressLine,
+                   String secondAddressLine,
+                   String thirdAddressLine,
                    String city,
                    String province,
                    String zipCode) {
         this.type = type;
-        this.firstAddress = firstAddress;
-        this.secondAddress = secondAddress;
-        this.thirdAddress = thirdAddress;
+        this.firstAddressLine = firstAddressLine;
+        this.secondAddressLine = secondAddressLine;
+        this.thirdAddressLine = thirdAddressLine;
         this.city = city;
         this.province = province;
         this.zipCode = zipCode;
@@ -89,28 +92,28 @@ public class Address {
         this.type = type;
     }
 
-    public String getFirstAddress() {
-        return firstAddress;
+    public String getFirstAddressLine() {
+        return firstAddressLine;
     }
 
-    public void setFirstAddress(String firstAddress) {
-        this.firstAddress = firstAddress;
+    public void setFirstAddressLine(String firstAddressLine) {
+        this.firstAddressLine = firstAddressLine;
     }
 
-    public String getSecondAddress() {
-        return secondAddress;
+    public String getSecondAddressLine() {
+        return secondAddressLine;
     }
 
-    public void setSecondAddress(String secondAddress) {
-        this.secondAddress = secondAddress;
+    public void setSecondAddressLine(String secondAddressLine) {
+        this.secondAddressLine = secondAddressLine;
     }
 
-    public String getThirdAddress() {
-        return thirdAddress;
+    public String getThirdAddressLine() {
+        return thirdAddressLine;
     }
 
-    public void setThirdAddress(String thirdAddress) {
-        this.thirdAddress = thirdAddress;
+    public void setThirdAddressLine(String thirdAddressLine) {
+        this.thirdAddressLine = thirdAddressLine;
     }
 
     public String getCity() {
@@ -159,9 +162,9 @@ public class Address {
         if (!(o instanceof Address address)) return false;
         return Objects.equals(getId(), address.getId())
                 && getType() == address.getType()
-                && Objects.equals(getFirstAddress(), address.getFirstAddress())
-                && Objects.equals(getSecondAddress(), address.getSecondAddress())
-                && Objects.equals(getThirdAddress(), address.getThirdAddress())
+                && Objects.equals(getFirstAddressLine(), address.getFirstAddressLine())
+                && Objects.equals(getSecondAddressLine(), address.getSecondAddressLine())
+                && Objects.equals(getThirdAddressLine(), address.getThirdAddressLine())
                 && Objects.equals(getCity(), address.getCity())
                 && Objects.equals(getProvince(), address.getProvince())
                 && Objects.equals(getZipCode(), address.getZipCode());
@@ -171,9 +174,9 @@ public class Address {
     public int hashCode() {
         return Objects.hash(getId(),
                             getType(),
-                            getFirstAddress(),
-                            getSecondAddress(),
-                            getThirdAddress(),
+                            getFirstAddressLine(),
+                            getSecondAddressLine(),
+                            getThirdAddressLine(),
                             getCity(),
                             getProvince(),
                             getZipCode());
@@ -184,9 +187,9 @@ public class Address {
         return "Address{" +
                 "id='" + id + '\'' +
                 ", type=" + type +
-                ", firstAddress='" + firstAddress + '\'' +
-                ", secondAddress='" + secondAddress + '\'' +
-                ", thirdAddress='" + thirdAddress + '\'' +
+                ", firstAddress='" + firstAddressLine + '\'' +
+                ", secondAddress='" + secondAddressLine + '\'' +
+                ", thirdAddress='" + thirdAddressLine + '\'' +
                 ", city='" + city + '\'' +
                 ", province='" + province + '\'' +
                 ", zipCode='" + zipCode + '\'' +

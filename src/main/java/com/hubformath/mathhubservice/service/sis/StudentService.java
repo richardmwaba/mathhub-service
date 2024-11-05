@@ -95,7 +95,7 @@ public class StudentService {
                                       user);
         student.setParents(studentRequest.parents());
         student.setGrade(grade);
-        student.setAddresses(studentRequest.addresses());
+        student.setAddress(studentRequest.address());
         student.setExamBoard(examBoard);
         student.setPhoneNumber(studentRequest.phoneNumber());
         student.setDateOfBirth(studentRequest.dateOfBirth());
@@ -145,7 +145,7 @@ public class StudentService {
                                         student.setGrade(grade);
                                     });
                                     Optional.ofNullable(studentRequest.parents()).ifPresent(student::setParents);
-                                    Optional.ofNullable(studentRequest.addresses()).ifPresent(student::setAddresses);
+                                    Optional.ofNullable(studentRequest.address()).ifPresent(student::setAddress);
                                     Optional.ofNullable(studentRequest.phoneNumber())
                                             .ifPresent(phoneNumber -> setNewPhoneNumber(student, phoneNumber));
                                     Optional.ofNullable(studentRequest.examBoardId()).ifPresent(examBoardId -> {
