@@ -74,11 +74,9 @@ public class Student {
     @JsonIgnore
     private User user;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "students_addresses",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "address_id"))
-    private List<Address> addresses;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", unique = false)
+    private Address address;
 
     @ManyToOne
     @JoinColumn(name = "examBoard_id", unique = false)
@@ -188,12 +186,12 @@ public class Student {
         this.parents = parents;
     }
 
-    public List<Address> getAddresses() {
-        return addresses;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public PhoneNumber getPhoneNumber() {
@@ -274,7 +272,7 @@ public class Student {
                 && getClasses().equals(student.getClasses())
                 && getEmail().equals(student.getEmail())
                 && getUser().equals(student.getUser())
-                && getAddresses().equals(student.getAddresses())
+                && getAddress().equals(student.getAddress())
                 && getExamBoard().equals(student.getExamBoard())
                 && getPhoneNumber().equals(student.getPhoneNumber())
                 && getFinancialSummary().equals(student.getFinancialSummary())
@@ -293,7 +291,7 @@ public class Student {
                             getClasses(),
                             getEmail(),
                             getUser(),
-                            getAddresses(),
+                            getAddress(),
                             getExamBoard(),
                             getPhoneNumber(),
                             getFinancialSummary(),
@@ -313,7 +311,7 @@ public class Student {
                 ", classes=" + classes +
                 ", email='" + email + '\'' +
                 ", user='" + user + '\'' +
-                ", addresses=" + addresses +
+                ", address=" + address +
                 ", examBoard=" + examBoard +
                 ", phoneNumber=" + phoneNumber +
                 ", financialSummary=" + financialSummary +

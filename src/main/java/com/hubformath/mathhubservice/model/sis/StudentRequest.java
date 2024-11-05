@@ -11,7 +11,7 @@ public record StudentRequest(String examBoardId,
                              Gender gender,
                              String email,
                              List<Parent> parents,
-                             List<Address> addresses,
+                             Address address,
                              PhoneNumber phoneNumber,
                              LocalDate dateOfBirth) {
 }
