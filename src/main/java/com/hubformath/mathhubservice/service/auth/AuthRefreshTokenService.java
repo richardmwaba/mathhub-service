@@ -25,8 +25,8 @@ public class AuthRefreshTokenService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthRefreshTokenService.class);
 
-    @Value("${mathhub.app.jwtRefreshExpirationMs}")
-    private Long refreshTokenDurationMs;
+    @Value("${mathhub.app.jwtRefreshExpirationSecs}")
+    private Long refreshTokenDurationSecs;
 
     private final AuthRefreshTokenRepository authRefreshTokenRepository;
 
@@ -76,7 +76,7 @@ public class AuthRefreshTokenService {
         AuthRefreshToken authRefreshToken = new AuthRefreshToken();
 
         authRefreshToken.setUser(userRepository.findById(userId).orElseThrow());
-        authRefreshToken.setExpiryDateTime(Instant.now().plusMillis(refreshTokenDurationMs));
+        authRefreshToken.setExpiryDateTime(Instant.now().plusSeconds(refreshTokenDurationSecs));
         authRefreshToken.setToken(UUID.randomUUID().toString());
 
         return authRefreshTokenRepository.save(authRefreshToken);
