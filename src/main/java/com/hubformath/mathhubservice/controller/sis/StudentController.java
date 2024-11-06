@@ -6,7 +6,6 @@ import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.sis.StudentActionBase;
 import com.hubformath.mathhubservice.model.sis.StudentRequest;
 import com.hubformath.mathhubservice.service.sis.StudentService;
-import jakarta.security.auth.message.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -55,7 +54,7 @@ public class StudentController {
 
             return ResponseEntity.created(studentEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                                  .body(studentEntityModel);
-        } catch (AuthException | NoSuchElementException e) {
+        } catch (IllegalArgumentException | NoSuchElementException e) {
             return ResponseEntity.badRequest()
                                  .body("Cannot create student because another student with the provided details already exists!");
         }
