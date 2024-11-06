@@ -21,11 +21,9 @@ import com.hubformath.mathhubservice.service.systemconfig.ClassRateService;
 import com.hubformath.mathhubservice.service.systemconfig.ExamBoardService;
 import com.hubformath.mathhubservice.service.systemconfig.GradeService;
 import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
-import jakarta.security.auth.message.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -69,8 +67,7 @@ public class StudentService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Transactional
-    public Student createStudent(StudentRequest studentRequest) throws AuthException, NoSuchElementException {
+    public Student createStudent(StudentRequest studentRequest) throws IllegalArgumentException, NoSuchElementException {
         Grade grade = gradeService.getGradeById(studentRequest.gradeId());
         ExamBoard examBoard = examBoardService.getExamBoardById(studentRequest.examBoardId());
         String username = createUsername(studentRequest, studentRepository);
@@ -105,16 +102,16 @@ public class StudentService {
     }
 
     private String createUsername(StudentRequest studentRequest,
-                                  StudentRepository studentRepository) throws AuthException {
+                                  StudentRepository studentRepository) throws IllegalArgumentException {
         if (studentRepository.existsByEmail(studentRequest.email())) {
-            throw new AuthException("Email is already in use!");
+            throw new IllegalArgumentException("Email is already in use!");
         }
         return studentRequest.email();
     }
 
     public List<Student> getAllStudents() {
         return studentRepository.findAll()
-                                .parallelStream()
+                                .stream()
                                 .peek(student -> student.setFinancialSummary(computeStudentFinancialSummary(student)))
                                 .toList();
     }
