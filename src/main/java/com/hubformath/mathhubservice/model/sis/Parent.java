@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
@@ -37,11 +38,9 @@ public class Parent {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "parents_addresses",
-            joinColumns = @JoinColumn(name = "parent_id"),
-            inverseJoinColumns = @JoinColumn(name = "address_id"))
-    private List<Address> addresses;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    private Address address;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "parents_phone_numbers",
@@ -62,13 +61,6 @@ public class Parent {
     @SuppressWarnings("unused")
     public Parent() {
         // Required by Hibernate
-    }
-
-    public Parent(String firstName, String middleName, String lastName, String email) {
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-        this.email = email;
     }
 
     public String getId() {
@@ -111,12 +103,12 @@ public class Parent {
         this.email = email;
     }
 
-    public List<Address> getAddresses() {
-        return addresses;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public List<PhoneNumber> getPhoneNumbers() {
@@ -152,7 +144,7 @@ public class Parent {
                 && Objects.equals(getMiddleName(), parent.getMiddleName())
                 && Objects.equals(getLastName(), parent.getLastName())
                 && Objects.equals(getEmail(), parent.getEmail())
-                && Objects.equals(getAddresses(), parent.getAddresses())
+                && Objects.equals(getAddress(), parent.getAddress())
                 && Objects.equals(getPhoneNumbers(), parent.getPhoneNumbers());
     }
 
@@ -163,7 +155,7 @@ public class Parent {
                             getMiddleName(),
                             getLastName(),
                             getEmail(),
-                            getAddresses(),
+                            getAddress(),
                             getPhoneNumbers());
     }
 
@@ -175,7 +167,7 @@ public class Parent {
                 ", middleName='" + middleName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", addresses=" + addresses +
+                ", address=" + address +
                 ", phoneNumbers=" + phoneNumbers +
                 '}';
     }
