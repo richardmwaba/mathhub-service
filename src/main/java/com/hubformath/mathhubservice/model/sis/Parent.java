@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,6 +36,10 @@ public class Parent {
 
     @Column(name = "last_name")
     private String lastName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    private Gender gender;
 
     @Column(name = "email")
     private String email;
@@ -95,6 +101,14 @@ public class Parent {
         this.lastName = lastName;
     }
 
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -143,6 +157,7 @@ public class Parent {
                 && Objects.equals(getFirstName(), parent.getFirstName())
                 && Objects.equals(getMiddleName(), parent.getMiddleName())
                 && Objects.equals(getLastName(), parent.getLastName())
+                && getGender() == parent.getGender()
                 && Objects.equals(getEmail(), parent.getEmail())
                 && Objects.equals(getAddress(), parent.getAddress())
                 && Objects.equals(getPhoneNumbers(), parent.getPhoneNumbers());
@@ -154,6 +169,7 @@ public class Parent {
                             getFirstName(),
                             getMiddleName(),
                             getLastName(),
+                            getGender(),
                             getEmail(),
                             getAddress(),
                             getPhoneNumbers());
@@ -166,6 +182,7 @@ public class Parent {
                 ", firstName='" + firstName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", gender=" + gender +
                 ", email='" + email + '\'' +
                 ", address=" + address +
                 ", phoneNumbers=" + phoneNumbers +
