@@ -32,8 +32,8 @@ public class ParentService {
                                    Optional.ofNullable(parentRequest.getLastName()).ifPresent(parent::setLastName);
                                    Optional.ofNullable(parentRequest.getEmail()).ifPresent(parent::setEmail);
                                    Optional.ofNullable(parentRequest.getAddress()).ifPresent(parent::setAddress);
-                                   Optional.ofNullable(parentRequest.getPhoneNumbers())
-                                           .ifPresent(parent::setPhoneNumbers);
+                                   Optional.ofNullable(parentRequest.getPhoneNumber())
+                                           .ifPresent(parent::setPhoneNumber);
                                    return parentRepository.save(parent);
                                })
                                .orElseThrow();

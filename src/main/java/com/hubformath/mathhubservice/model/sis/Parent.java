@@ -10,15 +10,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -48,11 +46,9 @@ public class Parent {
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "parents_phone_numbers",
-            joinColumns = @JoinColumn(name = "parent_id"),
-            inverseJoinColumns = @JoinColumn(name = "phone_number_id"))
-    private List<PhoneNumber> phoneNumbers;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "phone_number_id")
+    private PhoneNumber phoneNumber;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -125,12 +121,12 @@ public class Parent {
         this.address = address;
     }
 
-    public List<PhoneNumber> getPhoneNumbers() {
-        return phoneNumbers;
+    public PhoneNumber getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
-        this.phoneNumbers = phoneNumbers;
+    public void setPhoneNumber(PhoneNumber phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -160,7 +156,7 @@ public class Parent {
                 && getGender() == parent.getGender()
                 && Objects.equals(getEmail(), parent.getEmail())
                 && Objects.equals(getAddress(), parent.getAddress())
-                && Objects.equals(getPhoneNumbers(), parent.getPhoneNumbers());
+                && Objects.equals(getPhoneNumber(), parent.getPhoneNumber());
     }
 
     @Override
@@ -172,7 +168,7 @@ public class Parent {
                             getGender(),
                             getEmail(),
                             getAddress(),
-                            getPhoneNumbers());
+                            getPhoneNumber());
     }
 
     @Override
@@ -185,7 +181,7 @@ public class Parent {
                 ", gender=" + gender +
                 ", email='" + email + '\'' +
                 ", address=" + address +
-                ", phoneNumbers=" + phoneNumbers +
+                ", phoneNumber=" + phoneNumber +
                 '}';
     }
 }
