@@ -24,8 +24,17 @@ public class SubjectService {
         this.subjectRepository = subjectRepository;
     }
 
-    public List<Subject> getAllSubjects() {
-        return subjectRepository.findAll();
+    public List<Subject> getAllSubjects(List<String> grades) {
+        List<Subject> subjects = subjectRepository.findAll();
+        if (grades != null && !grades.isEmpty()) {
+            subjects = subjects.stream()
+                               .filter(subject -> subject.getGrades()
+                                                         .stream()
+                                                         .anyMatch(grade -> grades.contains(grade.getName())))
+                               .toList();
+        }
+
+        return subjects;
     }
 
     public Subject getSubjectById(String subjectId) {
