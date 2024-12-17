@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -41,9 +43,8 @@ public class SubjectController {
 
     @GetMapping("/subjects")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER') or hasRole('TEACHER')")
-    public ResponseEntity<CollectionModel<?>> getAllSubjects() {
-        List<Subject> subjects = subjectService.getAllSubjects();
-        return ResponseEntity.ok().body(toCollectionModel(subjects));
+    public ResponseEntity<CollectionModel<?>> getAllSubjects(@RequestParam(name = "grade", required = false) List<String> grades) {
+        return ResponseEntity.ok().body(toCollectionModel(subjectService.getAllSubjects(grades)));
     }
 
     @PostMapping("/subjects")
@@ -101,12 +102,12 @@ public class SubjectController {
     private EntityModel<Subject> toModel(Subject subject) {
         return EntityModel.of(subject,
                               linkTo(methodOn(SubjectController.class).getSubjectById(subject.getId())).withSelfRel(),
-                              linkTo(methodOn(SubjectController.class).getAllSubjects()).withRel("subjects"));
+                              linkTo(methodOn(SubjectController.class).getAllSubjects(Collections.emptyList())).withRel("subjects"));
     }
 
     private CollectionModel<?> toCollectionModel(List<Subject> subjectList) {
         Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SubjectController.class)
-                                                              .getAllSubjects()).withSelfRel();
+                                                              .getAllSubjects(Collections.emptyList())).withSelfRel();
 
         List<EntityModel<Subject>> subjects = subjectList.stream()
                                                          .map(this::toModel)
