@@ -43,7 +43,7 @@ public class SubjectController {
 
     @GetMapping("/subjects")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER') or hasRole('TEACHER')")
-    public ResponseEntity<CollectionModel<?>> getAllSubjects(@RequestParam(name = "grade", required = false) List<String> grades) {
+    public ResponseEntity<CollectionModel<?>> getAllSubjects(@RequestParam(name = "grade") List<String> grades) {
         return ResponseEntity.ok().body(toCollectionModel(subjectService.getAllSubjects(grades)));
     }
 
@@ -102,7 +102,7 @@ public class SubjectController {
     private EntityModel<Subject> toModel(Subject subject) {
         return EntityModel.of(subject,
                               linkTo(methodOn(SubjectController.class).getSubjectById(subject.getId())).withSelfRel(),
-                              linkTo(methodOn(SubjectController.class).getAllSubjects(Collections.emptyList())).withRel("subjects"));
+                              linkTo(methodOn(SubjectController.class).getAllSubjects(Collections.emptyList())).withRel("all"));
     }
 
     private CollectionModel<?> toCollectionModel(List<Subject> subjectList) {

@@ -5,22 +5,17 @@ import com.hubformath.mathhubservice.model.auth.Role;
 import com.hubformath.mathhubservice.model.auth.User;
 import com.hubformath.mathhubservice.model.auth.UserRole;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
-import com.hubformath.mathhubservice.model.sis.Class;
-import com.hubformath.mathhubservice.model.sis.ClassRequest;
+import com.hubformath.mathhubservice.model.sis.EnrolledClass;
 import com.hubformath.mathhubservice.model.sis.PhoneNumber;
 import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.sis.StudentFinancialSummary;
 import com.hubformath.mathhubservice.model.sis.StudentRequest;
-import com.hubformath.mathhubservice.model.systemconfig.ClassRate;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
-import com.hubformath.mathhubservice.model.systemconfig.Subject;
 import com.hubformath.mathhubservice.repository.auth.UserRoleRepository;
 import com.hubformath.mathhubservice.repository.sis.StudentRepository;
-import com.hubformath.mathhubservice.service.systemconfig.ClassRateService;
 import com.hubformath.mathhubservice.service.systemconfig.ExamBoardService;
 import com.hubformath.mathhubservice.service.systemconfig.GradeService;
-import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,10 +35,6 @@ public class StudentService {
 
     private final ExamBoardService examBoardService;
 
-    private final SubjectService subjectService;
-
-    private final ClassRateService classRateService;
-
     private final StudentRepository studentRepository;
 
     private final UserRoleRepository userRoleRepository;
@@ -54,15 +45,11 @@ public class StudentService {
     public StudentService(StudentRepository studentRepository,
                           GradeService gradeService,
                           ExamBoardService examBoardService,
-                          SubjectService subjectService,
-                          ClassRateService classRateService,
                           UserRoleRepository userRoleRepository,
                           PasswordEncoder passwordEncoder) {
         this.studentRepository = studentRepository;
         this.gradeService = gradeService;
         this.examBoardService = examBoardService;
-        this.subjectService = subjectService;
-        this.classRateService = classRateService;
         this.userRoleRepository = userRoleRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -162,31 +149,8 @@ public class StudentService {
         student.getUser().setPhoneNumber(phoneNumber);
     }
 
-    public Student addClassToStudent(final String studentId, final ClassRequest classRequest) {
-        Student student = getStudentById(studentId);
-        Subject subject = subjectService.getSubjectById(classRequest.subjectId());
-        ClassRate classRate = classRateService.getClassRateBySubjectComplexity(subject.getComplexity());
-        Class newClass = getNewClass(classRequest, subject, classRate);
-        student.getClasses().add(newClass);
-        student.setFinancialSummary(computeStudentFinancialSummary(student));
-
-        return studentRepository.save(student);
-    }
-
-    private static Class getNewClass(ClassRequest classRequest, Subject subject, ClassRate classRate) {
-        Class newClass = new Class(subject,
-                                   classRequest.occurrence(),
-                                   classRequest.startDate(),
-                                   classRate.getAmount(),
-                                   classRequest.duration(),
-                                   classRequest.period(),
-                                   classRequest.sessionType());
-        newClass.setPaymentStatus(PaymentStatus.UNPAID);
-        return newClass;
-    }
-
-    public StudentFinancialSummary computeStudentFinancialSummary(final Student student) {
-        Double amountOwing = student.getClasses()
+    public StudentFinancialSummary computeStudentFinancialSummary(Student student) {
+        Double amountOwing = student.getEnrolledClasses()
                                     .stream()
                                     .filter(aClass -> aClass.getPaymentStatus() == PaymentStatus.UNPAID)
                                     .map(aClass -> aClass.getCost() * aClass.getOccurrence())
@@ -197,17 +161,17 @@ public class StudentService {
     }
 
     private boolean isStudentOwing(Student student, Double amountOwing) {
-        boolean hasUnpaidLessons = student.getClasses()
+        boolean hasUnpaidLessons = student.getEnrolledClasses()
                                           .stream()
                                           .anyMatch(aClass -> aClass.getPaymentStatus() == PaymentStatus.UNPAID);
         return hasUnpaidLessons && amountOwing > 0;
     }
 
     private LocalDate computeDueDate(Student student) {
-        return student.getClasses()
+        return student.getEnrolledClasses()
                       .stream()
                       .filter(aClass -> aClass.getPaymentStatus() == PaymentStatus.UNPAID)
-                      .map(Class::getStartDate)
+                      .map(EnrolledClass::getStartDate)
                       .min(LocalDate::compareTo)
                       .map(date -> date.plusDays(30))
                       .orElse(null);
