@@ -59,6 +59,10 @@ public class EnrolledClass {
     @Column(name = "payment_status")
     private PaymentStatus paymentStatus;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "enrolment_status")
+    private EnrolledClassStatus enrolmentStatus;
+
     @CreationTimestamp
     @ReadOnlyProperty
     @Column(name = "created_at")
@@ -171,6 +175,14 @@ public class EnrolledClass {
         this.paymentStatus = paymentStatus;
     }
 
+    public EnrolledClassStatus getEnrolmentStatus() {
+        return enrolmentStatus;
+    }
+
+    public void setEnrolmentStatus(EnrolledClassStatus enrolmentStatus) {
+        this.enrolmentStatus = enrolmentStatus;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -200,7 +212,8 @@ public class EnrolledClass {
                 && Objects.equals(this.period, enrolledClass.period)
                 && Objects.equals(this.endDate, enrolledClass.endDate)
                 && Objects.equals(this.sessionType, enrolledClass.sessionType)
-                && Objects.equals(this.paymentStatus, enrolledClass.paymentStatus);
+                && Objects.equals(this.paymentStatus, enrolledClass.paymentStatus)
+                && Objects.equals(this.enrolmentStatus, enrolledClass.enrolmentStatus);
     }
 
     @Override
@@ -213,6 +226,7 @@ public class EnrolledClass {
                 this.duration,
                 this.sessionType,
                 this.paymentStatus,
+                this.enrolmentStatus,
                 this.period,
                 this.endDate);
     }
@@ -230,6 +244,7 @@ public class EnrolledClass {
                 ", endDate=" + endDate +
                 ", sessionType=" + sessionType +
                 ", paymentStatus=" + paymentStatus +
+                ", enrolmentStatus=" + enrolmentStatus +
                 '}';
     }
 }
