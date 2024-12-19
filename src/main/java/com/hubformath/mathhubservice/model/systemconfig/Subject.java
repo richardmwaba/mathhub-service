@@ -38,7 +38,6 @@ public class Subject {
     @JoinTable(name = "subjects_grades",
             joinColumns = @JoinColumn(name = "subject_id"),
             inverseJoinColumns = @JoinColumn(name = "grade_id"))
-    @JsonIgnore
     private Set<Grade> grades;
 
     @CreationTimestamp

@@ -42,7 +42,7 @@ public class EnrolledClassController {
         try {
             List<EnrolledClass> enrolledClasses = enrolledClassService.addClassesToStudent(studentId,
                                                                                            enrolledClassRequests);
-            return ResponseEntity.ok(toClassCollectionModelWithLinks(enrolledClasses, studentId, true));
+            return ResponseEntity.ok(toClassCollectionModelWithLinks(enrolledClasses, studentId, "Active"));
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         } catch (IllegalStateException e) {
@@ -55,8 +55,8 @@ public class EnrolledClassController {
     public ResponseEntity<EntityModel<?>> getStudentsClassByClassId(@PathVariable String studentId,
                                                                     @PathVariable String classId) {
         try {
-            EnrolledClass enrolledClass = enrolledClassService.getStudentsClassByClassId(studentId, classId);
-            return ResponseEntity.ok().body(toClassModelWithLinks(enrolledClass, studentId, true));
+            EnrolledClass enrolledClass = enrolledClassService.getEnrolledClassByClassId(classId);
+            return ResponseEntity.ok().body(toClassModelWithLinks(enrolledClass, studentId, "Active"));
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
@@ -65,11 +65,11 @@ public class EnrolledClassController {
     @GetMapping("/{studentId}/classes")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<CollectionModel<?>> getAllClassesForStudent(@PathVariable String studentId,
-                                                                      @RequestParam(required = false, defaultValue = "true") boolean onlyActiveClasses) {
+                                                                      @RequestParam(required = false) String enrolmentStatus) {
         try {
-            List<EnrolledClass> enrolledClasses = enrolledClassService.getAllClassesForStudent(studentId, onlyActiveClasses);
+            List<EnrolledClass> enrolledClasses = enrolledClassService.getAllClassesForStudent(studentId, enrolmentStatus);
             return ResponseEntity.ok()
-                                 .body(toClassCollectionModelWithLinks(enrolledClasses, studentId, onlyActiveClasses));
+                                 .body(toClassCollectionModelWithLinks(enrolledClasses, studentId, enrolmentStatus));
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
@@ -82,7 +82,7 @@ public class EnrolledClassController {
                                                               @RequestBody EnrolledClassRequest enrolledClassRequest) {
         try {
             EnrolledClass enrolledClass = enrolledClassService.updateEnrolledClass(classId, enrolledClassRequest);
-            return ResponseEntity.ok().body(toClassModelWithLinks(enrolledClass, studentId, true));
+            return ResponseEntity.ok().body(toClassModelWithLinks(enrolledClass, studentId, "Active"));
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
@@ -99,22 +99,22 @@ public class EnrolledClassController {
         }
     }
 
-    private EntityModel<EnrolledClass> toClassModelWithLinks(EnrolledClass enrolledClass, String studentId, boolean onlyActiveClasses) {
+    private EntityModel<EnrolledClass> toClassModelWithLinks(EnrolledClass enrolledClass, String studentId, String enrolmentStatus) {
         return EntityModel.of(enrolledClass,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EnrolledClassController.class)
                                                                         .getStudentsClassByClassId(studentId,
                                                                                                    enrolledClass.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EnrolledClassController.class)
-                                                                        .getAllClassesForStudent(studentId, onlyActiveClasses))
+                                                                        .getAllClassesForStudent(studentId, enrolmentStatus))
                                                .withRel("all"));
     }
 
-    private CollectionModel<?> toClassCollectionModelWithLinks(List<EnrolledClass> classesList, String studentId, boolean onlyActiveClasses) {
+    private CollectionModel<?> toClassCollectionModelWithLinks(List<EnrolledClass> classesList, String studentId, String enrolmentStatus) {
         Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EnrolledClassController.class)
-                                                              .getAllClassesForStudent(studentId, onlyActiveClasses)).withSelfRel();
+                                                              .getAllClassesForStudent(studentId, enrolmentStatus)).withSelfRel();
         List<EntityModel<EnrolledClass>> classes = classesList.stream()
-                                                              .map(aClass -> toClassModelWithLinks(aClass, studentId, onlyActiveClasses))
+                                                              .map(aClass -> toClassModelWithLinks(aClass, studentId, enrolmentStatus))
                                                               .toList();
 
         return classesList.isEmpty()

@@ -3,6 +3,7 @@ package com.hubformath.mathhubservice.service.sis;
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.sis.EnrolledClass;
 import com.hubformath.mathhubservice.model.sis.EnrolledClassRequest;
+import com.hubformath.mathhubservice.model.sis.EnrolledClassStatus;
 import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.systemconfig.ClassRate;
 import com.hubformath.mathhubservice.model.systemconfig.Subject;
@@ -11,7 +12,10 @@ import com.hubformath.mathhubservice.repository.sis.StudentRepository;
 import com.hubformath.mathhubservice.service.systemconfig.ClassRateService;
 import com.hubformath.mathhubservice.service.systemconfig.SubjectService;
 import com.hubformath.mathhubservice.util.StudentUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,6 +25,8 @@ import java.util.function.Predicate;
 
 @Service
 public class EnrolledClassService {
+
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(EnrolledClassService.class);
 
     private final EnrolledClassRepository enrolledClassRepository;
 
@@ -40,25 +46,18 @@ public class EnrolledClassService {
         this.subjectService = subjectService;
     }
 
-    public EnrolledClass getStudentsClassByClassId(String studentId, String classId) {
-        return getStudentById(studentId).getEnrolledClasses()
-                                        .stream()
-                                        .filter(aClass -> classId.equals(aClass.getId()))
-                                        .findFirst()
-                                        .orElseThrow();
+    public EnrolledClass getEnrolledClassByClassId(String classId) {
+        return enrolledClassRepository.findById(classId).orElseThrow();
     }
 
-    public List<EnrolledClass> getAllClassesForStudent(String studentId, boolean onlyActiveClasses) {
+    public List<EnrolledClass> getAllClassesForStudent(String studentId, String enrolmentStatus) {
         List<EnrolledClass> allEnrolledClasses = getStudentById(studentId).getEnrolledClasses();
 
-        return onlyActiveClasses ? allEnrolledClasses.stream()
-                                                     .filter(isActiveClass())
-                                                     .toList() : allEnrolledClasses;
-    }
-
-    private static Predicate<EnrolledClass> isActiveClass() {
-        return enrolledClass -> enrolledClass.getEndDate() == null
-                || enrolledClass.getEndDate().isAfter(LocalDate.now());
+        return StringUtils.isNotEmpty(enrolmentStatus) ? allEnrolledClasses.stream()
+                                                                           .filter(enrolledClass -> enrolmentStatus.equals(
+                                                                                   enrolledClass.getEnrolmentStatus()
+                                                                                                .getDescription()))
+                                                                           .toList() : allEnrolledClasses;
     }
 
     public List<EnrolledClass> addClassesToStudent(String studentId, List<EnrolledClassRequest> enrolledClassRequests) {
@@ -87,6 +86,10 @@ public class EnrolledClassService {
                       .filter(isAlreadyEnrolledInAtLeastOneClass(enrolledClassRequests))
                       .map(enrolledClass -> enrolledClass.getSubject().getName())
                       .toList();
+    }
+
+    private static Predicate<EnrolledClass> isActiveClass() {
+        return enrolledClass -> enrolledClass.getEnrolmentStatus().equals(EnrolledClassStatus.ACTIVE);
     }
 
     private static Predicate<EnrolledClass> isAlreadyEnrolledInAtLeastOneClass(List<EnrolledClassRequest> enrolledClassRequests) {
@@ -120,11 +123,26 @@ public class EnrolledClassService {
     }
 
     public void cancelStudentsClass(String studentId, String classId) {
-        Student student = getStudentById(studentId);
-        student.getEnrolledClasses().removeIf(aClass -> classId.equals(aClass.getId()));
-        student.setFinancialSummary(StudentUtil.computeStudentFinancialSummary(student));
+        EnrolledClass cancelledClass = enrolledClassRepository.findById(classId).orElseThrow();
 
-        studentRepository.save(student);
+        if (getStudentById(studentId) != null) {
+            cancelledClass.setEnrolmentStatus(EnrolledClassStatus.CANCELLED);
+            enrolledClassRepository.save(cancelledClass);
+        }
+    }
+
+    @Scheduled(cron = "1 1 0 * * *") // Every day at 00:01:01
+    @SuppressWarnings("unused") // This method is called by the scheduler
+    public void updateEnrolledClassesStatus() {
+        LOGGER.info("Updating enrolled classes' statuses...");
+        List<EnrolledClass> activeClasses = enrolledClassRepository.findByEnrolmentStatus(EnrolledClassStatus.ACTIVE);
+        activeClasses.stream()
+                     .filter(enrolledClass -> LocalDate.now().isAfter(enrolledClass.getEndDate()))
+                     .forEach(enrolledClass -> {
+                         enrolledClass.setEnrolmentStatus(EnrolledClassStatus.COMPLETED);
+                         enrolledClassRepository.save(enrolledClass);
+                     });
+        LOGGER.info("Completed update of enrolled classes' statuses.");
     }
 
     private EnrolledClass getNewClass(EnrolledClassRequest enrolledClassRequest) {
@@ -139,6 +157,7 @@ public class EnrolledClassService {
                                                            computeEndDate(enrolledClassRequest),
                                                            enrolledClassRequest.sessionType());
         newEnrolledClass.setPaymentStatus(PaymentStatus.UNPAID);
+        newEnrolledClass.setEnrolmentStatus(EnrolledClassStatus.ACTIVE);
         return newEnrolledClass;
     }
 

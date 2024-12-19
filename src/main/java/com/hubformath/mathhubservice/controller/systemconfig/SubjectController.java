@@ -43,8 +43,8 @@ public class SubjectController {
 
     @GetMapping("/subjects")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('CASHIER') or hasRole('TEACHER')")
-    public ResponseEntity<CollectionModel<?>> getAllSubjects(@RequestParam(name = "grade") List<String> grades) {
-        return ResponseEntity.ok().body(toCollectionModel(subjectService.getAllSubjects(grades)));
+    public ResponseEntity<CollectionModel<?>> getAllSubjects(@RequestParam(name = "grade", required = false) List<String> grades) {
+        return ResponseEntity.ok().body(toCollectionModel(subjectService.getAllSubjects(grades), grades));
     }
 
     @PostMapping("/subjects")
@@ -52,7 +52,7 @@ public class SubjectController {
     public ResponseEntity<Object> newSubject(@RequestBody SubjectRequest subjectRequest) {
         try {
             Subject newSubject = subjectService.createSubject(subjectRequest);
-            EntityModel<Subject> subjectDtoEntityModel = toModel(newSubject);
+            EntityModel<Subject> subjectDtoEntityModel = toModel(newSubject, Collections.emptyList());
 
             return ResponseEntity.created(subjectDtoEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).
                                  body(subjectDtoEntityModel);
@@ -66,7 +66,7 @@ public class SubjectController {
     public ResponseEntity<EntityModel<Subject>> getSubjectById(@PathVariable String subjectId) {
         try {
             Subject subject = subjectService.getSubjectById(subjectId);
-            EntityModel<Subject> subjectEntityModel = toModel(subject);
+            EntityModel<Subject> subjectEntityModel = toModel(subject, Collections.emptyList());
 
             return ResponseEntity.ok().body(subjectEntityModel);
         } catch (NoSuchElementException e) {
@@ -80,7 +80,7 @@ public class SubjectController {
                                                               @PathVariable String subjectId) {
         try {
             Subject updatedSubject = subjectService.updateSubject(subjectId, subjectRequest);
-            EntityModel<Subject> subjectEntityModel = toModel(updatedSubject);
+            EntityModel<Subject> subjectEntityModel = toModel(updatedSubject, Collections.emptyList());
 
             return ResponseEntity.ok().body(subjectEntityModel);
         } catch (NoSuchElementException e) {
@@ -99,18 +99,18 @@ public class SubjectController {
         }
     }
 
-    private EntityModel<Subject> toModel(Subject subject) {
+    private EntityModel<Subject> toModel(Subject subject, List<String> grades) {
         return EntityModel.of(subject,
                               linkTo(methodOn(SubjectController.class).getSubjectById(subject.getId())).withSelfRel(),
-                              linkTo(methodOn(SubjectController.class).getAllSubjects(Collections.emptyList())).withRel("all"));
+                              linkTo(methodOn(SubjectController.class).getAllSubjects(grades)).withRel("all"));
     }
 
-    private CollectionModel<?> toCollectionModel(List<Subject> subjectList) {
+    private CollectionModel<?> toCollectionModel(List<Subject> subjectList, List<String> grades) {
         Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(SubjectController.class)
-                                                              .getAllSubjects(Collections.emptyList())).withSelfRel();
+                                                              .getAllSubjects(grades)).withSelfRel();
 
         List<EntityModel<Subject>> subjects = subjectList.stream()
-                                                         .map(this::toModel)
+                                                         .map(subject -> toModel(subject, grades))
                                                          .toList();
 
         return subjectList.isEmpty()
