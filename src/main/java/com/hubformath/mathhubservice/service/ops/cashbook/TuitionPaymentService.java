@@ -74,7 +74,7 @@ public class TuitionPaymentService {
         final String transactionNumber = UUID.randomUUID().toString().toUpperCase().replace("-", "");
 
         // Update student's classes payment status
-        student.getClasses()
+        student.getEnrolledClasses()
                .parallelStream()
                .filter(lesson -> lesson.getPaymentStatus().equals(PaymentStatus.UNPAID) && lessonsIds.contains(
                        lesson.getId()))

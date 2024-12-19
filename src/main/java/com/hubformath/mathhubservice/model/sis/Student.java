@@ -65,7 +65,8 @@ public class Student {
     @JoinTable(name = "students_classes",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "class_id"))
-    private List<Class> classes;
+    @JsonIgnore
+    private List<EnrolledClass> enrolledClasses;
 
     private String email;
 
@@ -170,12 +171,12 @@ public class Student {
         this.grade = grade;
     }
 
-    public List<Class> getClasses() {
-        return classes;
+    public List<EnrolledClass> getEnrolledClasses() {
+        return enrolledClasses;
     }
 
-    public void setClasses(List<Class> aClasses) {
-        this.classes = aClasses;
+    public void setEnrolledClasses(List<EnrolledClass> enrolledClasses) {
+        this.enrolledClasses = enrolledClasses;
     }
 
     public List<Parent> getParents() {
@@ -269,7 +270,7 @@ public class Student {
                 && getGender().equals(student.getGender())
                 && getParents().equals(student.getParents())
                 && getGrade().equals(student.getGrade())
-                && getClasses().equals(student.getClasses())
+                && getEnrolledClasses().equals(student.getEnrolledClasses())
                 && getEmail().equals(student.getEmail())
                 && getUser().equals(student.getUser())
                 && getAddress().equals(student.getAddress())
@@ -288,7 +289,7 @@ public class Student {
                             getGender(),
                             getParents(),
                             getGrade(),
-                            getClasses(),
+                            getEnrolledClasses(),
                             getEmail(),
                             getUser(),
                             getAddress(),
@@ -308,7 +309,7 @@ public class Student {
                 ", gender=" + gender +
                 ", parents=" + parents +
                 ", grade=" + grade +
-                ", classes=" + classes +
+                ", classes=" + enrolledClasses +
                 ", email='" + email + '\'' +
                 ", user='" + user + '\'' +
                 ", address=" + address +

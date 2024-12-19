@@ -1,7 +1,6 @@
 package com.hubformath.mathhubservice.controller.sis;
 
 import com.hubformath.mathhubservice.controller.util.CollectionModelUtils;
-import com.hubformath.mathhubservice.model.sis.ClassRequest;
 import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.sis.StudentActionBase;
 import com.hubformath.mathhubservice.model.sis.StudentRequest;
@@ -42,7 +41,7 @@ public class StudentController {
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER')")
     public ResponseEntity<CollectionModel<?>> getAllStudents() {
         List<Student> students = studentService.getAllStudents();
-        return ResponseEntity.ok().body(toCollectionModel(students));
+        return ResponseEntity.ok().body(toStudentCollectionModelWithLinks(students));
     }
 
     @PostMapping("/students")
@@ -50,7 +49,7 @@ public class StudentController {
     public ResponseEntity<?> createStudent(@RequestBody StudentRequest studentRequest) {
         try {
             Student student = studentService.createStudent(studentRequest);
-            EntityModel<Student> studentEntityModel = toModel(student);
+            EntityModel<Student> studentEntityModel = toStudentModelWithLinks(student);
 
             return ResponseEntity.created(studentEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                                  .body(studentEntityModel);
@@ -65,7 +64,7 @@ public class StudentController {
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
     public ResponseEntity<EntityModel<Student>> getStudentById(@PathVariable String studentId) {
         try {
-            EntityModel<Student> student = toModel(studentService.getStudentById(studentId));
+            EntityModel<Student> student = toStudentModelWithLinks(studentService.getStudentById(studentId));
             return ResponseEntity.ok().body(student);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -77,7 +76,8 @@ public class StudentController {
     public ResponseEntity<EntityModel<Student>> updateStudent(@RequestBody StudentRequest studentRequest,
                                                               @PathVariable String studentId) {
         try {
-            EntityModel<Student> updatedStudent = toModel(studentService.updateStudent(studentId, studentRequest));
+            EntityModel<Student> updatedStudent = toStudentModelWithLinks(studentService.updateStudent(studentId,
+                                                                                                       studentRequest));
             return ResponseEntity.ok().body(updatedStudent);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -86,22 +86,10 @@ public class StudentController {
 
     @DeleteMapping("/students/{studentId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER')")
-    public ResponseEntity<String> deleteStudent(@PathVariable final String studentId) {
+    public ResponseEntity<String> deleteStudent(@PathVariable String studentId) {
         try {
             studentService.deleteStudent(studentId);
             return ResponseEntity.ok().body("Student deleted successfully");
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PostMapping("/students/{studentId}/classes")
-    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<EntityModel<Student>> addStudentClass(@PathVariable String studentId,
-                                                                @RequestBody ClassRequest classRequest) {
-        try {
-            EntityModel<Student> student = toModel(studentService.addClassToStudent(studentId, classRequest));
-            return ResponseEntity.ok(student);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
@@ -114,20 +102,20 @@ public class StudentController {
         return ResponseEntity.noContent().build();
     }
 
-    private EntityModel<Student> toModel(Student student) {
+    private EntityModel<Student> toStudentModelWithLinks(Student student) {
         return EntityModel.of(student,
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(StudentController.class)
                                                                         .getStudentById(student.getId()))
                                                .withSelfRel(),
                               WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(StudentController.class)
-                                                                        .getAllStudents()).withRel("students"));
+                                                                        .getAllStudents()).withRel("all"));
     }
 
-    private CollectionModel<?> toCollectionModel(List<Student> studentList) {
+    private CollectionModel<?> toStudentCollectionModelWithLinks(List<Student> studentList) {
         Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(StudentController.class)
                                                               .getAllStudents()).withSelfRel();
         List<EntityModel<Student>> students = studentList.stream()
-                                                         .map(this::toModel)
+                                                         .map(this::toStudentModelWithLinks)
                                                          .toList();
 
         return studentList.isEmpty()
