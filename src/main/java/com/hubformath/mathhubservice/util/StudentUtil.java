@@ -2,6 +2,7 @@ package com.hubformath.mathhubservice.util;
 
 import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
 import com.hubformath.mathhubservice.model.sis.EnrolledClass;
+import com.hubformath.mathhubservice.model.sis.EnrolledClassStatus;
 import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.model.sis.StudentFinancialSummary;
 
@@ -14,10 +15,11 @@ public class StudentUtil {
     }
 
     public static StudentFinancialSummary computeStudentFinancialSummary(Student student) {
-        Double amountOwing = student.getEnrolledClasses()
+        double amountOwing = student.getEnrolledClasses()
                                     .stream()
-                                    .filter(aClass -> aClass.getPaymentStatus() == PaymentStatus.UNPAID)
-                                    .map(aClass -> aClass.getCostPerSession() * aClass.getOccurrencePerWeek())
+                                    .filter(aClass -> aClass.getEnrolmentStatus()
+                                                            .equals(EnrolledClassStatus.ACTIVE) && aClass.getPaymentStatus() == PaymentStatus.UNPAID)
+                                    .map(StudentUtil::computeAmountOwing)
                                     .reduce(Double::sum)
                                     .orElse(0d);
         boolean isStudentOwing = isStudentOwing(student, amountOwing);
@@ -39,5 +41,15 @@ public class StudentUtil {
                       .min(LocalDate::compareTo)
                       .map(date -> date.plusDays(30))
                       .orElse(null);
+    }
+
+    private static double computeAmountOwing(EnrolledClass enrolledClass) {
+        double totalCostForSessions = enrolledClass.getCostPerSession() * enrolledClass.getOccurrencePerWeek();
+
+        return switch (enrolledClass.getPeriod()) {
+            case DAYS -> totalCostForSessions;
+            case WEEKS -> totalCostForSessions * enrolledClass.getDuration();
+            case MONTHS -> totalCostForSessions * enrolledClass.getDuration() * 4;
+        };
     }
 }
