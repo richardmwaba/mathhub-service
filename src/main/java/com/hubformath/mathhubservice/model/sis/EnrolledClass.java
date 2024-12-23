@@ -33,13 +33,13 @@ public class EnrolledClass {
     private Subject subject;
 
     @Column(name = "occurrence")
-    private int occurrence;
+    private int occurrencePerWeek;
 
     @Column(name = "start_date")
     private LocalDate startDate;
 
     @Column(name = "cost")
-    private Double cost;
+    private Double costPerSession;
 
     @Column(name = "duration")
     private int duration;
@@ -78,17 +78,17 @@ public class EnrolledClass {
     }
 
     public EnrolledClass(Subject subject,
-                         int occurrence,
+                         int occurrencePerWeek,
                          LocalDate startDate,
-                         Double cost,
+                         Double costPerSession,
                          int duration,
                          LessonPeriod period,
                          LocalDate endDate,
                          SessionType sessionType) {
         this.subject = subject;
-        this.occurrence = occurrence;
+        this.occurrencePerWeek = occurrencePerWeek;
         this.startDate = startDate;
-        this.cost = cost;
+        this.costPerSession = costPerSession;
         this.duration = duration;
         this.endDate = endDate;
         this.period = period;
@@ -111,12 +111,12 @@ public class EnrolledClass {
         this.subject = subject;
     }
 
-    public int getOccurrence() {
-        return occurrence;
+    public int getOccurrencePerWeek() {
+        return occurrencePerWeek;
     }
 
-    public void setOccurrence(int occurrence) {
-        this.occurrence = occurrence;
+    public void setOccurrencePerWeek(int occurrencePerWeek) {
+        this.occurrencePerWeek = occurrencePerWeek;
     }
 
     public LocalDate getStartDate() {
@@ -127,12 +127,12 @@ public class EnrolledClass {
         this.startDate = startDate;
     }
 
-    public Double getCost() {
-        return cost;
+    public Double getCostPerSession() {
+        return costPerSession;
     }
 
-    public void setCost(Double cost) {
-        this.cost = cost;
+    public void setCostPerSession(Double costPerSession) {
+        this.costPerSession = costPerSession;
     }
 
     public int getDuration() {
@@ -205,9 +205,9 @@ public class EnrolledClass {
             return true;
         if (!(o instanceof EnrolledClass enrolledClass))
             return false;
-        return Objects.equals(this.id, enrolledClass.id) && Objects.equals(this.occurrence, enrolledClass.occurrence)
+        return Objects.equals(this.id, enrolledClass.id) && Objects.equals(this.occurrencePerWeek, enrolledClass.occurrencePerWeek)
                 && Objects.equals(this.startDate, enrolledClass.startDate)
-                && Objects.equals(this.cost, enrolledClass.cost)
+                && Objects.equals(this.costPerSession, enrolledClass.costPerSession)
                 && Objects.equals(this.duration, enrolledClass.duration)
                 && Objects.equals(this.period, enrolledClass.period)
                 && Objects.equals(this.endDate, enrolledClass.endDate)
@@ -220,9 +220,9 @@ public class EnrolledClass {
     public int hashCode() {
         return Objects.hash(
                 this.id,
-                this.occurrence,
+                this.occurrencePerWeek,
                 this.startDate,
-                this.cost,
+                this.costPerSession,
                 this.duration,
                 this.sessionType,
                 this.paymentStatus,
@@ -236,9 +236,9 @@ public class EnrolledClass {
         return "Class{" +
                 "id='" + id + '\'' +
                 ", subject=" + subject +
-                ", occurrence=" + occurrence +
+                ", occurrence=" + occurrencePerWeek +
                 ", startDate=" + startDate +
-                ", cost=" + cost +
+                ", cost=" + costPerSession +
                 ", duration=" + duration +
                 ", period=" + period +
                 ", endDate=" + endDate +

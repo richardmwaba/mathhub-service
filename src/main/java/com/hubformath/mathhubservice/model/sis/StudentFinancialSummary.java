@@ -7,13 +7,13 @@ public class StudentFinancialSummary {
 
     private boolean isOwing;
 
-    private Double amountOwing;
+    private Double totalAmountOwing;
 
     private LocalDate dueDate;
 
-    public StudentFinancialSummary(boolean isOwing, Double amountOwing, LocalDate dueDate) {
+    public StudentFinancialSummary(boolean isOwing, Double totalAmountOwing, LocalDate dueDate) {
         this.isOwing = isOwing;
-        this.amountOwing = amountOwing;
+        this.totalAmountOwing = totalAmountOwing;
         this.dueDate = dueDate;
     }
 
@@ -25,12 +25,12 @@ public class StudentFinancialSummary {
         isOwing = owing;
     }
 
-    public Double getAmountOwing() {
-        return amountOwing;
+    public Double getTotalAmountOwing() {
+        return totalAmountOwing;
     }
 
-    public void setAmountOwing(Double amountOwing) {
-        this.amountOwing = amountOwing;
+    public void setTotalAmountOwing(Double totalAmountOwing) {
+        this.totalAmountOwing = totalAmountOwing;
     }
 
     public LocalDate getDueDate() {
@@ -46,20 +46,20 @@ public class StudentFinancialSummary {
         if (this == o) return true;
         if (!(o instanceof StudentFinancialSummary that)) return false;
         return isOwing() == that.isOwing()
-                && Objects.equals(getAmountOwing(), that.getAmountOwing())
+                && Objects.equals(getTotalAmountOwing(), that.getTotalAmountOwing())
                 && Objects.equals(getDueDate(), that.getDueDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(isOwing(), getAmountOwing(), getDueDate());
+        return Objects.hash(isOwing(), getTotalAmountOwing(), getDueDate());
     }
 
     @Override
     public String toString() {
         return "StudentFinancialSummary{" +
                 "isStudentOwing=" + isOwing +
-                ", amountOwing=" + amountOwing +
+                ", amountOwing=" + totalAmountOwing +
                 ", dueDate=" + dueDate +
                 '}';
     }
