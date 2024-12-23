@@ -122,7 +122,7 @@ public class EnrolledClassService {
 
     }
 
-    public void cancelStudentsClass(String studentId, String classId) {
+    public void dropStudentsClass(String studentId, String classId) {
         EnrolledClass cancelledClass = enrolledClassRepository.findById(classId).orElseThrow();
 
         if (getStudentById(studentId) != null) {

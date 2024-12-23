@@ -90,9 +90,9 @@ public class EnrolledClassController {
 
     @DeleteMapping("/{studentId}/classes/{classId}")
     @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('TEACHER') or hasRole('CASHIER') or hasRole('PARENT') or hasRole('STUDENT')")
-    public ResponseEntity<String> cancelStudentsClass(@PathVariable String studentId, @PathVariable String classId) {
+    public ResponseEntity<String> dropStudentsClass(@PathVariable String studentId, @PathVariable String classId) {
         try {
-            enrolledClassService.cancelStudentsClass(studentId, classId);
+            enrolledClassService.dropStudentsClass(studentId, classId);
             return ResponseEntity.ok().body("Class cancelled successfully");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
