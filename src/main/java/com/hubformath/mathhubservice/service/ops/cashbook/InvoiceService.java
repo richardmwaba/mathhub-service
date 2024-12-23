@@ -7,6 +7,7 @@ import com.hubformath.mathhubservice.model.sis.Student;
 import com.hubformath.mathhubservice.repository.ops.cashbook.InvoiceRepository;
 import com.hubformath.mathhubservice.service.sis.StudentService;
 import com.hubformath.mathhubservice.service.systemconfig.UsersService;
+import com.hubformath.mathhubservice.util.StudentUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -66,7 +67,7 @@ public class InvoiceService {
             throw new IllegalArgumentException("An active invoice already exists for this student");
         }
 
-        final Double amount = studentService.computeStudentFinancialSummary(student).getTotalAmountOwing();
+        final Double amount = StudentUtil.computeStudentFinancialSummary(student).getTotalAmountOwing();
         final String narration = invoiceRequest.narration();
         final Invoice newInvoice = new Invoice(student,
                                                amount,

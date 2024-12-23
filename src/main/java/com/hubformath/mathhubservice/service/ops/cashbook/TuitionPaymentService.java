@@ -16,6 +16,7 @@ import com.hubformath.mathhubservice.repository.ops.cashbook.TuitionPaymentRepos
 import com.hubformath.mathhubservice.service.sis.StudentService;
 import com.hubformath.mathhubservice.service.systemconfig.PaymentMethodService;
 import com.hubformath.mathhubservice.service.systemconfig.UsersService;
+import com.hubformath.mathhubservice.util.StudentUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,7 +90,7 @@ public class TuitionPaymentService {
         final Receipt receipt = new Receipt(newCashTransaction.getTransactionNumber(), currentUser);
 
         // Update student financial summary
-        student.setFinancialSummary(studentService.computeStudentFinancialSummary(student));
+        student.setFinancialSummary(StudentUtil.computeStudentFinancialSummary(student));
 
         // Update invoice
         InvoiceRequest invoiceRequest = new InvoiceRequest(null, null, narration, InvoiceStatus.PAID);

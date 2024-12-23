@@ -4,11 +4,8 @@ import com.hubformath.mathhubservice.config.PasswordGeneratorConfig;
 import com.hubformath.mathhubservice.model.auth.Role;
 import com.hubformath.mathhubservice.model.auth.User;
 import com.hubformath.mathhubservice.model.auth.UserRole;
-import com.hubformath.mathhubservice.model.ops.cashbook.PaymentStatus;
-import com.hubformath.mathhubservice.model.sis.EnrolledClass;
 import com.hubformath.mathhubservice.model.sis.PhoneNumber;
 import com.hubformath.mathhubservice.model.sis.Student;
-import com.hubformath.mathhubservice.model.sis.StudentFinancialSummary;
 import com.hubformath.mathhubservice.model.sis.StudentRequest;
 import com.hubformath.mathhubservice.model.systemconfig.ExamBoard;
 import com.hubformath.mathhubservice.model.systemconfig.Grade;
@@ -16,11 +13,11 @@ import com.hubformath.mathhubservice.repository.auth.UserRoleRepository;
 import com.hubformath.mathhubservice.repository.sis.StudentRepository;
 import com.hubformath.mathhubservice.service.systemconfig.ExamBoardService;
 import com.hubformath.mathhubservice.service.systemconfig.GradeService;
+import com.hubformath.mathhubservice.util.StudentUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -99,14 +96,14 @@ public class StudentService {
     public List<Student> getAllStudents() {
         return studentRepository.findAll()
                                 .stream()
-                                .peek(student -> student.setFinancialSummary(computeStudentFinancialSummary(student)))
+                                .peek(student -> student.setFinancialSummary(StudentUtil.computeStudentFinancialSummary(student)))
                                 .toList();
     }
 
     public Student getStudentById(String studentId) {
         return studentRepository.findById(studentId)
                                 .map(student -> {
-                                    student.setFinancialSummary(computeStudentFinancialSummary(student));
+                                    student.setFinancialSummary(StudentUtil.computeStudentFinancialSummary(student));
                                     return student;
                                 })
                                 .orElseThrow();
@@ -139,7 +136,7 @@ public class StudentService {
                                     return studentRepository.save(student);
                                 })
                                 .map(student -> {
-                                    student.setFinancialSummary(computeStudentFinancialSummary(student));
+                                    student.setFinancialSummary(StudentUtil.computeStudentFinancialSummary(student));
                                     return student;
                                 })
                                 .orElseThrow();
@@ -147,34 +144,6 @@ public class StudentService {
 
     private void setNewPhoneNumber(Student student, PhoneNumber phoneNumber) {
         student.getUser().setPhoneNumber(phoneNumber);
-    }
-
-    public StudentFinancialSummary computeStudentFinancialSummary(Student student) {
-        Double amountOwing = student.getEnrolledClasses()
-                                    .stream()
-                                    .filter(aClass -> aClass.getPaymentStatus() == PaymentStatus.UNPAID)
-                                    .map(aClass -> aClass.getCostPerSession() * aClass.getOccurrencePerWeek())
-                                    .reduce(Double::sum)
-                                    .orElse(0d);
-        boolean isStudentOwing = isStudentOwing(student, amountOwing);
-        return new StudentFinancialSummary(isStudentOwing, amountOwing, computeDueDate(student));
-    }
-
-    private boolean isStudentOwing(Student student, Double amountOwing) {
-        boolean hasUnpaidLessons = student.getEnrolledClasses()
-                                          .stream()
-                                          .anyMatch(aClass -> aClass.getPaymentStatus() == PaymentStatus.UNPAID);
-        return hasUnpaidLessons && amountOwing > 0;
-    }
-
-    private LocalDate computeDueDate(Student student) {
-        return student.getEnrolledClasses()
-                      .stream()
-                      .filter(aClass -> aClass.getPaymentStatus() == PaymentStatus.UNPAID)
-                      .map(EnrolledClass::getStartDate)
-                      .min(LocalDate::compareTo)
-                      .map(date -> date.plusDays(30))
-                      .orElse(null);
     }
 
     public void deleteStudent(String studentId) {
