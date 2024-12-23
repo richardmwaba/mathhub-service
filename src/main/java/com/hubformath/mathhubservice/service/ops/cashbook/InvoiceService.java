@@ -66,7 +66,7 @@ public class InvoiceService {
             throw new IllegalArgumentException("An active invoice already exists for this student");
         }
 
-        final Double amount = studentService.computeStudentFinancialSummary(student).getAmountOwing();
+        final Double amount = studentService.computeStudentFinancialSummary(student).getTotalAmountOwing();
         final String narration = invoiceRequest.narration();
         final Invoice newInvoice = new Invoice(student,
                                                amount,

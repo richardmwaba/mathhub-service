@@ -75,7 +75,10 @@ public class EnrolledClassService {
 
         studentRepository.save(student);
 
-        return student.getEnrolledClasses();
+        return student.getEnrolledClasses()
+                      .stream()
+                      .filter(isActiveClass())
+                      .toList();
     }
 
     private List<String> classesInWhichStudentIsEnrolled(Student student,
@@ -107,7 +110,7 @@ public class EnrolledClassService {
         return enrolledClassRepository.findById(enrolledClassId)
                                       .map(enrolledClass -> {
                                           Optional.of(enrolledClassRequest.occurrence())
-                                                  .ifPresent(enrolledClass::setOccurrence);
+                                                  .ifPresent(enrolledClass::setOccurrencePerWeek);
                                           Optional.ofNullable(enrolledClass.getStartDate())
                                                   .ifPresent(enrolledClass::setStartDate);
                                           Optional.of(enrolledClassRequest.duration())

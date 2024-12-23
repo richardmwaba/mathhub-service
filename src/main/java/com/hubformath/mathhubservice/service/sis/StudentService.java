@@ -153,7 +153,7 @@ public class StudentService {
         Double amountOwing = student.getEnrolledClasses()
                                     .stream()
                                     .filter(aClass -> aClass.getPaymentStatus() == PaymentStatus.UNPAID)
-                                    .map(aClass -> aClass.getCost() * aClass.getOccurrence())
+                                    .map(aClass -> aClass.getCostPerSession() * aClass.getOccurrencePerWeek())
                                     .reduce(Double::sum)
                                     .orElse(0d);
         boolean isStudentOwing = isStudentOwing(student, amountOwing);
