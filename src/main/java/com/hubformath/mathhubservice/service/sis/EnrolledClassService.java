@@ -122,12 +122,12 @@ public class EnrolledClassService {
 
     }
 
-    public void cancelStudentsClass(String studentId, String classId) {
-        EnrolledClass cancelledClass = enrolledClassRepository.findById(classId).orElseThrow();
+    public void dropStudentsClass(String studentId, String classId) {
+        EnrolledClass droppedClass = enrolledClassRepository.findById(classId).orElseThrow();
 
         if (getStudentById(studentId) != null) {
-            cancelledClass.setEnrolmentStatus(EnrolledClassStatus.CANCELLED);
-            enrolledClassRepository.save(cancelledClass);
+            droppedClass.setEnrolmentStatus(EnrolledClassStatus.CANCELLED);
+            enrolledClassRepository.save(droppedClass);
         }
     }
 
